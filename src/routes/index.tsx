@@ -14,9 +14,10 @@ import {
   User,
   Send,
   ChevronDown,
+  Phone,
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
-import { whatsappLink, ESTADOS, FAQ } from "@/lib/site";
+import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -130,6 +131,13 @@ function Header() {
           </span>
         </a>
         <nav className="flex items-center gap-6">
+          <a
+            href={PHONE_TEL}
+            className="hidden items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-primary sm:inline-flex"
+          >
+            <Phone className="h-4 w-4 text-accent" />
+            {PHONE_DISPLAY}
+          </a>
           <a
             href="#como-funciona"
             className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground lg:block"
