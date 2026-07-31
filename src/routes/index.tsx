@@ -17,7 +17,7 @@ import {
   Phone,
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
-import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
+import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, PRECO_LABEL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -62,10 +62,6 @@ export const Route = createFileRoute("/")({
 const WPP_MAIN = whatsappLink(
   "Olá! Gostaria de solicitar uma Certidão de Objeto e Pé.",
 );
-const WPP_CONSULTA = whatsappLink(
-  "Olá! Gostaria de consultar a situação do meu processo.",
-);
-
 function Section({
   id,
   children,
@@ -150,16 +146,14 @@ function Header() {
           >
             Dúvidas
           </a>
-          <a
-            href={WPP_MAIN}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/solicitar"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
-            <MessageCircle className="h-4 w-4" />
-            <span className="hidden sm:inline">Solicitar</span>
-            <span className="sm:hidden">WhatsApp</span>
-          </a>
+            <FileText className="h-4 w-4" />
+            <span className="hidden sm:inline">Solicitar online</span>
+            <span className="sm:hidden">Solicitar</span>
+          </Link>
         </nav>
       </div>
     </header>
@@ -192,22 +186,20 @@ function Hero() {
               documento.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/solicitar"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
+              >
+                <FileText className="h-4.5 w-4.5" />
+                Solicitar e pagar online — {PRECO_LABEL}
+              </Link>
               <a
                 href={WPP_MAIN}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
-              >
-                <MessageCircle className="h-4.5 w-4.5" />
-                Solicitar Certidão pelo WhatsApp
-              </a>
-              <a
-                href={WPP_CONSULTA}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-primary-foreground/25 px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
               >
-                Consultar meu processo
+                Tirar dúvidas no WhatsApp
               </a>
             </div>
             <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -409,15 +401,13 @@ function Urgencia() {
           Evite perder tempo tentando descobrir qual tribunal procurar. Nossa
           equipe auxilia em todas as etapas.
         </p>
-        <a
-          href={WPP_MAIN}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/solicitar"
           className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-gold px-8 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
         >
-          <MessageCircle className="h-4.5 w-4.5" />
-          Solicitar agora
-        </a>
+          <FileText className="h-4.5 w-4.5" />
+          Solicitar agora — {PRECO_LABEL}
+        </Link>
       </div>
     </Section>
   );
@@ -468,13 +458,21 @@ function Formulario() {
         <div>
           <Eyebrow>Solicitação</Eyebrow>
           <h2 className="text-3xl font-bold sm:text-4xl">
-            Preencha os dados e receba seu atendimento
+            Solicite online e pague com Pix
           </h2>
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-            Após o envio, você é direcionado ao WhatsApp com os dados já
-            preenchidos. Se não souber o número do processo, deixe em branco —
-            nossa equipe ajuda a localizar.
+            Faça todo o pedido pelo site: informe o processo, gere o número de
+            protocolo e pague {PRECO_LABEL} por certidão via Pix (QR Code ou
+            copia e cola). Prefere falar antes? Use o formulário ao lado e nossa
+            equipe te atende pelo WhatsApp.
           </p>
+          <Link
+            to="/solicitar"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <FileText className="h-4 w-4" />
+            Iniciar solicitação online
+          </Link>
           <div className="mt-8 space-y-3">
             {["Retorno rápido no horário comercial", "Orçamento antes de qualquer pagamento", "Dados tratados com sigilo"].map(
               (item) => (
@@ -609,7 +607,7 @@ function Footer() {
           <ul className="mt-4 space-y-2.5 text-sm text-primary-foreground/70">
             <li><a href="#o-que-e" className="hover:text-primary-foreground">O que é</a></li>
             <li><a href="#como-funciona" className="hover:text-primary-foreground">Como funciona</a></li>
-            <li><a href="#solicitar" className="hover:text-primary-foreground">Solicitar certidão</a></li>
+            <li><Link to="/solicitar" className="hover:text-primary-foreground">Solicitar certidão</Link></li>
             <li><a href="#faq" className="hover:text-primary-foreground">Perguntas frequentes</a></li>
           </ul>
         </div>
