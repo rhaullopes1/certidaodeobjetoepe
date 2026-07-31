@@ -164,5 +164,43 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
   }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+@utility surface-navy {
+  background:
+    radial-gradient(80% 120% at 15% 0%, color-mix(in oklab, var(--navy) 88%, white 12%), transparent 60%),
+    linear-gradient(160deg, var(--navy-deep), var(--navy));
+  color: var(--primary-foreground);
+}
+
+@utility card-premium {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 1px 2px oklch(0.28 0.075 262 / 6%), 0 18px 40px -28px oklch(0.28 0.075 262 / 35%);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+  &:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--gold) 45%, var(--border));
+    box-shadow: 0 24px 50px -30px oklch(0.28 0.075 262 / 45%);
+  }
+}
+
+@utility gold-rule {
+  height: 2px;
+  width: 3rem;
+  background: linear-gradient(90deg, var(--gold), transparent);
 }
