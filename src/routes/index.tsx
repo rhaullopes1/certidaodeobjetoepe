@@ -62,10 +62,6 @@ export const Route = createFileRoute("/")({
 const WPP_MAIN = whatsappLink(
   "Olá! Gostaria de solicitar uma Certidão de Objeto e Pé.",
 );
-const WPP_CONSULTA = whatsappLink(
-  "Olá! Gostaria de consultar a situação do meu processo.",
-);
-
 function Section({
   id,
   children,
@@ -462,13 +458,21 @@ function Formulario() {
         <div>
           <Eyebrow>Solicitação</Eyebrow>
           <h2 className="text-3xl font-bold sm:text-4xl">
-            Preencha os dados e receba seu atendimento
+            Solicite online e pague com Pix
           </h2>
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-            Após o envio, você é direcionado ao WhatsApp com os dados já
-            preenchidos. Se não souber o número do processo, deixe em branco —
-            nossa equipe ajuda a localizar.
+            Faça todo o pedido pelo site: informe o processo, gere o número de
+            protocolo e pague {PRECO_LABEL} por certidão via Pix (QR Code ou
+            copia e cola). Prefere falar antes? Use o formulário ao lado e nossa
+            equipe te atende pelo WhatsApp.
           </p>
+          <Link
+            to="/solicitar"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <FileText className="h-4 w-4" />
+            Iniciar solicitação online
+          </Link>
           <div className="mt-8 space-y-3">
             {["Retorno rápido no horário comercial", "Orçamento antes de qualquer pagamento", "Dados tratados com sigilo"].map(
               (item) => (
@@ -603,7 +607,7 @@ function Footer() {
           <ul className="mt-4 space-y-2.5 text-sm text-primary-foreground/70">
             <li><a href="#o-que-e" className="hover:text-primary-foreground">O que é</a></li>
             <li><a href="#como-funciona" className="hover:text-primary-foreground">Como funciona</a></li>
-            <li><a href="#solicitar" className="hover:text-primary-foreground">Solicitar certidão</a></li>
+            <li><Link to="/solicitar" className="hover:text-primary-foreground">Solicitar certidão</Link></li>
             <li><a href="#faq" className="hover:text-primary-foreground">Perguntas frequentes</a></li>
           </ul>
         </div>
