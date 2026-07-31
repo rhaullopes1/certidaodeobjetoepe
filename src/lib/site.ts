@@ -1,5 +1,8 @@
 export const WHATSAPP_NUMBER = "5511999999999";
 
+export const PHONE_DISPLAY = "0800 000 4604";
+export const PHONE_TEL = "tel:+558000004604";
+
 export const whatsappLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
