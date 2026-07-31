@@ -485,6 +485,13 @@ function Formulario() {
               ),
             )}
           </div>
+          <a
+            href={PHONE_TEL}
+            className="mt-8 inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+          >
+            <Phone className="h-4 w-4 text-accent" />
+            {PHONE_DISPLAY}
+          </a>
         </div>
 
         <div className="card-premium p-6 sm:p-8">
@@ -620,10 +627,17 @@ function Footer() {
             Contato
           </h3>
           <a
+            href={PHONE_TEL}
+            className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary-foreground/85 hover:text-primary-foreground"
+          >
+            <Phone className="h-4 w-4 text-gold" />
+            {PHONE_DISPLAY}
+          </a>
+          <a
             href={WPP_MAIN}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-primary-foreground/10"
+            className="mt-3 inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-primary-foreground/10"
           >
             <MessageCircle className="h-4 w-4" />
             Falar no WhatsApp
