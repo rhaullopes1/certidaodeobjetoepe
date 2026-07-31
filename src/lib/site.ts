@@ -1,5 +1,14 @@
 export const WHATSAPP_NUMBER = "558000004604";
 
+export const PRECO_CENTAVOS = 28800;
+export const PRECO_LABEL = "R$ 288,00";
+
+export const PIX = {
+  chave: "29125265000106",
+  nome: "BR BROKERS",
+  cidade: "BALNEARIO CAMBORIU",
+};
+
 export const PHONE_DISPLAY = "0800 000 4604";
 export const PHONE_TEL = "tel:+558000004604";
 
