@@ -17,7 +17,7 @@ import {
   Phone,
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
-import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
+import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, PRECO_LABEL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -150,16 +150,14 @@ function Header() {
           >
             Dúvidas
           </a>
-          <a
-            href={WPP_MAIN}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/solicitar"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
-            <MessageCircle className="h-4 w-4" />
-            <span className="hidden sm:inline">Solicitar</span>
-            <span className="sm:hidden">WhatsApp</span>
-          </a>
+            <FileText className="h-4 w-4" />
+            <span className="hidden sm:inline">Solicitar online</span>
+            <span className="sm:hidden">Solicitar</span>
+          </Link>
         </nav>
       </div>
     </header>
@@ -192,22 +190,20 @@ function Hero() {
               documento.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/solicitar"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
+              >
+                <FileText className="h-4.5 w-4.5" />
+                Solicitar e pagar online — {PRECO_LABEL}
+              </Link>
               <a
                 href={WPP_MAIN}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
-              >
-                <MessageCircle className="h-4.5 w-4.5" />
-                Solicitar Certidão pelo WhatsApp
-              </a>
-              <a
-                href={WPP_CONSULTA}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-primary-foreground/25 px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
               >
-                Consultar meu processo
+                Tirar dúvidas no WhatsApp
               </a>
             </div>
             <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -409,15 +405,13 @@ function Urgencia() {
           Evite perder tempo tentando descobrir qual tribunal procurar. Nossa
           equipe auxilia em todas as etapas.
         </p>
-        <a
-          href={WPP_MAIN}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/solicitar"
           className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-gold px-8 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
         >
-          <MessageCircle className="h-4.5 w-4.5" />
-          Solicitar agora
-        </a>
+          <FileText className="h-4.5 w-4.5" />
+          Solicitar agora — {PRECO_LABEL}
+        </Link>
       </div>
     </Section>
   );
