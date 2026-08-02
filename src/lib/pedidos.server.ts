@@ -15,6 +15,8 @@ export type PedidoResumo = {
   status: string;
   criadoEm: string;
   pixCopiaECola: string;
+  pixQrCodeUrl: string | null;
+  pagoEm: string | null;
 };
 
 function novoProtocolo() {
@@ -44,6 +46,9 @@ function montar(row: {
   valor_centavos: number;
   status: string;
   created_at: string;
+  pix_codigo?: string | null;
+  pix_qrcode_url?: string | null;
+  pago_em?: string | null;
 }): PedidoResumo {
   return {
     protocolo: row.protocolo,
@@ -57,7 +62,11 @@ function montar(row: {
     valorCentavos: row.valor_centavos,
     status: row.status,
     criadoEm: row.created_at,
-    pixCopiaECola: gerarPixCopiaECola({
+    pixQrCodeUrl: row.pix_qrcode_url ?? null,
+    pagoEm: row.pago_em ?? null,
+    pixCopiaECola:
+      row.pix_codigo ??
+      gerarPixCopiaECola({
       chave: PIX.chave,
       nome: PIX.nome,
       cidade: PIX.cidade,
@@ -93,7 +102,40 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     throw new Error("Não foi possível registrar seu pedido. Tente novamente.");
   }
 
-  return montar(row);
+  return montar(await gerarCobranca(row));
+}
+
+type PedidoRow = Parameters<typeof montar>[0] & { pagbank_order_id?: string | null };
+
+/** Cria a cobrança Pix dinâmica no PagBank e grava no pedido. Em caso de falha, mantém o Pix estático. */
+async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
+  if (row.pix_codigo || !process.env["PAGBANK_TOKEN"]) return row;
+  try {
+    const { criarCobrancaPix } = await import("./pagbank.server");
+    const cobranca = await criarCobrancaPix({
+      protocolo: row.protocolo,
+      email: row.email,
+      cpf: row.cpf,
+      whatsapp: row.whatsapp,
+      valorCentavos: row.valor_centavos,
+    });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: atualizado } = await supabaseAdmin
+      .from("pedidos")
+      .update({
+        pagbank_order_id: cobranca.orderId,
+        pix_codigo: cobranca.codigo,
+        pix_qrcode_url: cobranca.qrCodeUrl,
+        pix_expira_em: cobranca.expiraEm,
+      })
+      .eq("protocolo", row.protocolo)
+      .select("*")
+      .maybeSingle();
+    return (atualizado as PedidoRow) ?? row;
+  } catch (e) {
+    console.error("Falha ao criar cobrança Pix no PagBank", e);
+    return row;
+  }
 }
 
 export async function buscarPedidoPorProtocolo(protocolo: string): Promise<PedidoResumo | null> {
@@ -109,5 +151,41 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
     console.error("Falha ao buscar pedido", error);
     throw new Error("Não foi possível consultar o pedido.");
   }
-  return row ? montar(row) : null;
+  if (!row) return null;
+
+  let atual = row as PedidoRow;
+
+  // Garante que existe cobrança Pix (pedidos criados antes da integração).
+  if (atual.status === "aguardando_pagamento") {
+    atual = await gerarCobranca(atual);
+    atual = await sincronizarPagamento(atual);
+  }
+
+  return montar(atual);
+}
+
+/** Confere o status direto no PagBank — rede de segurança caso o webhook falhe. */
+async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
+  if (!row.pagbank_order_id || !process.env["PAGBANK_TOKEN"]) return row;
+  try {
+    const { consultarCobranca } = await import("./pagbank.server");
+    const situacao = await consultarCobranca(row.pagbank_order_id);
+    if (!situacao.pago && !situacao.cancelado) return row;
+
+    const patch = situacao.pago
+      ? { status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() }
+      : { status: "cancelado" };
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: atualizado } = await supabaseAdmin
+      .from("pedidos")
+      .update(patch)
+      .eq("protocolo", row.protocolo)
+      .select("*")
+      .maybeSingle();
+    return (atualizado as PedidoRow) ?? { ...row, ...patch };
+  } catch (e) {
+    console.error("Falha ao sincronizar pagamento", e);
+    return row;
+  }
 }

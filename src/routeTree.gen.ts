@@ -14,6 +14,7 @@ import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
+import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,12 @@ const PedidoProtocoloRoute = PedidoProtocoloRouteImport.update({
   path: '/pedido/$protocolo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWebhooksPagbankRoute =
+  ApiPublicWebhooksPagbankRouteImport.update({
+    id: '/api/public/webhooks/pagbank',
+    path: '/api/public/webhooks/pagbank',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +54,7 @@ export interface FileRoutesByFullPath {
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +62,7 @@ export interface FileRoutesByTo {
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,6 +71,7 @@ export interface FileRoutesById {
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,6 +81,7 @@ export interface FileRouteTypes {
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/api/public/webhooks/pagbank'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -78,6 +89,7 @@ export interface FileRouteTypes {
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/api/public/webhooks/pagbank'
   id:
     | '__root__'
     | '/'
@@ -85,6 +97,7 @@ export interface FileRouteTypes {
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/api/public/webhooks/pagbank'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,6 +106,7 @@ export interface RootRouteChildren {
   SolicitarRoute: typeof SolicitarRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
+  ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -132,6 +146,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PedidoProtocoloRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/pagbank': {
+      id: '/api/public/webhooks/pagbank'
+      path: '/api/public/webhooks/pagbank'
+      fullPath: '/api/public/webhooks/pagbank'
+      preLoaderRoute: typeof ApiPublicWebhooksPagbankRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -141,6 +162,7 @@ const rootRouteChildren: RootRouteChildren = {
   SolicitarRoute: SolicitarRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
+  ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
