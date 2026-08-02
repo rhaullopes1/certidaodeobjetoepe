@@ -151,6 +151,33 @@ function PedidoPage() {
             })()}
 
             <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1fr]">
+              {data.status === "pago" ? (
+                <section className="card-premium p-6 sm:p-8">
+                  <h2 className="text-lg font-bold">Pagamento confirmado</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Recebemos {PRECO_LABEL} referente ao protocolo {data.protocolo}
+                    {data.pagoEm
+                      ? ` em ${new Date(data.pagoEm).toLocaleString("pt-BR")}`
+                      : ""}
+                    . Sua solicitação já foi encaminhada ao tribunal e você será avisado a cada
+                    etapa.
+                  </p>
+                  <div className="mt-6 grid place-items-center rounded-2xl bg-accent/10 p-8 text-accent-foreground">
+                    <Check className="h-12 w-12" />
+                  </div>
+                  <a
+                    href={whatsappLink(
+                      `Olá! Meu pagamento do protocolo ${data.protocolo} foi confirmado. Gostaria de acompanhar o andamento.`,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+                  >
+                    <MessageCircle className="h-4 w-4 text-accent" />
+                    Falar com a equipe
+                  </a>
+                </section>
+              ) : (
               <section className="card-premium p-6 sm:p-8">
                 <h2 className="text-lg font-bold">Resumo do pedido</h2>
                 <div className="mt-4">
@@ -217,8 +244,8 @@ function PedidoPage() {
                 </button>
 
                 <p className="mt-4 text-xs text-muted-foreground">
-                  Recebedor: {PIX.nome} — {PIX.cidade}. Após pagar, envie o comprovante pelo
-                  WhatsApp informando o protocolo para iniciarmos a solicitação.
+                  Recebedor: {PIX.nome} — {PIX.cidade}. A confirmação é automática: assim que o
+                  Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos.
                 </p>
 
                 <a
@@ -230,9 +257,10 @@ function PedidoPage() {
                   className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
                 >
                   <MessageCircle className="h-4 w-4 text-accent" />
-                  Enviar comprovante pelo WhatsApp
+                  Falar pelo WhatsApp
                 </a>
               </section>
+              )}
             </div>
           </>
         )}
