@@ -15,8 +15,6 @@ export const PHONE_TEL = "tel:+558000004604";
 export const whatsappLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
-export const ESTADOS = [
-
 export const STATUS_PEDIDO: Record<
   string,
   { label: string; descricao: string; tom: "pendente" | "pago" | "cancelado" }
@@ -45,7 +43,7 @@ export const statusPedido = (status: string) =>
     tom: "pendente" as const,
   };
 
-const ESTADOS_LISTA = [
+export const ESTADOS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO",
 ];
 
