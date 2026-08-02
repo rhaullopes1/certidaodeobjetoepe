@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { ArrowLeft, Copy, Check, Loader2, MessageCircle, Scale, FileText } from "lucide-react";
 import { consultarPedido } from "@/lib/pedidos.functions";
-import { whatsappLink, PRECO_LABEL, PIX } from "@/lib/site";
+import { whatsappLink, PRECO_LABEL, PIX, statusPedido } from "@/lib/site";
 
 export const Route = createFileRoute("/pedido/$protocolo")({
   component: PedidoPage,
@@ -44,6 +44,8 @@ function PedidoPage() {
   const { data, isPending, isError } = useQuery({
     queryKey: ["pedido", protocolo],
     queryFn: () => buscar({ data: { protocolo } }),
+    refetchInterval: 10_000,
+    refetchOnWindowFocus: true,
   });
 
   const [qr, setQr] = useState<string | null>(null);
@@ -120,6 +122,33 @@ function PedidoPage() {
             <p className="mt-3 text-sm text-muted-foreground">
               Guarde este número. O pedido é enviado ao tribunal após a confirmação do pagamento.
             </p>
+
+            {(() => {
+              const st = statusPedido(data.status);
+              const cores =
+                st.tom === "pago"
+                  ? "border-accent/40 bg-accent/10 text-accent-foreground"
+                  : st.tom === "cancelado"
+                    ? "border-destructive/30 bg-destructive/10 text-destructive"
+                    : "border-border bg-secondary text-foreground";
+              return (
+                <div className={`mt-6 flex flex-wrap items-center gap-3 rounded-2xl border px-5 py-4 ${cores}`}>
+                  <span className="relative flex h-2.5 w-2.5">
+                    {st.tom === "pendente" && (
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-60" />
+                    )}
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-current" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-bold">{st.label}</p>
+                    <p className="text-xs opacity-80">{st.descricao}</p>
+                  </div>
+                  <span className="ml-auto text-[11px] uppercase tracking-[0.14em] opacity-70">
+                    Atualiza automaticamente
+                  </span>
+                </div>
+              );
+            })()}
 
             <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1fr]">
               <section className="card-premium p-6 sm:p-8">

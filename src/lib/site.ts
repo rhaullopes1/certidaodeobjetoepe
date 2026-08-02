@@ -15,6 +15,34 @@ export const PHONE_TEL = "tel:+558000004604";
 export const whatsappLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
+export const STATUS_PEDIDO: Record<
+  string,
+  { label: string; descricao: string; tom: "pendente" | "pago" | "cancelado" }
+> = {
+  aguardando_pagamento: {
+    label: "Pagamento pendente",
+    descricao: "Estamos aguardando a confirmação do seu pagamento.",
+    tom: "pendente",
+  },
+  pago: {
+    label: "Pagamento confirmado",
+    descricao: "Pagamento confirmado. Seu pedido foi enviado ao tribunal.",
+    tom: "pago",
+  },
+  cancelado: {
+    label: "Pedido cancelado",
+    descricao: "Este pedido foi cancelado. Fale conosco pelo WhatsApp se precisar retomar.",
+    tom: "cancelado",
+  },
+};
+
+export const statusPedido = (status: string) =>
+  STATUS_PEDIDO[status] ?? {
+    label: status,
+    descricao: "Status do pedido em atualização.",
+    tom: "pendente" as const,
+  };
+
 export const ESTADOS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO",
 ];
