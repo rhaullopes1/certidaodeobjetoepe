@@ -151,6 +151,31 @@ function PedidoPage() {
             })()}
 
             <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1fr]">
+              <section className="card-premium p-6 sm:p-8">
+                <h2 className="text-lg font-bold">Resumo do pedido</h2>
+                <div className="mt-4">
+                  <Linha label="Serviço" valor="Certidão de Objeto e Pé" />
+                  <Linha label="Processo" valor={data.numeroProcesso} />
+                  <Linha label="Estado" valor={data.uf} />
+                  <Linha label="Cidade" valor={data.cidade} />
+                  <Linha label="CPF" valor={data.cpf} />
+                  <Linha label="E-mail" valor={data.email} />
+                  <Linha label="WhatsApp" valor={data.whatsapp} />
+                  <Linha
+                    label="Total"
+                    valor={(data.valorCentavos / 100).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  />
+                </div>
+                {data.observacoes && (
+                  <p className="mt-4 rounded-xl bg-secondary px-4 py-3 text-sm text-muted-foreground">
+                    {data.observacoes}
+                  </p>
+                )}
+              </section>
+
               {data.status === "pago" ? (
                 <section className="card-premium p-6 sm:p-8">
                   <h2 className="text-lg font-bold">Pagamento confirmado</h2>
@@ -178,31 +203,6 @@ function PedidoPage() {
                   </a>
                 </section>
               ) : (
-              <section className="card-premium p-6 sm:p-8">
-                <h2 className="text-lg font-bold">Resumo do pedido</h2>
-                <div className="mt-4">
-                  <Linha label="Serviço" valor="Certidão de Objeto e Pé" />
-                  <Linha label="Processo" valor={data.numeroProcesso} />
-                  <Linha label="Estado" valor={data.uf} />
-                  <Linha label="Cidade" valor={data.cidade} />
-                  <Linha label="CPF" valor={data.cpf} />
-                  <Linha label="E-mail" valor={data.email} />
-                  <Linha label="WhatsApp" valor={data.whatsapp} />
-                  <Linha
-                    label="Total"
-                    valor={(data.valorCentavos / 100).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  />
-                </div>
-                {data.observacoes && (
-                  <p className="mt-4 rounded-xl bg-secondary px-4 py-3 text-sm text-muted-foreground">
-                    {data.observacoes}
-                  </p>
-                )}
-              </section>
-
               <section className="card-premium p-6 sm:p-8">
                 <h2 className="text-lg font-bold">Pagamento via Pix — {PRECO_LABEL}</h2>
                 <p className="mt-2 text-sm text-muted-foreground">
