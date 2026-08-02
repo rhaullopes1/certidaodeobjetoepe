@@ -23,6 +23,11 @@ export type Database = {
           id: string
           numero_processo: string
           observacoes: string | null
+          pagbank_order_id: string | null
+          pago_em: string | null
+          pix_codigo: string | null
+          pix_expira_em: string | null
+          pix_qrcode_url: string | null
           protocolo: string
           status: string
           uf: string
@@ -38,6 +43,11 @@ export type Database = {
           id?: string
           numero_processo: string
           observacoes?: string | null
+          pagbank_order_id?: string | null
+          pago_em?: string | null
+          pix_codigo?: string | null
+          pix_expira_em?: string | null
+          pix_qrcode_url?: string | null
           protocolo: string
           status?: string
           uf: string
@@ -53,6 +63,11 @@ export type Database = {
           id?: string
           numero_processo?: string
           observacoes?: string | null
+          pagbank_order_id?: string | null
+          pago_em?: string | null
+          pix_codigo?: string | null
+          pix_expira_em?: string | null
+          pix_qrcode_url?: string | null
           protocolo?: string
           status?: string
           uf?: string
