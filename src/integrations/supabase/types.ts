@@ -14,6 +14,85 @@ export type Database = {
   }
   public: {
     Tables: {
+      pedido_andamentos: {
+        Row: {
+          autor_id: string | null
+          created_at: string
+          id: string
+          observacao: string | null
+          pedido_id: string
+          status: string
+        }
+        Insert: {
+          autor_id?: string | null
+          created_at?: string
+          id?: string
+          observacao?: string | null
+          pedido_id: string
+          status: string
+        }
+        Update: {
+          autor_id?: string | null
+          created_at?: string
+          id?: string
+          observacao?: string | null
+          pedido_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedido_andamentos_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pedido_anexos: {
+        Row: {
+          autor_id: string | null
+          caminho: string
+          content_type: string | null
+          created_at: string
+          id: string
+          nome_arquivo: string
+          pedido_id: string
+          tamanho_bytes: number | null
+          tipo: string
+        }
+        Insert: {
+          autor_id?: string | null
+          caminho: string
+          content_type?: string | null
+          created_at?: string
+          id?: string
+          nome_arquivo: string
+          pedido_id: string
+          tamanho_bytes?: number | null
+          tipo?: string
+        }
+        Update: {
+          autor_id?: string | null
+          caminho?: string
+          content_type?: string | null
+          created_at?: string
+          id?: string
+          nome_arquivo?: string
+          pedido_id?: string
+          tamanho_bytes?: number | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedido_anexos_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pedidos: {
         Row: {
           cidade: string
@@ -77,15 +156,43 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "equipe"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -212,6 +319,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "equipe"],
+    },
   },
 } as const

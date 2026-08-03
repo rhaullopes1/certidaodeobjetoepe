@@ -10,15 +10,28 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
@@ -41,6 +54,17 @@ const PedidoProtocoloRoute = PedidoProtocoloRouteImport.update({
   path: '/pedido/$protocolo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminProtocoloRoute =
+  AuthenticatedAdminProtocoloRouteImport.update({
+    id: '/admin/$protocolo',
+    path: '/admin/$protocolo',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicWebhooksPagbankRoute =
   ApiPublicWebhooksPagbankRouteImport.update({
     id: '/api/public/webhooks/pagbank',
@@ -50,58 +74,80 @@ const ApiPublicWebhooksPagbankRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/politica-de-privacidade'
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/admin/$protocolo'
+    | '/admin/'
     | '/api/public/webhooks/pagbank'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/politica-de-privacidade'
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/admin/$protocolo'
+    | '/admin'
     | '/api/public/webhooks/pagbank'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/politica-de-privacidade'
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/_authenticated/admin/$protocolo'
+    | '/_authenticated/admin/'
     | '/api/public/webhooks/pagbank'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SolicitarRoute: typeof SolicitarRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
@@ -116,6 +162,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-de-privacidade': {
@@ -146,6 +206,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PedidoProtocoloRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/$protocolo': {
+      id: '/_authenticated/admin/$protocolo'
+      path: '/admin/$protocolo'
+      fullPath: '/admin/$protocolo'
+      preLoaderRoute: typeof AuthenticatedAdminProtocoloRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/webhooks/pagbank': {
       id: '/api/public/webhooks/pagbank'
       path: '/api/public/webhooks/pagbank'
@@ -156,8 +230,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SolicitarRoute: SolicitarRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
