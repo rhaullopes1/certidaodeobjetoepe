@@ -29,12 +29,37 @@ export const STATUS_PEDIDO: Record<
     descricao: "Pagamento confirmado. Seu pedido foi enviado ao tribunal.",
     tom: "pago",
   },
+  em_analise: {
+    label: "Em análise",
+    descricao: "Nossa equipe está conferindo os dados do processo informado.",
+    tom: "pendente",
+  },
+  protocolado: {
+    label: "Protocolado no tribunal",
+    descricao: "O pedido da certidão foi protocolado junto ao tribunal responsável.",
+    tom: "pendente",
+  },
+  emitida: {
+    label: "Certidão emitida",
+    descricao: "A certidão foi emitida e enviada para o seu e-mail e WhatsApp.",
+    tom: "pago",
+  },
   cancelado: {
     label: "Pedido cancelado",
     descricao: "Este pedido foi cancelado. Fale conosco pelo WhatsApp se precisar retomar.",
     tom: "cancelado",
   },
 };
+
+/** Etapas que a equipe pode aplicar no painel administrativo, na ordem do fluxo. */
+export const FLUXO_STATUS = [
+  "aguardando_pagamento",
+  "pago",
+  "em_analise",
+  "protocolado",
+  "emitida",
+  "cancelado",
+] as const;
 
 export const statusPedido = (status: string) =>
   STATUS_PEDIDO[status] ?? {
