@@ -17,6 +17,7 @@ import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 
 const IndexRoute = IndexRouteImport.update({
@@ -58,6 +59,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminProtocoloRoute =
+  AuthenticatedAdminProtocoloRouteImport.update({
+    id: '/admin/$protocolo',
+    path: '/admin/$protocolo',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicWebhooksPagbankRoute =
   ApiPublicWebhooksPagbankRouteImport.update({
     id: '/api/public/webhooks/pagbank',
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
@@ -94,6 +103,7 @@ export interface FileRoutesById {
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/admin/$protocolo'
     | '/admin/'
     | '/api/public/webhooks/pagbank'
   fileRoutesByTo: FileRoutesByTo
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/admin/$protocolo'
     | '/admin'
     | '/api/public/webhooks/pagbank'
   id:
@@ -127,6 +139,7 @@ export interface FileRouteTypes {
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
+    | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/'
     | '/api/public/webhooks/pagbank'
   fileRoutesById: FileRoutesById
@@ -200,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/$protocolo': {
+      id: '/_authenticated/admin/$protocolo'
+      path: '/admin/$protocolo'
+      fullPath: '/admin/$protocolo'
+      preLoaderRoute: typeof AuthenticatedAdminProtocoloRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/webhooks/pagbank': {
       id: '/api/public/webhooks/pagbank'
       path: '/api/public/webhooks/pagbank'
@@ -211,10 +231,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
