@@ -18,6 +18,8 @@ import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
+import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
+import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,6 +67,18 @@ const AuthenticatedAdminProtocoloRoute =
     path: '/admin/$protocolo',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminDocumentosRoute =
+  AuthenticatedAdminDocumentosRouteImport.update({
+    id: '/admin/documentos',
+    path: '/admin/documentos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminHistoricoRoute =
+  AuthenticatedAdminHistoricoRouteImport.update({
+    id: '/admin/historico',
+    path: '/admin/historico',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicWebhooksPagbankRoute =
   ApiPublicWebhooksPagbankRouteImport.update({
     id: '/api/public/webhooks/pagbank',
@@ -80,6 +94,8 @@ export interface FileRoutesByFullPath {
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
+  '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
@@ -91,6 +107,8 @@ export interface FileRoutesByTo {
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
+  '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
@@ -104,6 +122,8 @@ export interface FileRoutesById {
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
+  '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
 }
@@ -117,6 +137,8 @@ export interface FileRouteTypes {
     | '/termos-de-uso'
     | '/pedido/$protocolo'
     | '/admin/$protocolo'
+    | '/admin/documentos'
+    | '/admin/historico'
     | '/admin/'
     | '/api/public/webhooks/pagbank'
   fileRoutesByTo: FileRoutesByTo
@@ -128,6 +150,8 @@ export interface FileRouteTypes {
     | '/termos-de-uso'
     | '/pedido/$protocolo'
     | '/admin/$protocolo'
+    | '/admin/documentos'
+    | '/admin/historico'
     | '/admin'
     | '/api/public/webhooks/pagbank'
   id:
@@ -140,6 +164,8 @@ export interface FileRouteTypes {
     | '/termos-de-uso'
     | '/pedido/$protocolo'
     | '/_authenticated/admin/$protocolo'
+    | '/_authenticated/admin/documentos'
+    | '/_authenticated/admin/historico'
     | '/_authenticated/admin/'
     | '/api/public/webhooks/pagbank'
   fileRoutesById: FileRoutesById
@@ -220,6 +246,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProtocoloRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/documentos': {
+      id: '/_authenticated/admin/documentos'
+      path: '/admin/documentos'
+      fullPath: '/admin/documentos'
+      preLoaderRoute: typeof AuthenticatedAdminDocumentosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/historico': {
+      id: '/_authenticated/admin/historico'
+      path: '/admin/historico'
+      fullPath: '/admin/historico'
+      preLoaderRoute: typeof AuthenticatedAdminHistoricoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/webhooks/pagbank': {
       id: '/api/public/webhooks/pagbank'
       path: '/api/public/webhooks/pagbank'
@@ -232,11 +272,15 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
+  AuthenticatedAdminDocumentosRoute: typeof AuthenticatedAdminDocumentosRoute
+  AuthenticatedAdminHistoricoRoute: typeof AuthenticatedAdminHistoricoRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
+  AuthenticatedAdminDocumentosRoute: AuthenticatedAdminDocumentosRoute,
+  AuthenticatedAdminHistoricoRoute: AuthenticatedAdminHistoricoRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
