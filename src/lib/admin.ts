@@ -31,6 +31,46 @@ export async function souEquipe() {
   return (papeis ?? []).length > 0;
 }
 
+export type HistoricoItem = {
+  id: string;
+  status: string;
+  observacao: string | null;
+  created_at: string;
+  pedidos: { protocolo: string; numero_processo: string } | null;
+};
+
+export async function historicoGeral(): Promise<HistoricoItem[]> {
+  const { data, error } = await supabase
+    .from("pedido_andamentos")
+    .select("id, status, observacao, created_at, pedidos(protocolo, numero_processo)")
+    .order("created_at", { ascending: false })
+    .limit(200)
+    .returns<HistoricoItem[]>();
+  if (error) throw error;
+  return data ?? [];
+}
+
+export type DocumentoItem = {
+  id: string;
+  tipo: string;
+  nome_arquivo: string;
+  caminho: string;
+  tamanho_bytes: number | null;
+  created_at: string;
+  pedidos: { protocolo: string } | null;
+};
+
+export async function documentosGerais(): Promise<DocumentoItem[]> {
+  const { data, error } = await supabase
+    .from("pedido_anexos")
+    .select("id, tipo, nome_arquivo, caminho, tamanho_bytes, created_at, pedidos(protocolo)")
+    .order("created_at", { ascending: false })
+    .limit(200)
+    .returns<DocumentoItem[]>();
+  if (error) throw error;
+  return data ?? [];
+}
+
 export async function listarPedidos(f: Filtros): Promise<PedidoAdmin[]> {
   let query = supabase
     .from("pedidos")

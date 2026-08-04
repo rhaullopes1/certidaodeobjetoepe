@@ -41,6 +41,30 @@ export function AdminHeader() {
           </span>
           <span className="font-display text-sm font-bold">Painel administrativo</span>
         </Link>
+        <nav className="flex items-center gap-5 text-sm">
+          <Link
+            to="/admin"
+            activeOptions={{ exact: true }}
+            activeProps={{ className: "text-primary-foreground font-semibold" }}
+            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
+          >
+            Pedidos
+          </Link>
+          <Link
+            to="/admin/historico"
+            activeProps={{ className: "text-primary-foreground font-semibold" }}
+            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
+          >
+            Histórico
+          </Link>
+          <Link
+            to="/admin/documentos"
+            activeProps={{ className: "text-primary-foreground font-semibold" }}
+            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
+          >
+            Documentos
+          </Link>
+        </nav>
         <button
           onClick={sair}
           className="inline-flex items-center gap-2 text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground"

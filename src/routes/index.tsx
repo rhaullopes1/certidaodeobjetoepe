@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
 import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, PRECO_LABEL } from "@/lib/site";
+import { UserMenu } from "@/components/user-menu";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -154,6 +155,7 @@ function Header() {
             <span className="hidden sm:inline">Solicitar online</span>
             <span className="sm:hidden">Solicitar</span>
           </Link>
+          <UserMenu />
         </nav>
       </div>
     </header>
