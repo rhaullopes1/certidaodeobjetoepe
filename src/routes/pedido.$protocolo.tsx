@@ -244,8 +244,10 @@ function PedidoPage() {
                 </button>
 
                 <p className="mt-4 text-xs text-muted-foreground">
-                  Recebedor: {PIX.nome} — {PIX.cidade}. A confirmação é automática: assim que o
-                  Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos.
+                  Recebedor: {PIX.nome} — {PIX.cidade}.{" "}
+                  {data.confirmacaoAutomatica
+                    ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
+                    : "Após pagar, envie o comprovante pelo WhatsApp para que nossa equipe confirme o pedido."}
                 </p>
 
                 <a
