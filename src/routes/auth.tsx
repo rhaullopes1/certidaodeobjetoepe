@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2, Scale, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -30,12 +31,38 @@ function AuthPage() {
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
+  const [carregandoGoogle, setCarregandoGoogle] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/admin", replace: true });
     });
   }, [navigate]);
+
+  async function entrarComGoogle() {
+    setErro(null);
+    setAviso(null);
+    setCarregandoGoogle(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        setErro(
+          result.error instanceof Error
+            ? result.error.message
+            : "Não foi possível entrar com o Google.",
+        );
+        return;
+      }
+      if (result.redirected) return;
+      navigate({ to: "/admin", replace: true });
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : "Não foi possível entrar com o Google.");
+    } finally {
+      setCarregandoGoogle(false);
+    }
+  }
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
@@ -85,6 +112,43 @@ function AuthPage() {
           </p>
 
           <form onSubmit={enviar} className="mt-7 space-y-4">
+            <button
+              type="button"
+              onClick={entrarComGoogle}
+              disabled={carregandoGoogle || carregando}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-input bg-background px-5 py-3 text-sm font-bold text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
+            >
+              {carregandoGoogle ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill="#4285F4"
+                    d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.46a5.53 5.53 0 0 1-2.4 3.63v3.01h3.88c2.27-2.09 3.58-5.17 3.58-8.83Z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.96-1.08 7.94-2.9l-3.88-3.01c-1.08.72-2.45 1.15-4.06 1.15-3.12 0-5.77-2.11-6.72-4.95H1.28v3.11A12 12 0 0 0 12 24Z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.28 14.29a7.2 7.2 0 0 1 0-4.58V6.6H1.28a12 12 0 0 0 0 10.8l4-3.11Z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.75c1.76 0 3.34.61 4.59 1.8l3.44-3.44C17.95 1.19 15.23 0 12 0A12 12 0 0 0 1.28 6.6l4 3.11C6.23 6.86 8.88 4.75 12 4.75Z"
+                  />
+                </svg>
+              )}
+              Entrar com Google
+            </button>
+
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="h-px flex-1 bg-border" />
+              ou use seu e-mail
+              <span className="h-px flex-1 bg-border" />
+            </div>
+
             <div>
               <label htmlFor="email" className="text-sm font-semibold">
                 E-mail
