@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { ArrowLeft, Copy, Check, Loader2, MessageCircle, Scale, FileText } from "lucide-react";
 import { consultarPedido } from "@/lib/pedidos.functions";
-import { whatsappLink, PRECO_LABEL, PIX, statusPedido } from "@/lib/site";
+import { whatsappLink, PIX, statusPedido, formatarBRL } from "@/lib/site";
 
 export const Route = createFileRoute("/pedido/$protocolo")({
   component: PedidoPage,
@@ -156,18 +156,15 @@ function PedidoPage() {
                 <div className="mt-4">
                   <Linha label="Serviço" valor="Certidão de Objeto e Pé" />
                   <Linha label="Processo" valor={data.numeroProcesso} />
-                  <Linha label="Estado" valor={data.uf} />
-                  <Linha label="Cidade" valor={data.cidade} />
+                  {data.nomeParte && <Linha label="Parte envolvida" valor={data.nomeParte} />}
                   <Linha label="CPF" valor={data.cpf} />
+                  <Linha
+                    label="Certidões"
+                    valor={`${data.quantidade} ${data.quantidade > 1 ? "certidões" : "certidão"}`}
+                  />
                   <Linha label="E-mail" valor={data.email} />
                   <Linha label="WhatsApp" valor={data.whatsapp} />
-                  <Linha
-                    label="Total"
-                    valor={(data.valorCentavos / 100).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  />
+                  <Linha label="Total" valor={formatarBRL(data.valorCentavos)} />
                 </div>
                 {data.observacoes && (
                   <p className="mt-4 rounded-xl bg-secondary px-4 py-3 text-sm text-muted-foreground">
@@ -180,7 +177,8 @@ function PedidoPage() {
                 <section className="card-premium p-6 sm:p-8">
                   <h2 className="text-lg font-bold">Pagamento confirmado</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Recebemos {PRECO_LABEL} referente ao protocolo {data.protocolo}
+                    Recebemos {formatarBRL(data.valorCentavos)} referente ao protocolo{" "}
+                    {data.protocolo}
                     {data.pagoEm
                       ? ` em ${new Date(data.pagoEm).toLocaleString("pt-BR")}`
                       : ""}
@@ -204,7 +202,9 @@ function PedidoPage() {
                 </section>
               ) : (
               <section className="card-premium p-6 sm:p-8">
-                <h2 className="text-lg font-bold">Pagamento via Pix — {PRECO_LABEL}</h2>
+                <h2 className="text-lg font-bold">
+                  Pagamento via Pix — {formatarBRL(data.valorCentavos)}
+                </h2>
                 <p className="mt-2 text-sm text-muted-foreground">
                   Escaneie o QR Code no app do seu banco ou use o código copia e cola.
                 </p>
@@ -215,7 +215,7 @@ function PedidoPage() {
                       src={qr}
                       width={240}
                       height={240}
-                      alt={`QR Code Pix de ${PRECO_LABEL} para o protocolo ${data.protocolo}`}
+                      alt={`QR Code Pix para o protocolo ${data.protocolo}`}
                       className="h-60 w-60"
                     />
                   ) : (
