@@ -216,7 +216,7 @@ function AdminLista() {
                     <tr>
                       <th className="px-5 py-4">Protocolo</th>
                       <th className="px-5 py-4">Processo</th>
-                      <th className="px-5 py-4">UF / Cidade</th>
+                      <th className="px-5 py-4">Parte envolvida</th>
                       <th className="px-5 py-4">CPF</th>
                       <th className="px-5 py-4">Situação</th>
                       <th className="px-5 py-4">Criado em</th>
@@ -235,9 +235,7 @@ function AdminLista() {
                           </Link>
                         </td>
                         <td className="px-5 py-4">{p.numero_processo}</td>
-                        <td className="px-5 py-4">
-                          {p.uf} — {p.cidade}
-                        </td>
+                        <td className="px-5 py-4">{p.nome_parte ?? "—"}</td>
                         <td className="px-5 py-4">{p.cpf}</td>
                         <td className="px-5 py-4">
                           <Badge status={p.status} />

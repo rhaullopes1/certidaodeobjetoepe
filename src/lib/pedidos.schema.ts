@@ -20,9 +20,14 @@ export const pedidoSchema = z.object({
     .trim()
     .min(10, "Informe o número do processo")
     .max(40, "Número do processo muito longo"),
-  uf: z.string().trim().length(2, "Selecione o estado"),
-  cidade: z.string().trim().min(2, "Informe a cidade").max(80),
+  nomeParte: z
+    .string()
+    .trim()
+    .min(5, "Informe o nome completo da parte envolvida")
+    .max(120, "Nome muito longo")
+    .refine((v) => v.split(/\s+/).length >= 2, "Informe o nome completo"),
   cpf: z.string().trim().refine(cpfValido, "CPF inválido"),
+  quantidade: z.coerce.number().int().min(1).max(5),
   email: z.string().trim().email("E-mail inválido").max(255),
   whatsapp: z
     .string()
@@ -30,5 +35,14 @@ export const pedidoSchema = z.object({
     .refine((v) => soDigitos(v).length >= 10 && soDigitos(v).length <= 13, "WhatsApp inválido"),
   observacoes: z.string().trim().max(1000).optional().or(z.literal("")),
 });
+
+/** Primeira etapa: dados do processo, antes de exibir o valor. */
+export const etapaProcessoSchema = pedidoSchema.pick({
+  numeroProcesso: true,
+  nomeParte: true,
+  cpf: true,
+});
+
+export type EtapaProcessoInput = z.infer<typeof etapaProcessoSchema>;
 
 export type PedidoInput = z.infer<typeof pedidoSchema>;

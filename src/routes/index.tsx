@@ -17,7 +17,7 @@ import {
   Phone,
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
-import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, PRECO_LABEL } from "@/lib/site";
+import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { UserMenu } from "@/components/user-menu";
 
 export const Route = createFileRoute("/")({
@@ -193,7 +193,7 @@ function Hero() {
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
               >
                 <FileText className="h-4.5 w-4.5" />
-                Solicitar e pagar online — {PRECO_LABEL}
+                Solicitar online
               </Link>
               <a
                 href={WPP_MAIN}
@@ -408,7 +408,7 @@ function Urgencia() {
           className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-gold px-8 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
         >
           <FileText className="h-4.5 w-4.5" />
-          Solicitar agora — {PRECO_LABEL}
+          Solicitar agora
         </Link>
       </div>
     </Section>
@@ -464,8 +464,8 @@ function Formulario() {
           </h2>
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             Faça todo o pedido pelo site: informe o processo, gere o número de
-            protocolo e pague {PRECO_LABEL} por certidão via Pix (QR Code ou
-            copia e cola). Prefere falar antes? Use o formulário ao lado e nossa
+            protocolo e o valor da certidão, e pague via Pix (QR Code ou copia e
+            cola). Prefere falar antes? Use o formulário ao lado e nossa
             equipe te atende pelo WhatsApp.
           </p>
           <Link

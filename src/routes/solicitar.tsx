@@ -2,19 +2,19 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState, type FormEvent } from "react";
 import { ArrowLeft, Loader2, ShieldCheck, CheckCircle2, Scale } from "lucide-react";
-import { ESTADOS, PRECO_LABEL } from "@/lib/site";
-import { pedidoSchema } from "@/lib/pedidos.schema";
+import { TABELA_PRECOS, formatarBRL, precoCentavos } from "@/lib/site";
+import { pedidoSchema, etapaProcessoSchema, type EtapaProcessoInput } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
 
 export const Route = createFileRoute("/solicitar")({
   component: Solicitar,
   head: () => ({
     meta: [
-      { title: "Solicitar Certidão de Objeto e Pé | Pedido Online e Pagamento" },
+      { title: "Solicitar Certidão de Objeto e Pé | Pedido Online" },
       {
         name: "description",
         content:
-          "Preencha os dados do processo, gere seu protocolo e pague com Pix. Certidão de Objeto e Pé solicitada 100% online por R$ 288,00.",
+          "Informe o número do processo, o nome e o CPF da parte envolvida e receba o valor da sua Certidão de Objeto e Pé para pagamento por Pix.",
       },
       { property: "og:title", content: "Solicitar Certidão de Objeto e Pé Online" },
       {
@@ -52,21 +52,52 @@ function Campo({
   );
 }
 
+const QUANTIDADES = Object.keys(TABELA_PRECOS).map(Number);
+
 function Solicitar() {
   const navigate = useNavigate();
   const enviarPedido = useServerFn(criarPedido);
+  const [etapa, setEtapa] = useState<1 | 2>(1);
+  const [processo, setProcesso] = useState<EtapaProcessoInput | null>(null);
+  const [quantidade, setQuantidade] = useState(1);
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function coletarErros(issues: { path: PropertyKey[]; message: string }[]) {
+    const novos: Record<string, string> = {};
+    for (const issue of issues) {
+      const campo = String(issue.path[0]);
+      if (!novos[campo]) novos[campo] = issue.message;
+    }
+    return novos;
+  }
+
+  function avancar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    const bruto = {
+    const parsed = etapaProcessoSchema.safeParse({
       numeroProcesso: String(form.get("numeroProcesso") ?? ""),
-      uf: String(form.get("uf") ?? ""),
-      cidade: String(form.get("cidade") ?? ""),
+      nomeParte: String(form.get("nomeParte") ?? ""),
       cpf: String(form.get("cpf") ?? ""),
+    });
+    if (!parsed.success) {
+      setErros(coletarErros(parsed.error.issues));
+      return;
+    }
+    setErros({});
+    setProcesso(parsed.data);
+    setEtapa(2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function finalizar(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!processo) return;
+    const form = new FormData(e.currentTarget);
+    const bruto = {
+      ...processo,
+      quantidade,
       email: String(form.get("email") ?? ""),
       whatsapp: String(form.get("whatsapp") ?? ""),
       observacoes: String(form.get("observacoes") ?? ""),
@@ -74,13 +105,7 @@ function Solicitar() {
     const confirmaEmail = String(form.get("confirmaEmail") ?? "").trim().toLowerCase();
 
     const parsed = pedidoSchema.safeParse(bruto);
-    const novosErros: Record<string, string> = {};
-    if (!parsed.success) {
-      for (const issue of parsed.error.issues) {
-        const campo = String(issue.path[0]);
-        if (!novosErros[campo]) novosErros[campo] = issue.message;
-      }
-    }
+    const novosErros = parsed.success ? {} : coletarErros(parsed.error.issues);
     if (confirmaEmail !== bruto.email.trim().toLowerCase()) {
       novosErros.confirmaEmail = "Os e-mails não conferem.";
     }
@@ -124,148 +149,190 @@ function Solicitar() {
       </header>
 
       <main className="mx-auto w-full max-w-4xl px-5 py-12 sm:px-8">
-        <h1 className="font-display text-3xl font-extrabold sm:text-4xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          Etapa {etapa} de 2
+        </p>
+        <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
           Solicitar Certidão de Objeto e Pé
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Preencha os dados do processo. Ao concluir, você recebe o resumo do pedido, um número de
-          protocolo e o Pix de <strong className="text-foreground">{PRECO_LABEL}</strong> por
-          certidão para pagamento imediato.
+          {etapa === 1
+            ? "Informe os dados do processo e da parte envolvida. Na próxima etapa mostramos o valor da certidão."
+            : "Escolha a quantidade de certidões, confira o valor e informe seus contatos para receber o documento."}
         </p>
 
-        <form onSubmit={handleSubmit} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
-          <Campo label="Número do processo" erro={erros.numeroProcesso}>
-            <input
-              name="numeroProcesso"
-              className={inputClass}
-              placeholder="0000000-00.0000.0.00.0000"
-              maxLength={40}
-              required
-            />
-          </Campo>
-
-          <div className="grid gap-6 sm:grid-cols-[140px_1fr]">
-            <Campo label="Estado (UF)" erro={erros.uf}>
-              <select name="uf" className={inputClass} defaultValue="" required>
-                <option value="" disabled>
-                  UF
-                </option>
-                {ESTADOS.map((uf) => (
-                  <option key={uf} value={uf}>
-                    {uf}
-                  </option>
-                ))}
-              </select>
-            </Campo>
-            <Campo label="Cidade / comarca do processo" erro={erros.cidade}>
+        {etapa === 1 ? (
+          <form onSubmit={avancar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
+            <Campo label="Número do processo" erro={erros.numeroProcesso}>
               <input
-                name="cidade"
+                name="numeroProcesso"
+                defaultValue={processo?.numeroProcesso}
                 className={inputClass}
-                placeholder="Ex: Balneário Camboriú"
-                maxLength={80}
+                placeholder="0000000-00.0000.0.00.0000"
+                maxLength={40}
                 required
               />
             </Campo>
-          </div>
 
-          <Campo
-            label="CPF da pessoa relacionada ao processo"
-            hint="somente números"
-            erro={erros.cpf}
-          >
-            <input
-              name="cpf"
-              inputMode="numeric"
-              className={inputClass}
-              placeholder="000.000.000-00"
-              maxLength={14}
-              required
-            />
-          </Campo>
-
-          <div className="grid gap-6 sm:grid-cols-2">
-            <Campo label="E-mail" erro={erros.email}>
+            <Campo label="Nome completo da parte envolvida" erro={erros.nomeParte}>
               <input
-                name="email"
-                type="email"
+                name="nomeParte"
+                defaultValue={processo?.nomeParte}
                 className={inputClass}
-                placeholder="seu@email.com"
-                maxLength={255}
+                placeholder="Ex: Maria Aparecida da Silva"
+                maxLength={120}
                 required
               />
             </Campo>
-            <Campo label="Confirme o e-mail" erro={erros.confirmaEmail}>
+
+            <Campo label="CPF da parte envolvida" hint="somente números" erro={erros.cpf}>
               <input
-                name="confirmaEmail"
-                type="email"
+                name="cpf"
+                defaultValue={processo?.cpf}
+                inputMode="numeric"
                 className={inputClass}
-                placeholder="repita o e-mail"
-                maxLength={255}
-                onPaste={(e) => e.preventDefault()}
+                placeholder="000.000.000-00"
+                maxLength={14}
                 required
               />
             </Campo>
-          </div>
 
-          <Campo label="WhatsApp" hint="com DDD" erro={erros.whatsapp}>
-            <input
-              name="whatsapp"
-              inputMode="tel"
-              className={inputClass}
-              placeholder="(47) 90000-0000"
-              maxLength={20}
-              required
-            />
-          </Campo>
-
-          <Campo label="Observações" hint="opcional" erro={erros.observacoes}>
-            <textarea
-              name="observacoes"
-              rows={3}
-              maxLength={1000}
-              className={inputClass}
-              placeholder="Vara, comarca, nome das partes ou qualquer detalhe que ajude na localização."
-            />
-          </Campo>
-
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-secondary px-5 py-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                Valor por certidão
+            <button
+              type="submit"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Avançar
+            </button>
+            <p className="text-center text-xs text-muted-foreground">
+              Seus dados são usados apenas para a solicitação da certidão junto ao tribunal.
+            </p>
+          </form>
+        ) : (
+          <form onSubmit={finalizar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
+            <div className="rounded-2xl bg-secondary px-5 py-4 text-sm">
+              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Processo</p>
+              <p className="mt-1 font-semibold">{processo?.numeroProcesso}</p>
+              <p className="text-muted-foreground">
+                {processo?.nomeParte} — CPF {processo?.cpf}
               </p>
-              <p className="font-display text-2xl font-bold">{PRECO_LABEL}</p>
+              <button
+                type="button"
+                onClick={() => setEtapa(1)}
+                className="mt-2 text-xs font-semibold text-primary underline underline-offset-4"
+              >
+                Editar dados do processo
+              </button>
             </div>
-            <p className="flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="h-4 w-4 text-accent" />
-              Pagamento via Pix após a confirmação do pedido
-            </p>
-          </div>
 
-          {erroGeral && (
-            <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
-              {erroGeral}
-            </p>
-          )}
+            <div>
+              <span className="text-sm font-semibold">Quantidade de certidões</span>
+              <div className="mt-3 grid gap-3 sm:grid-cols-5">
+                {QUANTIDADES.map((q) => {
+                  const ativo = q === quantidade;
+                  return (
+                    <button
+                      key={q}
+                      type="button"
+                      onClick={() => setQuantidade(q)}
+                      className={`rounded-2xl border px-3 py-4 text-center transition-colors ${
+                        ativo
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-input bg-card hover:bg-secondary"
+                      }`}
+                    >
+                      <span className="block font-display text-lg font-bold">{q}</span>
+                      <span className="mt-1 block text-xs font-semibold">
+                        {formatarBRL(precoCentavos(q))}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            disabled={enviando}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
-          >
-            {enviando ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Gerando protocolo...
-              </>
-            ) : (
-              <>
-                <CheckCircle2 className="h-4 w-4" /> Gerar pedido e pagar com Pix
-              </>
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-secondary px-5 py-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                  Valor total
+                </p>
+                <p className="font-display text-2xl font-bold">
+                  {formatarBRL(precoCentavos(quantidade))}
+                </p>
+              </div>
+              <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                <ShieldCheck className="h-4 w-4 text-accent" />
+                Pagamento via Pix após a confirmação do pedido
+              </p>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              <Campo label="E-mail" erro={erros.email}>
+                <input
+                  name="email"
+                  type="email"
+                  className={inputClass}
+                  placeholder="seu@email.com"
+                  maxLength={255}
+                  required
+                />
+              </Campo>
+              <Campo label="Confirme o e-mail" erro={erros.confirmaEmail}>
+                <input
+                  name="confirmaEmail"
+                  type="email"
+                  className={inputClass}
+                  placeholder="repita o e-mail"
+                  maxLength={255}
+                  onPaste={(e) => e.preventDefault()}
+                  required
+                />
+              </Campo>
+            </div>
+
+            <Campo label="WhatsApp" hint="com DDD" erro={erros.whatsapp}>
+              <input
+                name="whatsapp"
+                inputMode="tel"
+                className={inputClass}
+                placeholder="(47) 90000-0000"
+                maxLength={20}
+                required
+              />
+            </Campo>
+
+            <Campo label="Observações" hint="opcional" erro={erros.observacoes}>
+              <textarea
+                name="observacoes"
+                rows={3}
+                maxLength={1000}
+                className={inputClass}
+                placeholder="Vara, comarca, nome das partes ou qualquer detalhe que ajude na localização."
+              />
+            </Campo>
+
+            {erroGeral && (
+              <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+                {erroGeral}
+              </p>
             )}
-          </button>
-          <p className="text-center text-xs text-muted-foreground">
-            Seus dados são usados apenas para a solicitação da certidão junto ao tribunal.
-          </p>
-        </form>
+
+            <button
+              type="submit"
+              disabled={enviando}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+            >
+              {enviando ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Gerando protocolo...
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="h-4 w-4" /> Gerar pedido e pagar com Pix
+                </>
+              )}
+            </button>
+          </form>
+        )}
       </main>
     </div>
   );

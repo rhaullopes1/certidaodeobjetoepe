@@ -9,8 +9,10 @@ export type PedidoAdmin = {
   id: string;
   protocolo: string;
   numero_processo: string;
-  uf: string;
-  cidade: string;
+  nome_parte: string | null;
+  quantidade: number;
+  uf: string | null;
+  cidade: string | null;
   cpf: string;
   email: string;
   whatsapp: string;
@@ -22,7 +24,7 @@ export type PedidoAdmin = {
 };
 
 const COLUNAS =
-  "id, protocolo, numero_processo, uf, cidade, cpf, email, whatsapp, observacoes, valor_centavos, status, created_at, pago_em";
+  "id, protocolo, numero_processo, nome_parte, quantidade, uf, cidade, cpf, email, whatsapp, observacoes, valor_centavos, status, created_at, pago_em";
 
 export async function souEquipe() {
   const { data } = await supabase.auth.getUser();

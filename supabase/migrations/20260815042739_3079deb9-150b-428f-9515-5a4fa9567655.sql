@@ -1,0 +1,6 @@
+ALTER TABLE public.pedidos
+  ADD COLUMN IF NOT EXISTS nome_parte text,
+  ADD COLUMN IF NOT EXISTS quantidade integer NOT NULL DEFAULT 1;
+
+ALTER TABLE public.pedidos ALTER COLUMN uf DROP NOT NULL;
+ALTER TABLE public.pedidos ALTER COLUMN cidade DROP NOT NULL;
