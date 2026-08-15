@@ -147,8 +147,8 @@ function AdminDetalhe() {
                 <h2 className="text-lg font-bold">Dados do pedido</h2>
                 <div className="mt-4">
                   <Linha label="Processo" valor={pedido.data.numero_processo} />
-                  <Linha label="Estado" valor={pedido.data.uf} />
-                  <Linha label="Cidade" valor={pedido.data.cidade} />
+                  <Linha label="Parte envolvida" valor={pedido.data.nome_parte ?? "—"} />
+                  <Linha label="Certidões" valor={String(pedido.data.quantidade ?? 1)} />
                   <Linha label="CPF" valor={pedido.data.cpf} />
                   <Linha label="E-mail" valor={pedido.data.email} />
                   <Linha label="WhatsApp" valor={pedido.data.whatsapp} />
