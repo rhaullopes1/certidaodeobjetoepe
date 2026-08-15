@@ -235,9 +235,7 @@ function AdminLista() {
                           </Link>
                         </td>
                         <td className="px-5 py-4">{p.numero_processo}</td>
-                        <td className="px-5 py-4">
-                          {p.uf} — {p.cidade}
-                        </td>
+                        <td className="px-5 py-4">{p.nome_parte ?? "—"}</td>
                         <td className="px-5 py-4">{p.cpf}</td>
                         <td className="px-5 py-4">
                           <Badge status={p.status} />
