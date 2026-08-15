@@ -1,12 +1,14 @@
-import { PIX, PRECO_CENTAVOS } from "./site";
+import { PIX, precoCentavos } from "./site";
 import { gerarPixCopiaECola } from "./pix";
 import { soDigitos, type PedidoInput } from "./pedidos.schema";
 
 export type PedidoResumo = {
   protocolo: string;
   numeroProcesso: string;
-  uf: string;
-  cidade: string;
+  nomeParte: string;
+  quantidade: number;
+  uf: string | null;
+  cidade: string | null;
   cpf: string;
   email: string;
   whatsapp: string;
@@ -45,8 +47,10 @@ function formatarWhatsapp(valor: string) {
 function montar(row: {
   protocolo: string;
   numero_processo: string;
-  uf: string;
-  cidade: string;
+  nome_parte?: string | null;
+  quantidade?: number | null;
+  uf: string | null;
+  cidade: string | null;
   cpf: string;
   email: string;
   whatsapp: string;
@@ -61,6 +65,8 @@ function montar(row: {
   return {
     protocolo: row.protocolo,
     numeroProcesso: row.numero_processo,
+    nomeParte: row.nome_parte ?? "",
+    quantidade: row.quantidade ?? 1,
     uf: row.uf,
     cidade: row.cidade,
     cpf: mascararCpf(row.cpf),
@@ -91,13 +97,13 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
   const registro = {
     protocolo: novoProtocolo(),
     numero_processo: data.numeroProcesso,
-    uf: data.uf.toUpperCase(),
-    cidade: data.cidade,
+    nome_parte: data.nomeParte,
+    quantidade: data.quantidade,
     cpf: soDigitos(data.cpf),
     email: data.email.toLowerCase(),
     whatsapp: soDigitos(data.whatsapp),
     observacoes: data.observacoes ? data.observacoes : null,
-    valor_centavos: PRECO_CENTAVOS,
+    valor_centavos: precoCentavos(data.quantidade),
   };
 
   const { data: row, error } = await supabaseAdmin
