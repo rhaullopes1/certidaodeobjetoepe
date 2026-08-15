@@ -1,7 +1,21 @@
 export const WHATSAPP_NUMBER = "558000004604";
 
-export const PRECO_CENTAVOS = 28800;
-export const PRECO_LABEL = "R$ 288,00";
+/** Tabela de preços por quantidade de certidões (em centavos). */
+export const TABELA_PRECOS: Record<number, number> = {
+  1: 29700,
+  2: 49700,
+  3: 69700,
+  4: 89700,
+  5: 99700,
+};
+
+export const QUANTIDADE_MAXIMA = 5;
+
+export const precoCentavos = (quantidade: number) =>
+  TABELA_PRECOS[Math.min(Math.max(Math.trunc(quantidade) || 1, 1), QUANTIDADE_MAXIMA)]!;
+
+export const formatarBRL = (centavos: number) =>
+  (centavos / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export const PIX = {
   chave: "29125265000106",
