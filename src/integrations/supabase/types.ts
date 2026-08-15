@@ -95,11 +95,12 @@ export type Database = {
       }
       pedidos: {
         Row: {
-          cidade: string
+          cidade: string | null
           cpf: string
           created_at: string
           email: string
           id: string
+          nome_parte: string | null
           numero_processo: string
           observacoes: string | null
           pagbank_order_id: string | null
@@ -108,18 +109,20 @@ export type Database = {
           pix_expira_em: string | null
           pix_qrcode_url: string | null
           protocolo: string
+          quantidade: number
           status: string
-          uf: string
+          uf: string | null
           updated_at: string
           valor_centavos: number
           whatsapp: string
         }
         Insert: {
-          cidade: string
+          cidade?: string | null
           cpf: string
           created_at?: string
           email: string
           id?: string
+          nome_parte?: string | null
           numero_processo: string
           observacoes?: string | null
           pagbank_order_id?: string | null
@@ -128,18 +131,20 @@ export type Database = {
           pix_expira_em?: string | null
           pix_qrcode_url?: string | null
           protocolo: string
+          quantidade?: number
           status?: string
-          uf: string
+          uf?: string | null
           updated_at?: string
           valor_centavos?: number
           whatsapp: string
         }
         Update: {
-          cidade?: string
+          cidade?: string | null
           cpf?: string
           created_at?: string
           email?: string
           id?: string
+          nome_parte?: string | null
           numero_processo?: string
           observacoes?: string | null
           pagbank_order_id?: string | null
@@ -148,8 +153,9 @@ export type Database = {
           pix_expira_em?: string | null
           pix_qrcode_url?: string | null
           protocolo?: string
+          quantidade?: number
           status?: string
-          uf?: string
+          uf?: string | null
           updated_at?: string
           valor_centavos?: number
           whatsapp?: string
