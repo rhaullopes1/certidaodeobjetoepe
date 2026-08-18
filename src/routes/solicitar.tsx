@@ -95,9 +95,11 @@ function Solicitar() {
     e.preventDefault();
     if (!processo) return;
     const form = new FormData(e.currentTarget);
+    const total = precoCentavos(quantidade);
     const bruto = {
       ...processo,
       quantidade,
+      valorTotalCentavos: total,
       email: String(form.get("email") ?? ""),
       whatsapp: String(form.get("whatsapp") ?? ""),
       observacoes: String(form.get("observacoes") ?? ""),
@@ -108,6 +110,10 @@ function Solicitar() {
     const novosErros = parsed.success ? {} : coletarErros(parsed.error.issues);
     if (confirmaEmail !== bruto.email.trim().toLowerCase()) {
       novosErros.confirmaEmail = "Os e-mails não conferem.";
+    }
+    if (!QUANTIDADES.includes(quantidade) || total !== precoCentavos(quantidade)) {
+      novosErros.valorTotalCentavos =
+        "O valor não corresponde à quantidade selecionada. Escolha a quantidade novamente.";
     }
     if (Object.keys(novosErros).length > 0) {
       setErros(novosErros);
@@ -258,12 +264,22 @@ function Solicitar() {
                 <p className="font-display text-2xl font-bold">
                   {formatarBRL(precoCentavos(quantidade))}
                 </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {quantidade} {quantidade === 1 ? "certidão" : "certidões"} ·{" "}
+                  {formatarBRL(precoCentavos(quantidade))}
+                </p>
               </div>
               <p className="flex items-center gap-2 text-xs text-muted-foreground">
                 <ShieldCheck className="h-4 w-4 text-accent" />
                 Pagamento via Pix após a confirmação do pedido
               </p>
             </div>
+
+            {erros.valorTotalCentavos && (
+              <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+                {erros.valorTotalCentavos}
+              </p>
+            )}
 
             <div className="grid gap-6 sm:grid-cols-2">
               <Campo label="E-mail" erro={erros.email}>
