@@ -94,6 +94,12 @@ function montar(row: {
 export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResumo> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+  // Fonte da verdade do preço: tabela oficial no servidor.
+  const valorCentavos = precoCentavos(data.quantidade);
+  if (valorCentavos !== data.valorTotalCentavos) {
+    throw new Error("Valor do pedido inconsistente com a quantidade selecionada.");
+  }
+
   const registro = {
     protocolo: novoProtocolo(),
     numero_processo: data.numeroProcesso,
@@ -103,7 +109,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     email: data.email.toLowerCase(),
     whatsapp: soDigitos(data.whatsapp),
     observacoes: data.observacoes ? data.observacoes : null,
-    valor_centavos: precoCentavos(data.quantidade),
+    valor_centavos: valorCentavos,
   };
 
   const { data: row, error } = await supabaseAdmin
@@ -115,6 +121,10 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
   if (error || !row) {
     console.error("Falha ao criar pedido", error);
     throw new Error("Não foi possível registrar seu pedido. Tente novamente.");
+  }
+
+  if (row.valor_centavos !== valorCentavos) {
+    throw new Error("Valor gravado divergente do esperado.");
   }
 
   return montar(await gerarCobranca(row));
