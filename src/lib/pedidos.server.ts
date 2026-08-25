@@ -194,9 +194,11 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
 
 /** Confere o status direto no PagBank — rede de segurança caso o webhook falhe. */
 async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
-  if (!row.pagbank_order_id || !process.env["PAGBANK_TOKEN"]) return row;
+  const { provedorAtivo, gateway } = await import("./pagamentos.server");
+  const provedor = provedorAtivo();
+  if (!row.pagbank_order_id || !provedor) return row;
   try {
-    const { consultarCobranca } = await import("./pagbank.server");
+    const { consultarCobranca } = await gateway(provedor);
     const situacao = await consultarCobranca(row.pagbank_order_id);
     if (!situacao.pago && !situacao.cancelado) return row;
 
