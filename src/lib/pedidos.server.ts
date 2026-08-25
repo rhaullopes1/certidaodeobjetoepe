@@ -141,12 +141,12 @@ async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
     const { criarCobrancaPix } = await gateway(provedor);
     const cobranca = await criarCobrancaPix({
       protocolo: row.protocolo,
-      nomeParte: row.nome_parte ?? undefined,
+      nomeCliente: row.nome_parte ?? undefined,
       email: row.email,
       cpf: row.cpf,
       whatsapp: row.whatsapp,
       valorCentavos: row.valor_centavos,
-    } as Parameters<typeof criarCobrancaPix>[0]);
+    });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: atualizado } = await supabaseAdmin
       .from("pedidos")
