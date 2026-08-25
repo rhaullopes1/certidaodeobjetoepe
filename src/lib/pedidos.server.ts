@@ -132,13 +132,16 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
 
 type PedidoRow = Parameters<typeof montar>[0] & { pagbank_order_id?: string | null };
 
-/** Cria a cobrança Pix dinâmica no PagBank e grava no pedido. Em caso de falha, mantém o Pix estático. */
+/** Cria a cobrança Pix dinâmica no provedor ativo e grava no pedido. Em caso de falha, mantém o Pix estático. */
 async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
-  if (row.pix_codigo || !process.env["PAGBANK_TOKEN"]) return row;
+  const { provedorAtivo, gateway } = await import("./pagamentos.server");
+  const provedor = provedorAtivo();
+  if (row.pix_codigo || !provedor) return row;
   try {
-    const { criarCobrancaPix } = await import("./pagbank.server");
+    const { criarCobrancaPix } = await gateway(provedor);
     const cobranca = await criarCobrancaPix({
       protocolo: row.protocolo,
+      nomeCliente: row.nome_parte ?? undefined,
       email: row.email,
       cpf: row.cpf,
       whatsapp: row.whatsapp,
@@ -158,7 +161,7 @@ async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
       .maybeSingle();
     return (atualizado as PedidoRow) ?? row;
   } catch (e) {
-    console.error("Falha ao criar cobrança Pix no PagBank", e);
+    console.error("Falha ao criar cobrança Pix", e);
     return row;
   }
 }
@@ -191,9 +194,11 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
 
 /** Confere o status direto no PagBank — rede de segurança caso o webhook falhe. */
 async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
-  if (!row.pagbank_order_id || !process.env["PAGBANK_TOKEN"]) return row;
+  const { provedorAtivo, gateway } = await import("./pagamentos.server");
+  const provedor = provedorAtivo();
+  if (!row.pagbank_order_id || !provedor) return row;
   try {
-    const { consultarCobranca } = await import("./pagbank.server");
+    const { consultarCobranca } = await gateway(provedor);
     const situacao = await consultarCobranca(row.pagbank_order_id);
     if (!situacao.pago && !situacao.cancelado) return row;
 
