@@ -16,6 +16,7 @@ import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
+import { Route as CertidaoDeObjetoEPeIndexRouteImport } from './routes/certidao-de-objeto-e-pe.index'
 import { Route as CertidaoDeObjetoEPeUfRouteImport } from './routes/certidao-de-objeto-e-pe.$uf'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -59,6 +60,12 @@ const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
   path: '/termos-de-uso',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertidaoDeObjetoEPeIndexRoute =
+  CertidaoDeObjetoEPeIndexRouteImport.update({
+    id: '/certidao-de-objeto-e-pe/',
+    path: '/certidao-de-objeto-e-pe/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CertidaoDeObjetoEPeUfRoute = CertidaoDeObjetoEPeUfRouteImport.update({
   id: '/certidao-de-objeto-e-pe/$uf',
   path: '/certidao-de-objeto-e-pe/$uf',
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/certidao-de-objeto-e-pe': typeof CertidaoDeObjetoEPeIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -148,6 +157,7 @@ export interface FileRoutesById {
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/termos-de-uso'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/certidao-de-objeto-e-pe/'
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/termos-de-uso'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/certidao-de-objeto-e-pe'
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
@@ -199,6 +211,7 @@ export interface FileRouteTypes {
     | '/termos-de-uso'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/certidao-de-objeto-e-pe/'
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/historico'
@@ -217,6 +230,7 @@ export interface RootRouteChildren {
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
+  CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
 }
@@ -270,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/termos-de-uso'
       fullPath: '/termos-de-uso'
       preLoaderRoute: typeof TermosDeUsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-de-objeto-e-pe/': {
+      id: '/certidao-de-objeto-e-pe/'
+      path: '/certidao-de-objeto-e-pe'
+      fullPath: '/certidao-de-objeto-e-pe/'
+      preLoaderRoute: typeof CertidaoDeObjetoEPeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/certidao-de-objeto-e-pe/$uf': {
@@ -358,6 +379,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermosDeUsoRoute: TermosDeUsoRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
+  CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
 }
