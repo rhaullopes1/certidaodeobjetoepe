@@ -59,18 +59,9 @@ export type CertidaoInput = z.infer<typeof certidaoSchema>;
 
 export const pedidoSchema = z
   .object({
-  numeroProcesso: z
-    .string()
-    .trim()
-    .min(10, "Informe o número do processo")
-    .max(40, "Número do processo muito longo"),
-  nomeParte: z
-    .string()
-    .trim()
-    .min(5, "Informe o nome completo da parte envolvida")
-    .max(120, "Nome muito longo")
-    .refine((v) => v.split(/\s+/).length >= 2, "Informe o nome completo"),
-    cpf: z.string().trim().refine(cpfValido, "CPF inválido"),
+    numeroProcesso: numeroProcessoField,
+    nomeParte: nomeParteField,
+    cpf: cpfField,
     /** Uma entrada por certidão solicitada (a primeira repete os dados acima). */
     certidoes: z.array(certidaoSchema).min(1).max(QUANTIDADE_MAXIMA),
     quantidade: z.coerce
@@ -108,18 +99,9 @@ export const pedidoSchema = z
 
 /** Primeira etapa: dados do processo, antes de exibir o valor. */
 export const etapaProcessoSchema = z.object({
-  numeroProcesso: z
-    .string()
-    .trim()
-    .min(10, "Informe o número do processo")
-    .max(40, "Número do processo muito longo"),
-  nomeParte: z
-    .string()
-    .trim()
-    .min(5, "Informe o nome completo da parte envolvida")
-    .max(120, "Nome muito longo")
-    .refine((v) => v.split(/\s+/).length >= 2, "Informe o nome completo"),
-  cpf: z.string().trim().refine(cpfValido, "CPF inválido"),
+  numeroProcesso: numeroProcessoField,
+  nomeParte: nomeParteField,
+  cpf: cpfField,
 });
 
 export type EtapaProcessoInput = z.infer<typeof etapaProcessoSchema>;
