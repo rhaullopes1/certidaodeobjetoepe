@@ -75,14 +75,24 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Início", item: SITE },
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Início",
+                item: SITE,
+              },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Estados atendidos",
                 item: `${SITE}/certidao-de-objeto-e-pe`,
               },
-              { "@type": "ListItem", position: 3, name: e.nome, item: url },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: e.nome,
+                item: url,
+              },
             ],
           }),
         },
