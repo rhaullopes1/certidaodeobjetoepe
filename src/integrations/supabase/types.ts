@@ -101,6 +101,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          lembrete_enviado_em: string | null
           nome_parte: string | null
           numero_processo: string
           observacoes: string | null
@@ -124,6 +125,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          lembrete_enviado_em?: string | null
           nome_parte?: string | null
           numero_processo: string
           observacoes?: string | null
@@ -147,6 +149,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          lembrete_enviado_em?: string | null
           nome_parte?: string | null
           numero_processo?: string
           observacoes?: string | null
@@ -213,6 +216,36 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      webhook_eventos: {
+        Row: {
+          created_at: string
+          id: string
+          payload: Json | null
+          payment_id: string | null
+          provedor: string
+          resultado: string | null
+          tipo: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payload?: Json | null
+          payment_id?: string | null
+          provedor: string
+          resultado?: string | null
+          tipo?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payload?: Json | null
+          payment_id?: string | null
+          provedor?: string
+          resultado?: string | null
+          tipo?: string | null
         }
         Relationships: []
       }
