@@ -70,7 +70,7 @@ function PedidoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-secondary/40">
+    <div className="min-h-dvh bg-secondary/40">
       <header className="surface-navy">
         <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
           <Link to="/" className="flex items-center gap-3">

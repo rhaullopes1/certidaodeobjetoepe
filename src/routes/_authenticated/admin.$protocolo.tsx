@@ -102,7 +102,7 @@ function AdminDetalhe() {
     "w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-ring";
 
   return (
-    <div className="min-h-screen bg-secondary/40">
+    <div className="min-h-dvh bg-secondary/40">
       <AdminHeader />
 
       <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8">

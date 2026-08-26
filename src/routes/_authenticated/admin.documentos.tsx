@@ -33,7 +33,7 @@ function Documentos() {
   }
 
   return (
-    <div className="min-h-screen bg-secondary/40">
+    <div className="min-h-dvh bg-secondary/40">
       <AdminHeader />
       <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8">
         <h1 className="font-display text-2xl font-bold">Documentos</h1>

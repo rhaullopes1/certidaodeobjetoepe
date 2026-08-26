@@ -62,8 +62,8 @@ export const Route = createFileRoute("/certidao-objeto-e-pe-tjsp")({
     ],
     links: [
       { rel: "canonical", href: URL },
-      { rel: "alternate", hreflang: "pt-BR", href: URL },
-      { rel: "alternate", hreflang: "x-default", href: URL },
+      { rel: "alternate", hrefLang: "pt-BR", href: URL },
+      { rel: "alternate", hrefLang: "x-default", href: URL },
     ],
     scripts: [
       {
@@ -120,7 +120,7 @@ function TjspPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 sm:px-8">
           <Link to="/" className="flex min-w-0 items-center gap-3">

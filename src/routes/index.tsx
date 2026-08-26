@@ -39,10 +39,10 @@ export const Route = createFileRoute("/")({
         content:
           "Emita sua certidão judicial sem burocracia. Atendimento nacional, suporte por WhatsApp e acompanhamento até a conclusão.",
       },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://certidaodeobjetoepe.org/" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://certidaodeobjetoepe.org/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -92,7 +92,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function Index() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <Header />
       <main>
         <Hero />
