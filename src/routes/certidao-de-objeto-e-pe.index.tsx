@@ -6,9 +6,9 @@ import { UserMenu } from "@/components/user-menu";
 
 const SITE = "https://certidaodeobjetoepe.org";
 const URL = `${SITE}/certidao-de-objeto-e-pe`;
-const TITLE = "Certidão de Objeto e Pé por Estado | Atendimento Nacional";
+const TITLE = "Certidão de Objeto e Pé por Estado: SP, MG, BA, DF e PE";
 const DESC =
-  "Veja como solicitar a Certidão de Objeto e Pé em cada estado: SP, MG, BA, DF, PE, GO, PR, RS, RJ, SC, MT e CE. Pedido online e atendimento por WhatsApp.";
+  "Certidão de Objeto e Pé em SP (TJSP), MG (TJMG), BA (TJBA), DF (TJDFT), PE (TJPE) e mais 7 estados. Solicitação online, prazo informado e suporte por WhatsApp.";
 
 export const Route = createFileRoute("/certidao-de-objeto-e-pe/")({
   head: () => ({
@@ -86,7 +86,7 @@ function EstadosHub() {
       <main className="px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto w-full max-w-6xl">
           <h1 className="max-w-3xl font-display text-3xl font-bold leading-tight sm:text-5xl">
-            Certidão de Objeto e Pé por estado
+            Certidão de Objeto e Pé por estado: SP, MG, BA, DF, PE e mais
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Atendemos processos de tribunais estaduais, federais e trabalhistas em todo o Brasil.
@@ -114,7 +114,7 @@ function EstadosHub() {
                     <MapPin className="h-4 w-4 text-gold" />
                     {e.uf} · {e.tribunal}
                   </div>
-                  <h2 className="mt-3 text-lg font-bold">Certidão de Objeto e Pé em {e.nome}</h2>
+                  <h2 className="mt-3 text-lg font-bold">Certidão de Objeto e Pé em {e.nome} ({e.uf}) — {e.tribunal}</h2>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     Prazo médio de {e.prazo}. Atendimento em {e.capital} e demais comarcas.
                   </p>

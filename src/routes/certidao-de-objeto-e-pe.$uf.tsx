@@ -37,9 +37,10 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
       };
     }
     const e = loaderData.estado;
-    const title = `Certidão de Objeto e Pé ${e.uf} | ${e.tribunal} Online`;
-    const description = `Solicite a Certidão de Objeto e Pé em ${e.nome} (${e.tribunal}) online. Pedido 100% digital, atendimento por WhatsApp e entrega em ${e.prazo}.`;
+    const title = `Certidão de Objeto e Pé ${e.uf} (${e.tribunal}) | Solicite Online`;
+    const description = `Certidão de Objeto e Pé em ${e.nome}: solicite online processos do ${e.tribunal} e demais tribunais do ${e.uf}. Entrega em ${e.prazo}, com atendimento por WhatsApp.`;
     const url = `${SITE}/certidao-de-objeto-e-pe/${params.uf}`;
+
     return {
       meta: [
         { title },
@@ -164,7 +165,7 @@ function EstadoPage() {
               {e.nome} · {e.tribunal}
             </div>
             <h1 className="mt-4 max-w-3xl font-display text-3xl font-bold leading-tight sm:text-5xl">
-              Certidão de Objeto e Pé em {e.nome}
+              Certidão de Objeto e Pé em {e.nome} ({e.uf})
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">{e.intro}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -213,7 +214,7 @@ function EstadoPage() {
           <div className="mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.2fr_1fr]">
             <div>
               <h2 className="text-2xl font-bold sm:text-3xl">
-                Como solicitar a certidão em {e.nome}
+                Como solicitar a Certidão de Objeto e Pé em {e.nome}
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{e.contexto}</p>
               <ol className="mt-8 space-y-5">
@@ -234,7 +235,7 @@ function EstadoPage() {
             </div>
             <aside className="rounded-2xl border border-border bg-card p-6">
               <h2 className="text-lg font-bold">
-                Cidades atendidas em {e.nome}
+                Certidão de Objeto e Pé nas cidades de {e.nome}
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 Atendemos {e.capital} e todas as comarcas do estado, incluindo:
@@ -265,7 +266,7 @@ function EstadoPage() {
         <section className="bg-secondary/60 px-5 py-16 sm:px-8">
           <div className="mx-auto w-full max-w-3xl">
             <h2 className="text-2xl font-bold sm:text-3xl">
-              Perguntas frequentes — {e.uf}
+              Perguntas frequentes sobre a Certidão de Objeto e Pé em {e.uf}
             </h2>
             <div className="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
               {faqEstado(e).map((item) => (
@@ -280,7 +281,7 @@ function EstadoPage() {
 
         <section className="px-5 py-16 sm:px-8">
           <div className="mx-auto w-full max-w-6xl">
-            <h2 className="text-xl font-bold">Outros estados atendidos</h2>
+            <h2 className="text-xl font-bold">Certidão de Objeto e Pé em outros estados</h2>
             <ul className="mt-5 flex flex-wrap gap-2">
               {ESTADOS_SEO.filter((o) => o.slug !== e.slug).map((o) => (
                 <li key={o.slug}>
