@@ -610,7 +610,9 @@ function Footer() {
             <li><a href="#o-que-e" className="hover:text-primary-foreground">O que é</a></li>
             <li><a href="#como-funciona" className="hover:text-primary-foreground">Como funciona</a></li>
             <li><Link to="/solicitar" className="hover:text-primary-foreground">Solicitar certidão</Link></li>
+            <li><Link to="/certidao-de-objeto-e-pe" className="hover:text-primary-foreground">Certidão por estado</Link></li>
             <li><a href="#faq" className="hover:text-primary-foreground">Perguntas frequentes</a></li>
+
           </ul>
         </div>
         <div>
