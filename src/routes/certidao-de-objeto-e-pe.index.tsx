@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Scale, MapPin, MessageCircle } from "lucide-react";
 import { whatsappLink } from "@/lib/site";
+import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { ESTADOS_SEO } from "@/lib/estados-seo";
 import { UserMenu } from "@/components/user-menu";
 
