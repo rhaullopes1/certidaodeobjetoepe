@@ -31,6 +31,27 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Início",
+              item: SITE,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Estados atendidos",
+              item: URL,
+            },
+          ],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
           "@type": "ItemList",
           name: "Certidão de Objeto e Pé por estado",
           itemListElement: ESTADOS_SEO.map((e, i) => ({
