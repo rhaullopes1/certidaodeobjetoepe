@@ -101,6 +101,7 @@ function EstadosHub() {
             <MessageCircle className="h-5 w-5" />
             Falar no WhatsApp
           </a>
+          <AlternativasContato className="mt-4 max-w-xl" />
 
           <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {ESTADOS_SEO.map((e) => (
