@@ -318,6 +318,40 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
   return montar(atual);
 }
 
+/**
+ * Reenvia o e-mail de confirmação com o link do pedido.
+ * Só envia se o e-mail informado for o mesmo cadastrado no pedido.
+ */
+export async function reenviarEmailPedidoNoBanco(protocolo: string, email: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: row } = await supabaseAdmin
+    .from("pedidos")
+    .select("*")
+    .eq("protocolo", protocolo.toUpperCase())
+    .maybeSingle();
+
+  if (!row || row.email.toLowerCase() !== email.trim().toLowerCase()) {
+    // Não revelamos se o protocolo existe — resposta genérica.
+    return { enviado: false };
+  }
+
+  const certidoes = Array.isArray(row.certidoes)
+    ? (row.certidoes as { numeroProcesso: string; nomeParte: string; cpf: string }[])
+    : [];
+  const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+  await sendTemplateEmail("pedido-confirmacao", row.email, {
+    idempotencyKey: `pedido-reenvio-${row.protocolo}-${Date.now()}`,
+    templateData: {
+      protocolo: row.protocolo,
+      quantidade: row.quantidade ?? certidoes.length,
+      valor: formatarBRL(row.valor_centavos),
+      certidoes,
+      url: `https://certidaodeobjetoepe.org/pedido/${row.protocolo}`,
+    },
+  });
+  return { enviado: true };
+}
+
 /** Confere o status direto no PagBank — rede de segurança caso o webhook falhe. */
 async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
   const { provedorAtivo, gateway } = await import("./pagamentos.server");
