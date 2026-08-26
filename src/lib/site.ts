@@ -28,6 +28,7 @@ export const PIX = {
 
 export const PHONE_DISPLAY = "0800 000 4604";
 export const PHONE_TEL = "tel:+558000004604";
+export const EMAIL_CONTATO = "certidaoobjetoepe@gmail.com";
 
 export const whatsappLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -66,7 +67,16 @@ export const STATUS_PEDIDO: Record<
     descricao: "Este pedido foi cancelado. Fale conosco pelo WhatsApp se precisar retomar.",
     tom: "cancelado",
   },
+  expirado: {
+    label: "Pedido expirado",
+    descricao:
+      "Este pedido ficou sem pagamento por mais de 7 dias e expirou. Faça uma nova solicitação ou fale conosco.",
+    tom: "cancelado",
+  },
 };
+
+/** Dias sem pagamento até o pedido expirar automaticamente. */
+export const DIAS_PARA_EXPIRAR = 7;
 
 /** Etapas que a equipe pode aplicar no painel administrativo, na ordem do fluxo. */
 export const FLUXO_STATUS = [

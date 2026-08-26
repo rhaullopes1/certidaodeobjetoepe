@@ -88,7 +88,16 @@ export async function listarPedidos(f: Filtros): Promise<PedidoAdmin[]> {
 
   const { data, error } = await query.returns<PedidoAdmin[]>();
   if (error) throw error;
-  return data ?? [];
+
+  // Marca como "expirado" os pedidos sem pagamento há mais de 7 dias (na leitura).
+  const { marcarExpiradoSeVencido } = await import("./pedidos.server");
+  return Promise.all(
+    (data ?? []).map((p) =>
+      marcarExpiradoSeVencido(p as Parameters<typeof marcarExpiradoSeVencido>[0]).then(
+        (atual) => atual as PedidoAdmin,
+      ),
+    ),
+  );
 }
 
 export async function buscarPedidoAdmin(protocolo: string) {
@@ -98,7 +107,11 @@ export async function buscarPedidoAdmin(protocolo: string) {
     .eq("protocolo", protocolo.toUpperCase())
     .maybeSingle<PedidoAdmin>();
   if (error) throw error;
-  return data;
+  if (!data) return data;
+  const { marcarExpiradoSeVencido } = await import("./pedidos.server");
+  return (await marcarExpiradoSeVencido(
+    data as Parameters<typeof marcarExpiradoSeVencido>[0],
+  )) as PedidoAdmin;
 }
 
 export type Andamento = {

@@ -18,6 +18,7 @@ import {
 } from "@/lib/site";
 import { ESTADOS_SEO, estadoPorSlug, faqEstado } from "@/lib/estados-seo";
 import { UserMenu } from "@/components/user-menu";
+import { AlternativasContato } from "@/components/site/alternativas-contato";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
@@ -193,6 +194,7 @@ function EstadoPage() {
                 {PHONE_DISPLAY}
               </a>
             </div>
+            <AlternativasContato className="mt-4" />
           </div>
         </section>
 

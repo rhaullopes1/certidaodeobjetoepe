@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { TRIBUNAIS, tribunalPorSlug, tribunaisPorTipo, type Tribunal } from "@/lib/tribunais";
 import { whatsappLink, formatarBRL, precoCentavos } from "@/lib/site";
+import { AlternativasContato } from "@/components/site/alternativas-contato";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
@@ -158,6 +159,7 @@ function TribunalPage() {
             Falar no WhatsApp
           </a>
         </div>
+        <AlternativasContato className="mt-4" />
 
         <dl className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[

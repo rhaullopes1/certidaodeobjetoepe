@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "Equipe atualiza anexos" ON storage.objects;
+CREATE POLICY "Equipe atualiza anexos" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'pedido-anexos' AND private.is_staff(auth.uid()));

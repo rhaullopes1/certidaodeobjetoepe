@@ -1,4 +1,4 @@
-import { PIX, precoCentavos, formatarBRL } from "./site";
+import { PIX, precoCentavos, formatarBRL, DIAS_PARA_EXPIRAR } from "./site";
 
 import { gerarPixCopiaECola } from "./pix";
 import {
@@ -272,6 +272,64 @@ async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
   }
 }
 
+/**
+ * Pedido sem pagamento há mais de DIAS_PARA_EXPIRAR dias vira "expirado".
+ * A verificação acontece na leitura (pública e do painel), sem rotina externa.
+ */
+export async function marcarExpiradoSeVencido(row: PedidoRow): Promise<PedidoRow> {
+  if (row.status !== "aguardando_pagamento") return row;
+  const criadoEm = new Date(row.created_at).getTime();
+  if (Date.now() - criadoEm < DIAS_PARA_EXPIRAR * 24 * 60 * 60 * 1000) return row;
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: atualizado } = await supabaseAdmin
+    .from("pedidos")
+    .update({ status: "expirado" })
+    .eq("protocolo", row.protocolo)
+    .eq("status", "aguardando_pagamento")
+    .select("*")
+    .maybeSingle();
+  return (atualizado as PedidoRow) ?? { ...row, status: "expirado" };
+}
+
+/**
+ * Envia lembrete por e-mail para pedidos sem pagamento há mais de 24h
+ * (uma única vez por pedido). Executa na leitura, sem rotina externa.
+ */
+async function processarLembretesPagamento() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const limite = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { data: pendentes } = await supabaseAdmin
+    .from("pedidos")
+    .select("protocolo, email, valor_centavos")
+    .eq("status", "aguardando_pagamento")
+    .is("lembrete_enviado_em", null)
+    .lt("created_at", limite)
+    .limit(10);
+
+  if (!pendentes?.length) return;
+
+  const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+  for (const p of pendentes) {
+    try {
+      await sendTemplateEmail("pedido-lembrete", p.email, {
+        idempotencyKey: `pedido-lembrete-${p.protocolo}`,
+        templateData: {
+          protocolo: p.protocolo,
+          valor: formatarBRL(p.valor_centavos),
+          url: `https://certidaodeobjetoepe.org/pedido/${p.protocolo}`,
+        },
+      });
+    } catch (e) {
+      console.error("Falha ao enviar lembrete de pagamento", p.protocolo, e);
+    }
+    await supabaseAdmin
+      .from("pedidos")
+      .update({ lembrete_enviado_em: new Date().toISOString() })
+      .eq("protocolo", p.protocolo);
+  }
+}
+
 export async function buscarPedidoPorProtocolo(protocolo: string): Promise<PedidoResumo | null> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -287,7 +345,10 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
   }
   if (!row) return null;
 
-  let atual = row as PedidoRow;
+  let atual = await marcarExpiradoSeVencido(row as PedidoRow);
+  void processarLembretesPagamento().catch((e) =>
+    console.error("Falha ao processar lembretes", e),
+  );
 
   // Garante que existe cobrança Pix (pedidos criados antes da integração).
   if (atual.status === "aguardando_pagamento") {
@@ -296,6 +357,40 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
   }
 
   return montar(atual);
+}
+
+/**
+ * Reenvia o e-mail de confirmação com o link do pedido.
+ * Só envia se o e-mail informado for o mesmo cadastrado no pedido.
+ */
+export async function reenviarEmailPedidoNoBanco(protocolo: string, email: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: row } = await supabaseAdmin
+    .from("pedidos")
+    .select("*")
+    .eq("protocolo", protocolo.toUpperCase())
+    .maybeSingle();
+
+  if (!row || row.email.toLowerCase() !== email.trim().toLowerCase()) {
+    // Não revelamos se o protocolo existe — resposta genérica.
+    return { enviado: false };
+  }
+
+  const certidoes = Array.isArray(row.certidoes)
+    ? (row.certidoes as { numeroProcesso: string; nomeParte: string; cpf: string }[])
+    : [];
+  const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+  await sendTemplateEmail("pedido-confirmacao", row.email, {
+    idempotencyKey: `pedido-reenvio-${row.protocolo}-${Date.now()}`,
+    templateData: {
+      protocolo: row.protocolo,
+      quantidade: row.quantidade ?? certidoes.length,
+      valor: formatarBRL(row.valor_centavos),
+      certidoes,
+      url: `https://certidaodeobjetoepe.org/pedido/${row.protocolo}`,
+    },
+  });
+  return { enviado: true };
 }
 
 /** Confere o status direto no PagBank — rede de segurança caso o webhook falhe. */

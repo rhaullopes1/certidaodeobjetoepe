@@ -152,6 +152,20 @@ function Solicitar() {
   const principalValido = certidaoCompleta(processo);
   const extrasValidos = extras.every(certidaoCompleta);
 
+  /** Resumo do que falta preencher, exibido quando o envio está bloqueado. */
+  const pendencias: string[] = [];
+  extras.forEach((c, i) => {
+    if (certidaoCompleta(c)) return;
+    const faltando: string[] = [];
+    if (validarCampo("numeroProcesso", c.numeroProcesso)) faltando.push("número do processo");
+    if (validarCampo("nomeParte", c.nomeParte)) faltando.push("nome completo");
+    if (validarCampo("cpf", c.cpf)) faltando.push("CPF válido");
+    pendencias.push(`Certidão ${i + 2}: ${faltando.join(", ")}`);
+  });
+  const algumExtraTocado = extras.some((_, i) =>
+    ["numeroProcesso", "nomeParte", "cpf"].some((campo) => tocados[`e-${i}-${campo}`]),
+  );
+
   function coletarErros(issues: { path: PropertyKey[]; message: string }[]) {
     const novos: Record<string, string> = {};
     for (const issue of issues) {
@@ -289,7 +303,9 @@ function Solicitar() {
               }
             >
               <input
+                id="processo-numero"
                 name="numeroProcesso"
+                autoComplete="off"
                 value={processo.numeroProcesso}
                 onChange={(e) => atualizarPrincipal("numeroProcesso", e.target.value)}
                 onBlur={() => marcarTocado("p-numeroProcesso")}
@@ -305,7 +321,9 @@ function Solicitar() {
               erro={erroVisivel("p-nomeParte", "nomeParte", processo.nomeParte) ?? erros.nomeParte}
             >
               <input
+                id="processo-nome"
                 name="nomeParte"
+                autoComplete="name"
                 value={processo.nomeParte}
                 onChange={(e) => atualizarPrincipal("nomeParte", e.target.value)}
                 onBlur={() => marcarTocado("p-nomeParte")}
@@ -322,7 +340,9 @@ function Solicitar() {
               erro={erroVisivel("p-cpf", "cpf", processo.cpf) ?? erros.cpf}
             >
               <input
+                id="processo-cpf"
                 name="cpf"
+                autoComplete="off"
                 value={processo.cpf}
                 onChange={(e) => {
                   atualizarPrincipal("cpf", e.target.value);
@@ -431,6 +451,9 @@ function Solicitar() {
                       }
                     >
                       <input
+                        id={`certidao-${i + 2}-processo`}
+                        name={`certidoes[${i + 1}].numeroProcesso`}
+                        autoComplete="off"
                         value={c.numeroProcesso}
                         onChange={(e) => atualizarExtra(i, "numeroProcesso", e.target.value)}
                         onBlur={() => marcarTocado(`e-${i}-numeroProcesso`)}
@@ -448,6 +471,9 @@ function Solicitar() {
                       }
                     >
                       <input
+                        id={`certidao-${i + 2}-nome`}
+                        name={`certidoes[${i + 1}].nomeParte`}
+                        autoComplete="off"
                         value={c.nomeParte}
                         onChange={(e) => atualizarExtra(i, "nomeParte", e.target.value)}
                         onBlur={() => marcarTocado(`e-${i}-nomeParte`)}
@@ -463,6 +489,9 @@ function Solicitar() {
                       erro={erroVisivel(`e-${i}-cpf`, "cpf", c.cpf) ?? erros[`extra-${i}-cpf`]}
                     >
                       <input
+                        id={`certidao-${i + 2}-cpf`}
+                        name={`certidoes[${i + 1}].cpf`}
+                        autoComplete="off"
                         value={c.cpf}
                         onChange={(e) => {
                           atualizarExtra(i, "cpf", e.target.value);
@@ -531,6 +560,20 @@ function Solicitar() {
                 placeholder="Vara, comarca, nome das partes ou qualquer detalhe que ajude na localização."
               />
             </Campo>
+
+            {!extrasValidos && algumExtraTocado && pendencias.length > 0 && (
+              <div
+                role="alert"
+                className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive"
+              >
+                <p className="font-semibold">Para concluir o pedido, corrija:</p>
+                <ul className="mt-1 list-inside list-disc space-y-0.5">
+                  {pendencias.map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {erroGeral && (
               <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">

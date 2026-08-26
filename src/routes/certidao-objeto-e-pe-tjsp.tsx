@@ -10,6 +10,7 @@ import {
   FileText,
 } from "lucide-react";
 import { whatsappLink, PHONE_DISPLAY, PHONE_TEL, TABELA_PRECOS, formatarBRL } from "@/lib/site";
+import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 
 const SITE = "https://certidaodeobjetoepe.org";
@@ -180,6 +181,7 @@ function TjspPage() {
                 {PHONE_DISPLAY}
               </a>
             </div>
+            <AlternativasContato className="mt-4" />
           </div>
         </section>
 

@@ -16,6 +16,7 @@ import {
 import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL } from "@/lib/site";
+import { AlternativasContato } from "@/components/site/alternativas-contato";
 
 export const Route = createFileRoute("/pedido/$protocolo")({
   component: PedidoPage,
@@ -248,6 +249,7 @@ function PedidoPage() {
                     <MessageCircle className="h-4 w-4 text-accent" />
                     Falar com a equipe
                   </a>
+                  <AlternativasContato className="mt-3" />
                 </section>
               ) : (
               <section className="card-premium p-6 sm:p-8">
@@ -310,6 +312,7 @@ function PedidoPage() {
                   <MessageCircle className="h-4 w-4 text-accent" />
                   Falar pelo WhatsApp
                 </a>
+                <AlternativasContato className="mt-3" />
               </section>
               )}
             </div>
