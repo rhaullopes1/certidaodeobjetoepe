@@ -1,4 +1,5 @@
-import { PIX, precoCentavos } from "./site";
+import { PIX, precoCentavos, formatarBRL } from "./site";
+
 import { gerarPixCopiaECola } from "./pix";
 import {
   soDigitos,
