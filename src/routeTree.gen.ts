@@ -25,6 +25,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
+import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$slug'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 
@@ -111,6 +112,11 @@ const AuthenticatedAdminHistoricoRoute =
     path: '/admin/historico',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const BlogCategoriaSlugRoute = BlogCategoriaSlugRouteImport.update({
+  id: '/blog/categoria/$slug',
+  path: '/blog/categoria/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksMercadopagoRoute =
   ApiPublicWebhooksMercadopagoRouteImport.update({
     id: '/api/public/webhooks/mercadopago',
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
+    | '/blog/categoria/$slug'
     | '/admin/'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
+    | '/blog/categoria/$slug'
     | '/admin'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/historico'
+    | '/blog/categoria/$slug'
     | '/_authenticated/admin/'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
@@ -257,6 +269,7 @@ export interface RootRouteChildren {
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
+  BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
 }
@@ -375,6 +388,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminHistoricoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/blog/categoria/$slug': {
+      id: '/blog/categoria/$slug'
+      path: '/blog/categoria/$slug'
+      fullPath: '/blog/categoria/$slug'
+      preLoaderRoute: typeof BlogCategoriaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/mercadopago': {
       id: '/api/public/webhooks/mercadopago'
       path: '/api/public/webhooks/mercadopago'
@@ -422,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   PedidoProtocoloRoute: PedidoProtocoloRoute,
   BlogIndexRoute: BlogIndexRoute,
   CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
+  BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
 }
