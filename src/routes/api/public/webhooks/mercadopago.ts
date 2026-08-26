@@ -39,7 +39,7 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
               tipo,
               payment_id: paymentId,
               resultado,
-              payload: payload as unknown as Record<string, unknown>,
+              payload: payload as unknown as import("@/integrations/supabase/types").Json,
             });
           } catch (e) {
             console.error("Falha ao registrar evento de webhook", e);
