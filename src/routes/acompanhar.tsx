@@ -46,7 +46,7 @@ export const Route = createFileRoute("/acompanhar")({
 
 type Pedido = Awaited<ReturnType<typeof consultarPedido>>;
 
-const ETAPAS = FLUXO_STATUS.filter((s) => s !== "cancelado" && s !== "expirado");
+const ETAPAS = FLUXO_STATUS.filter((s) => s !== "cancelado");
 
 const dataBR = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
