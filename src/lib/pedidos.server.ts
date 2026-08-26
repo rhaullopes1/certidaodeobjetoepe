@@ -105,6 +105,11 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     numero_processo: data.numeroProcesso,
     nome_parte: data.nomeParte,
     quantidade: data.quantidade,
+    certidoes: data.certidoes.map((c) => ({
+      numeroProcesso: c.numeroProcesso,
+      nomeParte: c.nomeParte,
+      cpf: soDigitos(c.cpf),
+    })),
     cpf: soDigitos(data.cpf),
     email: data.email.toLowerCase(),
     whatsapp: soDigitos(data.whatsapp),
