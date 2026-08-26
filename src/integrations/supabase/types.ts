@@ -95,6 +95,7 @@ export type Database = {
       }
       pedidos: {
         Row: {
+          certidoes: Json
           cidade: string | null
           cpf: string
           created_at: string
@@ -117,6 +118,7 @@ export type Database = {
           whatsapp: string
         }
         Insert: {
+          certidoes?: Json
           cidade?: string | null
           cpf: string
           created_at?: string
@@ -139,6 +141,7 @@ export type Database = {
           whatsapp: string
         }
         Update: {
+          certidoes?: Json
           cidade?: string | null
           cpf?: string
           created_at?: string
