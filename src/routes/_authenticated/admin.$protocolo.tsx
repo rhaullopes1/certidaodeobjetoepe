@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ArrowLeft, Loader2, Paperclip, Trash2, Download } from "lucide-react";
+import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import {
   abrirAnexo,
   buscarPedidoAdmin,
@@ -138,6 +139,35 @@ function AdminDetalhe() {
               <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
                 {statusPedido(pedido.data.status).label}
               </span>
+              <button
+                type="button"
+                onClick={() => {
+                  const p = pedido.data!;
+                  baixarComprovantePedido({
+                    protocolo: p.protocolo,
+                    numeroProcesso: p.numero_processo,
+                    nomeParte: p.nome_parte,
+                    cpf: p.cpf,
+                    quantidade: p.quantidade ?? 1,
+                    email: p.email,
+                    whatsapp: p.whatsapp,
+                    valorCentavos: p.valor_centavos,
+                    status: p.status,
+                    criadoEm: p.created_at,
+                    pagoEm: p.pago_em,
+                    observacoes: p.observacoes,
+                    certidoes: (Array.isArray(p.certidoes) ? p.certidoes : []) as {
+                      numeroProcesso: string;
+                      nomeParte: string;
+                      cpf: string;
+                    }[],
+                  });
+                }}
+                className="ml-auto inline-flex items-center gap-2 rounded-full border border-input px-4 py-2 text-sm font-semibold transition-colors hover:bg-secondary"
+              >
+                <Download className="h-4 w-4" />
+                Baixar comprovante PDF
+              </button>
             </div>
 
             {erro && <p className="mt-4 text-sm font-medium text-destructive">{erro}</p>}
