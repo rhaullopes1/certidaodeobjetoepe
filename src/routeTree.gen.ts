@@ -17,6 +17,8 @@ import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CertidaoDeObjetoEPeIndexRouteImport } from './routes/certidao-de-objeto-e-pe.index'
 import { Route as CertidaoDeObjetoEPeUfRouteImport } from './routes/certidao-de-objeto-e-pe.$uf'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
@@ -24,6 +26,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
+import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$slug'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 
@@ -66,6 +69,16 @@ const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
   path: '/termos-de-uso',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CertidaoDeObjetoEPeIndexRoute =
   CertidaoDeObjetoEPeIndexRouteImport.update({
     id: '/certidao-de-objeto-e-pe/',
@@ -105,6 +118,11 @@ const AuthenticatedAdminHistoricoRoute =
     path: '/admin/historico',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const BlogCategoriaSlugRoute = BlogCategoriaSlugRouteImport.update({
+  id: '/blog/categoria/$slug',
+  path: '/blog/categoria/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksMercadopagoRoute =
   ApiPublicWebhooksMercadopagoRouteImport.update({
     id: '/api/public/webhooks/mercadopago',
@@ -126,12 +144,15 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
@@ -144,12 +165,15 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/blog': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe': typeof CertidaoDeObjetoEPeIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
@@ -164,12 +188,15 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
@@ -184,12 +211,15 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
+    | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/blog/'
     | '/certidao-de-objeto-e-pe/'
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
+    | '/blog/categoria/$slug'
     | '/admin/'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
@@ -202,12 +232,15 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
+    | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/blog'
     | '/certidao-de-objeto-e-pe'
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
+    | '/blog/categoria/$slug'
     | '/admin'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
@@ -221,12 +254,15 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
+    | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/blog/'
     | '/certidao-de-objeto-e-pe/'
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/historico'
+    | '/blog/categoria/$slug'
     | '/_authenticated/admin/'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
@@ -241,9 +277,12 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SolicitarRoute: typeof SolicitarRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
+  BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
 }
@@ -306,6 +345,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosDeUsoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/certidao-de-objeto-e-pe/': {
       id: '/certidao-de-objeto-e-pe/'
       path: '/certidao-de-objeto-e-pe'
@@ -355,6 +408,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminHistoricoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/blog/categoria/$slug': {
+      id: '/blog/categoria/$slug'
+      path: '/blog/categoria/$slug'
+      fullPath: '/blog/categoria/$slug'
+      preLoaderRoute: typeof BlogCategoriaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/mercadopago': {
       id: '/api/public/webhooks/mercadopago'
       path: '/api/public/webhooks/mercadopago'
@@ -398,9 +458,12 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SolicitarRoute: SolicitarRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
+  BlogSlugRoute: BlogSlugRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
+  BlogIndexRoute: BlogIndexRoute,
   CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
+  BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
 }
