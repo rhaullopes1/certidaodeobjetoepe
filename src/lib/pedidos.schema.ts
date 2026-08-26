@@ -15,19 +15,44 @@ export function cpfValido(raw: string) {
   return calc(9) === Number(cpf[9]) && calc(10) === Number(cpf[10]);
 }
 
+/** Nome válido: 2+ palavras, apenas letras/acentos/apóstrofo/hífen. */
+export function nomeCompletoValido(raw: string) {
+  const v = raw.trim().replace(/\s+/g, " ");
+  if (v.length < 5 || v.length > 120) return false;
+  if (!/^[A-Za-zÀ-ÿ'´`^~.\- ]+$/.test(v)) return false;
+  const partes = v.split(" ").filter((p) => p.replace(/[.'´`^~-]/g, "").length >= 2);
+  return partes.length >= 2;
+}
+
+/** Número de processo válido: 10 a 25 dígitos (aceita CNJ formatado). */
+export function numeroProcessoValido(raw: string) {
+  const v = raw.trim();
+  if (v.length < 10 || v.length > 40) return false;
+  if (!/^[0-9.\-/ ]+$/.test(v)) return false;
+  const d = soDigitos(v);
+  return d.length >= 10 && d.length <= 25;
+}
+
+export const numeroProcessoField = z
+  .string()
+  .trim()
+  .min(10, "Informe o número do processo")
+  .max(40, "Número do processo muito longo")
+  .refine(numeroProcessoValido, "Número do processo inválido");
+
+export const nomeParteField = z
+  .string()
+  .trim()
+  .min(5, "Informe o nome completo da parte envolvida")
+  .max(120, "Nome muito longo")
+  .refine(nomeCompletoValido, "Informe o nome completo (nome e sobrenome, sem números)");
+
+export const cpfField = z.string().trim().refine(cpfValido, "CPF inválido");
+
 export const certidaoSchema = z.object({
-  numeroProcesso: z
-    .string()
-    .trim()
-    .min(10, "Informe o número do processo")
-    .max(40, "Número do processo muito longo"),
-  nomeParte: z
-    .string()
-    .trim()
-    .min(5, "Informe o nome completo da parte envolvida")
-    .max(120, "Nome muito longo")
-    .refine((v) => v.split(/\s+/).length >= 2, "Informe o nome completo"),
-  cpf: z.string().trim().refine(cpfValido, "CPF inválido"),
+  numeroProcesso: numeroProcessoField,
+  nomeParte: nomeParteField,
+  cpf: cpfField,
 });
 
 export type CertidaoInput = z.infer<typeof certidaoSchema>;
