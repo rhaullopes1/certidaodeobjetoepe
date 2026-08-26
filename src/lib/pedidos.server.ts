@@ -1,6 +1,12 @@
 import { PIX, precoCentavos } from "./site";
 import { gerarPixCopiaECola } from "./pix";
-import { soDigitos, type PedidoInput } from "./pedidos.schema";
+import {
+  soDigitos,
+  cpfValido,
+  nomeCompletoValido,
+  numeroProcessoValido,
+  type PedidoInput,
+} from "./pedidos.schema";
 
 export type PedidoResumo = {
   protocolo: string;
