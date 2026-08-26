@@ -1,47 +1,53 @@
-# Testar o site e destravar o que falta
+# Blog de autoridade para ranquear em "Certidão de Objeto e Pé"
 
-## O que testei agora
-- Todas as páginas respondem sem erro: início, /solicitar, /auth, /admin, termos e privacidade.
-- Banco: 6 pedidos gravados, nenhum pago, bucket de anexos criado.
-- Nenhum usuário cadastrado e nenhum papel de equipe/admin atribuído.
-- Nenhuma credencial de pagamento configurada no ambiente.
+Objetivo: transformar o site em referência nacional do tema, cobrindo todos os tribunais e as matérias correlatas que o estudo enviado aponta como demanda (18.100 buscas/mês no termo principal, ~315 mil no ecossistema).
 
-## Problemas que impedem o site de funcionar de verdade
+## Arquitetura (modelo silo)
 
-1. **Pagamento Pix não confirma sozinho**
-   Falta a credencial do PagBank. Sem ela o site cai no Pix estático (chave manual), sem QR dinâmico e sem baixa automática — por isso nenhum pedido consta como pago.
+```text
+/blog                         hub do blog, listagem e busca por categoria
+/blog/[categoria]             conceito | tribunais | ramos | usos | documentos
+/blog/[slug]                  artigo
+/tribunais                    índice de todos os tribunais
+/tribunais/[sigla]            página por tribunal (tjsp, tjrj, trf3, trt2...)
+```
 
-2. **Ninguém consegue entrar no back office**
-   Não existe usuário nem papel de equipe/admin. Mesmo entrando com Google, as regras de acesso bloqueiam a leitura dos pedidos.
+As páginas já existentes por estado (/certidao-de-objeto-e-pe/[uf]) e a de TJSP continuam como estão e passam a receber links dos artigos e das páginas de tribunal.
 
-3. **WhatsApp aponta para um 0800**
-   O link wa.me usa 558000004604; números 0800 não existem no WhatsApp, então todos os botões abrem uma conversa inválida.
+## Cobertura de tribunais
 
-4. **Notificações prometidas não existem**
-   Não há envio de e-mail nem de WhatsApp (Twilio) na confirmação de pagamento.
+Uma página dedicada para cada um, com sistema processual usado (e-SAJ, PJe, Projudi, eproc), prazo médio, comarcas principais, como pedir e CTA:
 
-## O que farei
+- 27 Tribunais de Justiça estaduais (TJSP, TJRJ, TJMG, TJBA, TJPE, TJDFT, TJPR, TJRS, TJSC, TJGO, TJCE, TJMT, TJMS, TJES, TJPA, TJAM, TJMA, TJPB, TJRN, TJAL, TJSE, TJPI, TJTO, TJRO, TJAC, TJAP, TJRR)
+- 6 Tribunais Regionais Federais (TRF1 a TRF6)
+- 24 Tribunais Regionais do Trabalho (TRT1 a TRT24)
+- Tribunais superiores e especiais: STF, STJ, TST, STM, TSE e Justiça Militar estadual
 
-### Etapa 1 — pagamento funcionando
-- Pedir e cadastrar o token do PagBank como segredo.
-- Testar a criação de cobrança Pix real e a consulta de status.
-- Informar a URL do webhook para cadastrar no painel do PagBank e validar o recebimento.
+## Matérias do blog (clusters)
 
-### Etapa 2 — acesso ao back office
-- Entrar com Google uma vez para criar o usuário.
-- Conceder o papel de admin a esse usuário e confirmar que /admin lista pedidos, anexa documentos e registra andamentos.
+1. **Conceito / topo de funil** — o que é a certidão, para que serve, o que aparece nela, validade, diferença para inteiro teor, para certidão narratória, para nada consta e para certidão criminal.
+2. **Ramos da Justiça** — objeto e pé cível, criminal, trabalhista, federal, família, execução fiscal, juizado especial, militar.
+3. **Como emitir por tribunal** — guias passo a passo por sistema (e-SAJ, PJe, Projudi, eproc) e por tribunal.
+4. **Usos práticos** — gerenciadora de risco e motorista, compra e venda de imóvel, financiamento, licitação, concurso público, visto e imigração, admissão em emprego, due diligence empresarial.
+5. **Dúvidas frequentes / cauda longa** — prazos, custos e taxas, como emitir de graça, processo sigiloso, processo arquivado, processo antigo em papel, certidão em nome de terceiro, autenticidade e validação.
 
-### Etapa 3 — contato correto
-- Trocar o número do WhatsApp por um celular real com WhatsApp ativo (mantendo o 0800 apenas como telefone de ligação).
+Entrega inicial: todas as páginas de tribunal + 30 artigos completos (1.000–1.600 palavras cada), com estrutura pensada para snippet: resposta direta no primeiro parágrafo, sumário, subtítulos em pergunta, tabela de prazos/sistemas, checklist de documentos e CTA para /solicitar e WhatsApp.
 
-### Etapa 4 — notificações (opcional, após 1–3)
-- E-mail automático de confirmação de pagamento.
-- WhatsApp automático via Twilio, se você quiser seguir com esse provedor.
+## SEO técnico
 
-### Etapa 5 — teste ponta a ponta
-- Fluxo completo: pedido, Pix, confirmação, aparecimento no back office e emissão.
+- head() próprio em cada rota: title, description, canonical absoluto, hreflang pt-BR, og e twitter.
+- JSON-LD: `Article` + `BreadcrumbList` + `FAQPage` nos artigos; `LegalService` e `FAQPage` nas páginas de tribunal; `Blog`/`ItemList` no hub.
+- Links internos obrigatórios: artigo → tribunal → estado → /solicitar, e blocos "leia também" entre artigos do mesmo cluster.
+- Sitemap atualizado automaticamente a partir dos dados do blog e dos tribunais.
+- Blog no menu do cabeçalho e no rodapé.
+
+## Expectativa realista
+
+O termo principal tem dificuldade ~42% e o domínio é novo: conteúdo bem estruturado costuma começar a ranquear em cauda longa em 4–8 semanas e disputar o topo do termo principal em alguns meses, com publicação contínua. Primeiro lugar não é garantido por ninguém — a estratégia aqui é a que maximiza a chance.
 
 ## Detalhes técnicos
-- Segredo `PAGBANK_TOKEN` lido em `src/lib/pagbank.server.ts`; webhook já existe em `/api/public/webhooks/pagbank` e revalida o status na API antes de gravar.
-- Papel gravado em `public.user_roles` (`admin`), usado por `is_staff`/`has_role` nas policies de `pedidos`, `pedido_andamentos` e `pedido_anexos`.
-- Número do WhatsApp em `WHATSAPP_NUMBER` (`src/lib/site.ts`); `PHONE_DISPLAY` continua sendo o 0800.
+
+- Conteúdo em módulos tipados: `src/lib/blog/posts.ts` (artigos), `src/lib/blog/categorias.ts`, `src/lib/tribunais.ts`, com corpo em blocos estruturados (parágrafo, lista, tabela, callout, FAQ) renderizados por um componente, evitando HTML solto.
+- Rotas TanStack: `blog.index.tsx`, `blog.categoria.$slug.tsx`, `blog.$slug.tsx`, `tribunais.index.tsx`, `tribunais.$sigla.tsx`.
+- `src/routes/sitemap[.]xml.ts` passa a iterar posts, categorias e tribunais.
+- Sem alterações no fluxo de pedido, pagamento ou back office.
