@@ -21,8 +21,8 @@ Conclusão: não há bug que quebre o site. Os pontos abaixo são falhas funcion
 ## Plano de correção (em ordem)
 
 ### 1. WhatsApp funcional
-- Trocar o número usado nos links `wa.me` por um celular real com WhatsApp (mantendo o 0800 apenas como telefone de voz), ou
-- se não houver celular, remover os CTAs de WhatsApp e substituir por "Falar por e-mail" / "Ligar 0800".
+- Manter o 0800 000 4604 como número de WhatsApp conforme sua decisão.
+- Ajustar os CTAs para não dependerem apenas do `wa.me`: manter o link de WhatsApp e adicionar alternativa visível "Ligar 0800 000 4604" (link `tel:`) e contato por e-mail, já que números 0800 podem não abrir conversa no WhatsApp para todos os usuários.
 
 ### 2. Validar a confirmação automática de pagamento
 - Conferir se a URL do webhook cadastrada no provedor aponta para o domínio publicado.
