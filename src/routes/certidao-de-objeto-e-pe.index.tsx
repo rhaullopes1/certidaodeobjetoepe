@@ -122,6 +122,18 @@ function EstadosHub() {
               </li>
             ))}
           </ul>
+
+          <h2 className="mt-14 text-xl font-bold">Páginas por tribunal</h2>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            <li>
+              <Link
+                to="/certidao-objeto-e-pe-tjsp"
+                className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+              >
+                Certidão de Objeto e Pé TJSP
+              </Link>
+            </li>
+          </ul>
         </div>
       </main>
 
