@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { ESTADOS_SEO } from "@/lib/estados-seo";
+
 
 const BASE_URL = "https://certidaodeobjetoepe.org";
 
