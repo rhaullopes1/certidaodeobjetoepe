@@ -16,6 +16,7 @@ import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
+import { Route as CertidaoDeObjetoEPeUfRouteImport } from './routes/certidao-de-objeto-e-pe.$uf'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
@@ -56,6 +57,11 @@ const SolicitarRoute = SolicitarRouteImport.update({
 const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
   id: '/termos-de-uso',
   path: '/termos-de-uso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertidaoDeObjetoEPeUfRoute = CertidaoDeObjetoEPeUfRouteImport.update({
+  id: '/certidao-de-objeto-e-pe/$uf',
+  path: '/certidao-de-objeto-e-pe/$uf',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PedidoProtocoloRoute = PedidoProtocoloRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
+    | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
     | '/admin/$protocolo'
     | '/admin/documentos'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
+    | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
     | '/admin/$protocolo'
     | '/admin/documentos'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
+    | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
@@ -203,6 +215,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SolicitarRoute: typeof SolicitarRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
+  CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       path: '/termos-de-uso'
       fullPath: '/termos-de-uso'
       preLoaderRoute: typeof TermosDeUsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-de-objeto-e-pe/$uf': {
+      id: '/certidao-de-objeto-e-pe/$uf'
+      path: '/certidao-de-objeto-e-pe/$uf'
+      fullPath: '/certidao-de-objeto-e-pe/$uf'
+      preLoaderRoute: typeof CertidaoDeObjetoEPeUfRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pedido/$protocolo': {
@@ -336,6 +356,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SolicitarRoute: SolicitarRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
+  CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
