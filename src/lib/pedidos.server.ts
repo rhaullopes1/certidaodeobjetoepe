@@ -1,6 +1,12 @@
 import { PIX, precoCentavos } from "./site";
 import { gerarPixCopiaECola } from "./pix";
-import { soDigitos, type PedidoInput } from "./pedidos.schema";
+import {
+  soDigitos,
+  cpfValido,
+  nomeCompletoValido,
+  numeroProcessoValido,
+  type PedidoInput,
+} from "./pedidos.schema";
 
 export type PedidoResumo = {
   protocolo: string;
@@ -100,6 +106,26 @@ function montar(row: {
   };
 }
 
+/**
+ * Revalidação no servidor: mesmo que o navegador seja contornado (chamada direta
+ * ao endpoint), CPF, nome completo e número do processo são conferidos de novo.
+ */
+function validarCertidaoNoServidor(c: { numeroProcesso: string; nomeParte: string; cpf: string }, rotulo: string) {
+  const numeroProcesso = c.numeroProcesso.trim();
+  const nomeParte = c.nomeParte.trim().replace(/\s+/g, " ");
+  const cpf = soDigitos(c.cpf);
+  if (!numeroProcessoValido(numeroProcesso)) {
+    throw new Error(`${rotulo}: número do processo inválido.`);
+  }
+  if (!nomeCompletoValido(nomeParte)) {
+    throw new Error(`${rotulo}: informe o nome completo da parte envolvida.`);
+  }
+  if (!cpfValido(cpf)) {
+    throw new Error(`${rotulo}: CPF inválido.`);
+  }
+  return { numeroProcesso, nomeParte, cpf };
+}
+
 export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResumo> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -109,20 +135,24 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     throw new Error("Valor do pedido inconsistente com a quantidade selecionada.");
   }
 
+  const principal = validarCertidaoNoServidor(data, "Certidão 1");
+  if (data.certidoes.length !== data.quantidade) {
+    throw new Error("Preencha os dados de cada certidão solicitada.");
+  }
+  const certidoes = data.certidoes.map((c, i) =>
+    validarCertidaoNoServidor(c, `Certidão ${i + 1}`),
+  );
+
   const registro = {
     protocolo: novoProtocolo(),
-    numero_processo: data.numeroProcesso,
-    nome_parte: data.nomeParte,
+    numero_processo: principal.numeroProcesso,
+    nome_parte: principal.nomeParte,
     quantidade: data.quantidade,
-    certidoes: data.certidoes.map((c) => ({
-      numeroProcesso: c.numeroProcesso,
-      nomeParte: c.nomeParte,
-      cpf: soDigitos(c.cpf),
-    })),
-    cpf: soDigitos(data.cpf),
-    email: data.email.toLowerCase(),
+    certidoes,
+    cpf: principal.cpf,
+    email: data.email.trim().toLowerCase(),
     whatsapp: soDigitos(data.whatsapp),
-    observacoes: data.observacoes ? data.observacoes : null,
+    observacoes: data.observacoes ? data.observacoes.trim() : null,
     valor_centavos: valorCentavos,
   };
 
