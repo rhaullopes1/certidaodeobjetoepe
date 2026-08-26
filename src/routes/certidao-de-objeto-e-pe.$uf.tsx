@@ -37,9 +37,9 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
       };
     }
     const e = loaderData.estado;
-    const title = `Certidão de Objeto e Pé ${e.uf} | ${e.tribunal} Online`;
-    const description = `Solicite a Certidão de Objeto e Pé em ${e.nome} (${e.tribunal}) online. Pedido 100% digital, atendimento por WhatsApp e entrega em ${e.prazo}.`;
-    const url = `${SITE}/certidao-de-objeto-e-pe/${params.uf}`;
+    const title = `Certidão de Objeto e Pé ${e.uf} (${e.tribunal}) | Solicite Online`;
+    const description = `Certidão de Objeto e Pé em ${e.nome}: solicite online processos do ${e.tribunal} e demais tribunais do ${e.uf}. Entrega em ${e.prazo}, com atendimento por WhatsApp.`;
+
     return {
       meta: [
         { title },
