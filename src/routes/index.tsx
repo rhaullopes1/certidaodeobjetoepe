@@ -17,6 +17,7 @@ import {
   Phone,
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
+import logoAsset from "@/assets/logo-certidao.png.asset.json";
 import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { UserMenu } from "@/components/user-menu";
 
