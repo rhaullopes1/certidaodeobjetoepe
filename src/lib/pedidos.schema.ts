@@ -72,6 +72,13 @@ export const pedidoSchema = z
         message: "O valor exibido não corresponde à quantidade selecionada. Recarregue a página.",
       });
     }
+    if (valor.certidoes.length !== valor.quantidade) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["certidoes"],
+        message: "Preencha os dados de cada certidão solicitada.",
+      });
+    }
   });
 
 /** Primeira etapa: dados do processo, antes de exibir o valor. */
