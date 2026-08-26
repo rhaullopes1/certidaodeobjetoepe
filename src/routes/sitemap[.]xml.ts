@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { ESTADOS_SEO } from "@/lib/estados-seo";
+import { TRIBUNAIS } from "@/lib/tribunais";
+import { CATEGORIAS, POSTS } from "@/lib/blog";
 
 
 const BASE_URL = "https://certidaodeobjetoepe.org";
@@ -25,9 +27,27 @@ export const Route = createFileRoute("/sitemap.xml")({
             changefreq: "monthly" as const,
             priority: "0.7",
           })),
+          { path: "/tribunais", changefreq: "weekly", priority: "0.8" },
+          ...TRIBUNAIS.map((t) => ({
+            path: `/tribunais/${t.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.7",
+          })),
+          { path: "/blog", changefreq: "weekly", priority: "0.8" },
+          ...CATEGORIAS.map((c) => ({
+            path: `/blog/categoria/${c.slug}`,
+            changefreq: "weekly" as const,
+            priority: "0.6",
+          })),
+          ...POSTS.map((p) => ({
+            path: `/blog/${p.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.7",
+          })),
           { path: "/politica-de-privacidade", changefreq: "yearly", priority: "0.3" },
           { path: "/termos-de-uso", changefreq: "yearly", priority: "0.3" },
         ];
+
 
 
         const urls = entries.map((e) =>

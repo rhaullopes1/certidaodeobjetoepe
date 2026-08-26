@@ -23,6 +23,7 @@ import { Route as CertidaoDeObjetoEPeIndexRouteImport } from './routes/certidao-
 import { Route as CertidaoDeObjetoEPeUfRouteImport } from './routes/certidao-de-objeto-e-pe.$uf'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
 import { Route as TribunaisIndexRouteImport } from './routes/tribunais.index'
+import { Route as TribunaisSiglaRouteImport } from './routes/tribunais.$sigla'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
@@ -101,6 +102,11 @@ const TribunaisIndexRoute = TribunaisIndexRouteImport.update({
   path: '/tribunais/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TribunaisSiglaRoute = TribunaisSiglaRouteImport.update({
+  id: '/tribunais/$sigla',
+  path: '/tribunais/$sigla',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe': typeof CertidaoDeObjetoEPeIndexRoute
   '/tribunais': typeof TribunaisIndexRoute
@@ -199,6 +207,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
@@ -223,6 +232,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/tribunais/$sigla'
     | '/blog/'
     | '/certidao-de-objeto-e-pe/'
     | '/tribunais/'
@@ -245,6 +255,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/tribunais/$sigla'
     | '/blog'
     | '/certidao-de-objeto-e-pe'
     | '/tribunais'
@@ -268,6 +279,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/tribunais/$sigla'
     | '/blog/'
     | '/certidao-de-objeto-e-pe/'
     | '/tribunais/'
@@ -292,6 +304,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
+  TribunaisSiglaRoute: typeof TribunaisSiglaRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
   TribunaisIndexRoute: typeof TribunaisIndexRoute
@@ -400,6 +413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TribunaisIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tribunais/$sigla': {
+      id: '/tribunais/$sigla'
+      path: '/tribunais/$sigla'
+      fullPath: '/tribunais/$sigla'
+      preLoaderRoute: typeof TribunaisSiglaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
@@ -481,6 +501,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
+  TribunaisSiglaRoute: TribunaisSiglaRoute,
   BlogIndexRoute: BlogIndexRoute,
   CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
   TribunaisIndexRoute: TribunaisIndexRoute,
