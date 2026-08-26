@@ -13,11 +13,10 @@ import {
   whatsappLink,
   PHONE_DISPLAY,
   PHONE_TEL,
-  FAQ,
   TABELA_PRECOS,
   formatarBRL,
 } from "@/lib/site";
-import { ESTADOS_SEO, estadoPorSlug } from "@/lib/estados-seo";
+import { ESTADOS_SEO, estadoPorSlug, faqEstado } from "@/lib/estados-seo";
 import { UserMenu } from "@/components/user-menu";
 
 const SITE = "https://certidaodeobjetoepe.org";
@@ -67,6 +66,20 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
             areaServed: { "@type": "State", name: e.nome },
             provider: { "@type": "Organization", name: "Certidão Objeto e Pé", url: SITE },
             url,
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "@id": `${url}#faq`,
+            inLanguage: "pt-BR",
+            mainEntity: faqEstado(e).map((item) => ({
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: { "@type": "Answer", text: item.a },
+            })),
           }),
         },
         {
@@ -255,7 +268,7 @@ function EstadoPage() {
               Perguntas frequentes — {e.uf}
             </h2>
             <div className="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
-              {FAQ.slice(0, 5).map((item) => (
+              {faqEstado(e).map((item) => (
                 <details key={item.q} className="group px-6 py-5">
                   <summary className="cursor-pointer list-none text-base font-semibold">{item.q}</summary>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.a}</p>
