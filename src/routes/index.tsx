@@ -672,6 +672,40 @@ function Footer() {
             </svg>
             YouTube
           </a>
+          <a
+            href={INSTAGRAM_PROFILE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary-foreground/85 hover:text-primary-foreground"
+            aria-label="Instagram Certidão de Objeto e Pé"
+          >
+            <svg
+              className="h-5 w-5 text-gold"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85 0 3.2-.01 3.58-.07 4.85-.15 3.23-1.67 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07-3.2 0-3.58-.01-4.85-.07-3.25-.15-4.77-1.69-4.92-4.92-.06-1.27-.07-1.65-.07-4.85 0-3.2.01-3.58.07-4.85.15-3.23 1.67-4.77 4.92-4.92 1.27-.06 1.65-.07 4.85-.07ZM12 0C8.74 0 8.33.01 7.05.07 3.6.21.21 3.6.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.21 3.45 3.59 6.83 7.05 7.05 1.28.06 1.69.07 4.95.07s3.67-.01 4.95-.07c3.45-.21 6.83-3.59 7.05-7.05.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95C22.73 3.6 19.4.21 15.95.07 14.67.01 14.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm7.85-10.4a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88Z" />
+            </svg>
+            Instagram
+          </a>
+          <a
+            href={FACEBOOK_PAGE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary-foreground/85 hover:text-primary-foreground"
+            aria-label="Facebook Certidão de Objeto e Pé"
+          >
+            <svg
+              className="h-5 w-5 text-gold"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.12 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z" />
+            </svg>
+            Facebook
+          </a>
         </div>
       </div>
       <div className="mx-auto mt-12 w-full max-w-6xl border-t border-primary-foreground/15 pt-6 text-xs leading-relaxed text-primary-foreground/55">
