@@ -104,6 +104,42 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://certidaodeobjetoepe.org/#organization",
+              name: "Certidão Objeto e Pé",
+              url: "https://certidaodeobjetoepe.org/",
+              description:
+                "Assessoria especializada na solicitação de Certidão de Objeto e Pé em tribunais estaduais, federais e trabalhistas de todo o Brasil.",
+              areaServed: { "@type": "Country", name: "Brasil" },
+              contactPoint: [
+                {
+                  "@type": "ContactPoint",
+                  telephone: "+55-800-000-4604",
+                  contactType: "customer service",
+                  availableLanguage: ["Portuguese"],
+                  areaServed: "BR",
+                },
+              ],
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://certidaodeobjetoepe.org/#website",
+              url: "https://certidaodeobjetoepe.org/",
+              name: "Certidão Objeto e Pé",
+              inLanguage: "pt-BR",
+              publisher: { "@id": "https://certidaodeobjetoepe.org/#organization" },
+            },
+          ],
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
