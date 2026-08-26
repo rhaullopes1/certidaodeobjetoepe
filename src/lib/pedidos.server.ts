@@ -13,6 +13,7 @@ export type PedidoResumo = {
   email: string;
   whatsapp: string;
   observacoes: string | null;
+  certidoes: { numeroProcesso: string; nomeParte: string; cpf: string }[];
   valorCentavos: number;
   status: string;
   criadoEm: string;
@@ -55,6 +56,7 @@ function montar(row: {
   email: string;
   whatsapp: string;
   observacoes: string | null;
+  certidoes?: unknown;
   valor_centavos: number;
   status: string;
   created_at: string;
@@ -73,6 +75,13 @@ function montar(row: {
     email: row.email,
     whatsapp: formatarWhatsapp(row.whatsapp),
     observacoes: row.observacoes,
+    certidoes: Array.isArray(row.certidoes)
+      ? (row.certidoes as { numeroProcesso: string; nomeParte: string; cpf: string }[]).map((c) => ({
+          numeroProcesso: c.numeroProcesso,
+          nomeParte: c.nomeParte,
+          cpf: mascararCpf(c.cpf ?? ""),
+        }))
+      : [],
     valorCentavos: row.valor_centavos,
     status: row.status,
     criadoEm: row.created_at,
