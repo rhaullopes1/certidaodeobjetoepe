@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AcompanharRouteImport } from './routes/acompanhar'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CertidaoObjetoEPeTjspRouteImport } from './routes/certidao-objeto-e-pe-tjsp'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcompanharRoute = AcompanharRouteImport.update({
+  id: '/acompanhar',
+  path: '/acompanhar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -157,6 +163,7 @@ const LovableEmailTransactionalPreviewRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -233,6 +242,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/acompanhar'
     | '/auth'
     | '/certidao-objeto-e-pe-tjsp'
     | '/politica-de-privacidade'
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/acompanhar'
     | '/auth'
     | '/certidao-objeto-e-pe-tjsp'
     | '/politica-de-privacidade'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/acompanhar'
     | '/auth'
     | '/certidao-objeto-e-pe-tjsp'
     | '/politica-de-privacidade'
@@ -308,6 +320,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AcompanharRoute: typeof AcompanharRoute
   AuthRoute: typeof AuthRoute
   CertidaoObjetoEPeTjspRoute: typeof CertidaoObjetoEPeTjspRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
@@ -341,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/acompanhar': {
+      id: '/acompanhar'
+      path: '/acompanhar'
+      fullPath: '/acompanhar'
+      preLoaderRoute: typeof AcompanharRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -513,6 +533,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AcompanharRoute: AcompanharRoute,
   AuthRoute: AuthRoute,
   CertidaoObjetoEPeTjspRoute: CertidaoObjetoEPeTjspRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
