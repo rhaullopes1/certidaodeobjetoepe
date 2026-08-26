@@ -63,13 +63,53 @@ function Campo({
 
 const QUANTIDADES = Object.keys(TABELA_PRECOS).map(Number);
 
+const CERTIDAO_VAZIA: EtapaProcessoInput = { numeroProcesso: "", nomeParte: "", cpf: "" };
+
+function mascararCPF(valor: string) {
+  const d = soDigitos(valor).slice(0, 11);
+  return d
+    .replace(/^(\d{3})(\d)/, "$1.$2")
+    .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
+}
+
+/** Validação por campo, usada em tempo real enquanto o cliente digita. */
+function validarCampo(campo: keyof EtapaProcessoInput, valor: string): string | undefined {
+  const v = valor.trim();
+  if (campo === "cpf") {
+    const digitos = soDigitos(v);
+    if (!digitos) return "Informe o CPF da parte envolvida";
+    if (digitos.length < 11) return "CPF incompleto (11 dígitos)";
+    if (!cpfValido(digitos)) return "CPF inválido — confira os dígitos";
+    return undefined;
+  }
+  if (campo === "numeroProcesso") {
+    if (!v) return "Informe o número do processo";
+    if (v.length < 10) return "Número do processo incompleto";
+    return undefined;
+  }
+  if (!v) return "Informe o nome completo da parte envolvida";
+  if (v.split(/\s+/).length < 2) return "Informe o nome completo (nome e sobrenome)";
+  if (v.length < 5) return "Nome muito curto";
+  return undefined;
+}
+
+function certidaoCompleta(c: EtapaProcessoInput) {
+  return (
+    !validarCampo("numeroProcesso", c.numeroProcesso) &&
+    !validarCampo("nomeParte", c.nomeParte) &&
+    !validarCampo("cpf", c.cpf)
+  );
+}
+
 function Solicitar() {
   const navigate = useNavigate();
   const enviarPedido = useServerFn(criarPedido);
   const [etapa, setEtapa] = useState<1 | 2>(1);
-  const [processo, setProcesso] = useState<EtapaProcessoInput | null>(null);
+  const [processo, setProcesso] = useState<EtapaProcessoInput>(CERTIDAO_VAZIA);
   const [quantidade, setQuantidade] = useState(1);
   const [extras, setExtras] = useState<EtapaProcessoInput[]>([]);
+  const [tocados, setTocados] = useState<Record<string, boolean>>({});
 
   function alterarQuantidade(q: number) {
     setQuantidade(q);
@@ -77,18 +117,40 @@ function Solicitar() {
       const alvo = q - 1;
       const proximo = atual.slice(0, alvo);
       while (proximo.length < alvo) {
-        proximo.push({ numeroProcesso: "", nomeParte: "", cpf: "" });
+        proximo.push({ ...CERTIDAO_VAZIA });
       }
       return proximo;
     });
   }
 
-  function atualizarExtra(i: number, campo: keyof EtapaProcessoInput, valor: string) {
-    setExtras((atual) => atual.map((c, idx) => (idx === i ? { ...c, [campo]: valor } : c)));
+  function atualizarPrincipal(campo: keyof EtapaProcessoInput, valor: string) {
+    setProcesso((atual) => ({ ...atual, [campo]: campo === "cpf" ? mascararCPF(valor) : valor }));
   }
+
+  function atualizarExtra(i: number, campo: keyof EtapaProcessoInput, valor: string) {
+    setExtras((atual) =>
+      atual.map((c, idx) =>
+        idx === i ? { ...c, [campo]: campo === "cpf" ? mascararCPF(valor) : valor } : c,
+      ),
+    );
+  }
+
+  function marcarTocado(chave: string) {
+    setTocados((atual) => ({ ...atual, [chave]: true }));
+  }
+
+  /** Mostra o erro assim que o campo é tocado (ou após tentativa de envio). */
+  function erroVisivel(chave: string, campo: keyof EtapaProcessoInput, valor: string) {
+    if (!tocados[chave]) return undefined;
+    return validarCampo(campo, valor);
+  }
+
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+
+  const principalValido = certidaoCompleta(processo);
+  const extrasValidos = extras.every(certidaoCompleta);
 
   function coletarErros(issues: { path: PropertyKey[]; message: string }[]) {
     const novos: Record<string, string> = {};
@@ -101,14 +163,15 @@ function Solicitar() {
 
   function avancar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const parsed = etapaProcessoSchema.safeParse({
-      numeroProcesso: String(form.get("numeroProcesso") ?? ""),
-      nomeParte: String(form.get("nomeParte") ?? ""),
-      cpf: String(form.get("cpf") ?? ""),
-    });
-    if (!parsed.success) {
-      setErros(coletarErros(parsed.error.issues));
+    setTocados((atual) => ({
+      ...atual,
+      "p-numeroProcesso": true,
+      "p-nomeParte": true,
+      "p-cpf": true,
+    }));
+    const parsed = etapaProcessoSchema.safeParse(processo);
+    if (!parsed.success || !principalValido) {
+      if (!parsed.success) setErros(coletarErros(parsed.error.issues));
       return;
     }
     setErros({});
