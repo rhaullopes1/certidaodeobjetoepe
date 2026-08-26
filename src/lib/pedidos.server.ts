@@ -1,4 +1,4 @@
-import { PIX, precoCentavos, formatarBRL } from "./site";
+import { PIX, precoCentavos, formatarBRL, DIAS_PARA_EXPIRAR } from "./site";
 
 import { gerarPixCopiaECola } from "./pix";
 import {
@@ -272,6 +272,26 @@ async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
   }
 }
 
+/**
+ * Pedido sem pagamento há mais de DIAS_PARA_EXPIRAR dias vira "expirado".
+ * A verificação acontece na leitura (pública e do painel), sem rotina externa.
+ */
+export async function marcarExpiradoSeVencido(row: PedidoRow): Promise<PedidoRow> {
+  if (row.status !== "aguardando_pagamento") return row;
+  const criadoEm = new Date(row.created_at).getTime();
+  if (Date.now() - criadoEm < DIAS_PARA_EXPIRAR * 24 * 60 * 60 * 1000) return row;
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: atualizado } = await supabaseAdmin
+    .from("pedidos")
+    .update({ status: "expirado" })
+    .eq("protocolo", row.protocolo)
+    .eq("status", "aguardando_pagamento")
+    .select("*")
+    .maybeSingle();
+  return (atualizado as PedidoRow) ?? { ...row, status: "expirado" };
+}
+
 export async function buscarPedidoPorProtocolo(protocolo: string): Promise<PedidoResumo | null> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -287,7 +307,7 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
   }
   if (!row) return null;
 
-  let atual = row as PedidoRow;
+  let atual = await marcarExpiradoSeVencido(row as PedidoRow);
 
   // Garante que existe cobrança Pix (pedidos criados antes da integração).
   if (atual.status === "aguardando_pagamento") {
