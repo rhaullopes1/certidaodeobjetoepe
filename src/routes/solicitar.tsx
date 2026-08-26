@@ -182,7 +182,19 @@ function Solicitar() {
 
   async function finalizar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!processo) return;
+    setTocados((atual) => {
+      const novo = { ...atual };
+      extras.forEach((_, i) => {
+        novo[`e-${i}-numeroProcesso`] = true;
+        novo[`e-${i}-nomeParte`] = true;
+        novo[`e-${i}-cpf`] = true;
+      });
+      return novo;
+    });
+    if (!principalValido || !extrasValidos) {
+      setErroGeral("Confira os dados de cada certidão antes de enviar.");
+      return;
+    }
     const form = new FormData(e.currentTarget);
     const total = precoCentavos(quantidade);
     const listaCertidoes = [processo, ...extras];
