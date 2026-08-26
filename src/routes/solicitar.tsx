@@ -281,10 +281,18 @@ function Solicitar() {
 
         {etapa === 1 ? (
           <form onSubmit={avancar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
-            <Campo label="Número do processo" erro={erros.numeroProcesso}>
+            <Campo
+              label="Número do processo"
+              erro={
+                erroVisivel("p-numeroProcesso", "numeroProcesso", processo.numeroProcesso) ??
+                erros.numeroProcesso
+              }
+            >
               <input
                 name="numeroProcesso"
-                defaultValue={processo?.numeroProcesso}
+                value={processo.numeroProcesso}
+                onChange={(e) => atualizarPrincipal("numeroProcesso", e.target.value)}
+                onBlur={() => marcarTocado("p-numeroProcesso")}
                 className={inputClass}
                 placeholder="0000000-00.0000.0.00.0000"
                 maxLength={40}
@@ -292,10 +300,15 @@ function Solicitar() {
               />
             </Campo>
 
-            <Campo label="Nome completo da parte envolvida" erro={erros.nomeParte}>
+            <Campo
+              label="Nome completo da parte envolvida"
+              erro={erroVisivel("p-nomeParte", "nomeParte", processo.nomeParte) ?? erros.nomeParte}
+            >
               <input
                 name="nomeParte"
-                defaultValue={processo?.nomeParte}
+                value={processo.nomeParte}
+                onChange={(e) => atualizarPrincipal("nomeParte", e.target.value)}
+                onBlur={() => marcarTocado("p-nomeParte")}
                 className={inputClass}
                 placeholder="Ex: Maria Aparecida da Silva"
                 maxLength={120}
@@ -303,10 +316,19 @@ function Solicitar() {
               />
             </Campo>
 
-            <Campo label="CPF da parte envolvida" hint="somente números" erro={erros.cpf}>
+            <Campo
+              label="CPF da parte envolvida"
+              hint="somente números"
+              erro={erroVisivel("p-cpf", "cpf", processo.cpf) ?? erros.cpf}
+            >
               <input
                 name="cpf"
-                defaultValue={processo?.cpf}
+                value={processo.cpf}
+                onChange={(e) => {
+                  atualizarPrincipal("cpf", e.target.value);
+                  if (soDigitos(e.target.value).length === 11) marcarTocado("p-cpf");
+                }}
+                onBlur={() => marcarTocado("p-cpf")}
                 inputMode="numeric"
                 className={inputClass}
                 placeholder="000.000.000-00"
@@ -317,7 +339,8 @@ function Solicitar() {
 
             <button
               type="submit"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+              disabled={!principalValido}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Avançar
             </button>
