@@ -3,7 +3,17 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { ArrowLeft, Copy, Check, Loader2, MessageCircle, Scale, FileText } from "lucide-react";
+import {
+  ArrowLeft,
+  Copy,
+  Check,
+  Loader2,
+  MessageCircle,
+  Scale,
+  FileText,
+  Download,
+} from "lucide-react";
+import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL } from "@/lib/site";
 
