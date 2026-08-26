@@ -119,6 +119,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               description:
                 "Assessoria especializada na solicitação de Certidão de Objeto e Pé em tribunais estaduais, federais e trabalhistas de todo o Brasil.",
               areaServed: { "@type": "Country", name: "Brasil" },
+              sameAs: [
+                "https://youtube.com/@certidaodeobjetoepe",
+              ],
               contactPoint: [
                 {
                   "@type": "ContactPoint",
