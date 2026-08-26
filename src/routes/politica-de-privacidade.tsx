@@ -24,7 +24,7 @@ export const Route = createFileRoute("/politica-de-privacidade")({
 
 function Page() {
   return (
-    <div className="min-h-dvh bg-background px-5 py-16 sm:px-8">
+    <main className="min-h-dvh bg-background px-5 py-16 sm:px-8">
       <article className="mx-auto w-full max-w-3xl">
         <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground">
           ← Voltar para o início
@@ -49,6 +49,6 @@ function Page() {
           </p>
         </div>
       </article>
-    </div>
+    </main>
   );
 }
