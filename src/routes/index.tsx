@@ -115,9 +115,13 @@ function Header() {
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 sm:px-8">
         <a href="#topo" className="flex min-w-0 items-center gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl surface-navy">
-            <Scale className="h-5 w-5" strokeWidth={1.8} />
-          </span>
+          <img
+            src={logoAsset.url}
+            alt="Logo Certidão de Objeto e Pé"
+            className="h-10 w-10 shrink-0 rounded-xl object-contain"
+            width={40}
+            height={40}
+          />
           <span className="min-w-0">
             <span className="block truncate font-display text-sm font-bold leading-tight">
               Certidão Objeto e Pé
@@ -592,9 +596,14 @@ function Footer() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-gold/40">
-              <Scale className="h-5 w-5 text-gold" strokeWidth={1.8} />
-            </span>
+            <img
+              src={logoAsset.url}
+              alt="Logo Certidão de Objeto e Pé"
+              className="h-10 w-10 shrink-0 rounded-xl border border-gold/40 object-contain"
+              width={40}
+              height={40}
+              loading="lazy"
+            />
             <span className="font-display font-bold">Certidão Objeto e Pé</span>
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-primary-foreground/70">
