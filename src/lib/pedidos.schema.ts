@@ -15,6 +15,23 @@ export function cpfValido(raw: string) {
   return calc(9) === Number(cpf[9]) && calc(10) === Number(cpf[10]);
 }
 
+export const certidaoSchema = z.object({
+  numeroProcesso: z
+    .string()
+    .trim()
+    .min(10, "Informe o número do processo")
+    .max(40, "Número do processo muito longo"),
+  nomeParte: z
+    .string()
+    .trim()
+    .min(5, "Informe o nome completo da parte envolvida")
+    .max(120, "Nome muito longo")
+    .refine((v) => v.split(/\s+/).length >= 2, "Informe o nome completo"),
+  cpf: z.string().trim().refine(cpfValido, "CPF inválido"),
+});
+
+export type CertidaoInput = z.infer<typeof certidaoSchema>;
+
 export const pedidoSchema = z
   .object({
   numeroProcesso: z
@@ -29,6 +46,8 @@ export const pedidoSchema = z
     .max(120, "Nome muito longo")
     .refine((v) => v.split(/\s+/).length >= 2, "Informe o nome completo"),
     cpf: z.string().trim().refine(cpfValido, "CPF inválido"),
+    /** Uma entrada por certidão solicitada (a primeira repete os dados acima). */
+    certidoes: z.array(certidaoSchema).min(1).max(QUANTIDADE_MAXIMA),
     quantidade: z.coerce
       .number()
       .int("Quantidade inválida")
