@@ -1,5 +1,7 @@
 export const WHATSAPP_NUMBER = "558000004604";
 export const YOUTUBE_CHANNEL = "https://youtube.com/@certidaodeobjetoepe";
+export const INSTAGRAM_PROFILE = "https://www.instagram.com/certidaodeobjetoe";
+export const FACEBOOK_PAGE = "https://www.facebook.com/certidaoobjetoepe";
 
 /** Tabela de preços por quantidade de certidões (em centavos). */
 export const TABELA_PRECOS: Record<number, number> = {
