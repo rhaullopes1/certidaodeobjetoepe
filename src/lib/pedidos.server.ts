@@ -292,6 +292,44 @@ export async function marcarExpiradoSeVencido(row: PedidoRow): Promise<PedidoRow
   return (atualizado as PedidoRow) ?? { ...row, status: "expirado" };
 }
 
+/**
+ * Envia lembrete por e-mail para pedidos sem pagamento há mais de 24h
+ * (uma única vez por pedido). Executa na leitura, sem rotina externa.
+ */
+async function processarLembretesPagamento() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const limite = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { data: pendentes } = await supabaseAdmin
+    .from("pedidos")
+    .select("protocolo, email, valor_centavos")
+    .eq("status", "aguardando_pagamento")
+    .is("lembrete_enviado_em", null)
+    .lt("created_at", limite)
+    .limit(10);
+
+  if (!pendentes?.length) return;
+
+  const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+  for (const p of pendentes) {
+    try {
+      await sendTemplateEmail("pedido-lembrete", p.email, {
+        idempotencyKey: `pedido-lembrete-${p.protocolo}`,
+        templateData: {
+          protocolo: p.protocolo,
+          valor: formatarBRL(p.valor_centavos),
+          url: `https://certidaodeobjetoepe.org/pedido/${p.protocolo}`,
+        },
+      });
+    } catch (e) {
+      console.error("Falha ao enviar lembrete de pagamento", p.protocolo, e);
+    }
+    await supabaseAdmin
+      .from("pedidos")
+      .update({ lembrete_enviado_em: new Date().toISOString() })
+      .eq("protocolo", p.protocolo);
+  }
+}
+
 export async function buscarPedidoPorProtocolo(protocolo: string): Promise<PedidoResumo | null> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -308,6 +346,9 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
   if (!row) return null;
 
   let atual = await marcarExpiradoSeVencido(row as PedidoRow);
+  void processarLembretesPagamento().catch((e) =>
+    console.error("Falha ao processar lembretes", e),
+  );
 
   // Garante que existe cobrança Pix (pedidos criados antes da integração).
   if (atual.status === "aguardando_pagamento") {
