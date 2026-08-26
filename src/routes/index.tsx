@@ -19,6 +19,7 @@ import {
 import heroImage from "@/assets/hero-certidao.jpg";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
 import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE } from "@/lib/site";
+import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 
 export const Route = createFileRoute("/")({
@@ -209,6 +210,7 @@ function Hero() {
                 Tirar dúvidas no WhatsApp
               </a>
             </div>
+            <AlternativasContato tom="escuro" className="mt-4 max-w-md" />
             <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {heroTrust.map(({ icon: Icon, label }) => (
                 <li
