@@ -185,3 +185,37 @@ export const ESTADOS_SEO: EstadoSeo[] = [
 
 export const estadoPorSlug = (slug: string) =>
   ESTADOS_SEO.find((e) => e.slug === slug.toLowerCase());
+
+/** Perguntas frequentes específicas por estado (usadas no conteúdo e no schema FAQPage). */
+export function faqEstado(e: EstadoSeo): { q: string; a: string }[] {
+  return [
+    {
+      q: `Como solicitar a Certidão de Objeto e Pé em ${e.nome}?`,
+      a: `O pedido é 100% online: informe o número do processo, o nome completo e o CPF da parte envolvida em nosso formulário. Nossa equipe protocola o requerimento no ${e.tribunalNome} (${e.tribunal}) e acompanha até a emissão, com avisos por WhatsApp.`,
+    },
+    {
+      q: `Quanto tempo demora a certidão no ${e.tribunal}?`,
+      a: `Em ${e.nome} o prazo médio de emissão é de ${e.prazo}, contado após a confirmação do pagamento. Prazos podem variar conforme a vara, a comarca e o volume de processos do tribunal.`,
+    },
+    {
+      q: `Qual o valor da Certidão de Objeto e Pé em ${e.nome}?`,
+      a: `O valor é único para todo o Brasil, inclusive em ${e.nome}, e o total é calculado automaticamente conforme a quantidade de certidões solicitadas (de 1 a 5) antes da finalização do pedido. O pagamento pode ser feito por Pix com confirmação automática.`,
+    },
+    {
+      q: `Preciso de advogado ou ir ao fórum em ${e.capital}?`,
+      a: `Não. Qualquer pessoa física ou jurídica pode solicitar a certidão, sem advogado e sem comparecer ao fórum de ${e.capital} ou de qualquer outra comarca de ${e.nome}. Todo o trâmite é feito por nossa equipe.`,
+    },
+    {
+      q: `Vocês atendem todas as comarcas de ${e.nome}?`,
+      a: `Sim. Atendemos todas as comarcas de ${e.nome}, incluindo ${e.cidades.slice(0, 4).join(", ")} e demais cidades do estado, além de processos da Justiça Federal e da Justiça do Trabalho.`,
+    },
+    {
+      q: `A certidão emitida em ${e.nome} tem validade oficial?`,
+      a: `Sim. O documento é emitido pelo próprio Poder Judiciário, com assinatura e código de autenticidade que pode ser conferido no site do ${e.tribunal}. Ele tem validade em todo o território nacional.`,
+    },
+    {
+      q: `Como recebo a certidão em ${e.nome}?`,
+      a: `A certidão é entregue em formato digital (PDF) por e-mail e WhatsApp assim que o tribunal disponibiliza o documento, e também fica disponível na página do seu pedido pelo número de protocolo.`,
+    },
+  ];
+}
