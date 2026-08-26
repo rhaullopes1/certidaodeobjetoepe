@@ -122,6 +122,30 @@ function PedidoPage() {
             <p className="mt-3 text-sm text-muted-foreground">
               Guarde este número. O pedido é enviado ao tribunal após a confirmação do pagamento.
             </p>
+            <button
+              type="button"
+              onClick={() =>
+                baixarComprovantePedido({
+                  protocolo: data.protocolo,
+                  numeroProcesso: data.numeroProcesso,
+                  nomeParte: data.nomeParte,
+                  cpf: data.cpf,
+                  quantidade: data.quantidade,
+                  email: data.email,
+                  whatsapp: data.whatsapp,
+                  valorCentavos: data.valorCentavos,
+                  status: data.status,
+                  criadoEm: data.criadoEm,
+                  pagoEm: data.pagoEm,
+                  observacoes: data.observacoes,
+                  certidoes: data.certidoes,
+                })
+              }
+              className="mt-5 inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+            >
+              <Download className="h-4 w-4 text-accent" />
+              Baixar comprovante em PDF
+            </button>
 
             {(() => {
               const st = statusPedido(data.status);
