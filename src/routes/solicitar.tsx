@@ -423,10 +423,17 @@ function Solicitar() {
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       Certidão {i + 2}
                     </p>
-                    <Campo label="Número do processo" erro={erros[`extra-${i}-numeroProcesso`]}>
+                    <Campo
+                      label="Número do processo"
+                      erro={
+                        erroVisivel(`e-${i}-numeroProcesso`, "numeroProcesso", c.numeroProcesso) ??
+                        erros[`extra-${i}-numeroProcesso`]
+                      }
+                    >
                       <input
                         value={c.numeroProcesso}
                         onChange={(e) => atualizarExtra(i, "numeroProcesso", e.target.value)}
+                        onBlur={() => marcarTocado(`e-${i}-numeroProcesso`)}
                         className={inputClass}
                         placeholder="0000000-00.0000.0.00.0000"
                         maxLength={40}
@@ -435,21 +442,33 @@ function Solicitar() {
                     </Campo>
                     <Campo
                       label="Nome completo da parte envolvida"
-                      erro={erros[`extra-${i}-nomeParte`]}
+                      erro={
+                        erroVisivel(`e-${i}-nomeParte`, "nomeParte", c.nomeParte) ??
+                        erros[`extra-${i}-nomeParte`]
+                      }
                     >
                       <input
                         value={c.nomeParte}
                         onChange={(e) => atualizarExtra(i, "nomeParte", e.target.value)}
+                        onBlur={() => marcarTocado(`e-${i}-nomeParte`)}
                         className={inputClass}
                         placeholder="Ex: Maria Aparecida da Silva"
                         maxLength={120}
                         required
                       />
                     </Campo>
-                    <Campo label="CPF da parte envolvida" hint="somente números" erro={erros[`extra-${i}-cpf`]}>
+                    <Campo
+                      label="CPF da parte envolvida"
+                      hint="somente números"
+                      erro={erroVisivel(`e-${i}-cpf`, "cpf", c.cpf) ?? erros[`extra-${i}-cpf`]}
+                    >
                       <input
                         value={c.cpf}
-                        onChange={(e) => atualizarExtra(i, "cpf", e.target.value)}
+                        onChange={(e) => {
+                          atualizarExtra(i, "cpf", e.target.value);
+                          if (soDigitos(e.target.value).length === 11) marcarTocado(`e-${i}-cpf`);
+                        }}
+                        onBlur={() => marcarTocado(`e-${i}-cpf`)}
                         inputMode="numeric"
                         className={inputClass}
                         placeholder="000.000.000-00"
