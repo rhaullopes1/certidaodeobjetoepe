@@ -24,7 +24,9 @@ export const Route = createFileRoute("/solicitar")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://certidaodeobjetoepe.org/solicitar" },
     ],
+    links: [{ rel: "canonical", href: "https://certidaodeobjetoepe.org/solicitar" }],
   }),
 });
 
