@@ -121,6 +121,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               areaServed: { "@type": "Country", name: "Brasil" },
               sameAs: [
                 "https://youtube.com/@certidaodeobjetoepe",
+                "https://www.instagram.com/certidaodeobjetoe",
+                "https://www.facebook.com/certidaoobjetoepe",
               ],
               contactPoint: [
                 {
