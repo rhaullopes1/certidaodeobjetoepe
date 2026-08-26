@@ -1,4 +1,5 @@
-import { PIX, precoCentavos } from "./site";
+import { PIX, precoCentavos, formatarBRL } from "./site";
+
 import { gerarPixCopiaECola } from "./pix";
 import {
   soDigitos,
@@ -173,6 +174,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
 
   const resumo = montar(await gerarCobranca(row));
   await enviarConfirmacaoPorEmail(resumo, certidoes);
+  await enviarNotificacaoAdmin(resumo, certidoes);
   return resumo;
 }
 
@@ -189,10 +191,7 @@ async function enviarConfirmacaoPorEmail(
       templateData: {
         protocolo: resumo.protocolo,
         quantidade: certidoes.length,
-        valor: (resumo.valorCentavos / 100).toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }),
+        valor: formatarBRL(resumo.valorCentavos),
         certidoes,
         url: `https://certidaodeobjetoepe.org/pedido/${resumo.protocolo}`,
       },
@@ -201,6 +200,40 @@ async function enviarConfirmacaoPorEmail(
     console.error("Falha ao enviar e-mail de confirmação", e);
   }
 }
+
+/** Notifica a equipe a cada venda confirmada pelo site. Best-effort: não bloqueia o pedido. */
+async function enviarNotificacaoAdmin(
+  resumo: PedidoResumo,
+  certidoes: Array<{ numeroProcesso: string; nomeParte: string; cpf: string }>,
+) {
+  const emailsAdmin = [
+    "certidaoobjetoepe@gmail.com",
+    "objetoepe@gmail.com",
+  ];
+
+  try {
+    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+    await Promise.all(
+      emailsAdmin.map((email) =>
+        sendTemplateEmail("novo-pedido-admin", email, {
+          idempotencyKey: `novo-pedido-admin-${resumo.protocolo}-${email}`,
+          templateData: {
+            protocolo: resumo.protocolo,
+            quantidade: certidoes.length,
+            valor: formatarBRL(resumo.valorCentavos),
+            email: resumo.email,
+            whatsapp: resumo.whatsapp,
+            certidoes,
+            url: `https://certidaodeobjetoepe.org/admin/${resumo.protocolo}`,
+          },
+        }),
+      ),
+    );
+  } catch (e) {
+    console.error("Falha ao enviar notificação interna de novo pedido", e);
+  }
+}
+
 
 
 type PedidoRow = Parameters<typeof montar>[0] & { pagbank_order_id?: string | null };

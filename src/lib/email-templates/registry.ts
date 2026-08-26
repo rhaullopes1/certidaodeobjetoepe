@@ -1,5 +1,7 @@
 import type { ComponentType } from 'react'
 import { template as pedidoConfirmacao } from './pedido-confirmacao'
+import { template as novoPedidoAdmin } from './novo-pedido-admin'
+
 
 
 export interface TemplateEntry {
@@ -21,5 +23,7 @@ export interface TemplateEntry {
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'pedido-confirmacao': pedidoConfirmacao,
+  'novo-pedido-admin': novoPedidoAdmin,
 }
+
 
