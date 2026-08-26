@@ -171,7 +171,32 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     throw new Error("Valor gravado divergente do esperado.");
   }
 
-  return montar(await gerarCobranca(row));
+  const resumo = montar(await gerarCobranca(row));
+
+  // Confirmação automática por WhatsApp (admin + cliente). Nunca bloqueia o pedido.
+  try {
+    const { notificarAdminNovoPedido, notificarClientePedidoRecebido } = await import(
+      "./whatsapp.server"
+    );
+    const notificacao = {
+      protocolo: resumo.protocolo,
+      quantidade: resumo.quantidade,
+      valorCentavos: resumo.valorCentavos,
+      email: resumo.email,
+      whatsapp: registro.whatsapp,
+      certidoes,
+      observacoes: registro.observacoes,
+    };
+    const base = process.env["BASE_URL"] ?? "https://certidaodeobjetoepe.org";
+    await Promise.all([
+      notificarAdminNovoPedido(notificacao),
+      notificarClientePedidoRecebido(notificacao, `${base}/pedido/${resumo.protocolo}`),
+    ]);
+  } catch (e) {
+    console.error("Falha ao enviar confirmação por WhatsApp", e);
+  }
+
+  return resumo;
 }
 
 type PedidoRow = Parameters<typeof montar>[0] & { pagbank_order_id?: string | null };
