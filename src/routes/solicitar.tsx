@@ -540,7 +540,7 @@ function Solicitar() {
 
             <button
               type="submit"
-              disabled={enviando}
+              disabled={enviando || !principalValido || !extrasValidos}
               className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               {enviando ? (
