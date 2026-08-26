@@ -622,6 +622,9 @@ function Footer() {
             <li><Link to="/solicitar" className="hover:text-primary-foreground">Solicitar certidão</Link></li>
             <li><Link to="/certidao-de-objeto-e-pe" className="hover:text-primary-foreground">Certidão por estado</Link></li>
             <li><Link to="/certidao-objeto-e-pe-tjsp" className="hover:text-primary-foreground">Certidão de Objeto e Pé TJSP</Link></li>
+            <li><Link to="/tribunais" className="hover:text-primary-foreground">Todos os tribunais</Link></li>
+            <li><Link to="/blog" className="hover:text-primary-foreground">Blog</Link></li>
+
             <li><a href="#faq" className="hover:text-primary-foreground">Perguntas frequentes</a></li>
 
           </ul>

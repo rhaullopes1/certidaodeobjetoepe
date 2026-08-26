@@ -22,6 +22,8 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CertidaoDeObjetoEPeIndexRouteImport } from './routes/certidao-de-objeto-e-pe.index'
 import { Route as CertidaoDeObjetoEPeUfRouteImport } from './routes/certidao-de-objeto-e-pe.$uf'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
+import { Route as TribunaisIndexRouteImport } from './routes/tribunais.index'
+import { Route as TribunaisSiglaRouteImport } from './routes/tribunais.$sigla'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
@@ -95,6 +97,16 @@ const PedidoProtocoloRoute = PedidoProtocoloRouteImport.update({
   path: '/pedido/$protocolo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TribunaisIndexRoute = TribunaisIndexRouteImport.update({
+  id: '/tribunais/',
+  path: '/tribunais/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TribunaisSiglaRoute = TribunaisSiglaRouteImport.update({
+  id: '/tribunais/$sigla',
+  path: '/tribunais/$sigla',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -147,8 +159,10 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
+  '/tribunais/': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -168,8 +182,10 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe': typeof CertidaoDeObjetoEPeIndexRoute
+  '/tribunais': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -191,8 +207,10 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
+  '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
+  '/tribunais/': typeof TribunaisIndexRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -214,8 +232,10 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/tribunais/$sigla'
     | '/blog/'
     | '/certidao-de-objeto-e-pe/'
+    | '/tribunais/'
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
@@ -235,8 +255,10 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/tribunais/$sigla'
     | '/blog'
     | '/certidao-de-objeto-e-pe'
+    | '/tribunais'
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
@@ -257,8 +279,10 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/pedido/$protocolo'
+    | '/tribunais/$sigla'
     | '/blog/'
     | '/certidao-de-objeto-e-pe/'
+    | '/tribunais/'
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/historico'
@@ -280,8 +304,10 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
+  TribunaisSiglaRoute: typeof TribunaisSiglaRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
+  TribunaisIndexRoute: typeof TribunaisIndexRoute
   BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
@@ -380,6 +406,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PedidoProtocoloRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tribunais/': {
+      id: '/tribunais/'
+      path: '/tribunais'
+      fullPath: '/tribunais/'
+      preLoaderRoute: typeof TribunaisIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tribunais/$sigla': {
+      id: '/tribunais/$sigla'
+      path: '/tribunais/$sigla'
+      fullPath: '/tribunais/$sigla'
+      preLoaderRoute: typeof TribunaisSiglaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
@@ -461,8 +501,10 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
+  TribunaisSiglaRoute: TribunaisSiglaRoute,
   BlogIndexRoute: BlogIndexRoute,
   CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
+  TribunaisIndexRoute: TribunaisIndexRoute,
   BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
