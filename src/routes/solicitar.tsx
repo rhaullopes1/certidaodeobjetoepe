@@ -7,6 +7,8 @@ import {
   pedidoSchema,
   etapaProcessoSchema,
   certidaoSchema,
+  cpfValido,
+  soDigitos,
   type EtapaProcessoInput,
 } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
