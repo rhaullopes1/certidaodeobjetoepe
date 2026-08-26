@@ -661,6 +661,7 @@ function Footer() {
             <MessageCircle className="h-4 w-4" />
             Falar no WhatsApp
           </a>
+          <AlternativasContato tom="escuro" className="mt-3" />
           <a
             href={YOUTUBE_CHANNEL}
             target="_blank"

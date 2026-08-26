@@ -431,6 +431,9 @@ function Solicitar() {
                       }
                     >
                       <input
+                        id={`certidao-${i + 2}-processo`}
+                        name={`certidoes[${i + 1}].numeroProcesso`}
+                        autoComplete="off"
                         value={c.numeroProcesso}
                         onChange={(e) => atualizarExtra(i, "numeroProcesso", e.target.value)}
                         onBlur={() => marcarTocado(`e-${i}-numeroProcesso`)}
@@ -448,6 +451,9 @@ function Solicitar() {
                       }
                     >
                       <input
+                        id={`certidao-${i + 2}-nome`}
+                        name={`certidoes[${i + 1}].nomeParte`}
+                        autoComplete="off"
                         value={c.nomeParte}
                         onChange={(e) => atualizarExtra(i, "nomeParte", e.target.value)}
                         onBlur={() => marcarTocado(`e-${i}-nomeParte`)}
@@ -463,6 +469,9 @@ function Solicitar() {
                       erro={erroVisivel(`e-${i}-cpf`, "cpf", c.cpf) ?? erros[`extra-${i}-cpf`]}
                     >
                       <input
+                        id={`certidao-${i + 2}-cpf`}
+                        name={`certidoes[${i + 1}].cpf`}
+                        autoComplete="off"
                         value={c.cpf}
                         onChange={(e) => {
                           atualizarExtra(i, "cpf", e.target.value);
