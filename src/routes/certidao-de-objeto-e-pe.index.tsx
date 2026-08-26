@@ -23,8 +23,8 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/")({
     ],
     links: [
       { rel: "canonical", href: URL },
-      { rel: "alternate", hrefLang: "pt-BR", href: URL },
-      { rel: "alternate", hrefLang: "x-default", href: URL },
+      { rel: "alternate", hreflang: "pt-BR", href: URL },
+      { rel: "alternate", hreflang: "x-default", href: URL },
     ],
     scripts: [
       {

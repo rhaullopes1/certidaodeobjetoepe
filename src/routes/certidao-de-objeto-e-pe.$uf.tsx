@@ -53,8 +53,8 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
       ],
       links: [
         { rel: "canonical", href: url },
-        { rel: "alternate", hrefLang: "pt-BR", href: url },
-        { rel: "alternate", hrefLang: "x-default", href: url },
+        { rel: "alternate", hreflang: "pt-BR", href: url },
+        { rel: "alternate", hreflang: "x-default", href: url },
       ],
       scripts: [
         {
