@@ -45,8 +45,8 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
           ? { status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() }
           : { status: "cancelado" };
 
-        const query = supabaseAdmin.from("pedidos").update(patch).select("*");
-        const { data: linhas, error } = situacao.referenceId
+        const query = supabaseAdmin.from("pedidos").update(patch);
+        const { error } = situacao.referenceId
           ? await query.eq("protocolo", situacao.referenceId)
           : await query.eq("pagbank_order_id", paymentId);
 
@@ -55,19 +55,6 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
           return new Response("erro ao gravar", { status: 500 });
         }
 
-        const pedido = linhas?.[0];
-        if (situacao.pago && pedido) {
-          try {
-            const { notificarPagamentoConfirmado } = await import("@/lib/whatsapp.server");
-            await notificarPagamentoConfirmado({
-              protocolo: pedido.protocolo,
-              whatsapp: pedido.whatsapp,
-              valorCentavos: pedido.valor_centavos,
-            });
-          } catch (e) {
-            console.error("Falha ao notificar pagamento por WhatsApp", e);
-          }
-        }
 
         return new Response("ok");
       },
