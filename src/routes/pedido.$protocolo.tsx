@@ -166,6 +166,21 @@ function PedidoPage() {
                   <Linha label="WhatsApp" valor={data.whatsapp} />
                   <Linha label="Total" valor={formatarBRL(data.valorCentavos)} />
                 </div>
+                {data.certidoes.length > 1 && (
+                  <div className="mt-4 space-y-2">
+                    <p className="text-sm font-semibold">Certidões solicitadas</p>
+                    {data.certidoes.map((c, i) => (
+                      <div key={i} className="rounded-xl bg-secondary px-4 py-3 text-sm">
+                        <p className="font-semibold">
+                          {i + 1}. {c.numeroProcesso}
+                        </p>
+                        <p className="text-muted-foreground">
+                          {c.nomeParte} — CPF {c.cpf}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {data.observacoes && (
                   <p className="mt-4 rounded-xl bg-secondary px-4 py-3 text-sm text-muted-foreground">
                     {data.observacoes}
