@@ -119,7 +119,7 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
 
 function EstadoNaoEncontrado() {
   return (
-    <div className="grid min-h-screen place-items-center px-6 text-center">
+    <div className="grid min-h-dvh place-items-center px-6 text-center">
       <div>
         <h1 className="text-2xl font-bold">Estado não encontrado</h1>
         <Link to="/certidao-de-objeto-e-pe" className="mt-4 inline-block text-sm font-semibold underline">
@@ -137,7 +137,7 @@ function EstadoPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 sm:px-8">
           <Link to="/" className="flex min-w-0 items-center gap-3">

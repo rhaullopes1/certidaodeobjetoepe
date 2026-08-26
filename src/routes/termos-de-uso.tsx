@@ -18,13 +18,13 @@ export const Route = createFileRoute("/termos-de-uso")({
       { property: "og:url", content: "/termos-de-uso" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "/termos-de-uso" }],
+    links: [{ rel: "canonical", href: "https://certidaodeobjetoepe.org/termos-de-uso" }],
   }),
 });
 
 function Page() {
   return (
-    <div className="min-h-screen bg-background px-5 py-16 sm:px-8">
+    <div className="min-h-dvh bg-background px-5 py-16 sm:px-8">
       <article className="mx-auto w-full max-w-3xl">
         <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground">
           ← Voltar para o início

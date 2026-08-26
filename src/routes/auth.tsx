@@ -92,7 +92,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="grid min-h-screen place-items-center bg-secondary/40 px-5 py-12">
+    <div className="grid min-h-dvh place-items-center bg-secondary/40 px-5 py-12">
       <div className="w-full max-w-md">
         <Link
           to="/"

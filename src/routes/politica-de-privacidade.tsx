@@ -18,13 +18,13 @@ export const Route = createFileRoute("/politica-de-privacidade")({
       { property: "og:url", content: "/politica-de-privacidade" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "/politica-de-privacidade" }],
+    links: [{ rel: "canonical", href: "https://certidaodeobjetoepe.org/politica-de-privacidade" }],
   }),
 });
 
 function Page() {
   return (
-    <div className="min-h-screen bg-background px-5 py-16 sm:px-8">
+    <div className="min-h-dvh bg-background px-5 py-16 sm:px-8">
       <article className="mx-auto w-full max-w-3xl">
         <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground">
           ← Voltar para o início
