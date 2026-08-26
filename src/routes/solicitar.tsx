@@ -3,7 +3,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState, type FormEvent } from "react";
 import { ArrowLeft, Loader2, ShieldCheck, CheckCircle2, Scale } from "lucide-react";
 import { TABELA_PRECOS, formatarBRL, precoCentavos } from "@/lib/site";
-import { pedidoSchema, etapaProcessoSchema, type EtapaProcessoInput } from "@/lib/pedidos.schema";
+import {
+  pedidoSchema,
+  etapaProcessoSchema,
+  certidaoSchema,
+  type EtapaProcessoInput,
+} from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
 
 export const Route = createFileRoute("/solicitar")({
@@ -62,6 +67,23 @@ function Solicitar() {
   const [etapa, setEtapa] = useState<1 | 2>(1);
   const [processo, setProcesso] = useState<EtapaProcessoInput | null>(null);
   const [quantidade, setQuantidade] = useState(1);
+  const [extras, setExtras] = useState<EtapaProcessoInput[]>([]);
+
+  function alterarQuantidade(q: number) {
+    setQuantidade(q);
+    setExtras((atual) => {
+      const alvo = q - 1;
+      const proximo = atual.slice(0, alvo);
+      while (proximo.length < alvo) {
+        proximo.push({ numeroProcesso: "", nomeParte: "", cpf: "" });
+      }
+      return proximo;
+    });
+  }
+
+  function atualizarExtra(i: number, campo: keyof EtapaProcessoInput, valor: string) {
+    setExtras((atual) => atual.map((c, idx) => (idx === i ? { ...c, [campo]: valor } : c)));
+  }
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
@@ -98,8 +120,10 @@ function Solicitar() {
     if (!processo) return;
     const form = new FormData(e.currentTarget);
     const total = precoCentavos(quantidade);
+    const listaCertidoes = [processo, ...extras];
     const bruto = {
       ...processo,
+      certidoes: listaCertidoes,
       quantidade,
       valorTotalCentavos: total,
       email: String(form.get("email") ?? ""),
@@ -113,6 +137,15 @@ function Solicitar() {
     if (confirmaEmail !== bruto.email.trim().toLowerCase()) {
       novosErros.confirmaEmail = "Os e-mails não conferem.";
     }
+    extras.forEach((c, i) => {
+      const r = certidaoSchema.safeParse(c);
+      if (!r.success) {
+        for (const issue of r.error.issues) {
+          const chave = `extra-${i}-${String(issue.path[0])}`;
+          if (!novosErros[chave]) novosErros[chave] = issue.message;
+        }
+      }
+    });
     if (!QUANTIDADES.includes(quantidade) || total !== precoCentavos(quantidade)) {
       novosErros.valorTotalCentavos =
         "O valor não corresponde à quantidade selecionada. Escolha a quantidade novamente.";
@@ -241,7 +274,7 @@ function Solicitar() {
                     <button
                       key={q}
                       type="button"
-                      onClick={() => setQuantidade(q)}
+                      onClick={() => alterarQuantidade(q)}
                       className={`rounded-2xl border px-3 py-4 text-center transition-colors ${
                         ativo
                           ? "border-primary bg-primary text-primary-foreground"
@@ -276,6 +309,58 @@ function Solicitar() {
                 Pagamento via Pix após a confirmação do pedido
               </p>
             </div>
+
+            {extras.length > 0 && (
+              <div className="space-y-5">
+                <p className="text-sm font-semibold">
+                  Dados das demais certidões
+                  <span className="ml-2 text-xs font-normal text-muted-foreground">
+                    cada certidão exige processo, nome e CPF próprios
+                  </span>
+                </p>
+                {extras.map((c, i) => (
+                  <div key={i} className="space-y-4 rounded-2xl border border-input bg-card p-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      Certidão {i + 2}
+                    </p>
+                    <Campo label="Número do processo" erro={erros[`extra-${i}-numeroProcesso`]}>
+                      <input
+                        value={c.numeroProcesso}
+                        onChange={(e) => atualizarExtra(i, "numeroProcesso", e.target.value)}
+                        className={inputClass}
+                        placeholder="0000000-00.0000.0.00.0000"
+                        maxLength={40}
+                        required
+                      />
+                    </Campo>
+                    <Campo
+                      label="Nome completo da parte envolvida"
+                      erro={erros[`extra-${i}-nomeParte`]}
+                    >
+                      <input
+                        value={c.nomeParte}
+                        onChange={(e) => atualizarExtra(i, "nomeParte", e.target.value)}
+                        className={inputClass}
+                        placeholder="Ex: Maria Aparecida da Silva"
+                        maxLength={120}
+                        required
+                      />
+                    </Campo>
+                    <Campo label="CPF da parte envolvida" hint="somente números" erro={erros[`extra-${i}-cpf`]}>
+                      <input
+                        value={c.cpf}
+                        onChange={(e) => atualizarExtra(i, "cpf", e.target.value)}
+                        inputMode="numeric"
+                        className={inputClass}
+                        placeholder="000.000.000-00"
+                        maxLength={14}
+                        required
+                      />
+                    </Campo>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {erros.valorTotalCentavos && (
               <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
