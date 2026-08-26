@@ -6,13 +6,15 @@ import {
   ArrowRight,
   Download,
   Loader2,
+  Mail,
   MessageCircle,
   Scale,
   Search,
 } from "lucide-react";
 import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
-import { consultarPedido } from "@/lib/pedidos.functions";
+import { consultarPedido, reenviarEmailPedido } from "@/lib/pedidos.functions";
 import { statusPedido, formatarBRL, whatsappLink, FLUXO_STATUS } from "@/lib/site";
+import { AlternativasContato } from "@/components/site/alternativas-contato";
 
 export const Route = createFileRoute("/acompanhar")({
   component: AcompanharPage,
@@ -44,17 +46,40 @@ export const Route = createFileRoute("/acompanhar")({
 
 type Pedido = Awaited<ReturnType<typeof consultarPedido>>;
 
-const ETAPAS = FLUXO_STATUS.filter((s) => s !== "cancelado");
+const ETAPAS = FLUXO_STATUS.filter((s) => s !== "cancelado" && s !== "expirado");
 
 const dataBR = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
 
 function AcompanharPage() {
   const buscar = useServerFn(consultarPedido);
+  const reenviar = useServerFn(reenviarEmailPedido);
   const [protocolo, setProtocolo] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [pedido, setPedido] = useState<Pedido | null>(null);
+  const [reenvioStatus, setReenvioStatus] = useState<string | null>(null);
+  const [reenviando, setReenviando] = useState(false);
+
+  async function reenviarPorEmail() {
+    if (!pedido) return;
+    setReenviando(true);
+    setReenvioStatus(null);
+    try {
+      const { enviado } = await reenviar({
+        data: { protocolo: pedido.protocolo, email: pedido.email },
+      });
+      setReenvioStatus(
+        enviado
+          ? `Link reenviado para ${pedido.email}.`
+          : "Não foi possível reenviar agora. Tente novamente.",
+      );
+    } catch {
+      setReenvioStatus("Não foi possível reenviar agora. Tente novamente.");
+    } finally {
+      setReenviando(false);
+    }
+  }
 
   async function consultar(e: React.FormEvent) {
     e.preventDefault();
@@ -81,7 +106,7 @@ function AcompanharPage() {
   }
 
   const info = pedido ? statusPedido(pedido.status) : null;
-  const cancelado = pedido?.status === "cancelado";
+  const cancelado = pedido?.status === "cancelado" || pedido?.status === "expirado";
   const etapaAtual = pedido ? ETAPAS.indexOf(pedido.status as (typeof ETAPAS)[number]) : -1;
   const comprovanteLiberado = Boolean(pedido);
 
@@ -278,7 +303,24 @@ function AcompanharPage() {
                   <MessageCircle className="h-4 w-4 text-accent" />
                   Falar no WhatsApp
                 </a>
+                <button
+                  type="button"
+                  onClick={reenviarPorEmail}
+                  disabled={reenviando}
+                  className="inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary disabled:opacity-50"
+                >
+                  {reenviando ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-accent" />
+                  ) : (
+                    <Mail className="h-4 w-4 text-accent" />
+                  )}
+                  Reenviar link por e-mail
+                </button>
               </div>
+              {reenvioStatus && (
+                <p className="mt-3 text-sm font-medium text-muted-foreground">{reenvioStatus}</p>
+              )}
+              <AlternativasContato className="mt-4" />
             </div>
           </section>
         )}
