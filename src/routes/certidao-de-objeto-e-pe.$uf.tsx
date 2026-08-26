@@ -39,6 +39,7 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
     const e = loaderData.estado;
     const title = `Certidão de Objeto e Pé ${e.uf} (${e.tribunal}) | Solicite Online`;
     const description = `Certidão de Objeto e Pé em ${e.nome}: solicite online processos do ${e.tribunal} e demais tribunais do ${e.uf}. Entrega em ${e.prazo}, com atendimento por WhatsApp.`;
+    const url = `${SITE}/certidao-de-objeto-e-pe/${params.uf}`;
 
     return {
       meta: [
