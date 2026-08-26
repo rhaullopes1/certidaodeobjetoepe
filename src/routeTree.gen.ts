@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
@@ -40,6 +41,11 @@ const AuthRoute = AuthRouteImport.update({
 const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
   id: '/politica-de-privacidade',
   path: '/politica-de-privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SolicitarRoute = SolicitarRouteImport.update({
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/politica-de-privacidade'
+    | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/politica-de-privacidade'
+    | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/politica-de-privacidade'
+    | '/sitemap.xml'
     | '/solicitar'
     | '/termos-de-uso'
     | '/pedido/$protocolo'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SolicitarRoute: typeof SolicitarRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
@@ -223,6 +236,13 @@ declare module '@tanstack/react-router' {
       path: '/politica-de-privacidade'
       fullPath: '/politica-de-privacidade'
       preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/solicitar': {
@@ -313,6 +333,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SolicitarRoute: SolicitarRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
