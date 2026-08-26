@@ -171,8 +171,37 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     throw new Error("Valor gravado divergente do esperado.");
   }
 
-  return montar(await gerarCobranca(row));
+  const resumo = montar(await gerarCobranca(row));
+  await enviarConfirmacaoPorEmail(resumo, certidoes);
+  return resumo;
 }
+
+/** Envio best-effort do e-mail de confirmação; nunca bloqueia a criação do pedido. */
+async function enviarConfirmacaoPorEmail(
+  resumo: PedidoResumo,
+  certidoes: Array<{ numeroProcesso: string; nomeParte: string; cpf: string }>,
+) {
+  if (!resumo.email) return;
+  try {
+    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+    await sendTemplateEmail("pedido-confirmacao", resumo.email, {
+      idempotencyKey: `pedido-confirmacao-${resumo.protocolo}`,
+      templateData: {
+        protocolo: resumo.protocolo,
+        quantidade: certidoes.length,
+        valor: (resumo.valorCentavos / 100).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }),
+        certidoes,
+        url: `https://certidaodeobjetoepe.org/pedido/${resumo.protocolo}`,
+      },
+    });
+  } catch (e) {
+    console.error("Falha ao enviar e-mail de confirmação", e);
+  }
+}
+
 
 type PedidoRow = Parameters<typeof montar>[0] & { pagbank_order_id?: string | null };
 
