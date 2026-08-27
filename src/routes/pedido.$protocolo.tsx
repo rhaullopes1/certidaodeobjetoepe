@@ -63,6 +63,17 @@ function PedidoPage() {
   const [copiado, setCopiado] = useState(false);
 
   useEffect(() => {
+    if (data?.protocolo && typeof window !== "undefined" && "gtag" in window) {
+      // Event snippet for Google Ads conversion: pedido gerado
+      (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
+        "event",
+        "conversion",
+        { send_to: "AW-18411209847/ZLw3CNazkOgcEPeIk8tE" }
+      );
+    }
+  }, [data?.protocolo]);
+
+  useEffect(() => {
     if (!data?.pixCopiaECola) return;
     QRCode.toDataURL(data.pixCopiaECola, { width: 480, margin: 1 })
       .then(setQr)
