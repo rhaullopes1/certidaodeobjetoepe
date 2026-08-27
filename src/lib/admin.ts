@@ -89,15 +89,18 @@ export async function listarPedidos(f: Filtros): Promise<PedidoAdmin[]> {
   const { data, error } = await query.returns<PedidoAdmin[]>();
   if (error) throw error;
 
-  // Marca como "expirado" os pedidos sem pagamento há mais de 7 dias (na leitura).
-  const { marcarExpiradoSeVencido } = await import("./pedidos.server");
-  return Promise.all(
-    (data ?? []).map((p) =>
-      marcarExpiradoSeVencido(p as Parameters<typeof marcarExpiradoSeVencido>[0]).then(
-        (atual) => atual as PedidoAdmin,
-      ),
-    ),
-  );
+  // Exibe como "expirado" os pedidos sem pagamento há mais de 7 dias.
+  // A gravação no banco acontece no servidor (leitura pública/webhook).
+  return (data ?? []).map(comStatusExpirado);
+}
+
+const DIAS_PARA_EXPIRAR = 7;
+
+function comStatusExpirado<T extends { status: string; created_at: string }>(p: T): T {
+  if (p.status !== "aguardando_pagamento") return p;
+  const criadoEm = new Date(p.created_at).getTime();
+  if (Date.now() - criadoEm < DIAS_PARA_EXPIRAR * 24 * 60 * 60 * 1000) return p;
+  return { ...p, status: "expirado" };
 }
 
 export async function buscarPedidoAdmin(protocolo: string) {
@@ -108,10 +111,7 @@ export async function buscarPedidoAdmin(protocolo: string) {
     .maybeSingle<PedidoAdmin>();
   if (error) throw error;
   if (!data) return data;
-  const { marcarExpiradoSeVencido } = await import("./pedidos.server");
-  return (await marcarExpiradoSeVencido(
-    data as Parameters<typeof marcarExpiradoSeVencido>[0],
-  )) as PedidoAdmin;
+  return comStatusExpirado(data);
 }
 
 export type Andamento = {
