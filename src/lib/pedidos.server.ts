@@ -127,6 +127,44 @@ function validarCertidaoNoServidor(c: { numeroProcesso: string; nomeParte: strin
   return { numeroProcesso, nomeParte, cpf };
 }
 
+/**
+ * Lê o usuário logado a partir do cabeçalho Authorization, quando existir.
+ * O pedido continua funcionando sem conta; havendo conta, fica vinculado a ela.
+ */
+export async function usuarioOpcionalDaRequisicao(): Promise<string | null> {
+  try {
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const request = getRequest();
+    const header = request?.headers?.get("authorization");
+    if (!header?.startsWith("Bearer ")) return null;
+    const token = header.slice(7);
+    if (token.split(".").length !== 3) return null;
+
+    const { createClient } = await import("@supabase/supabase-js");
+    const url = process.env["SUPABASE_URL"];
+    const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+    if (!url || !key) return null;
+    const cliente = createClient(url, key, {
+      auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+      global: {
+        fetch: (input, init) => {
+          const headers = new Headers(init?.headers);
+          if (key.startsWith("sb_") && headers.get("Authorization") === `Bearer ${key}`) {
+            headers.delete("Authorization");
+          }
+          headers.set("apikey", key);
+          return fetch(input, { ...init, headers });
+        },
+      },
+    });
+    const { data, error } = await cliente.auth.getClaims(token);
+    if (error || !data?.claims?.sub) return null;
+    return String(data.claims.sub);
+  } catch {
+    return null;
+  }
+}
+
 export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResumo> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -155,6 +193,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     whatsapp: soDigitos(data.whatsapp),
     observacoes: data.observacoes ? data.observacoes.trim() : null,
     valor_centavos: valorCentavos,
+    user_id: await usuarioOpcionalDaRequisicao(),
   };
 
   const { data: row, error } = await supabaseAdmin
