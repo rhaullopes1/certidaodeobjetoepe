@@ -114,6 +114,11 @@ function Solicitar() {
   const [modoLogin, setModoLogin] = useState(false);
 
   useEffect(() => {
+    trackBeginCheckout();
+  }, []);
+
+
+  useEffect(() => {
     let ativo = true;
     supabase.auth.getUser().then(({ data }) => {
       if (ativo) setSessaoEmail(data.user?.email ?? null);
