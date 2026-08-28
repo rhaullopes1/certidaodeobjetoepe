@@ -46,6 +46,22 @@ export function PageShell({ children }: { children: ReactNode }) {
             <Link to="/tribunais" className="hover:text-primary-foreground">Tribunais</Link>
             <Link to="/politica-de-privacidade" className="hover:text-primary-foreground">Privacidade</Link>
             <Link to="/termos-de-uso" className="hover:text-primary-foreground">Termos</Link>
+            <a
+              href={GOOGLE_PROFILE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary-foreground"
+            >
+              Google
+            </a>
+            <a
+              href={TIKTOK_PROFILE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary-foreground"
+            >
+              TikTok
+            </a>
           </div>
         </div>
       </footer>
