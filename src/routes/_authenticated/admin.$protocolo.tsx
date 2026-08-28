@@ -113,7 +113,7 @@ function AdminDetalhe() {
     <div className="min-h-dvh bg-secondary/40">
       <AdminHeader />
 
-      <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8">
+      <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-8 sm:py-10">
         <Link
           to="/admin"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"

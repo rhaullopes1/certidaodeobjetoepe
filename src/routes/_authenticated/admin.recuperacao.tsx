@@ -122,7 +122,7 @@ function RecuperacaoPage() {
     <div className="min-h-dvh bg-secondary/40">
       <AdminHeader />
 
-      <main className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8">
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-8 sm:py-10">
         {permissao.isPending && (
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" /> Verificando acesso...
@@ -217,7 +217,7 @@ function RecuperacaoPage() {
                 </div>
 
                 <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10">
-                  <table className="w-full min-w-[820px] text-left text-sm">
+                  <table className="w-full min-w-[760px] text-left text-sm">
                     <thead className="bg-white/5 text-xs uppercase tracking-wide text-white/50">
                       <tr>
                         <th className="px-4 py-3">Cliente</th>

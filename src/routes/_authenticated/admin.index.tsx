@@ -164,7 +164,7 @@ function AdminLista() {
     <div className="min-h-dvh bg-secondary/40">
       <AdminHeader />
 
-      <main className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8">
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-8 sm:py-10">
         <h1 className="font-display text-2xl font-bold">Pedidos</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Busque por protocolo, CPF ou estado do processo e acompanhe até a emissão da certidão.
@@ -270,7 +270,7 @@ function AdminLista() {
 
             {lista.length > 0 && (
               <div className="card-premium mt-8 overflow-x-auto">
-                <table className="w-full min-w-[820px] text-left text-sm">
+                <table className="w-full min-w-[760px] text-left text-sm">
                   <thead className="border-b border-border/70 text-xs uppercase tracking-wide text-muted-foreground">
                     <tr>
                       <th className="px-5 py-4">Protocolo</th>
