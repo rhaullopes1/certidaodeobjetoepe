@@ -713,6 +713,43 @@ function Footer() {
             </svg>
             Facebook
           </a>
+          <a
+            href={GOOGLE_PROFILE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary-foreground/85 hover:text-primary-foreground"
+            aria-label="Perfil no Google Certidão de Objeto e Pé"
+          >
+            <svg
+              className="h-5 w-5 text-gold"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M12 10.2v3.9h5.5a4.7 4.7 0 0 1-2.05 3.1l3.3 2.56C20.7 17.98 21.7 15.3 21.7 12.2c0-.72-.06-1.4-.18-2.06H12Z" />
+              <path d="M6.6 14.27 5.86 14.84l-2.63 2.05A9.99 9.99 0 0 0 12 22.2c2.7 0 4.96-.89 6.62-2.42l-3.17-2.46c-.87.58-1.98.93-3.45.93-2.66 0-4.92-1.74-5.73-4.09l-.67-.29Z" />
+              <path d="M3.23 7.11A9.94 9.94 0 0 0 2.2 12.2c0 1.6.39 3.1 1.03 4.44l3.37-2.62a5.98 5.98 0 0 1 0-3.83L3.23 7.11Z" />
+              <path d="M12 5.79c1.5 0 2.85.52 3.91 1.53l2.92-2.92C17.06 2.77 14.8 1.8 12 1.8a9.99 9.99 0 0 0-8.77 5.31l3.37 2.62C7.08 7.53 9.34 5.79 12 5.79Z" />
+            </svg>
+            Google
+          </a>
+          <a
+            href={TIKTOK_PROFILE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary-foreground/85 hover:text-primary-foreground"
+            aria-label="TikTok Certidão de Objeto e Pé"
+          >
+            <svg
+              className="h-5 w-5 text-gold"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M16.6 0h-3.3v16.2a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.13V10.1a6.2 6.2 0 1 0 5.3 6.1V7.9a7.3 7.3 0 0 0 4.3 1.4V6a4.3 4.3 0 0 1-4.3-4.3V0Z" />
+            </svg>
+            TikTok
+          </a>
         </div>
       </div>
       <div className="mx-auto mt-12 w-full max-w-6xl border-t border-primary-foreground/15 pt-6 text-xs leading-relaxed text-primary-foreground/55">
