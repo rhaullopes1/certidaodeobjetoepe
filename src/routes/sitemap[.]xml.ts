@@ -3,6 +3,7 @@ import type {} from "@tanstack/react-start";
 import { ESTADOS_SEO } from "@/lib/estados-seo";
 import { TRIBUNAIS } from "@/lib/tribunais";
 import { CATEGORIAS, POSTS } from "@/lib/blog";
+import { TRFS_SEO } from "@/lib/trf-seo";
 
 
 const BASE_URL = "https://certidaodeobjetoepe.org";
@@ -23,6 +24,11 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/acompanhar", changefreq: "monthly", priority: "0.6" },
           { path: "/certidao-de-objeto-e-pe", changefreq: "weekly", priority: "0.8" },
           { path: "/certidao-objeto-e-pe-tjsp", changefreq: "monthly", priority: "0.8" },
+          ...TRFS_SEO.map((t) => ({
+            path: t.path,
+            changefreq: "monthly" as const,
+            priority: "0.8",
+          })),
           ...ESTADOS_SEO.map((e) => ({
             path: `/certidao-de-objeto-e-pe/${e.slug}`,
             changefreq: "monthly" as const,

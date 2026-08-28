@@ -283,7 +283,60 @@ function EstadoPage() {
 
         <section className="px-5 py-16 sm:px-8">
           <div className="mx-auto w-full max-w-6xl">
+            <h2 className="text-xl font-bold">Conteúdo relacionado</h2>
+            <ul className="mt-5 flex flex-wrap gap-2">
+              <li>
+                <Link
+                  to="/tribunais/$sigla"
+                  params={{ sigla: e.tribunal.toLowerCase() }}
+                  className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+                >
+                  Página do {e.tribunal}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog/$slug"
+                  params={{ slug: "certidao-de-objeto-e-pe-justica-estadual" }}
+                  className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+                >
+                  Certidão na Justiça Estadual
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog/$slug"
+                  params={{ slug: "como-emitir-certidao-de-objeto-e-pe" }}
+                  className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+                >
+                  Como emitir a certidão
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog/$slug"
+                  params={{ slug: "quanto-tempo-demora-certidao-de-objeto-e-pe" }}
+                  className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+                >
+                  Quanto tempo demora
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/tribunais"
+                  className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+                >
+                  Todos os tribunais
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="px-5 py-16 sm:px-8">
+          <div className="mx-auto w-full max-w-6xl">
             <h2 className="text-xl font-bold">Certidão de Objeto e Pé em outros estados</h2>
+
             <ul className="mt-5 flex flex-wrap gap-2">
               {ESTADOS_SEO.filter((o) => o.slug !== e.slug).map((o) => (
                 <li key={o.slug}>
