@@ -257,6 +257,15 @@ function Solicitar() {
       novosErros.valorTotalCentavos =
         "O valor não corresponde à quantidade selecionada. Escolha a quantidade novamente.";
     }
+    if (!sessaoEmail) {
+      if (!modoLogin && contaNome.split(/\s+/).filter(Boolean).length < 2) {
+        novosErros.contaNome = "Informe seu nome completo.";
+      }
+      if (senha.length < 8) novosErros.senha = "A senha precisa ter ao menos 8 caracteres.";
+      if (!modoLogin && senha !== confirmaSenha) {
+        novosErros.confirmaSenha = "As senhas não conferem.";
+      }
+    }
     if (Object.keys(novosErros).length > 0) {
       setErros(novosErros);
       setErroGeral(null);
@@ -267,6 +276,40 @@ function Solicitar() {
     setErroGeral(null);
     setEnviando(true);
     try {
+      if (!sessaoEmail) {
+        const email = bruto.email.trim();
+        if (modoLogin) {
+          const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+          if (error) {
+            setErros({ senha: "E-mail ou senha incorretos." });
+            setEnviando(false);
+            return;
+          }
+        } else {
+          const { error } = await supabase.auth.signUp({
+            email,
+            password: senha,
+            options: { data: { full_name: contaNome } },
+          });
+          if (error) {
+            const jaExiste = /registered|already|exists/i.test(error.message);
+            if (jaExiste) {
+              const entrar = await supabase.auth.signInWithPassword({ email, password: senha });
+              if (entrar.error) {
+                setModoLogin(true);
+                setErros({ senha: "Já existe conta com este e-mail. Informe sua senha para entrar." });
+                setEnviando(false);
+                return;
+              }
+            } else {
+              setErroGeral("Não foi possível criar sua conta. Tente novamente.");
+              setEnviando(false);
+              return;
+            }
+          }
+        }
+        setSessaoEmail(email);
+      }
       const pedido = await enviarPedido({ data: parsed.data! });
       navigate({ to: "/pedido/$protocolo", params: { protocolo: pedido.protocolo } });
     } catch (error) {
