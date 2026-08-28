@@ -19,6 +19,14 @@ export function UserMenu() {
     enabled: Boolean(perfil.data),
   });
 
+  // Envia o e-mail de boas-vindas na primeira vez que o cliente acessa a conta.
+  const boasVindas = useServerFn(dispararBoasVindas);
+  useEffect(() => {
+    if (!perfil.data) return;
+    boasVindas({ data: undefined }).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [perfil.data?.id]);
+
   useEffect(() => {
     function fora(e: MouseEvent) {
       if (caixa.current && !caixa.current.contains(e.target as Node)) setAberto(false);
