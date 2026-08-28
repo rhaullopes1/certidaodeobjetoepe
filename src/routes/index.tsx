@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
-import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE } from "@/lib/site";
+import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE, GOOGLE_PROFILE, TIKTOK_PROFILE } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 
@@ -712,6 +712,43 @@ function Footer() {
               <path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.12 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z" />
             </svg>
             Facebook
+          </a>
+          <a
+            href={GOOGLE_PROFILE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary-foreground/85 hover:text-primary-foreground"
+            aria-label="Perfil no Google Certidão de Objeto e Pé"
+          >
+            <svg
+              className="h-5 w-5 text-gold"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M12 10.2v3.9h5.5a4.7 4.7 0 0 1-2.05 3.1l3.3 2.56C20.7 17.98 21.7 15.3 21.7 12.2c0-.72-.06-1.4-.18-2.06H12Z" />
+              <path d="M6.6 14.27 5.86 14.84l-2.63 2.05A9.99 9.99 0 0 0 12 22.2c2.7 0 4.96-.89 6.62-2.42l-3.17-2.46c-.87.58-1.98.93-3.45.93-2.66 0-4.92-1.74-5.73-4.09l-.67-.29Z" />
+              <path d="M3.23 7.11A9.94 9.94 0 0 0 2.2 12.2c0 1.6.39 3.1 1.03 4.44l3.37-2.62a5.98 5.98 0 0 1 0-3.83L3.23 7.11Z" />
+              <path d="M12 5.79c1.5 0 2.85.52 3.91 1.53l2.92-2.92C17.06 2.77 14.8 1.8 12 1.8a9.99 9.99 0 0 0-8.77 5.31l3.37 2.62C7.08 7.53 9.34 5.79 12 5.79Z" />
+            </svg>
+            Google
+          </a>
+          <a
+            href={TIKTOK_PROFILE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary-foreground/85 hover:text-primary-foreground"
+            aria-label="TikTok Certidão de Objeto e Pé"
+          >
+            <svg
+              className="h-5 w-5 text-gold"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M16.6 0h-3.3v16.2a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.13V10.1a6.2 6.2 0 1 0 5.3 6.1V7.9a7.3 7.3 0 0 0 4.3 1.4V6a4.3 4.3 0 0 1-4.3-4.3V0Z" />
+            </svg>
+            TikTok
           </a>
         </div>
       </div>
