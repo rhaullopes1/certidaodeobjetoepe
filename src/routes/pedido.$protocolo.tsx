@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import {
   ArrowLeft,
@@ -16,7 +16,9 @@ import {
 import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL } from "@/lib/site";
+import { sendGoogleAdsConversion } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
+
 
 export const Route = createFileRoute("/pedido/$protocolo")({
   component: PedidoPage,
