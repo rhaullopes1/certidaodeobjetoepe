@@ -596,10 +596,80 @@ function Solicitar() {
                   placeholder="repita o e-mail"
                   maxLength={255}
                   onPaste={(e) => e.preventDefault()}
+                  defaultValue={sessaoEmail ?? ""}
+                  readOnly={Boolean(sessaoEmail)}
                   required
                 />
               </Campo>
             </div>
+
+            {sessaoEmail ? (
+              <p className="rounded-2xl bg-secondary px-5 py-4 text-sm text-muted-foreground">
+                Pedido vinculado à sua conta <strong className="text-foreground">{sessaoEmail}</strong>.
+                Você poderá acompanhar tudo em “Meus pedidos”.
+              </p>
+            ) : (
+              <div className="space-y-5 rounded-2xl border border-input bg-card p-5">
+                <div>
+                  <p className="text-sm font-bold">
+                    {modoLogin ? "Entrar na sua conta" : "Criar sua conta"}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    A conta dá acesso ao histórico de pedidos, QR Code e código Pix a qualquer momento.
+                  </p>
+                </div>
+
+                {!modoLogin && (
+                  <Campo label="Nome completo" erro={erros.contaNome}>
+                    <input
+                      name="contaNome"
+                      autoComplete="name"
+                      className={inputClass}
+                      placeholder="Seu nome completo"
+                      maxLength={120}
+                    />
+                  </Campo>
+                )}
+
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <Campo label="Senha" hint="mín. 8 caracteres" erro={erros.senha}>
+                    <input
+                      name="senha"
+                      type="password"
+                      autoComplete={modoLogin ? "current-password" : "new-password"}
+                      className={inputClass}
+                      placeholder="••••••••"
+                      minLength={8}
+                      maxLength={72}
+                      required
+                    />
+                  </Campo>
+                  {!modoLogin && (
+                    <Campo label="Confirme a senha" erro={erros.confirmaSenha}>
+                      <input
+                        name="confirmaSenha"
+                        type="password"
+                        autoComplete="new-password"
+                        className={inputClass}
+                        placeholder="••••••••"
+                        minLength={8}
+                        maxLength={72}
+                        required
+                      />
+                    </Campo>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setModoLogin((v) => !v)}
+                  className="text-xs font-semibold text-primary underline underline-offset-4"
+                >
+                  {modoLogin ? "Ainda não tenho conta — quero cadastrar" : "Já tenho conta — quero entrar"}
+                </button>
+              </div>
+            )}
+
 
             <Campo label="WhatsApp" hint="com DDD" erro={erros.whatsapp}>
               <input
