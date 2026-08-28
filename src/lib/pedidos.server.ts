@@ -247,6 +247,7 @@ async function enviarConfirmacaoPorEmail(
     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
     await sendTemplateEmail("pedido-confirmacao", resumo.email, {
       idempotencyKey: `pedido-confirmacao-${resumo.protocolo}`,
+      replyTo: EMAIL_CONTATO,
       templateData: {
         protocolo: resumo.protocolo,
         quantidade: certidoes.length,
@@ -374,6 +375,7 @@ async function processarLembretesPagamento() {
   for (const p of pendentes) {
     try {
       await sendTemplateEmail("pedido-lembrete", p.email, {
+        replyTo: EMAIL_CONTATO,
         idempotencyKey: `pedido-lembrete-${p.protocolo}`,
         templateData: {
           protocolo: p.protocolo,
@@ -442,6 +444,7 @@ export async function reenviarEmailPedidoNoBanco(protocolo: string, email: strin
   const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
   await sendTemplateEmail("pedido-confirmacao", row.email, {
     idempotencyKey: `pedido-reenvio-${row.protocolo}-${Date.now()}`,
+    replyTo: EMAIL_CONTATO,
     templateData: {
       protocolo: row.protocolo,
       quantidade: row.quantidade ?? certidoes.length,
