@@ -22,6 +22,10 @@ export type PedidoAdmin = {
   status: string;
   created_at: string;
   pago_em: string | null;
+  /** Calculado no cliente: repete processo + CPF de outro pedido da lista. */
+  duplicado?: boolean;
+  /** Calculado no cliente: criado nas últimas 24 horas. */
+  novo?: boolean;
 };
 
 const COLUNAS =
