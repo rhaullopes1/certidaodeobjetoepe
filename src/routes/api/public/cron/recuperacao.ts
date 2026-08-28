@@ -1,19 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 async function executar(request: Request) {
-  const segredo = process.env["CRON_SECRET"];
-  if (!segredo) {
-    return new Response(JSON.stringify({ erro: "CRON_SECRET não configurado" }), {
-      status: 500,
-      headers: { "content-type": "application/json" },
-    });
-  }
-
   const header = request.headers.get("authorization") ?? "";
   const enviado = header.replace(/^Bearer\s+/i, "").trim();
-  if (enviado !== segredo) {
-    return new Response("Unauthorized", { status: 401 });
+  if (!enviado) return new Response("Unauthorized", { status: 401 });
+
+  const envSecret = process.env["CRON_SECRET"];
+  let autorizado = Boolean(envSecret) && enviado === envSecret;
+
+  if (!autorizado) {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
+      .from("cron_tokens")
+      .select("token")
+      .eq("nome", "recuperacao")
+      .maybeSingle();
+    autorizado = Boolean(data?.token) && data!.token === enviado;
   }
+
+  if (!autorizado) return new Response("Unauthorized", { status: 401 });
 
   try {
     const { processarRecuperacao } = await import("@/lib/recuperacao.server");
