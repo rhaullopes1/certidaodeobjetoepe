@@ -5,6 +5,8 @@ import { FileText, LayoutDashboard, LogIn, LogOut, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { carregarPerfil, iniciais } from "@/lib/perfil";
 import { souEquipe } from "@/lib/admin";
+import { useServerFn } from "@tanstack/react-start";
+import { dispararBoasVindas } from "@/lib/emails.functions";
 
 export function UserMenu() {
   const navigate = useNavigate();
