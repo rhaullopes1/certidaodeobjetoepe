@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -178,6 +179,23 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function Analytics() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (typeof window !== "undefined" && "gtag" in window) {
+        (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
+          "event",
+          "page_view",
+          { page_path: pathname }
+        );
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [pathname]);
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -185,6 +203,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Analytics />
     </QueryClientProvider>
   );
 }
