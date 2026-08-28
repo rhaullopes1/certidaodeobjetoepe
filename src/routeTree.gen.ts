@@ -14,6 +14,12 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AcompanharRouteImport } from './routes/acompanhar'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CertidaoObjetoEPeTjspRouteImport } from './routes/certidao-objeto-e-pe-tjsp'
+import { Route as CertidaoObjetoEPeTrf1RouteImport } from './routes/certidao-objeto-e-pe-trf1'
+import { Route as CertidaoObjetoEPeTrf2RouteImport } from './routes/certidao-objeto-e-pe-trf2'
+import { Route as CertidaoObjetoEPeTrf3RouteImport } from './routes/certidao-objeto-e-pe-trf3'
+import { Route as CertidaoObjetoEPeTrf4RouteImport } from './routes/certidao-objeto-e-pe-trf4'
+import { Route as CertidaoObjetoEPeTrf5RouteImport } from './routes/certidao-objeto-e-pe-trf5'
+import { Route as CertidaoObjetoEPeTrf6RouteImport } from './routes/certidao-objeto-e-pe-trf6'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
@@ -57,6 +63,36 @@ const AuthRoute = AuthRouteImport.update({
 const CertidaoObjetoEPeTjspRoute = CertidaoObjetoEPeTjspRouteImport.update({
   id: '/certidao-objeto-e-pe-tjsp',
   path: '/certidao-objeto-e-pe-tjsp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertidaoObjetoEPeTrf1Route = CertidaoObjetoEPeTrf1RouteImport.update({
+  id: '/certidao-objeto-e-pe-trf1',
+  path: '/certidao-objeto-e-pe-trf1',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertidaoObjetoEPeTrf2Route = CertidaoObjetoEPeTrf2RouteImport.update({
+  id: '/certidao-objeto-e-pe-trf2',
+  path: '/certidao-objeto-e-pe-trf2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertidaoObjetoEPeTrf3Route = CertidaoObjetoEPeTrf3RouteImport.update({
+  id: '/certidao-objeto-e-pe-trf3',
+  path: '/certidao-objeto-e-pe-trf3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertidaoObjetoEPeTrf4Route = CertidaoObjetoEPeTrf4RouteImport.update({
+  id: '/certidao-objeto-e-pe-trf4',
+  path: '/certidao-objeto-e-pe-trf4',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertidaoObjetoEPeTrf5Route = CertidaoObjetoEPeTrf5RouteImport.update({
+  id: '/certidao-objeto-e-pe-trf5',
+  path: '/certidao-objeto-e-pe-trf5',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertidaoObjetoEPeTrf6Route = CertidaoObjetoEPeTrf6RouteImport.update({
+  id: '/certidao-objeto-e-pe-trf6',
+  path: '/certidao-objeto-e-pe-trf6',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
@@ -172,6 +208,12 @@ export interface FileRoutesByFullPath {
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
+  '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
+  '/certidao-objeto-e-pe-trf2': typeof CertidaoObjetoEPeTrf2Route
+  '/certidao-objeto-e-pe-trf3': typeof CertidaoObjetoEPeTrf3Route
+  '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
+  '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
+  '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
@@ -198,6 +240,12 @@ export interface FileRoutesByTo {
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
+  '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
+  '/certidao-objeto-e-pe-trf2': typeof CertidaoObjetoEPeTrf2Route
+  '/certidao-objeto-e-pe-trf3': typeof CertidaoObjetoEPeTrf3Route
+  '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
+  '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
+  '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
@@ -226,6 +274,12 @@ export interface FileRoutesById {
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
+  '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
+  '/certidao-objeto-e-pe-trf2': typeof CertidaoObjetoEPeTrf2Route
+  '/certidao-objeto-e-pe-trf3': typeof CertidaoObjetoEPeTrf3Route
+  '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
+  '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
+  '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solicitar': typeof SolicitarRoute
@@ -254,6 +308,12 @@ export interface FileRouteTypes {
     | '/acompanhar'
     | '/auth'
     | '/certidao-objeto-e-pe-tjsp'
+    | '/certidao-objeto-e-pe-trf1'
+    | '/certidao-objeto-e-pe-trf2'
+    | '/certidao-objeto-e-pe-trf3'
+    | '/certidao-objeto-e-pe-trf4'
+    | '/certidao-objeto-e-pe-trf5'
+    | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/solicitar'
@@ -280,6 +340,12 @@ export interface FileRouteTypes {
     | '/acompanhar'
     | '/auth'
     | '/certidao-objeto-e-pe-tjsp'
+    | '/certidao-objeto-e-pe-trf1'
+    | '/certidao-objeto-e-pe-trf2'
+    | '/certidao-objeto-e-pe-trf3'
+    | '/certidao-objeto-e-pe-trf4'
+    | '/certidao-objeto-e-pe-trf5'
+    | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/solicitar'
@@ -307,6 +373,12 @@ export interface FileRouteTypes {
     | '/acompanhar'
     | '/auth'
     | '/certidao-objeto-e-pe-tjsp'
+    | '/certidao-objeto-e-pe-trf1'
+    | '/certidao-objeto-e-pe-trf2'
+    | '/certidao-objeto-e-pe-trf3'
+    | '/certidao-objeto-e-pe-trf4'
+    | '/certidao-objeto-e-pe-trf5'
+    | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/solicitar'
@@ -335,6 +407,12 @@ export interface RootRouteChildren {
   AcompanharRoute: typeof AcompanharRoute
   AuthRoute: typeof AuthRoute
   CertidaoObjetoEPeTjspRoute: typeof CertidaoObjetoEPeTjspRoute
+  CertidaoObjetoEPeTrf1Route: typeof CertidaoObjetoEPeTrf1Route
+  CertidaoObjetoEPeTrf2Route: typeof CertidaoObjetoEPeTrf2Route
+  CertidaoObjetoEPeTrf3Route: typeof CertidaoObjetoEPeTrf3Route
+  CertidaoObjetoEPeTrf4Route: typeof CertidaoObjetoEPeTrf4Route
+  CertidaoObjetoEPeTrf5Route: typeof CertidaoObjetoEPeTrf5Route
+  CertidaoObjetoEPeTrf6Route: typeof CertidaoObjetoEPeTrf6Route
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SolicitarRoute: typeof SolicitarRoute
@@ -387,6 +465,48 @@ declare module '@tanstack/react-router' {
       path: '/certidao-objeto-e-pe-tjsp'
       fullPath: '/certidao-objeto-e-pe-tjsp'
       preLoaderRoute: typeof CertidaoObjetoEPeTjspRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-objeto-e-pe-trf1': {
+      id: '/certidao-objeto-e-pe-trf1'
+      path: '/certidao-objeto-e-pe-trf1'
+      fullPath: '/certidao-objeto-e-pe-trf1'
+      preLoaderRoute: typeof CertidaoObjetoEPeTrf1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-objeto-e-pe-trf2': {
+      id: '/certidao-objeto-e-pe-trf2'
+      path: '/certidao-objeto-e-pe-trf2'
+      fullPath: '/certidao-objeto-e-pe-trf2'
+      preLoaderRoute: typeof CertidaoObjetoEPeTrf2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-objeto-e-pe-trf3': {
+      id: '/certidao-objeto-e-pe-trf3'
+      path: '/certidao-objeto-e-pe-trf3'
+      fullPath: '/certidao-objeto-e-pe-trf3'
+      preLoaderRoute: typeof CertidaoObjetoEPeTrf3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-objeto-e-pe-trf4': {
+      id: '/certidao-objeto-e-pe-trf4'
+      path: '/certidao-objeto-e-pe-trf4'
+      fullPath: '/certidao-objeto-e-pe-trf4'
+      preLoaderRoute: typeof CertidaoObjetoEPeTrf4RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-objeto-e-pe-trf5': {
+      id: '/certidao-objeto-e-pe-trf5'
+      path: '/certidao-objeto-e-pe-trf5'
+      fullPath: '/certidao-objeto-e-pe-trf5'
+      preLoaderRoute: typeof CertidaoObjetoEPeTrf5RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-objeto-e-pe-trf6': {
+      id: '/certidao-objeto-e-pe-trf6'
+      path: '/certidao-objeto-e-pe-trf6'
+      fullPath: '/certidao-objeto-e-pe-trf6'
+      preLoaderRoute: typeof CertidaoObjetoEPeTrf6RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-de-privacidade': {
@@ -557,6 +677,12 @@ const rootRouteChildren: RootRouteChildren = {
   AcompanharRoute: AcompanharRoute,
   AuthRoute: AuthRoute,
   CertidaoObjetoEPeTjspRoute: CertidaoObjetoEPeTjspRoute,
+  CertidaoObjetoEPeTrf1Route: CertidaoObjetoEPeTrf1Route,
+  CertidaoObjetoEPeTrf2Route: CertidaoObjetoEPeTrf2Route,
+  CertidaoObjetoEPeTrf3Route: CertidaoObjetoEPeTrf3Route,
+  CertidaoObjetoEPeTrf4Route: CertidaoObjetoEPeTrf4Route,
+  CertidaoObjetoEPeTrf5Route: CertidaoObjetoEPeTrf5Route,
+  CertidaoObjetoEPeTrf6Route: CertidaoObjetoEPeTrf6Route,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SolicitarRoute: SolicitarRoute,
