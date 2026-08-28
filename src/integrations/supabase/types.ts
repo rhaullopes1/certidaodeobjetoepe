@@ -14,6 +14,143 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_orders: {
+        Row: {
+          cliente_email: string
+          cliente_nome: string | null
+          codigo_pix: string | null
+          created_at: string
+          data_criacao: string
+          etapa_1_em: string | null
+          etapa_2_em: string | null
+          etapa_3_em: string | null
+          id: string
+          link_pagamento: string | null
+          pedido_id: string
+          protocolo: string
+          recuperado_em: string | null
+          status_automacao: string
+          ultimo_erro: string | null
+          updated_at: string
+          valor_recuperado_centavos: number
+          valor_total_centavos: number
+        }
+        Insert: {
+          cliente_email: string
+          cliente_nome?: string | null
+          codigo_pix?: string | null
+          created_at?: string
+          data_criacao?: string
+          etapa_1_em?: string | null
+          etapa_2_em?: string | null
+          etapa_3_em?: string | null
+          id?: string
+          link_pagamento?: string | null
+          pedido_id: string
+          protocolo: string
+          recuperado_em?: string | null
+          status_automacao?: string
+          ultimo_erro?: string | null
+          updated_at?: string
+          valor_recuperado_centavos?: number
+          valor_total_centavos?: number
+        }
+        Update: {
+          cliente_email?: string
+          cliente_nome?: string | null
+          codigo_pix?: string | null
+          created_at?: string
+          data_criacao?: string
+          etapa_1_em?: string | null
+          etapa_2_em?: string | null
+          etapa_3_em?: string | null
+          id?: string
+          link_pagamento?: string | null
+          pedido_id?: string
+          protocolo?: string
+          recuperado_em?: string | null
+          status_automacao?: string
+          ultimo_erro?: string | null
+          updated_at?: string
+          valor_recuperado_centavos?: number
+          valor_total_centavos?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "abandoned_orders_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: true
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cron_tokens: {
+        Row: {
+          created_at: string
+          nome: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          nome: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          nome?: string
+          token?: string
+        }
+        Relationships: []
+      }
+      email_sequencia_config: {
+        Row: {
+          assunto: string
+          ativo: boolean
+          corpo: string
+          created_at: string
+          etapa: number
+          updated_at: string
+        }
+        Insert: {
+          assunto: string
+          ativo?: boolean
+          corpo: string
+          created_at?: string
+          etapa: number
+          updated_at?: string
+        }
+        Update: {
+          assunto?: string
+          ativo?: boolean
+          corpo?: string
+          created_at?: string
+          etapa?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      job_locks: {
+        Row: {
+          created_at: string
+          expira_em: string
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expira_em: string
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expira_em?: string
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pedido_andamentos: {
         Row: {
           autor_id: string | null

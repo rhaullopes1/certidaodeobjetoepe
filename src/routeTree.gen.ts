@@ -36,7 +36,9 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
+import { Route as AuthenticatedAdminRecuperacaoRouteImport } from './routes/_authenticated/admin.recuperacao'
 import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$slug'
+import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -179,11 +181,23 @@ const AuthenticatedAdminHistoricoRoute =
     path: '/admin/historico',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminRecuperacaoRoute =
+  AuthenticatedAdminRecuperacaoRouteImport.update({
+    id: '/admin/recuperacao',
+    path: '/admin/recuperacao',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const BlogCategoriaSlugRoute = BlogCategoriaSlugRouteImport.update({
   id: '/blog/categoria/$slug',
   path: '/blog/categoria/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronRecuperacaoRoute =
+  ApiPublicCronRecuperacaoRouteImport.update({
+    id: '/api/public/cron/recuperacao',
+    path: '/api/public/cron/recuperacao',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicWebhooksMercadopagoRoute =
   ApiPublicWebhooksMercadopagoRouteImport.update({
     id: '/api/public/webhooks/mercadopago',
@@ -229,8 +243,10 @@ export interface FileRoutesByFullPath {
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -261,8 +277,10 @@ export interface FileRoutesByTo {
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -295,8 +313,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/_authenticated/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -329,8 +349,10 @@ export interface FileRouteTypes {
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
+    | '/admin/recuperacao'
     | '/blog/categoria/$slug'
     | '/admin/'
+    | '/api/public/cron/recuperacao'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
@@ -361,8 +383,10 @@ export interface FileRouteTypes {
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
+    | '/admin/recuperacao'
     | '/blog/categoria/$slug'
     | '/admin'
+    | '/api/public/cron/recuperacao'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
@@ -394,8 +418,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/historico'
+    | '/_authenticated/admin/recuperacao'
     | '/blog/categoria/$slug'
     | '/_authenticated/admin/'
+    | '/api/public/cron/recuperacao'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
@@ -425,6 +451,7 @@ export interface RootRouteChildren {
   CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
   TribunaisIndexRoute: typeof TribunaisIndexRoute
   BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
+  ApiPublicCronRecuperacaoRoute: typeof ApiPublicCronRecuperacaoRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -621,11 +648,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminHistoricoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/recuperacao': {
+      id: '/_authenticated/admin/recuperacao'
+      path: '/admin/recuperacao'
+      fullPath: '/admin/recuperacao'
+      preLoaderRoute: typeof AuthenticatedAdminRecuperacaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/blog/categoria/$slug': {
       id: '/blog/categoria/$slug'
       path: '/blog/categoria/$slug'
       fullPath: '/blog/categoria/$slug'
       preLoaderRoute: typeof BlogCategoriaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/recuperacao': {
+      id: '/api/public/cron/recuperacao'
+      path: '/api/public/cron/recuperacao'
+      fullPath: '/api/public/cron/recuperacao'
+      preLoaderRoute: typeof ApiPublicCronRecuperacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/webhooks/mercadopago': {
@@ -657,6 +698,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
   AuthenticatedAdminDocumentosRoute: typeof AuthenticatedAdminDocumentosRoute
   AuthenticatedAdminHistoricoRoute: typeof AuthenticatedAdminHistoricoRoute
+  AuthenticatedAdminRecuperacaoRoute: typeof AuthenticatedAdminRecuperacaoRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -665,6 +707,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
   AuthenticatedAdminDocumentosRoute: AuthenticatedAdminDocumentosRoute,
   AuthenticatedAdminHistoricoRoute: AuthenticatedAdminHistoricoRoute,
+  AuthenticatedAdminRecuperacaoRoute: AuthenticatedAdminRecuperacaoRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
@@ -695,6 +738,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
   TribunaisIndexRoute: TribunaisIndexRoute,
   BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
+  ApiPublicCronRecuperacaoRoute: ApiPublicCronRecuperacaoRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,

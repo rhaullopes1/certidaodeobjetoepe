@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import { template as pedidoConfirmacao } from './pedido-confirmacao'
 import { template as novoPedidoAdmin } from './novo-pedido-admin'
 import { template as pedidoLembrete } from './pedido-lembrete'
+import { template as recuperacaoEtapa } from './recuperacao-etapa'
 
 
 
@@ -26,6 +27,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'pedido-confirmacao': pedidoConfirmacao,
   'novo-pedido-admin': novoPedidoAdmin,
   'pedido-lembrete': pedidoLembrete,
+  'recuperacao-etapa': recuperacaoEtapa,
 }
 
 
