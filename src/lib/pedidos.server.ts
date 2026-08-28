@@ -335,6 +335,7 @@ export async function marcarExpiradoSeVencido(row: PedidoRow): Promise<PedidoRow
  * Envia lembrete por e-mail para pedidos sem pagamento há mais de 24h
  * (uma única vez por pedido). Executa na leitura, sem rotina externa.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function processarLembretesPagamento() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const limite = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -385,9 +386,8 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
   if (!row) return null;
 
   let atual = await marcarExpiradoSeVencido(row as PedidoRow);
-  void processarLembretesPagamento().catch((e) =>
-    console.error("Falha ao processar lembretes", e),
-  );
+  // Lembretes de pagamento agora são enviados pela automação de recuperação
+  // (tabela abandoned_orders + rotina agendada), evitando e-mails duplicados.
 
   // Garante que existe cobrança Pix (pedidos criados antes da integração).
   if (atual.status === "aguardando_pagamento") {
