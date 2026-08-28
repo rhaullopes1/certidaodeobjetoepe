@@ -2,6 +2,12 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
 import { UserMenu } from "@/components/user-menu";
+import {
+  GOOGLE_PROFILE,
+  INSTAGRAM_PROFILE,
+  TIKTOK_PROFILE,
+  YOUTUBE_CHANNEL,
+} from "@/lib/site";
 
 export function PageShell({ children }: { children: ReactNode }) {
   return (
@@ -40,6 +46,22 @@ export function PageShell({ children }: { children: ReactNode }) {
             <Link to="/tribunais" className="hover:text-primary-foreground">Tribunais</Link>
             <Link to="/politica-de-privacidade" className="hover:text-primary-foreground">Privacidade</Link>
             <Link to="/termos-de-uso" className="hover:text-primary-foreground">Termos</Link>
+            <a
+              href={GOOGLE_PROFILE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary-foreground"
+            >
+              Google
+            </a>
+            <a
+              href={TIKTOK_PROFILE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary-foreground"
+            >
+              TikTok
+            </a>
           </div>
         </div>
       </footer>
