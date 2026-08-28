@@ -58,6 +58,13 @@ export function AdminHeader() {
             Histórico
           </Link>
           <Link
+            to="/admin/recuperacao"
+            activeProps={{ className: "text-primary-foreground font-semibold" }}
+            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
+          >
+            Recuperação
+          </Link>
+          <Link
             to="/admin/documentos"
             activeProps={{ className: "text-primary-foreground font-semibold" }}
             className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"

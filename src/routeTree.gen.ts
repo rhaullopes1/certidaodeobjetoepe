@@ -36,6 +36,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
+import { Route as AuthenticatedAdminRecuperacaoRouteImport } from './routes/_authenticated/admin.recuperacao'
 import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$slug'
 import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
@@ -180,6 +181,12 @@ const AuthenticatedAdminHistoricoRoute =
     path: '/admin/historico',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminRecuperacaoRoute =
+  AuthenticatedAdminRecuperacaoRouteImport.update({
+    id: '/admin/recuperacao',
+    path: '/admin/recuperacao',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const BlogCategoriaSlugRoute = BlogCategoriaSlugRouteImport.update({
   id: '/blog/categoria/$slug',
   path: '/blog/categoria/$slug',
@@ -236,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
@@ -269,6 +277,7 @@ export interface FileRoutesByTo {
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
@@ -304,6 +313,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
+  '/_authenticated/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
@@ -339,6 +349,7 @@ export interface FileRouteTypes {
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
+    | '/admin/recuperacao'
     | '/blog/categoria/$slug'
     | '/admin/'
     | '/api/public/cron/recuperacao'
@@ -372,6 +383,7 @@ export interface FileRouteTypes {
     | '/admin/$protocolo'
     | '/admin/documentos'
     | '/admin/historico'
+    | '/admin/recuperacao'
     | '/blog/categoria/$slug'
     | '/admin'
     | '/api/public/cron/recuperacao'
@@ -406,6 +418,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/historico'
+    | '/_authenticated/admin/recuperacao'
     | '/blog/categoria/$slug'
     | '/_authenticated/admin/'
     | '/api/public/cron/recuperacao'
@@ -635,6 +648,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminHistoricoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/recuperacao': {
+      id: '/_authenticated/admin/recuperacao'
+      path: '/admin/recuperacao'
+      fullPath: '/admin/recuperacao'
+      preLoaderRoute: typeof AuthenticatedAdminRecuperacaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/blog/categoria/$slug': {
       id: '/blog/categoria/$slug'
       path: '/blog/categoria/$slug'
@@ -678,6 +698,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
   AuthenticatedAdminDocumentosRoute: typeof AuthenticatedAdminDocumentosRoute
   AuthenticatedAdminHistoricoRoute: typeof AuthenticatedAdminHistoricoRoute
+  AuthenticatedAdminRecuperacaoRoute: typeof AuthenticatedAdminRecuperacaoRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -686,6 +707,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
   AuthenticatedAdminDocumentosRoute: AuthenticatedAdminDocumentosRoute,
   AuthenticatedAdminHistoricoRoute: AuthenticatedAdminHistoricoRoute,
+  AuthenticatedAdminRecuperacaoRoute: AuthenticatedAdminRecuperacaoRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
