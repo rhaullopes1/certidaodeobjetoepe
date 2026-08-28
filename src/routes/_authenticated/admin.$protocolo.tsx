@@ -184,6 +184,33 @@ function AdminDetalhe() {
 
             {erro && <p className="mt-4 text-sm font-medium text-destructive">{erro}</p>}
 
+            {relacionados.data && relacionados.data.length > 0 && (
+              <div className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
+                <p className="text-sm font-bold text-destructive">Possível duplicidade</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Existem outros pedidos com o mesmo processo e CPF. Confira antes de emitir a
+                  certidão novamente.
+                </p>
+                <ul className="mt-3 space-y-1 text-sm">
+                  {relacionados.data.map((r) => (
+                    <li key={r.protocolo}>
+                      <Link
+                        to="/admin/$protocolo"
+                        params={{ protocolo: r.protocolo }}
+                        className="font-semibold text-primary underline-offset-4 hover:underline"
+                      >
+                        {r.protocolo}
+                      </Link>{" "}
+                      <span className="text-muted-foreground">
+                        · {statusPedido(r.status).label} ·{" "}
+                        {new Date(r.created_at).toLocaleString("pt-BR")}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div className="mt-8 grid gap-6 lg:grid-cols-2">
               <section className="card-premium p-6">
                 <h2 className="text-lg font-bold">Dados do pedido</h2>
