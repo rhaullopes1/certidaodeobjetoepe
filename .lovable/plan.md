@@ -1,26 +1,24 @@
-# Concluir a caixa de entrada contato@certidaodeobjetoepe.org
+# Configurar recebimento em contato@certidaodeobjetoepe.org
 
-## O que foi identificado
-A conta ImprovMX mostra dois problemas:
-- O domínio `certidaodeobjetoepe.org` ainda está com o botão vermelho **Configurar** — os registros DNS de e-mail (MX/SPF) ainda não foram adicionados.
-- A segunda linha de alias está com o campo "novo-alias" vazio, gerando o erro "É necessário um pseudônimo".
+Objetivo: deixar o encaminhamento do ImprovMX ativo e válido, para que e-mails enviados a `contato@certidaodeobjetoepe.org` cheguem na caixa do Gmail informada.
 
-## Ações que serão feitas pelo agente
-1. Acessar o ImprovMX uma única vez com as credenciais enviadas no chat (não serão armazenadas/repetidas).
-2. Preencher/completar o alias `contato` apontando para `certidaoobjetoepe@gmail.com`.
-3. Remover ou ignorar a linha vazia de "novo-alias" para eliminar o erro.
+## O que será feito
 
-## Ação necessária do usuário após o passo acima
-No Lovable, em **Configurações do projeto → Domains → certidaodeobjetoepe.org → ⋯ → Configurar → Gerenciar registros DNS**, adicionar:
+1. **Acesso à conta ImprovMX** (uma única vez, com as credenciais que você enviou; elas não serão exibidas, registradas nem salvas em nenhum arquivo do projeto).
+2. **Conferir/ajustar o alias** `contato` → Gmail informado, e remover a linha de alias vazia que estava gerando o erro "É necessário um pseudônimo".
+3. **Ler os registros DNS exatos** que o ImprovMX exige e anotá-los.
+4. **Entregar os registros para você aplicar** no gerenciador de DNS da Lovable (Configurações do projeto → Domínios → certidaodeobjetoepe.org → Configurar → Gerenciar DNS). Esse passo é manual: não tenho ferramenta para gravar DNS nesse painel.
+   - MX `@` → `mx1.improvmx.com` (prioridade 10)
+   - MX `@` → `mx2.improvmx.com` (prioridade 20)
+   - TXT `@` → `v=spf1 include:spf.improvmx.com ~all`
+5. **Validar** no ImprovMX depois da propagação (botão Verificar) e confirmar com um e-mail de teste.
 
-```text
-MX   @   mx1.improvmx.com   10
-MX   @   mx2.improvmx.com   20
-TXT  @   v=spf1 include:spf.improvmx.com ~all
-```
+## Observações técnicas
 
-Se já houver um TXT SPF, editar o existente incluindo `include:spf.improvmx.com`.
+- O subdomínio `noreply.certidaodeobjetoepe.org`, usado pelo envio de e-mails do site, não conflita com os registros MX/SPF do domínio raiz.
+- Se já existir um TXT SPF no raiz, ele deve ser mesclado em uma única linha, não duplicado.
+- Nenhum arquivo do projeto é alterado neste plano. A troca do e-mail exibido no site (Gmail → contato@) fica para uma etapa separada, se você quiser.
 
-## Validação
-- Aguardar propagação e clicar em **Configurar/Verificar** no ImprovMX até o selo ficar verde.
-- Enviar e-mail de teste para `contato@certidaodeobjetoepe.org` e confirmar recebimento no Gmail.
+## Depois de aprovado
+
+Executo o acesso ao ImprovMX, corrijo os aliases e te devolvo os valores DNS exatos para colar no painel da Lovable.
