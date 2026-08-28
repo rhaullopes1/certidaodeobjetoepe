@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.vincular_pedidos_ao_usuario() FROM PUBLIC, anon, authenticated;
