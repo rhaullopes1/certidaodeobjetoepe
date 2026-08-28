@@ -222,12 +222,15 @@ export async function enviarEtapa(row: AbandonedOrderRow, etapa: Etapa, marcar =
   });
 
   if (marcar) {
-    const patch: Record<string, unknown> = {
-      status_automacao: `etapa_${etapa}_enviada`,
-      ultimo_erro: null,
-    };
-    patch[`etapa_${etapa}_em`] = new Date().toISOString();
-    await db.from("abandoned_orders").update(patch).eq("id", row.id);
+    const agora = new Date().toISOString();
+    await db
+      .from("abandoned_orders")
+      .update({
+        status_automacao: `etapa_${etapa}_enviada`,
+        ultimo_erro: null,
+        ...(etapa === 1 ? { etapa_1_em: agora } : etapa === 2 ? { etapa_2_em: agora } : { etapa_3_em: agora }),
+      })
+      .eq("id", row.id);
   }
 
   return { enviado: resultado.sent, motivo: resultado.sent ? null : resultado.reason };
