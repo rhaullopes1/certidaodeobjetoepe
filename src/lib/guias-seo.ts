@@ -137,8 +137,8 @@ export const GUIAS_SEO: GuiaSeo[] = [
         a: "Por certidão. Cada certidão corresponde a um processo, com número, nome completo e CPF da parte informados no pedido.",
       },
       {
-        q: "Existe reembolso se a certidão não for emitida?",
-        a: "Sim. Se o tribunal não emitir a certidão por impossibilidade que não dependa dos dados enviados, o valor é devolvido integralmente.",
+        q: "E se o tribunal não emitir a certidão?",
+        a: "Se a emissão não for possível por impedimento do próprio processo, entramos em contato para tratar o caso individualmente antes de qualquer nova cobrança.",
       },
       {
         q: "O pagamento por Pix é confirmado na hora?",
