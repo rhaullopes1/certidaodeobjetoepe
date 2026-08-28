@@ -30,7 +30,7 @@ export const PIX = {
 
 export const PHONE_DISPLAY = "0800 000 4604";
 export const PHONE_TEL = "tel:+558000004604";
-export const EMAIL_CONTATO = "certidaoobjetoepe@gmail.com";
+export const EMAIL_CONTATO = "contato@certidaodeobjetoepe.org";
 
 export const whatsappLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
