@@ -114,6 +114,7 @@ function Badge({ status }: { status: string }) {
 function AdminLista() {
   const [filtros, setFiltros] = useState<Filtros>({ protocolo: "", cpf: "", uf: "", status: "" });
   const [aplicados, setAplicados] = useState<Filtros>(filtros);
+  const [somenteNovos, setSomenteNovos] = useState(false);
 
   const permissao = useQuery({ queryKey: ["equipe"], queryFn: souEquipe });
   const pedidos = useQuery({
@@ -121,6 +122,10 @@ function AdminLista() {
     queryFn: () => listarPedidos(aplicados),
     enabled: permissao.data === true,
   });
+
+  const lista = (pedidos.data ?? []).filter((p) => (somenteNovos ? p.novo : true));
+  const totalNovos = (pedidos.data ?? []).filter((p) => p.novo).length;
+  const totalDuplicados = (pedidos.data ?? []).filter((p) => p.duplicado).length;
 
   const campo =
     "w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-ring";
