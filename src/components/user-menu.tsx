@@ -13,6 +13,11 @@ export function UserMenu() {
   const caixa = useRef<HTMLDivElement>(null);
 
   const perfil = useQuery({ queryKey: ["perfil"], queryFn: carregarPerfil });
+  const equipe = useQuery({
+    queryKey: ["sou-equipe"],
+    queryFn: souEquipe,
+    enabled: Boolean(perfil.data),
+  });
 
   useEffect(() => {
     function fora(e: MouseEvent) {
