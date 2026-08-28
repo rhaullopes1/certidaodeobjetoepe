@@ -181,6 +181,216 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     contexto:
       "Atendemos as comarcas da capital e do interior cearense, cuidando do protocolo e do acompanhamento até a emissão do documento.",
   },
+  {
+    slug: "ac",
+    uf: "AC",
+    nome: "Acre",
+    tribunal: "TJAC",
+    tribunalNome: "Tribunal de Justiça do Acre",
+    capital: "Rio Branco",
+    cidades: ["Rio Branco", "Cruzeiro do Sul", "Sena Madureira", "Tarauacá", "Feijó"],
+    prazo: "3 a 10 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJAC, da Justiça Federal (TRF1) e do TRT da 14ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Acre a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJAC e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "al",
+    uf: "AL",
+    nome: "Alagoas",
+    tribunal: "TJAL",
+    tribunalNome: "Tribunal de Justiça de Alagoas",
+    capital: "Maceió",
+    cidades: ["Maceió", "Arapiraca", "Rio Largo", "Palmeira dos Índios", "União dos Palmares"],
+    prazo: "3 a 9 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJAL, da Justiça Federal (TRF5) e do TRT da 19ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Alagoas a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJAL e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "am",
+    uf: "AM",
+    nome: "Amazonas",
+    tribunal: "TJAM",
+    tribunalNome: "Tribunal de Justiça do Amazonas",
+    capital: "Manaus",
+    cidades: ["Manaus", "Parintins", "Itacoatiara", "Manacapuru", "Coari"],
+    prazo: "3 a 10 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJAM, da Justiça Federal (TRF1) e do TRT da 11ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Amazonas a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJAM e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "ap",
+    uf: "AP",
+    nome: "Amapá",
+    tribunal: "TJAP",
+    tribunalNome: "Tribunal de Justiça do Amapá",
+    capital: "Macapá",
+    cidades: ["Macapá", "Santana", "Laranjal do Jari", "Oiapoque", "Mazagão"],
+    prazo: "3 a 10 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJAP, da Justiça Federal (TRF1) e do TRT da 8ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Amapá a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJAP e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "es",
+    uf: "ES",
+    nome: "Espírito Santo",
+    tribunal: "TJES",
+    tribunalNome: "Tribunal de Justiça do Espírito Santo",
+    capital: "Vitória",
+    cidades: ["Vitória", "Vila Velha", "Serra", "Cariacica", "Linhares", "Colatina"],
+    prazo: "2 a 8 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJES, da Justiça Federal (TRF2) e do TRT da 17ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Espírito Santo a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJES e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "ma",
+    uf: "MA",
+    nome: "Maranhão",
+    tribunal: "TJMA",
+    tribunalNome: "Tribunal de Justiça do Maranhão",
+    capital: "São Luís",
+    cidades: ["São Luís", "Imperatriz", "Timon", "Caxias", "Codó"],
+    prazo: "3 a 10 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJMA, da Justiça Federal (TRF1) e do TRT da 16ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Maranhão a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJMA e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "ms",
+    uf: "MS",
+    nome: "Mato Grosso do Sul",
+    tribunal: "TJMS",
+    tribunalNome: "Tribunal de Justiça de Mato Grosso do Sul",
+    capital: "Campo Grande",
+    cidades: ["Campo Grande", "Dourados", "Três Lagoas", "Corumbá", "Ponta Porã"],
+    prazo: "2 a 9 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJMS, da Justiça Federal (TRF3) e do TRT da 24ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Mato Grosso do Sul a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJMS e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "pa",
+    uf: "PA",
+    nome: "Pará",
+    tribunal: "TJPA",
+    tribunalNome: "Tribunal de Justiça do Pará",
+    capital: "Belém",
+    cidades: ["Belém", "Ananindeua", "Santarém", "Marabá", "Castanhal"],
+    prazo: "3 a 10 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJPA, da Justiça Federal (TRF1) e do TRT da 8ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Pará a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJPA e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "pb",
+    uf: "PB",
+    nome: "Paraíba",
+    tribunal: "TJPB",
+    tribunalNome: "Tribunal de Justiça da Paraíba",
+    capital: "João Pessoa",
+    cidades: ["João Pessoa", "Campina Grande", "Santa Rita", "Patos", "Bayeux"],
+    prazo: "3 a 9 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJPB, da Justiça Federal (TRF5) e do TRT da 13ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Paraíba a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJPB e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "pi",
+    uf: "PI",
+    nome: "Piauí",
+    tribunal: "TJPI",
+    tribunalNome: "Tribunal de Justiça do Piauí",
+    capital: "Teresina",
+    cidades: ["Teresina", "Parnaíba", "Picos", "Floriano", "Piripiri"],
+    prazo: "3 a 10 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJPI, da Justiça Federal (TRF1) e do TRT da 22ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Piauí a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJPI e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "rn",
+    uf: "RN",
+    nome: "Rio Grande do Norte",
+    tribunal: "TJRN",
+    tribunalNome: "Tribunal de Justiça do Rio Grande do Norte",
+    capital: "Natal",
+    cidades: ["Natal", "Mossoró", "Parnamirim", "São Gonçalo do Amarante", "Caicó"],
+    prazo: "3 a 9 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJRN, da Justiça Federal (TRF5) e do TRT da 21ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Rio Grande do Norte a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJRN e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "ro",
+    uf: "RO",
+    nome: "Rondônia",
+    tribunal: "TJRO",
+    tribunalNome: "Tribunal de Justiça de Rondônia",
+    capital: "Porto Velho",
+    cidades: ["Porto Velho", "Ji-Paraná", "Ariquemes", "Vilhena", "Cacoal"],
+    prazo: "3 a 10 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJRO, da Justiça Federal (TRF1) e do TRT da 14ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Rondônia a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJRO e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "rr",
+    uf: "RR",
+    nome: "Roraima",
+    tribunal: "TJRR",
+    tribunalNome: "Tribunal de Justiça de Roraima",
+    capital: "Boa Vista",
+    cidades: ["Boa Vista", "Rorainópolis", "Caracaraí", "Mucajaí", "Pacaraima"],
+    prazo: "4 a 12 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJRR, da Justiça Federal (TRF1) e do TRT da 11ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Roraima a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJRR e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "se",
+    uf: "SE",
+    nome: "Sergipe",
+    tribunal: "TJSE",
+    tribunalNome: "Tribunal de Justiça de Sergipe",
+    capital: "Aracaju",
+    cidades: ["Aracaju", "Nossa Senhora do Socorro", "Lagarto", "Itabaiana", "Estância"],
+    prazo: "3 a 9 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJSE, da Justiça Federal (TRF5) e do TRT da 20ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Sergipe a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJSE e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
+  {
+    slug: "to",
+    uf: "TO",
+    nome: "Tocantins",
+    tribunal: "TJTO",
+    tribunalNome: "Tribunal de Justiça do Tocantins",
+    capital: "Palmas",
+    cidades: ["Palmas", "Araguaína", "Gurupi", "Porto Nacional", "Paraíso do Tocantins"],
+    prazo: "3 a 10 dias úteis",
+    intro:
+      "Certidão de Objeto e Pé de processos do TJTO, da Justiça Federal (TRF1) e do TRT da 10ª Região, com solicitação 100% online e acompanhamento até a emissão.",
+    contexto:
+      "Em Tocantins a certidão é exigida com frequência em financiamentos, licitações, concursos públicos, contratações e negócios imobiliários. Identificamos a comarca e a vara responsáveis, protocolamos o requerimento no TJTO e enviamos o documento digital assim que o tribunal o disponibiliza.",
+  },
 ];
 
 export const estadoPorSlug = (slug: string) =>
