@@ -22,6 +22,7 @@ import { Route as CertidaoObjetoEPeTrf5RouteImport } from './routes/certidao-obj
 import { Route as CertidaoObjetoEPeTrf6RouteImport } from './routes/certidao-objeto-e-pe-trf6'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
@@ -29,6 +30,8 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CertidaoDeObjetoEPeIndexRouteImport } from './routes/certidao-de-objeto-e-pe.index'
 import { Route as CertidaoDeObjetoEPeUfRouteImport } from './routes/certidao-de-objeto-e-pe.$uf'
+import { Route as GuiasIndexRouteImport } from './routes/guias.index'
+import { Route as GuiasSlugRouteImport } from './routes/guias.$slug'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
 import { Route as TribunaisIndexRouteImport } from './routes/tribunais.index'
 import { Route as TribunaisSiglaRouteImport } from './routes/tribunais.$sigla'
@@ -112,6 +115,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SolicitarRoute = SolicitarRouteImport.update({
   id: '/solicitar',
   path: '/solicitar',
@@ -146,6 +154,16 @@ const CertidaoDeObjetoEPeIndexRoute =
 const CertidaoDeObjetoEPeUfRoute = CertidaoDeObjetoEPeUfRouteImport.update({
   id: '/certidao-de-objeto-e-pe/$uf',
   path: '/certidao-de-objeto-e-pe/$uf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuiasIndexRoute = GuiasIndexRouteImport.update({
+  id: '/guias/',
+  path: '/guias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuiasSlugRoute = GuiasSlugRouteImport.update({
+  id: '/guias/$slug',
+  path: '/guias/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PedidoProtocoloRoute = PedidoProtocoloRouteImport.update({
@@ -261,15 +279,18 @@ export interface FileRoutesByFullPath {
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
+  '/guias/$slug': typeof GuiasSlugRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
+  '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -300,15 +321,18 @@ export interface FileRoutesByTo {
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
+  '/guias/$slug': typeof GuiasSlugRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe': typeof CertidaoDeObjetoEPeIndexRoute
+  '/guias': typeof GuiasIndexRoute
   '/tribunais': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -341,15 +365,18 @@ export interface FileRoutesById {
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
+  '/guias/$slug': typeof GuiasSlugRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
+  '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -382,15 +409,18 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
+    | '/sobre'
     | '/solicitar'
     | '/termos-de-uso'
     | '/minha-conta'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
+    | '/guias/$slug'
     | '/pedido/$protocolo'
     | '/tribunais/$sigla'
     | '/blog/'
     | '/certidao-de-objeto-e-pe/'
+    | '/guias/'
     | '/tribunais/'
     | '/admin/$protocolo'
     | '/admin/documentos'
@@ -421,15 +451,18 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
+    | '/sobre'
     | '/solicitar'
     | '/termos-de-uso'
     | '/minha-conta'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
+    | '/guias/$slug'
     | '/pedido/$protocolo'
     | '/tribunais/$sigla'
     | '/blog'
     | '/certidao-de-objeto-e-pe'
+    | '/guias'
     | '/tribunais'
     | '/admin/$protocolo'
     | '/admin/documentos'
@@ -461,15 +494,18 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
+    | '/sobre'
     | '/solicitar'
     | '/termos-de-uso'
     | '/_authenticated/minha-conta'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
+    | '/guias/$slug'
     | '/pedido/$protocolo'
     | '/tribunais/$sigla'
     | '/blog/'
     | '/certidao-de-objeto-e-pe/'
+    | '/guias/'
     | '/tribunais/'
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
@@ -502,14 +538,17 @@ export interface RootRouteChildren {
   CertidaoObjetoEPeTrf6Route: typeof CertidaoObjetoEPeTrf6Route
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SobreRoute: typeof SobreRoute
   SolicitarRoute: typeof SolicitarRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
+  GuiasSlugRoute: typeof GuiasSlugRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
   TribunaisSiglaRoute: typeof TribunaisSiglaRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
+  GuiasIndexRoute: typeof GuiasIndexRoute
   TribunaisIndexRoute: typeof TribunaisIndexRoute
   BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
@@ -615,6 +654,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/solicitar': {
       id: '/solicitar'
       path: '/solicitar'
@@ -662,6 +708,20 @@ declare module '@tanstack/react-router' {
       path: '/certidao-de-objeto-e-pe/$uf'
       fullPath: '/certidao-de-objeto-e-pe/$uf'
       preLoaderRoute: typeof CertidaoDeObjetoEPeUfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guias/': {
+      id: '/guias/'
+      path: '/guias'
+      fullPath: '/guias/'
+      preLoaderRoute: typeof GuiasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guias/$slug': {
+      id: '/guias/$slug'
+      path: '/guias/$slug'
+      fullPath: '/guias/$slug'
+      preLoaderRoute: typeof GuiasSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pedido/$protocolo': {
@@ -830,14 +890,17 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoObjetoEPeTrf6Route: CertidaoObjetoEPeTrf6Route,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SobreRoute: SobreRoute,
   SolicitarRoute: SolicitarRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
   BlogSlugRoute: BlogSlugRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
+  GuiasSlugRoute: GuiasSlugRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
   TribunaisSiglaRoute: TribunaisSiglaRoute,
   BlogIndexRoute: BlogIndexRoute,
   CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
+  GuiasIndexRoute: GuiasIndexRoute,
   TribunaisIndexRoute: TribunaisIndexRoute,
   BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,

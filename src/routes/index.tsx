@@ -627,6 +627,8 @@ function Footer() {
             <li><Link to="/certidao-objeto-e-pe-tjsp" className="hover:text-primary-foreground">Certidão de Objeto e Pé TJSP</Link></li>
             <li><Link to="/tribunais" className="hover:text-primary-foreground">Todos os tribunais</Link></li>
             <li><Link to="/blog" className="hover:text-primary-foreground">Blog</Link></li>
+            <li><Link to="/guias" className="hover:text-primary-foreground">Guias: como pedir e quanto custa</Link></li>
+            <li><Link to="/sobre" className="hover:text-primary-foreground">Sobre nós</Link></li>
 
             <li><a href="#faq" className="hover:text-primary-foreground">Perguntas frequentes</a></li>
 
