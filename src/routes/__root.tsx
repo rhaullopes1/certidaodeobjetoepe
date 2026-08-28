@@ -178,6 +178,23 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function Analytics() {
+  const router = useRouter();
+  useEffect(() => {
+    const unsubscribe = router.subscribe("onResolved", () => {
+      if (typeof window !== "undefined" && "gtag" in window) {
+        (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
+          "event",
+          "page_view",
+          { page_path: window.location.pathname }
+        );
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -185,6 +202,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Analytics />
     </QueryClientProvider>
   );
 }
