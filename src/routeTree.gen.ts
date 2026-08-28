@@ -29,6 +29,8 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CertidaoDeObjetoEPeIndexRouteImport } from './routes/certidao-de-objeto-e-pe.index'
 import { Route as CertidaoDeObjetoEPeUfRouteImport } from './routes/certidao-de-objeto-e-pe.$uf'
+import { Route as GuiasIndexRouteImport } from './routes/guias.index'
+import { Route as GuiasSlugRouteImport } from './routes/guias.$slug'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
 import { Route as TribunaisIndexRouteImport } from './routes/tribunais.index'
 import { Route as TribunaisSiglaRouteImport } from './routes/tribunais.$sigla'
@@ -146,6 +148,16 @@ const CertidaoDeObjetoEPeIndexRoute =
 const CertidaoDeObjetoEPeUfRoute = CertidaoDeObjetoEPeUfRouteImport.update({
   id: '/certidao-de-objeto-e-pe/$uf',
   path: '/certidao-de-objeto-e-pe/$uf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuiasIndexRoute = GuiasIndexRouteImport.update({
+  id: '/guias/',
+  path: '/guias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuiasSlugRoute = GuiasSlugRouteImport.update({
+  id: '/guias/$slug',
+  path: '/guias/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PedidoProtocoloRoute = PedidoProtocoloRouteImport.update({
@@ -266,10 +278,12 @@ export interface FileRoutesByFullPath {
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
+  '/guias/$slug': typeof GuiasSlugRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
+  '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -305,10 +319,12 @@ export interface FileRoutesByTo {
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
+  '/guias/$slug': typeof GuiasSlugRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe': typeof CertidaoDeObjetoEPeIndexRoute
+  '/guias': typeof GuiasIndexRoute
   '/tribunais': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -346,10 +362,12 @@ export interface FileRoutesById {
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
+  '/guias/$slug': typeof GuiasSlugRoute
   '/pedido/$protocolo': typeof PedidoProtocoloRoute
   '/tribunais/$sigla': typeof TribunaisSiglaRoute
   '/blog/': typeof BlogIndexRoute
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
+  '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -387,10 +405,12 @@ export interface FileRouteTypes {
     | '/minha-conta'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
+    | '/guias/$slug'
     | '/pedido/$protocolo'
     | '/tribunais/$sigla'
     | '/blog/'
     | '/certidao-de-objeto-e-pe/'
+    | '/guias/'
     | '/tribunais/'
     | '/admin/$protocolo'
     | '/admin/documentos'
@@ -426,10 +446,12 @@ export interface FileRouteTypes {
     | '/minha-conta'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
+    | '/guias/$slug'
     | '/pedido/$protocolo'
     | '/tribunais/$sigla'
     | '/blog'
     | '/certidao-de-objeto-e-pe'
+    | '/guias'
     | '/tribunais'
     | '/admin/$protocolo'
     | '/admin/documentos'
@@ -466,10 +488,12 @@ export interface FileRouteTypes {
     | '/_authenticated/minha-conta'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
+    | '/guias/$slug'
     | '/pedido/$protocolo'
     | '/tribunais/$sigla'
     | '/blog/'
     | '/certidao-de-objeto-e-pe/'
+    | '/guias/'
     | '/tribunais/'
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/documentos'
@@ -506,10 +530,12 @@ export interface RootRouteChildren {
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
+  GuiasSlugRoute: typeof GuiasSlugRoute
   PedidoProtocoloRoute: typeof PedidoProtocoloRoute
   TribunaisSiglaRoute: typeof TribunaisSiglaRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
+  GuiasIndexRoute: typeof GuiasIndexRoute
   TribunaisIndexRoute: typeof TribunaisIndexRoute
   BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
@@ -662,6 +688,20 @@ declare module '@tanstack/react-router' {
       path: '/certidao-de-objeto-e-pe/$uf'
       fullPath: '/certidao-de-objeto-e-pe/$uf'
       preLoaderRoute: typeof CertidaoDeObjetoEPeUfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guias/': {
+      id: '/guias/'
+      path: '/guias'
+      fullPath: '/guias/'
+      preLoaderRoute: typeof GuiasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guias/$slug': {
+      id: '/guias/$slug'
+      path: '/guias/$slug'
+      fullPath: '/guias/$slug'
+      preLoaderRoute: typeof GuiasSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pedido/$protocolo': {
@@ -834,10 +874,12 @@ const rootRouteChildren: RootRouteChildren = {
   TermosDeUsoRoute: TermosDeUsoRoute,
   BlogSlugRoute: BlogSlugRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
+  GuiasSlugRoute: GuiasSlugRoute,
   PedidoProtocoloRoute: PedidoProtocoloRoute,
   TribunaisSiglaRoute: TribunaisSiglaRoute,
   BlogIndexRoute: BlogIndexRoute,
   CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
+  GuiasIndexRoute: GuiasIndexRoute,
   TribunaisIndexRoute: TribunaisIndexRoute,
   BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
