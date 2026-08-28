@@ -235,6 +235,9 @@ function Solicitar() {
       observacoes: String(form.get("observacoes") ?? ""),
     };
     const confirmaEmail = String(form.get("confirmaEmail") ?? "").trim().toLowerCase();
+    const contaNome = String(form.get("contaNome") ?? "").trim();
+    const senha = String(form.get("senha") ?? "");
+    const confirmaSenha = String(form.get("confirmaSenha") ?? "");
 
     const parsed = pedidoSchema.safeParse(bruto);
     const novosErros = parsed.success ? {} : coletarErros(parsed.error.issues);
