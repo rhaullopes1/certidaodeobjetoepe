@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import {
   ArrowLeft,
@@ -16,7 +16,9 @@ import {
 import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL } from "@/lib/site";
+import { sendGoogleAdsConversion } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
+
 
 export const Route = createFileRoute("/pedido/$protocolo")({
   component: PedidoPage,
@@ -61,24 +63,13 @@ function PedidoPage() {
 
   const [qr, setQr] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
-  const conversionSent = useRef(false);
 
   useEffect(() => {
-    if (
-      data?.status === "pago" &&
-      !conversionSent.current &&
-      typeof window !== "undefined" &&
-      "gtag" in window
-    ) {
-      // Event snippet for Google Ads conversion: pagamento confirmado
-      (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
-        "event",
-        "conversion",
-        { send_to: "AW-18411209847/ZLw3CNazkOgcEPeIk8tE" }
-      );
-      conversionSent.current = true;
+    if (data?.status === "pago" && data?.protocolo) {
+      sendGoogleAdsConversion(data.protocolo, data.valorCentavos);
     }
-  }, [data?.status]);
+  }, [data?.status, data?.protocolo, data?.valorCentavos]);
+
 
 
   useEffect(() => {
