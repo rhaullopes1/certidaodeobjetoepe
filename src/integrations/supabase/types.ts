@@ -85,6 +85,24 @@ export type Database = {
           },
         ]
       }
+      cron_tokens: {
+        Row: {
+          created_at: string
+          nome: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          nome: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          nome?: string
+          token?: string
+        }
+        Relationships: []
+      }
       email_sequencia_config: {
         Row: {
           assunto: string
