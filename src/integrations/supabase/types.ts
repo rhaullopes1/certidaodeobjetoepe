@@ -85,6 +85,53 @@ export type Database = {
           },
         ]
       }
+      campaign_recipients: {
+        Row: {
+          aberto_em: string | null
+          campaign_id: string
+          clicado_em: string | null
+          created_at: string
+          email: string
+          enviado_em: string | null
+          erro: string | null
+          id: string
+          nome: string | null
+          status: string
+        }
+        Insert: {
+          aberto_em?: string | null
+          campaign_id: string
+          clicado_em?: string | null
+          created_at?: string
+          email: string
+          enviado_em?: string | null
+          erro?: string | null
+          id?: string
+          nome?: string | null
+          status?: string
+        }
+        Update: {
+          aberto_em?: string | null
+          campaign_id?: string
+          clicado_em?: string | null
+          created_at?: string
+          email?: string
+          enviado_em?: string | null
+          erro?: string | null
+          id?: string
+          nome?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_recipients_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "weekly_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cron_tokens: {
         Row: {
           created_at: string
@@ -100,6 +147,51 @@ export type Database = {
           created_at?: string
           nome?: string
           token?: string
+        }
+        Relationships: []
+      }
+      email_config: {
+        Row: {
+          assunto: string
+          ativo: boolean
+          chave: string
+          corpo: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          assunto: string
+          ativo?: boolean
+          chave: string
+          corpo: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          assunto?: string
+          ativo?: boolean
+          chave?: string
+          corpo?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      email_optouts: {
+        Row: {
+          created_at: string
+          email: string
+          motivo: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          motivo?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          motivo?: string
         }
         Relationships: []
       }
@@ -311,29 +403,38 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          boas_vindas_em: string | null
           created_at: string
           email: string | null
           id: string
           nome: string | null
           provider: string | null
+          status_conta: string
+          ultimo_email_enviado: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
+          boas_vindas_em?: string | null
           created_at?: string
           email?: string | null
           id: string
           nome?: string | null
           provider?: string | null
+          status_conta?: string
+          ultimo_email_enviado?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
+          boas_vindas_em?: string | null
           created_at?: string
           email?: string | null
           id?: string
           nome?: string | null
           provider?: string | null
+          status_conta?: string
+          ultimo_email_enviado?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -386,6 +487,51 @@ export type Database = {
           provedor?: string
           resultado?: string | null
           tipo?: string | null
+        }
+        Relationships: []
+      }
+      weekly_campaigns: {
+        Row: {
+          agendamento_data: string | null
+          assunto: string
+          conteudo_html: string
+          created_at: string
+          enviado_em: string | null
+          id: string
+          status: string
+          titulo: string
+          total_destinatarios: number
+          total_enviados: number
+          total_falhas: number
+          updated_at: string
+        }
+        Insert: {
+          agendamento_data?: string | null
+          assunto: string
+          conteudo_html: string
+          created_at?: string
+          enviado_em?: string | null
+          id?: string
+          status?: string
+          titulo: string
+          total_destinatarios?: number
+          total_enviados?: number
+          total_falhas?: number
+          updated_at?: string
+        }
+        Update: {
+          agendamento_data?: string | null
+          assunto?: string
+          conteudo_html?: string
+          created_at?: string
+          enviado_em?: string | null
+          id?: string
+          status?: string
+          titulo?: string
+          total_destinatarios?: number
+          total_enviados?: number
+          total_falhas?: number
+          updated_at?: string
         }
         Relationships: []
       }

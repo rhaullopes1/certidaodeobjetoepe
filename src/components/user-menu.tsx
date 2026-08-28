@@ -5,6 +5,8 @@ import { FileText, LayoutDashboard, LogIn, LogOut, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { carregarPerfil, iniciais } from "@/lib/perfil";
 import { souEquipe } from "@/lib/admin";
+import { useServerFn } from "@tanstack/react-start";
+import { dispararBoasVindas } from "@/lib/emails.functions";
 
 export function UserMenu() {
   const navigate = useNavigate();
@@ -18,6 +20,14 @@ export function UserMenu() {
     queryFn: souEquipe,
     enabled: Boolean(perfil.data),
   });
+
+  // Envia o e-mail de boas-vindas na primeira vez que o cliente acessa a conta.
+  const boasVindas = useServerFn(dispararBoasVindas);
+  useEffect(() => {
+    if (!perfil.data) return;
+    boasVindas({ data: undefined }).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [perfil.data?.id]);
 
   useEffect(() => {
     function fora(e: MouseEvent) {

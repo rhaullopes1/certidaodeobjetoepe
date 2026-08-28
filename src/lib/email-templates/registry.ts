@@ -3,6 +3,8 @@ import { template as pedidoConfirmacao } from './pedido-confirmacao'
 import { template as novoPedidoAdmin } from './novo-pedido-admin'
 import { template as pedidoLembrete } from './pedido-lembrete'
 import { template as recuperacaoEtapa } from './recuperacao-etapa'
+import { template as boasVindas } from './boas-vindas'
+import { template as campanhaSemanal } from './campanha-semanal'
 
 
 
@@ -28,6 +30,8 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'novo-pedido-admin': novoPedidoAdmin,
   'pedido-lembrete': pedidoLembrete,
   'recuperacao-etapa': recuperacaoEtapa,
+  'boas-vindas': boasVindas,
+  'campanha-semanal': campanhaSemanal,
 }
 
 
