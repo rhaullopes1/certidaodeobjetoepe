@@ -16,7 +16,7 @@ import {
 import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL } from "@/lib/site";
-import { sendGoogleAdsConversion } from "@/lib/analytics";
+import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 
 
@@ -65,7 +65,9 @@ function PedidoPage() {
   const [copiado, setCopiado] = useState(false);
 
   useEffect(() => {
-    if (data?.status === "pago" && data?.protocolo) {
+    if (!data?.protocolo) return;
+    trackGenerateLead(data.protocolo, data.valorCentavos);
+    if (data.status === "pago") {
       sendGoogleAdsConversion(data.protocolo, data.valorCentavos);
     }
   }, [data?.status, data?.protocolo, data?.valorCentavos]);

@@ -13,6 +13,7 @@ import {
   type EtapaProcessoInput,
 } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
+import { trackBeginCheckout } from "@/lib/analytics";
 
 export const Route = createFileRoute("/solicitar")({
   component: Solicitar,
@@ -112,6 +113,11 @@ function Solicitar() {
   const [extras, setExtras] = useState<EtapaProcessoInput[]>([]);
   const [sessaoEmail, setSessaoEmail] = useState<string | null>(null);
   const [modoLogin, setModoLogin] = useState(false);
+
+  useEffect(() => {
+    trackBeginCheckout();
+  }, []);
+
 
   useEffect(() => {
     let ativo = true;
