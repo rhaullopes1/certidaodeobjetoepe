@@ -267,9 +267,7 @@ async function enviarNotificacaoAdmin(
   certidoes: Array<{ numeroProcesso: string; nomeParte: string; cpf: string }>,
 ) {
   const emailsAdmin = [
-    "contato@certidaodeobjetoepe.org",
-    "certidaoobjetoepe@gmail.com",
-    "objetoepe@gmail.com",
+    EMAIL_CONTATO,
   ];
 
   try {
