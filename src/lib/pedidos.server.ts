@@ -1,4 +1,4 @@
-import { PIX, precoCentavos, formatarBRL, DIAS_PARA_EXPIRAR } from "./site";
+import { PIX, precoCentavos, formatarBRL, DIAS_PARA_EXPIRAR, EMAIL_CONTATO } from "./site";
 
 import { gerarPixCopiaECola } from "./pix";
 import {
