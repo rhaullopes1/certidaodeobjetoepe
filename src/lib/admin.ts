@@ -22,6 +22,10 @@ export type PedidoAdmin = {
   status: string;
   created_at: string;
   pago_em: string | null;
+  /** Calculado no cliente: repete processo + CPF de outro pedido da lista. */
+  duplicado?: boolean;
+  /** Calculado no cliente: criado nas últimas 24 horas. */
+  novo?: boolean;
 };
 
 const COLUNAS =
@@ -91,7 +95,29 @@ export async function listarPedidos(f: Filtros): Promise<PedidoAdmin[]> {
 
   // Exibe como "expirado" os pedidos sem pagamento há mais de 7 dias.
   // A gravação no banco acontece no servidor (leitura pública/webhook).
-  return (data ?? []).map(comStatusExpirado);
+  const lista = (data ?? []).map(comStatusExpirado);
+
+  // Marca pedidos que repetem processo + CPF (possível duplicidade).
+  const contagem = new Map<string, number>();
+  for (const p of lista) {
+    const chave = chaveDuplicidade(p);
+    contagem.set(chave, (contagem.get(chave) ?? 0) + 1);
+  }
+
+  return lista.map((p) => ({
+    ...p,
+    duplicado: (contagem.get(chaveDuplicidade(p)) ?? 0) > 1,
+    novo: ehNovo(p.created_at),
+  }));
+}
+
+export function chaveDuplicidade(p: { numero_processo: string; cpf: string }) {
+  return `${soDigitos(p.numero_processo)}|${soDigitos(p.cpf)}`;
+}
+
+/** Pedido criado nas últimas 24 horas. */
+export function ehNovo(createdAt: string) {
+  return Date.now() - new Date(createdAt).getTime() < 24 * 60 * 60 * 1000;
 }
 
 const DIAS_PARA_EXPIRAR = 7;
@@ -101,6 +127,28 @@ function comStatusExpirado<T extends { status: string; created_at: string }>(p: 
   const criadoEm = new Date(p.created_at).getTime();
   if (Date.now() - criadoEm < DIAS_PARA_EXPIRAR * 24 * 60 * 60 * 1000) return p;
   return { ...p, status: "expirado" };
+}
+
+/** Outros pedidos com o mesmo processo + CPF (exceto o próprio protocolo). */
+export async function pedidosRelacionados(p: {
+  protocolo: string;
+  numero_processo: string;
+  cpf: string;
+}): Promise<{ protocolo: string; status: string; created_at: string }[]> {
+  const { data, error } = await supabase
+    .from("pedidos")
+    .select("protocolo, status, created_at, numero_processo, cpf")
+    .eq("cpf", p.cpf)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return (data ?? [])
+    .filter(
+      (r) =>
+        r.protocolo !== p.protocolo &&
+        chaveDuplicidade(r) === chaveDuplicidade(p),
+    )
+    .map((r) => ({ protocolo: r.protocolo, status: r.status, created_at: r.created_at }));
 }
 
 export async function buscarPedidoAdmin(protocolo: string) {

@@ -6,9 +6,11 @@ import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import {
   abrirAnexo,
   buscarPedidoAdmin,
+  ehNovo,
   enviarAnexo,
   listarAnexos,
   listarAndamentos,
+  pedidosRelacionados,
   registrarAndamento,
   removerAnexo,
   souEquipe,
@@ -63,6 +65,11 @@ function AdminDetalhe() {
   const anexos = useQuery({
     queryKey: ["admin-anexos", pedidoId],
     queryFn: () => listarAnexos(pedidoId!),
+    enabled: !!pedidoId,
+  });
+  const relacionados = useQuery({
+    queryKey: ["admin-duplicidade", pedidoId],
+    queryFn: () => pedidosRelacionados(pedido.data!),
     enabled: !!pedidoId,
   });
 
@@ -139,6 +146,11 @@ function AdminDetalhe() {
               <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
                 {statusPedido(pedido.data.status).label}
               </span>
+              {ehNovo(pedido.data.created_at) && (
+                <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent">
+                  Novo
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => {
@@ -171,6 +183,33 @@ function AdminDetalhe() {
             </div>
 
             {erro && <p className="mt-4 text-sm font-medium text-destructive">{erro}</p>}
+
+            {relacionados.data && relacionados.data.length > 0 && (
+              <div className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
+                <p className="text-sm font-bold text-destructive">Possível duplicidade</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Existem outros pedidos com o mesmo processo e CPF. Confira antes de emitir a
+                  certidão novamente.
+                </p>
+                <ul className="mt-3 space-y-1 text-sm">
+                  {relacionados.data.map((r) => (
+                    <li key={r.protocolo}>
+                      <Link
+                        to="/admin/$protocolo"
+                        params={{ protocolo: r.protocolo }}
+                        className="font-semibold text-primary underline-offset-4 hover:underline"
+                      >
+                        {r.protocolo}
+                      </Link>{" "}
+                      <span className="text-muted-foreground">
+                        · {statusPedido(r.status).label} ·{" "}
+                        {new Date(r.created_at).toLocaleString("pt-BR")}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="mt-8 grid gap-6 lg:grid-cols-2">
               <section className="card-premium p-6">

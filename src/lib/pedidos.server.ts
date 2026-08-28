@@ -182,6 +182,26 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     validarCertidaoNoServidor(c, `Certidão ${i + 1}`),
   );
 
+  const email = data.email.trim().toLowerCase();
+
+  // Anti-duplicidade: reenvio do formulário em poucos minutos reaproveita o pedido.
+  const desde = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+  const { data: existente } = await supabaseAdmin
+    .from("pedidos")
+    .select("*")
+    .eq("numero_processo", principal.numeroProcesso)
+    .eq("cpf", principal.cpf)
+    .eq("email", email)
+    .eq("status", "aguardando_pagamento")
+    .gte("created_at", desde)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (existente) {
+    return montar(await gerarCobranca(existente as PedidoRow));
+  }
+
   const registro = {
     protocolo: novoProtocolo(),
     numero_processo: principal.numeroProcesso,
@@ -189,7 +209,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     quantidade: data.quantidade,
     certidoes,
     cpf: principal.cpf,
-    email: data.email.trim().toLowerCase(),
+    email,
     whatsapp: soDigitos(data.whatsapp),
     observacoes: data.observacoes ? data.observacoes.trim() : null,
     valor_centavos: valorCentavos,
