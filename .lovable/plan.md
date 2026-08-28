@@ -1,26 +1,26 @@
-# Concluir a caixa de entrada contato@certidaodeobjetoepe.org (ImprovMX)
+# Concluir a caixa de entrada contato@certidaodeobjetoepe.org
 
-## O que a tela mostra
-No ImprovMX o domínio `certidaodeobjetoepe.org` ainda está com o selo vermelho **Configurar** (DNS pendente) e a segunda linha está com o campo de alias vazio, por isso o aviso "É necessário um pseudônimo". Nenhuma alteração de código é necessária — o site já exibe e usa `contato@certidaodeobjetoepe.org`.
+## O que foi identificado
+A conta ImprovMX mostra dois problemas:
+- O domínio `certidaodeobjetoepe.org` ainda está com o botão vermelho **Configurar** — os registros DNS de e-mail (MX/SPF) ainda não foram adicionados.
+- A segunda linha de alias está com o campo "novo-alias" vazio, gerando o erro "É necessário um pseudônimo".
 
-## Passos no ImprovMX
-1. Na primeira linha, confirme o alias `contato` → `certidaoobjetoepe@gmail.com` (terminar de digitar o e-mail e salvar).
-2. A segunda linha ("novo-alias") só serve para criar outro encaminhamento. Se não quiser um segundo alias, deixe-a em branco e ignore — o aviso some. Se quiser tudo o que chegar no domínio, crie o alias `*` → seu Gmail.
+## Ações que serão feitas pelo agente
+1. Acessar o ImprovMX uma única vez com as credenciais enviadas no chat (não serão armazenadas/repetidas).
+2. Preencher/completar o alias `contato` apontando para `certidaoobjetoepe@gmail.com`.
+3. Remover ou ignorar a linha vazia de "novo-alias" para eliminar o erro.
 
-## Passos no DNS (Configurações do projeto → Domínios → ⋯ → Configurar → Gerenciar registros DNS)
-Adicionar, no domínio raiz `certidaodeobjetoepe.org`:
+## Ação necessária do usuário após o passo acima
+No Lovable, em **Configurações do projeto → Domains → certidaodeobjetoepe.org → ⋯ → Configurar → Gerenciar registros DNS**, adicionar:
 
 ```text
-MX   @   mx1.improvmx.com   prioridade 10
-MX   @   mx2.improvmx.com   prioridade 20
+MX   @   mx1.improvmx.com   10
+MX   @   mx2.improvmx.com   20
 TXT  @   v=spf1 include:spf.improvmx.com ~all
 ```
 
-Se já existir um TXT SPF, edite o existente incluindo `include:spf.improvmx.com` em vez de criar outro.
+Se já houver um TXT SPF, editar o existente incluindo `include:spf.improvmx.com`.
 
 ## Validação
-1. Aguardar a propagação (normalmente 15 min a algumas horas) e clicar em **Configurar/Verificar** no ImprovMX até o selo ficar verde.
-2. Enviar um e-mail de teste para `contato@certidaodeobjetoepe.org` e confirmar a chegada no Gmail.
-3. Opcional: responder a partir do Gmail usando "Enviar como" com SMTP do ImprovMX (recurso pago) ou continuar respondendo pelo Gmail atual.
-
-Posso verificar os registros publicados assim que você adicioná-los.
+- Aguardar propagação e clicar em **Configurar/Verificar** no ImprovMX até o selo ficar verde.
+- Enviar e-mail de teste para `contato@certidaodeobjetoepe.org` e confirmar recebimento no Gmail.
