@@ -180,19 +180,16 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function Analytics() {
-  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => {
-    const unsubscribe = router.subscribe("onResolved", () => {
-      if (typeof window !== "undefined" && "gtag" in window) {
-        (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
-          "event",
-          "page_view",
-          { page_path: window.location.pathname }
-        );
-      }
-    });
-    return () => unsubscribe();
-  }, [router]);
+    if (typeof window !== "undefined" && "gtag" in window) {
+      (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
+        "event",
+        "page_view",
+        { page_path: pathname }
+      );
+    }
+  }, [pathname]);
   return null;
 }
 
