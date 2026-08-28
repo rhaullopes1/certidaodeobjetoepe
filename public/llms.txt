@@ -1,0 +1,45 @@
+# Certidão de Objeto e Pé
+
+> Serviço online de solicitação de Certidão de Objeto e Pé em processos judiciais de todos os tribunais do Brasil, com pagamento por Pix ou cartão e entrega digital em PDF.
+
+Informe o número do processo, o nome completo e o CPF da parte envolvida. Nossa equipe protocola o requerimento no tribunal correto (Justiça Estadual, Federal, do Trabalho ou tribunais superiores) e acompanha até a emissão.
+
+## Páginas
+
+- [Início](/): O que é a Certidão de Objeto e Pé e como solicitar online.
+- [Solicitar certidão](/solicitar): Formulário de pedido com cálculo do valor de 1 a 5 certidões.
+- [Acompanhar pedido](/acompanhar): Consulta do status pelo número de protocolo.
+- [Estados atendidos](/certidao-de-objeto-e-pe): Hub das páginas por estado e tribunal de justiça.
+- [Tribunais atendidos](/tribunais): Lista completa de TJs, TRFs, TRTs e tribunais superiores.
+- [Blog](/blog): Guias sobre certidões judiciais, sistemas processuais e usos do documento.
+
+## Justiça Federal
+
+- [Certidão de Objeto e Pé TRF1](/certidao-objeto-e-pe-trf1): Justiça Federal em AC, AM, AP, BA, DF, GO, MA, MT, PA, PI, RO, RR e TO.
+- [Certidão de Objeto e Pé TRF2](/certidao-objeto-e-pe-trf2): Justiça Federal no RJ e no ES.
+- [Certidão de Objeto e Pé TRF3](/certidao-objeto-e-pe-trf3): Justiça Federal em SP e MS.
+- [Certidão de Objeto e Pé TRF4](/certidao-objeto-e-pe-trf4): Justiça Federal no RS, SC e PR.
+- [Certidão de Objeto e Pé TRF5](/certidao-objeto-e-pe-trf5): Justiça Federal em AL, CE, PB, PE, RN e SE.
+- [Certidão de Objeto e Pé TRF6](/certidao-objeto-e-pe-trf6): Justiça Federal em MG.
+
+## Justiça Estadual
+
+- [Certidão de Objeto e Pé TJSP](/certidao-objeto-e-pe-tjsp): Processos do Tribunal de Justiça de São Paulo.
+- [São Paulo](/certidao-de-objeto-e-pe/sp): Certidão em todas as comarcas paulistas.
+- [Minas Gerais](/certidao-de-objeto-e-pe/mg): Certidão em todas as comarcas mineiras.
+- [Rio de Janeiro](/certidao-de-objeto-e-pe/rj): Certidão em todas as comarcas fluminenses.
+- [Bahia](/certidao-de-objeto-e-pe/ba): Certidão em todas as comarcas baianas.
+- [Distrito Federal](/certidao-de-objeto-e-pe/df): Certidão no TJDFT.
+
+## Conteúdo
+
+- [O que é a Certidão de Objeto e Pé](/blog/o-que-e-certidao-de-objeto-e-pe): Definição, conteúdo e finalidade do documento.
+- [Como emitir a certidão](/blog/como-emitir-certidao-de-objeto-e-pe): Passo a passo por tribunal e sistema.
+- [Certidão na Justiça Federal](/blog/certidao-de-objeto-e-pe-justica-federal): Como funciona nos TRFs.
+- [Objeto e pé x inteiro teor](/blog/diferenca-objeto-e-pe-e-inteiro-teor): Diferenças entre os documentos.
+- [Quanto tempo demora](/blog/quanto-tempo-demora-certidao-de-objeto-e-pe): Prazos por tribunal.
+
+## Optional
+
+- [Política de privacidade](/politica-de-privacidade): Tratamento de dados pessoais.
+- [Termos de uso](/termos-de-uso): Condições do serviço.
