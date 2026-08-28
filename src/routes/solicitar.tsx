@@ -298,7 +298,8 @@ function Solicitar() {
             options: { data: { full_name: contaNome } },
           });
           if (error) {
-            const jaExiste = /registered|already|exists/i.test(error.message);
+            const msg = error.message || "";
+            const jaExiste = /registered|already|exists/i.test(msg);
             if (jaExiste) {
               const entrar = await supabase.auth.signInWithPassword({ email, password: senha });
               if (entrar.error) {
@@ -307,13 +308,31 @@ function Solicitar() {
                 setEnviando(false);
                 return;
               }
+            } else if (/weak|pwned|compromised/i.test(msg)) {
+              setErros({
+                senha:
+                  "Essa senha é muito comum e apareceu em vazamentos. Escolha outra, com letras, números e símbolos.",
+              });
+              setEnviando(false);
+              return;
+            } else if (/rate limit|too many/i.test(msg)) {
+              setErroGeral(
+                "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.",
+              );
+              setEnviando(false);
+              return;
+            } else if (/invalid.*email|email address.*invalid/i.test(msg)) {
+              setErros({ email: "E-mail inválido. Confira o endereço informado." });
+              setEnviando(false);
+              return;
             } else {
-              setErroGeral("Não foi possível criar sua conta. Tente novamente.");
+              setErroGeral(`Não foi possível criar sua conta: ${msg}`);
               setEnviando(false);
               return;
             }
           }
         }
+
         setSessaoEmail(email);
       }
       const pedido = await enviarPedido({ data: parsed.data! });
