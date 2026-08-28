@@ -21,9 +21,18 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   }),
 });
 
+const LINKS_ADMIN = [
+  { to: "/admin", label: "Pedidos", exact: true },
+  { to: "/admin/historico", label: "Histórico" },
+  { to: "/admin/recuperacao", label: "Recuperação" },
+  { to: "/admin/emails", label: "E-mails" },
+  { to: "/admin/documentos", label: "Documentos" },
+] as const;
+
 export function AdminHeader() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [aberto, setAberto] = useState(false);
 
   async function sair() {
     await queryClient.cancelQueries();
@@ -32,63 +41,77 @@ export function AdminHeader() {
     navigate({ to: "/auth", replace: true });
   }
 
+  const linkClass = "text-primary-foreground/70 transition-colors hover:text-primary-foreground";
+  const linkAtivo = { className: "text-primary-foreground font-semibold" };
+
   return (
-    <header className="surface-navy">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
-        <Link to="/admin" className="flex items-center gap-3">
+    <header className="surface-navy w-full max-w-full">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 sm:px-8 sm:py-5 md:flex md:justify-between md:gap-4">
+        <Link to="/admin" className="flex min-w-0 items-center gap-3">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-primary-foreground/15">
             <Scale className="h-5 w-5" strokeWidth={1.8} />
           </span>
-          <span className="font-display text-sm font-bold">Painel administrativo</span>
+          <span className="truncate font-display text-sm font-bold">Painel administrativo</span>
         </Link>
-        <nav className="flex items-center gap-5 text-sm">
-          <Link
-            to="/admin"
-            activeOptions={{ exact: true }}
-            activeProps={{ className: "text-primary-foreground font-semibold" }}
-            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
-          >
-            Pedidos
-          </Link>
-          <Link
-            to="/admin/historico"
-            activeProps={{ className: "text-primary-foreground font-semibold" }}
-            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
-          >
-            Histórico
-          </Link>
-          <Link
-            to="/admin/recuperacao"
-            activeProps={{ className: "text-primary-foreground font-semibold" }}
-            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
-          >
-            Recuperação
-          </Link>
-          <Link
-            to="/admin/emails"
-            activeProps={{ className: "text-primary-foreground font-semibold" }}
-            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
-          >
-            E-mails
-          </Link>
-          <Link
-            to="/admin/documentos"
-            activeProps={{ className: "text-primary-foreground font-semibold" }}
-            className="text-primary-foreground/70 transition-colors hover:text-primary-foreground"
-          >
-            Documentos
-          </Link>
+
+        <button
+          type="button"
+          onClick={() => setAberto((v) => !v)}
+          aria-expanded={aberto}
+          aria-label="Abrir menu do painel"
+          className="inline-flex shrink-0 items-center justify-center rounded-xl border border-primary-foreground/20 p-2 text-primary-foreground md:hidden"
+        >
+          {aberto ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+
+        <nav className="hidden items-center gap-5 text-sm md:flex">
+          {LINKS_ADMIN.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              {...(l.exact ? { activeOptions: { exact: true } } : {})}
+              activeProps={linkAtivo}
+              className={linkClass}
+            >
+              {l.label}
+            </Link>
+          ))}
         </nav>
+
         <button
           onClick={sair}
-          className="inline-flex items-center gap-2 text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground"
+          className="hidden items-center gap-2 text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground md:inline-flex"
         >
           <LogOut className="h-4 w-4" /> Sair
         </button>
+
+        {aberto && (
+          <nav className="col-span-2 flex w-full flex-col gap-1 border-t border-primary-foreground/15 pt-3 text-sm md:hidden">
+            {LINKS_ADMIN.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                {...(l.exact ? { activeOptions: { exact: true } } : {})}
+                activeProps={linkAtivo}
+                className={`${linkClass} rounded-lg px-2 py-2`}
+                onClick={() => setAberto(false)}
+              >
+                {l.label}
+              </Link>
+            ))}
+            <button
+              onClick={sair}
+              className="mt-1 inline-flex items-center gap-2 rounded-lg px-2 py-2 text-left text-primary-foreground/75 transition-colors hover:text-primary-foreground"
+            >
+              <LogOut className="h-4 w-4" /> Sair
+            </button>
+          </nav>
+        )}
       </div>
     </header>
   );
 }
+
 
 export function SemPermissao() {
   return (
