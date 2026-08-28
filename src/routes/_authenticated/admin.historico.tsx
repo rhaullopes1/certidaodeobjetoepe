@@ -31,7 +31,7 @@ function Historico() {
   return (
     <div className="min-h-dvh bg-secondary/40">
       <AdminHeader />
-      <main className="mx-auto w-full max-w-5xl px-5 py-10 sm:px-8">
+      <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-8 sm:py-10">
         <h1 className="font-display text-2xl font-bold">Histórico de pedidos</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Todos os andamentos registrados pela equipe, do mais recente ao mais antigo.
@@ -56,8 +56,9 @@ function Historico() {
         {itens.data && itens.data.length > 0 && (
           <ol className="card-premium mt-8 divide-y divide-border/60">
             {itens.data.map((i) => (
-              <li key={i.id} className="flex flex-wrap items-start justify-between gap-3 p-5">
-                <div>
+              <li key={i.id} className="flex flex-wrap items-start justify-between gap-3 p-4 sm:p-5">
+                <div className="min-w-0 flex-1 break-words">
+
                   <p className="text-sm font-bold">
                     {i.pedidos ? (
                       <Link

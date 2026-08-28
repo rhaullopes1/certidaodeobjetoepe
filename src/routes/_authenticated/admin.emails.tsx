@@ -190,7 +190,7 @@ function EmailsPage() {
     <div className="min-h-screen bg-background">
       <AdminHeader />
 
-      <main className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8">
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-8 sm:py-10">
         <h1 className="font-display text-2xl font-bold">Automação de e-mails</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Boas-vindas, campanhas semanais e métricas de engajamento da base de clientes.
@@ -449,7 +449,7 @@ function EmailsPage() {
                   <p className="mb-3 text-xs uppercase tracking-wide text-white/50">
                     Histórico de disparos
                   </p>
-                  <div className="overflow-x-auto rounded-2xl border border-white/10">
+                  <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-white/10">
                     <table className="w-full min-w-[720px] text-left text-sm">
                       <thead className="bg-white/5 text-xs uppercase tracking-wide text-white/50">
                         <tr>
