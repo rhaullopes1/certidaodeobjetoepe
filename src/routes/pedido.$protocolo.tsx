@@ -65,7 +65,9 @@ function PedidoPage() {
   const [copiado, setCopiado] = useState(false);
 
   useEffect(() => {
-    if (data?.status === "pago" && data?.protocolo) {
+    if (!data?.protocolo) return;
+    trackGenerateLead(data.protocolo, data.valorCentavos);
+    if (data.status === "pago") {
       sendGoogleAdsConversion(data.protocolo, data.valorCentavos);
     }
   }, [data?.status, data?.protocolo, data?.valorCentavos]);
