@@ -182,6 +182,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function Analytics() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => {
+    console.log("Analytics useEffect fired", pathname, typeof window, typeof window !== "undefined" ? "gtag" in window : "n/a");
     if (typeof window !== "undefined" && "gtag" in window) {
       (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
         "event",
