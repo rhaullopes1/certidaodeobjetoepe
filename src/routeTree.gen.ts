@@ -43,6 +43,7 @@ import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cr
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as ApiPublicEClickIdRouteImport } from './routes/api/public/e/click.$id'
 import { Route as ApiPublicEOpenIdRouteImport } from './routes/api/public/e/open.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -223,6 +224,11 @@ const LovableEmailTransactionalPreviewRoute =
     path: '/lovable/email/transactional/preview',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicEClickIdRoute = ApiPublicEClickIdRouteImport.update({
+  id: '/api/public/e/click/$id',
+  path: '/api/public/e/click/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicEOpenIdRoute = ApiPublicEOpenIdRouteImport.update({
   id: '/api/public/e/open/$id',
   path: '/api/public/e/open/$id',
@@ -263,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/api/public/e/click/$id': typeof ApiPublicEClickIdRoute
   '/api/public/e/open/$id': typeof ApiPublicEOpenIdRoute
 }
 export interface FileRoutesByTo {
@@ -299,6 +306,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/api/public/e/click/$id': typeof ApiPublicEClickIdRoute
   '/api/public/e/open/$id': typeof ApiPublicEOpenIdRoute
 }
 export interface FileRoutesById {
@@ -337,6 +345,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/api/public/e/click/$id': typeof ApiPublicEClickIdRoute
   '/api/public/e/open/$id': typeof ApiPublicEOpenIdRoute
 }
 export interface FileRouteTypes {
@@ -375,6 +384,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
+    | '/api/public/e/click/$id'
     | '/api/public/e/open/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -411,6 +421,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
+    | '/api/public/e/click/$id'
     | '/api/public/e/open/$id'
   id:
     | '__root__'
@@ -448,6 +459,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
+    | '/api/public/e/click/$id'
     | '/api/public/e/open/$id'
   fileRoutesById: FileRoutesById
 }
@@ -480,6 +492,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
+  ApiPublicEClickIdRoute: typeof ApiPublicEClickIdRoute
   ApiPublicEOpenIdRoute: typeof ApiPublicEOpenIdRoute
 }
 
@@ -723,6 +736,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/e/click/$id': {
+      id: '/api/public/e/click/$id'
+      path: '/api/public/e/click/$id'
+      fullPath: '/api/public/e/click/$id'
+      preLoaderRoute: typeof ApiPublicEClickIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/e/open/$id': {
       id: '/api/public/e/open/$id'
       path: '/api/public/e/open/$id'
@@ -783,6 +803,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
+  ApiPublicEClickIdRoute: ApiPublicEClickIdRoute,
   ApiPublicEOpenIdRoute: ApiPublicEOpenIdRoute,
 }
 export const routeTree = rootRouteImport
