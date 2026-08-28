@@ -110,6 +110,18 @@ function Solicitar() {
   const [processo, setProcesso] = useState<EtapaProcessoInput>(CERTIDAO_VAZIA);
   const [quantidade, setQuantidade] = useState(1);
   const [extras, setExtras] = useState<EtapaProcessoInput[]>([]);
+  const [sessaoEmail, setSessaoEmail] = useState<string | null>(null);
+  const [modoLogin, setModoLogin] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (ativo) setSessaoEmail(data.user?.email ?? null);
+    });
+    return () => {
+      ativo = false;
+    };
+  }, []);
   const [tocados, setTocados] = useState<Record<string, boolean>>({});
 
   function alterarQuantidade(q: number) {
