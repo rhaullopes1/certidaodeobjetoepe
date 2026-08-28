@@ -115,6 +115,7 @@ export type Database = {
           status: string
           uf: string | null
           updated_at: string
+          user_id: string | null
           valor_centavos: number
           whatsapp: string
         }
@@ -139,6 +140,7 @@ export type Database = {
           status?: string
           uf?: string | null
           updated_at?: string
+          user_id?: string | null
           valor_centavos?: number
           whatsapp: string
         }
@@ -163,6 +165,7 @@ export type Database = {
           status?: string
           uf?: string | null
           updated_at?: string
+          user_id?: string | null
           valor_centavos?: number
           whatsapp?: string
         }
