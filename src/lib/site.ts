@@ -128,7 +128,7 @@ export const FAQ = [
   },
   {
     q: "Qual o valor do serviço?",
-    a: "O valor varia conforme o tribunal e o tipo de processo. Envie os dados pelo WhatsApp e informamos o orçamento antes de qualquer pagamento.",
+    a: "R$ 297 por 1 certidão, R$ 497 por 2, R$ 697 por 3, R$ 897 por 4 e R$ 997 por 5 certidões no mesmo pedido. O valor inclui protocolo, acompanhamento e envio do PDF. Eventuais custas do tribunal são informadas antes de qualquer cobrança adicional.",
   },
   {
     q: "A certidão remove o processo do meu nome?",

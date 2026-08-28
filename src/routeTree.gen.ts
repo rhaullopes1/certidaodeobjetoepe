@@ -22,6 +22,7 @@ import { Route as CertidaoObjetoEPeTrf5RouteImport } from './routes/certidao-obj
 import { Route as CertidaoObjetoEPeTrf6RouteImport } from './routes/certidao-objeto-e-pe-trf6'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
@@ -112,6 +113,11 @@ const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SolicitarRoute = SolicitarRouteImport.update({
@@ -273,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
@@ -314,6 +321,7 @@ export interface FileRoutesByTo {
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
@@ -357,6 +365,7 @@ export interface FileRoutesById {
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
@@ -400,6 +409,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
+    | '/sobre'
     | '/solicitar'
     | '/termos-de-uso'
     | '/minha-conta'
@@ -441,6 +451,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
+    | '/sobre'
     | '/solicitar'
     | '/termos-de-uso'
     | '/minha-conta'
@@ -483,6 +494,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf6'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
+    | '/sobre'
     | '/solicitar'
     | '/termos-de-uso'
     | '/_authenticated/minha-conta'
@@ -526,6 +538,7 @@ export interface RootRouteChildren {
   CertidaoObjetoEPeTrf6Route: typeof CertidaoObjetoEPeTrf6Route
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SobreRoute: typeof SobreRoute
   SolicitarRoute: typeof SolicitarRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -639,6 +652,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/solicitar': {
@@ -870,6 +890,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoObjetoEPeTrf6Route: CertidaoObjetoEPeTrf6Route,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SobreRoute: SobreRoute,
   SolicitarRoute: SolicitarRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
   BlogSlugRoute: BlogSlugRoute,

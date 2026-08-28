@@ -26,6 +26,7 @@ export function PageShell({ children }: { children: ReactNode }) {
           </Link>
           <div className="flex items-center gap-4">
             <nav className="hidden items-center gap-4 text-sm font-medium text-muted-foreground md:flex">
+              <Link to="/guias" className="hover:text-foreground">Guias</Link>
               <Link to="/blog" className="hover:text-foreground">Blog</Link>
               <Link to="/tribunais" className="hover:text-foreground">Tribunais</Link>
               <Link to="/certidao-de-objeto-e-pe" className="hover:text-foreground">Estados</Link>
@@ -42,8 +43,10 @@ export function PageShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 text-sm text-primary-foreground/70 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Certidão Objeto e Pé — atendimento em todo o Brasil.</p>
           <div className="flex flex-wrap gap-4">
+            <Link to="/guias" className="hover:text-primary-foreground">Guias</Link>
             <Link to="/blog" className="hover:text-primary-foreground">Blog</Link>
             <Link to="/tribunais" className="hover:text-primary-foreground">Tribunais</Link>
+            <Link to="/sobre" className="hover:text-primary-foreground">Sobre</Link>
             <Link to="/politica-de-privacidade" className="hover:text-primary-foreground">Privacidade</Link>
             <Link to="/termos-de-uso" className="hover:text-primary-foreground">Termos</Link>
             <a

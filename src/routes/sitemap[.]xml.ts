@@ -3,6 +3,7 @@ import type {} from "@tanstack/react-start";
 import { ESTADOS_SEO } from "@/lib/estados-seo";
 import { TRIBUNAIS } from "@/lib/tribunais";
 import { CATEGORIAS, POSTS } from "@/lib/blog";
+import { GUIAS_SEO } from "@/lib/guias-seo";
 import { TRFS_SEO } from "@/lib/trf-seo";
 
 
@@ -22,6 +23,13 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/solicitar", changefreq: "weekly", priority: "0.9" },
           { path: "/acompanhar", changefreq: "monthly", priority: "0.6" },
+          { path: "/sobre", changefreq: "monthly", priority: "0.5" },
+          { path: "/guias", changefreq: "weekly", priority: "0.8" },
+          ...GUIAS_SEO.map((g) => ({
+            path: `/guias/${g.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.8",
+          })),
           { path: "/certidao-de-objeto-e-pe", changefreq: "weekly", priority: "0.8" },
           { path: "/certidao-objeto-e-pe-tjsp", changefreq: "monthly", priority: "0.8" },
           ...TRFS_SEO.map((t) => ({
