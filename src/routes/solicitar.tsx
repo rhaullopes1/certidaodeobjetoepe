@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Loader2, ShieldCheck, CheckCircle2, Scale } from "lucide-react";
 import { TABELA_PRECOS, formatarBRL, precoCentavos } from "@/lib/site";
 import {
@@ -109,6 +110,18 @@ function Solicitar() {
   const [processo, setProcesso] = useState<EtapaProcessoInput>(CERTIDAO_VAZIA);
   const [quantidade, setQuantidade] = useState(1);
   const [extras, setExtras] = useState<EtapaProcessoInput[]>([]);
+  const [sessaoEmail, setSessaoEmail] = useState<string | null>(null);
+  const [modoLogin, setModoLogin] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (ativo) setSessaoEmail(data.user?.email ?? null);
+    });
+    return () => {
+      ativo = false;
+    };
+  }, []);
   const [tocados, setTocados] = useState<Record<string, boolean>>({});
 
   function alterarQuantidade(q: number) {
@@ -222,6 +235,9 @@ function Solicitar() {
       observacoes: String(form.get("observacoes") ?? ""),
     };
     const confirmaEmail = String(form.get("confirmaEmail") ?? "").trim().toLowerCase();
+    const contaNome = String(form.get("contaNome") ?? "").trim();
+    const senha = String(form.get("senha") ?? "");
+    const confirmaSenha = String(form.get("confirmaSenha") ?? "");
 
     const parsed = pedidoSchema.safeParse(bruto);
     const novosErros = parsed.success ? {} : coletarErros(parsed.error.issues);
@@ -241,6 +257,15 @@ function Solicitar() {
       novosErros.valorTotalCentavos =
         "O valor não corresponde à quantidade selecionada. Escolha a quantidade novamente.";
     }
+    if (!sessaoEmail) {
+      if (!modoLogin && contaNome.split(/\s+/).filter(Boolean).length < 2) {
+        novosErros.contaNome = "Informe seu nome completo.";
+      }
+      if (senha.length < 8) novosErros.senha = "A senha precisa ter ao menos 8 caracteres.";
+      if (!modoLogin && senha !== confirmaSenha) {
+        novosErros.confirmaSenha = "As senhas não conferem.";
+      }
+    }
     if (Object.keys(novosErros).length > 0) {
       setErros(novosErros);
       setErroGeral(null);
@@ -251,6 +276,40 @@ function Solicitar() {
     setErroGeral(null);
     setEnviando(true);
     try {
+      if (!sessaoEmail) {
+        const email = bruto.email.trim();
+        if (modoLogin) {
+          const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+          if (error) {
+            setErros({ senha: "E-mail ou senha incorretos." });
+            setEnviando(false);
+            return;
+          }
+        } else {
+          const { error } = await supabase.auth.signUp({
+            email,
+            password: senha,
+            options: { data: { full_name: contaNome } },
+          });
+          if (error) {
+            const jaExiste = /registered|already|exists/i.test(error.message);
+            if (jaExiste) {
+              const entrar = await supabase.auth.signInWithPassword({ email, password: senha });
+              if (entrar.error) {
+                setModoLogin(true);
+                setErros({ senha: "Já existe conta com este e-mail. Informe sua senha para entrar." });
+                setEnviando(false);
+                return;
+              }
+            } else {
+              setErroGeral("Não foi possível criar sua conta. Tente novamente.");
+              setEnviando(false);
+              return;
+            }
+          }
+        }
+        setSessaoEmail(email);
+      }
       const pedido = await enviarPedido({ data: parsed.data! });
       navigate({ to: "/pedido/$protocolo", params: { protocolo: pedido.protocolo } });
     } catch (error) {
@@ -524,6 +583,8 @@ function Solicitar() {
                   className={inputClass}
                   placeholder="seu@email.com"
                   maxLength={255}
+                  defaultValue={sessaoEmail ?? ""}
+                  readOnly={Boolean(sessaoEmail)}
                   required
                 />
               </Campo>
@@ -535,10 +596,80 @@ function Solicitar() {
                   placeholder="repita o e-mail"
                   maxLength={255}
                   onPaste={(e) => e.preventDefault()}
+                  defaultValue={sessaoEmail ?? ""}
+                  readOnly={Boolean(sessaoEmail)}
                   required
                 />
               </Campo>
             </div>
+
+            {sessaoEmail ? (
+              <p className="rounded-2xl bg-secondary px-5 py-4 text-sm text-muted-foreground">
+                Pedido vinculado à sua conta <strong className="text-foreground">{sessaoEmail}</strong>.
+                Você poderá acompanhar tudo em “Meus pedidos”.
+              </p>
+            ) : (
+              <div className="space-y-5 rounded-2xl border border-input bg-card p-5">
+                <div>
+                  <p className="text-sm font-bold">
+                    {modoLogin ? "Entrar na sua conta" : "Criar sua conta"}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    A conta dá acesso ao histórico de pedidos, QR Code e código Pix a qualquer momento.
+                  </p>
+                </div>
+
+                {!modoLogin && (
+                  <Campo label="Nome completo" erro={erros.contaNome}>
+                    <input
+                      name="contaNome"
+                      autoComplete="name"
+                      className={inputClass}
+                      placeholder="Seu nome completo"
+                      maxLength={120}
+                    />
+                  </Campo>
+                )}
+
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <Campo label="Senha" hint="mín. 8 caracteres" erro={erros.senha}>
+                    <input
+                      name="senha"
+                      type="password"
+                      autoComplete={modoLogin ? "current-password" : "new-password"}
+                      className={inputClass}
+                      placeholder="••••••••"
+                      minLength={8}
+                      maxLength={72}
+                      required
+                    />
+                  </Campo>
+                  {!modoLogin && (
+                    <Campo label="Confirme a senha" erro={erros.confirmaSenha}>
+                      <input
+                        name="confirmaSenha"
+                        type="password"
+                        autoComplete="new-password"
+                        className={inputClass}
+                        placeholder="••••••••"
+                        minLength={8}
+                        maxLength={72}
+                        required
+                      />
+                    </Campo>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setModoLogin((v) => !v)}
+                  className="text-xs font-semibold text-primary underline underline-offset-4"
+                >
+                  {modoLogin ? "Ainda não tenho conta — quero cadastrar" : "Já tenho conta — quero entrar"}
+                </button>
+              </div>
+            )}
+
 
             <Campo label="WhatsApp" hint="com DDD" erro={erros.whatsapp}>
               <input

@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { LayoutDashboard, LogIn, LogOut, User } from "lucide-react";
+import { FileText, LayoutDashboard, LogIn, LogOut, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { carregarPerfil, iniciais } from "@/lib/perfil";
+import { souEquipe } from "@/lib/admin";
 
 export function UserMenu() {
   const navigate = useNavigate();
@@ -12,6 +13,11 @@ export function UserMenu() {
   const caixa = useRef<HTMLDivElement>(null);
 
   const perfil = useQuery({ queryKey: ["perfil"], queryFn: carregarPerfil });
+  const equipe = useQuery({
+    queryKey: ["sou-equipe"],
+    queryFn: souEquipe,
+    enabled: Boolean(perfil.data),
+  });
 
   useEffect(() => {
     function fora(e: MouseEvent) {
@@ -84,19 +90,30 @@ export function UserMenu() {
             </p>
           </div>
           <Link
-            to="/admin"
+            to="/minha-conta"
             onClick={() => setAberto(false)}
             className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-secondary"
           >
-            <LayoutDashboard className="h-4 w-4" /> Back office
+            <FileText className="h-4 w-4" /> Meus pedidos
           </Link>
-          <Link
-            to="/admin/documentos"
-            onClick={() => setAberto(false)}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-secondary"
-          >
-            <User className="h-4 w-4" /> Documentos
-          </Link>
+          {equipe.data && (
+            <>
+              <Link
+                to="/admin"
+                onClick={() => setAberto(false)}
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-secondary"
+              >
+                <LayoutDashboard className="h-4 w-4" /> Back office
+              </Link>
+              <Link
+                to="/admin/documentos"
+                onClick={() => setAberto(false)}
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-secondary"
+              >
+                <User className="h-4 w-4" /> Documentos
+              </Link>
+            </>
+          )}
           <button
             onClick={sair}
             className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-destructive transition-colors hover:bg-secondary"
