@@ -30,6 +30,8 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'novo-pedido-admin': novoPedidoAdmin,
   'pedido-lembrete': pedidoLembrete,
   'recuperacao-etapa': recuperacaoEtapa,
+  'boas-vindas': boasVindas,
+  'campanha-semanal': campanhaSemanal,
 }
 
 
