@@ -16,7 +16,7 @@ import {
 import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL } from "@/lib/site";
-import { sendGoogleAdsConversion } from "@/lib/analytics";
+import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 
 
