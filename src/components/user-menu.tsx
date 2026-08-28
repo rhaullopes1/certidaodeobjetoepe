@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { LayoutDashboard, LogIn, LogOut, User } from "lucide-react";
+import { FileText, LayoutDashboard, LogIn, LogOut, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { carregarPerfil, iniciais } from "@/lib/perfil";
+import { souEquipe } from "@/lib/admin";
 
 export function UserMenu() {
   const navigate = useNavigate();
