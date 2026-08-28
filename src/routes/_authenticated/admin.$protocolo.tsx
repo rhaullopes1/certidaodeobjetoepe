@@ -67,6 +67,11 @@ function AdminDetalhe() {
     queryFn: () => listarAnexos(pedidoId!),
     enabled: !!pedidoId,
   });
+  const relacionados = useQuery({
+    queryKey: ["admin-duplicidade", pedidoId],
+    queryFn: () => pedidosRelacionados(pedido.data!),
+    enabled: !!pedidoId,
+  });
 
   const [novoStatus, setNovoStatus] = useState("");
   const [observacao, setObservacao] = useState("");
