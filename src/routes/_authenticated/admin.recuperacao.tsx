@@ -216,7 +216,7 @@ function RecuperacaoPage() {
                   </select>
                 </div>
 
-                <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10">
+                <div className="mt-4 w-full max-w-full overflow-x-auto rounded-2xl border border-white/10">
                   <table className="w-full min-w-[760px] text-left text-sm">
                     <thead className="bg-white/5 text-xs uppercase tracking-wide text-white/50">
                       <tr>

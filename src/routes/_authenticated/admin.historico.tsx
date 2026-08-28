@@ -56,8 +56,9 @@ function Historico() {
         {itens.data && itens.data.length > 0 && (
           <ol className="card-premium mt-8 divide-y divide-border/60">
             {itens.data.map((i) => (
-              <li key={i.id} className="flex flex-wrap items-start justify-between gap-3 p-5">
-                <div>
+              <li key={i.id} className="flex flex-wrap items-start justify-between gap-3 p-4 sm:p-5">
+                <div className="min-w-0 flex-1 break-words">
+
                   <p className="text-sm font-bold">
                     {i.pedidos ? (
                       <Link

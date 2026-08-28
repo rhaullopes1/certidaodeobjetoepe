@@ -449,7 +449,7 @@ function EmailsPage() {
                   <p className="mb-3 text-xs uppercase tracking-wide text-white/50">
                     Histórico de disparos
                   </p>
-                  <div className="overflow-x-auto rounded-2xl border border-white/10">
+                  <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-white/10">
                     <table className="w-full min-w-[720px] text-left text-sm">
                       <thead className="bg-white/5 text-xs uppercase tracking-wide text-white/50">
                         <tr>
