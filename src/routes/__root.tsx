@@ -132,6 +132,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                 "https://youtube.com/@certidaodeobjetoepe",
                 "https://www.instagram.com/certidaodeobjetoe",
                 "https://www.facebook.com/certidaoobjetoepe",
+                "https://share.google/Nw44tGEnb6HR84jZN",
+                "https://www.tiktok.com/@certidodeobjetoepe",
               ],
               contactPoint: [
                 {

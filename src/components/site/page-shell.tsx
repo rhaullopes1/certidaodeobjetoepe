@@ -2,6 +2,12 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
 import { UserMenu } from "@/components/user-menu";
+import {
+  GOOGLE_PROFILE,
+  INSTAGRAM_PROFILE,
+  TIKTOK_PROFILE,
+  YOUTUBE_CHANNEL,
+} from "@/lib/site";
 
 export function PageShell({ children }: { children: ReactNode }) {
   return (
