@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Loader2, Search, LogOut, Scale, ShieldAlert } from "lucide-react";
+import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { listarPedidos, souEquipe, type Filtros } from "@/lib/admin";
 import { ESTADOS, FLUXO_STATUS, statusPedido } from "@/lib/site";
@@ -27,7 +27,7 @@ const LINKS_ADMIN = [
   { to: "/admin/recuperacao", label: "Recuperação" },
   { to: "/admin/emails", label: "E-mails" },
   { to: "/admin/documentos", label: "Documentos" },
-] as const;
+] satisfies { to: string; label: string; exact?: boolean }[];
 
 export function AdminHeader() {
   const navigate = useNavigate();
@@ -68,7 +68,7 @@ export function AdminHeader() {
           {LINKS_ADMIN.map((l) => (
             <Link
               key={l.to}
-              to={l.to}
+              to={l.to as never}
               {...(l.exact ? { activeOptions: { exact: true } } : {})}
               activeProps={linkAtivo}
               className={linkClass}
@@ -90,7 +90,7 @@ export function AdminHeader() {
             {LINKS_ADMIN.map((l) => (
               <Link
                 key={l.to}
-                to={l.to}
+                to={l.to as never}
                 {...(l.exact ? { activeOptions: { exact: true } } : {})}
                 activeProps={linkAtivo}
                 className={`${linkClass} rounded-lg px-2 py-2`}
