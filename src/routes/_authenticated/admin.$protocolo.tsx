@@ -146,6 +146,11 @@ function AdminDetalhe() {
               <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
                 {statusPedido(pedido.data.status).label}
               </span>
+              {ehNovo(pedido.data.created_at) && (
+                <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent">
+                  Novo
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => {
