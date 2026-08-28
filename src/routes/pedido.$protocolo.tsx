@@ -61,17 +61,25 @@ function PedidoPage() {
 
   const [qr, setQr] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
+  const conversionSent = useRef(false);
 
   useEffect(() => {
-    if (data?.protocolo && typeof window !== "undefined" && "gtag" in window) {
-      // Event snippet for Google Ads conversion: pedido gerado
+    if (
+      data?.status === "pago" &&
+      !conversionSent.current &&
+      typeof window !== "undefined" &&
+      "gtag" in window
+    ) {
+      // Event snippet for Google Ads conversion: pagamento confirmado
       (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
         "event",
         "conversion",
         { send_to: "AW-18411209847/ZLw3CNazkOgcEPeIk8tE" }
       );
+      conversionSent.current = true;
     }
-  }, [data?.protocolo]);
+  }, [data?.status]);
+
 
   useEffect(() => {
     if (!data?.pixCopiaECola) return;
