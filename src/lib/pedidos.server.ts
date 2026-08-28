@@ -193,6 +193,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     whatsapp: soDigitos(data.whatsapp),
     observacoes: data.observacoes ? data.observacoes.trim() : null,
     valor_centavos: valorCentavos,
+    user_id: await usuarioOpcionalDaRequisicao(),
   };
 
   const { data: row, error } = await supabaseAdmin
