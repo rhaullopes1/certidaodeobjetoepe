@@ -39,6 +39,7 @@ import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminRecuperacaoRouteImport } from './routes/_authenticated/admin.recuperacao'
 import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$slug'
 import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
+import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cron/semanal'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -198,6 +199,11 @@ const ApiPublicCronRecuperacaoRoute =
     path: '/api/public/cron/recuperacao',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronSemanalRoute = ApiPublicCronSemanalRouteImport.update({
+  id: '/api/public/cron/semanal',
+  path: '/api/public/cron/semanal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksMercadopagoRoute =
   ApiPublicWebhooksMercadopagoRouteImport.update({
     id: '/api/public/webhooks/mercadopago',
@@ -247,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
+  '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByTo {
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
+  '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -317,6 +325,7 @@ export interface FileRoutesById {
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
+  '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -353,6 +362,7 @@ export interface FileRouteTypes {
     | '/blog/categoria/$slug'
     | '/admin/'
     | '/api/public/cron/recuperacao'
+    | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
@@ -387,6 +397,7 @@ export interface FileRouteTypes {
     | '/blog/categoria/$slug'
     | '/admin'
     | '/api/public/cron/recuperacao'
+    | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
@@ -422,6 +433,7 @@ export interface FileRouteTypes {
     | '/blog/categoria/$slug'
     | '/_authenticated/admin/'
     | '/api/public/cron/recuperacao'
+    | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
     | '/lovable/email/transactional/preview'
@@ -452,6 +464,7 @@ export interface RootRouteChildren {
   TribunaisIndexRoute: typeof TribunaisIndexRoute
   BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
   ApiPublicCronRecuperacaoRoute: typeof ApiPublicCronRecuperacaoRoute
+  ApiPublicCronSemanalRoute: typeof ApiPublicCronSemanalRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -669,6 +682,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronRecuperacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/semanal': {
+      id: '/api/public/cron/semanal'
+      path: '/api/public/cron/semanal'
+      fullPath: '/api/public/cron/semanal'
+      preLoaderRoute: typeof ApiPublicCronSemanalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/mercadopago': {
       id: '/api/public/webhooks/mercadopago'
       path: '/api/public/webhooks/mercadopago'
@@ -739,6 +759,7 @@ const rootRouteChildren: RootRouteChildren = {
   TribunaisIndexRoute: TribunaisIndexRoute,
   BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
   ApiPublicCronRecuperacaoRoute: ApiPublicCronRecuperacaoRoute,
+  ApiPublicCronSemanalRoute: ApiPublicCronSemanalRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
