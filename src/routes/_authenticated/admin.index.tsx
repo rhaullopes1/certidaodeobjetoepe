@@ -209,19 +209,36 @@ function AdminLista() {
               </button>
             </form>
 
+            {pedidos.data && pedidos.data.length > 0 && (
+              <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+                <label className="inline-flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={somenteNovos}
+                    onChange={(e) => setSomenteNovos(e.target.checked)}
+                    className="h-4 w-4 rounded border-input"
+                  />
+                  Somente novos (24h)
+                </label>
+                <span className="text-muted-foreground">
+                  {totalNovos} novo(s) · {totalDuplicados} com possível duplicidade
+                </span>
+              </div>
+            )}
+
             {pedidos.isPending && (
               <p className="mt-8 flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" /> Carregando pedidos...
               </p>
             )}
 
-            {pedidos.data && pedidos.data.length === 0 && (
+            {pedidos.data && lista.length === 0 && (
               <p className="mt-8 text-sm text-muted-foreground">
                 Nenhum pedido encontrado com esses filtros.
               </p>
             )}
 
-            {pedidos.data && pedidos.data.length > 0 && (
+            {lista.length > 0 && (
               <div className="card-premium mt-8 overflow-x-auto">
                 <table className="w-full min-w-[820px] text-left text-sm">
                   <thead className="border-b border-border/70 text-xs uppercase tracking-wide text-muted-foreground">
@@ -235,16 +252,28 @@ function AdminLista() {
                     </tr>
                   </thead>
                   <tbody>
-                    {pedidos.data.map((p) => (
+                    {lista.map((p) => (
                       <tr key={p.id} className="border-b border-border/50 last:border-0">
                         <td className="px-5 py-4 font-semibold">
-                          <Link
-                            to="/admin/$protocolo"
-                            params={{ protocolo: p.protocolo }}
-                            className="text-primary underline-offset-4 hover:underline"
-                          >
-                            {p.protocolo}
-                          </Link>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Link
+                              to="/admin/$protocolo"
+                              params={{ protocolo: p.protocolo }}
+                              className="text-primary underline-offset-4 hover:underline"
+                            >
+                              {p.protocolo}
+                            </Link>
+                            {p.novo && (
+                              <span className="inline-flex rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-accent">
+                                Novo
+                              </span>
+                            )}
+                            {p.duplicado && (
+                              <span className="inline-flex rounded-full bg-destructive/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-destructive">
+                                Possível duplicidade
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="px-5 py-4">{p.numero_processo}</td>
                         <td className="px-5 py-4">{p.nome_parte ?? "—"}</td>
