@@ -583,6 +583,8 @@ function Solicitar() {
                   className={inputClass}
                   placeholder="seu@email.com"
                   maxLength={255}
+                  defaultValue={sessaoEmail ?? ""}
+                  readOnly={Boolean(sessaoEmail)}
                   required
                 />
               </Campo>
