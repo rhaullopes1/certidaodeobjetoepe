@@ -75,6 +75,18 @@ function mascararCPF(valor: string) {
     .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
 }
 
+/** Máscara CNJ: 0000000-00.0000.0.00.0000 */
+function mascararProcesso(valor: string) {
+  const d = soDigitos(valor).slice(0, 20);
+  let out = d.slice(0, 7);
+  if (d.length > 7) out += `-${d.slice(7, 9)}`;
+  if (d.length > 9) out += `.${d.slice(9, 13)}`;
+  if (d.length > 13) out += `.${d.slice(13, 14)}`;
+  if (d.length > 14) out += `.${d.slice(14, 16)}`;
+  if (d.length > 16) out += `.${d.slice(16, 20)}`;
+  return out;
+}
+
 /** Validação por campo, usada em tempo real enquanto o cliente digita. */
 function validarCampo(campo: keyof EtapaProcessoInput, valor: string): string | undefined {
   const v = valor.trim();
