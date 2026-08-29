@@ -26,9 +26,11 @@ export type PedidoResumo = {
   criadoEm: string;
   pixCopiaECola: string;
   pixQrCodeUrl: string | null;
+  checkoutUrl: string | null;
   pagoEm: string | null;
   confirmacaoAutomatica: boolean;
 };
+
 
 function novoProtocolo() {
   const agora = new Date();
