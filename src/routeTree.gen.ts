@@ -47,6 +47,7 @@ import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/publi
 import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cron/semanal'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksPagbankRouteImport } from './routes/api/public/webhooks/pagbank'
+import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as ApiPublicEClickIdRouteImport } from './routes/api/public/e/click.$id'
 import { Route as ApiPublicEOpenIdRouteImport } from './routes/api/public/e/open.$id'
@@ -249,6 +250,11 @@ const ApiPublicWebhooksPagbankRoute =
     path: '/api/public/webhooks/pagbank',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
+  id: '/api/public/webhooks/stripe',
+  path: '/api/public/webhooks/stripe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -304,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/api/public/e/click/$id': typeof ApiPublicEClickIdRoute
   '/api/public/e/open/$id': typeof ApiPublicEOpenIdRoute
@@ -346,6 +353,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/api/public/e/click/$id': typeof ApiPublicEClickIdRoute
   '/api/public/e/open/$id': typeof ApiPublicEOpenIdRoute
@@ -390,6 +398,7 @@ export interface FileRoutesById {
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/pagbank': typeof ApiPublicWebhooksPagbankRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/api/public/e/click/$id': typeof ApiPublicEClickIdRoute
   '/api/public/e/open/$id': typeof ApiPublicEOpenIdRoute
@@ -434,6 +443,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
+    | '/api/public/webhooks/stripe'
     | '/lovable/email/transactional/preview'
     | '/api/public/e/click/$id'
     | '/api/public/e/open/$id'
@@ -476,6 +486,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
+    | '/api/public/webhooks/stripe'
     | '/lovable/email/transactional/preview'
     | '/api/public/e/click/$id'
     | '/api/public/e/open/$id'
@@ -519,6 +530,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/pagbank'
+    | '/api/public/webhooks/stripe'
     | '/lovable/email/transactional/preview'
     | '/api/public/e/click/$id'
     | '/api/public/e/open/$id'
@@ -556,6 +568,7 @@ export interface RootRouteChildren {
   ApiPublicCronSemanalRoute: typeof ApiPublicCronSemanalRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksPagbankRoute: typeof ApiPublicWebhooksPagbankRoute
+  ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
   ApiPublicEClickIdRoute: typeof ApiPublicEClickIdRoute
   ApiPublicEOpenIdRoute: typeof ApiPublicEOpenIdRoute
@@ -829,6 +842,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksPagbankRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/stripe': {
+      id: '/api/public/webhooks/stripe'
+      path: '/api/public/webhooks/stripe'
+      fullPath: '/api/public/webhooks/stripe'
+      preLoaderRoute: typeof ApiPublicWebhooksStripeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -908,6 +928,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronSemanalRoute: ApiPublicCronSemanalRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksPagbankRoute: ApiPublicWebhooksPagbankRoute,
+  ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
   ApiPublicEClickIdRoute: ApiPublicEClickIdRoute,
   ApiPublicEOpenIdRoute: ApiPublicEOpenIdRoute,
