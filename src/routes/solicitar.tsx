@@ -154,15 +154,19 @@ function Solicitar() {
     });
   }
 
+  function formatarCampo(campo: keyof EtapaProcessoInput, valor: string) {
+    if (campo === "cpf") return mascararCPF(valor);
+    if (campo === "numeroProcesso") return mascararProcesso(valor);
+    return valor;
+  }
+
   function atualizarPrincipal(campo: keyof EtapaProcessoInput, valor: string) {
-    setProcesso((atual) => ({ ...atual, [campo]: campo === "cpf" ? mascararCPF(valor) : valor }));
+    setProcesso((atual) => ({ ...atual, [campo]: formatarCampo(campo, valor) }));
   }
 
   function atualizarExtra(i: number, campo: keyof EtapaProcessoInput, valor: string) {
     setExtras((atual) =>
-      atual.map((c, idx) =>
-        idx === i ? { ...c, [campo]: campo === "cpf" ? mascararCPF(valor) : valor } : c,
-      ),
+      atual.map((c, idx) => (idx === i ? { ...c, [campo]: formatarCampo(campo, valor) } : c)),
     );
   }
 
