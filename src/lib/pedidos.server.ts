@@ -71,6 +71,8 @@ function montar(row: {
   created_at: string;
   pix_codigo?: string | null;
   pix_qrcode_url?: string | null;
+  stripe_session_id?: string | null;
+  checkout_url?: string | null;
   pago_em?: string | null;
 }): PedidoResumo {
   return {
@@ -95,8 +97,10 @@ function montar(row: {
     status: row.status,
     criadoEm: row.created_at,
     pixQrCodeUrl: row.pix_qrcode_url ?? null,
+    checkoutUrl: row.checkout_url ?? null,
     pagoEm: row.pago_em ?? null,
-    confirmacaoAutomatica: Boolean(row.pix_codigo),
+    confirmacaoAutomatica: Boolean(row.checkout_url),
+
     pixCopiaECola:
       row.pix_codigo ??
       gerarPixCopiaECola({
