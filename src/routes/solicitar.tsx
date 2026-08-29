@@ -75,6 +75,18 @@ function mascararCPF(valor: string) {
     .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
 }
 
+/** Máscara CNJ: 0000000-00.0000.0.00.0000 */
+function mascararProcesso(valor: string) {
+  const d = soDigitos(valor).slice(0, 20);
+  let out = d.slice(0, 7);
+  if (d.length > 7) out += `-${d.slice(7, 9)}`;
+  if (d.length > 9) out += `.${d.slice(9, 13)}`;
+  if (d.length > 13) out += `.${d.slice(13, 14)}`;
+  if (d.length > 14) out += `.${d.slice(14, 16)}`;
+  if (d.length > 16) out += `.${d.slice(16, 20)}`;
+  return out;
+}
+
 /** Validação por campo, usada em tempo real enquanto o cliente digita. */
 function validarCampo(campo: keyof EtapaProcessoInput, valor: string): string | undefined {
   const v = valor.trim();
@@ -142,15 +154,19 @@ function Solicitar() {
     });
   }
 
+  function formatarCampo(campo: keyof EtapaProcessoInput, valor: string) {
+    if (campo === "cpf") return mascararCPF(valor);
+    if (campo === "numeroProcesso") return mascararProcesso(valor);
+    return valor;
+  }
+
   function atualizarPrincipal(campo: keyof EtapaProcessoInput, valor: string) {
-    setProcesso((atual) => ({ ...atual, [campo]: campo === "cpf" ? mascararCPF(valor) : valor }));
+    setProcesso((atual) => ({ ...atual, [campo]: formatarCampo(campo, valor) }));
   }
 
   function atualizarExtra(i: number, campo: keyof EtapaProcessoInput, valor: string) {
     setExtras((atual) =>
-      atual.map((c, idx) =>
-        idx === i ? { ...c, [campo]: campo === "cpf" ? mascararCPF(valor) : valor } : c,
-      ),
+      atual.map((c, idx) => (idx === i ? { ...c, [campo]: formatarCampo(campo, valor) } : c)),
     );
   }
 
@@ -390,6 +406,7 @@ function Solicitar() {
                 id="processo-numero"
                 name="numeroProcesso"
                 autoComplete="off"
+                inputMode="numeric"
                 value={processo.numeroProcesso}
                 onChange={(e) => atualizarPrincipal("numeroProcesso", e.target.value)}
                 onBlur={() => marcarTocado("p-numeroProcesso")}
@@ -538,6 +555,7 @@ function Solicitar() {
                         id={`certidao-${i + 2}-processo`}
                         name={`certidoes[${i + 1}].numeroProcesso`}
                         autoComplete="off"
+                        inputMode="numeric"
                         value={c.numeroProcesso}
                         onChange={(e) => atualizarExtra(i, "numeroProcesso", e.target.value)}
                         onBlur={() => marcarTocado(`e-${i}-numeroProcesso`)}
@@ -713,7 +731,6 @@ function Solicitar() {
                 rows={3}
                 maxLength={1000}
                 className={inputClass}
-                placeholder="Vara, comarca, nome das partes ou qualquer detalhe que ajude na localização."
               />
             </Campo>
 
