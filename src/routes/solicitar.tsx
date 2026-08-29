@@ -406,6 +406,7 @@ function Solicitar() {
                 id="processo-numero"
                 name="numeroProcesso"
                 autoComplete="off"
+                inputMode="numeric"
                 value={processo.numeroProcesso}
                 onChange={(e) => atualizarPrincipal("numeroProcesso", e.target.value)}
                 onBlur={() => marcarTocado("p-numeroProcesso")}
@@ -554,6 +555,7 @@ function Solicitar() {
                         id={`certidao-${i + 2}-processo`}
                         name={`certidoes[${i + 1}].numeroProcesso`}
                         autoComplete="off"
+                        inputMode="numeric"
                         value={c.numeroProcesso}
                         onChange={(e) => atualizarExtra(i, "numeroProcesso", e.target.value)}
                         onBlur={() => marcarTocado(`e-${i}-numeroProcesso`)}
@@ -729,7 +731,6 @@ function Solicitar() {
                 rows={3}
                 maxLength={1000}
                 className={inputClass}
-                placeholder="Vara, comarca, nome das partes ou qualquer detalhe que ajude na localização."
               />
             </Campo>
 
