@@ -456,14 +456,13 @@ export async function reenviarEmailPedidoNoBanco(protocolo: string, email: strin
   return { enviado: true };
 }
 
-/** Confere o status direto no PagBank — rede de segurança caso o webhook falhe. */
+/** Confere o status direto na Stripe — rede de segurança caso o webhook falhe. */
 async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
-  const { provedorAtivo, gateway } = await import("./pagamentos.server");
-  const provedor = provedorAtivo();
-  if (!row.pagbank_order_id || !provedor) return row;
+  const { temStripe, consultarCheckout } = await import("./stripe.server");
+  if (!row.stripe_session_id || !temStripe()) return row;
   try {
-    const { consultarCobranca } = await gateway(provedor);
-    const situacao = await consultarCobranca(row.pagbank_order_id);
+    const situacao = await consultarCheckout(row.stripe_session_id);
+
     if (!situacao.pago && !situacao.cancelado) return row;
 
     const patch = situacao.pago
