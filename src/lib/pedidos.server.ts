@@ -26,9 +26,11 @@ export type PedidoResumo = {
   criadoEm: string;
   pixCopiaECola: string;
   pixQrCodeUrl: string | null;
+  checkoutUrl: string | null;
   pagoEm: string | null;
   confirmacaoAutomatica: boolean;
 };
+
 
 function novoProtocolo() {
   const agora = new Date();
@@ -69,6 +71,8 @@ function montar(row: {
   created_at: string;
   pix_codigo?: string | null;
   pix_qrcode_url?: string | null;
+  stripe_session_id?: string | null;
+  checkout_url?: string | null;
   pago_em?: string | null;
 }): PedidoResumo {
   return {
@@ -93,8 +97,10 @@ function montar(row: {
     status: row.status,
     criadoEm: row.created_at,
     pixQrCodeUrl: row.pix_qrcode_url ?? null,
+    checkoutUrl: row.checkout_url ?? null,
     pagoEm: row.pago_em ?? null,
-    confirmacaoAutomatica: Boolean(row.pix_codigo),
+    confirmacaoAutomatica: Boolean(row.checkout_url),
+
     pixCopiaECola:
       row.pix_codigo ??
       gerarPixCopiaECola({
@@ -297,28 +303,23 @@ async function enviarNotificacaoAdmin(
 
 type PedidoRow = Parameters<typeof montar>[0] & { pagbank_order_id?: string | null };
 
-/** Cria a cobrança Pix dinâmica no provedor ativo e grava no pedido. Em caso de falha, mantém o Pix estático. */
+/** Cria a sessão de pagamento na Stripe (cartão + Pix) e grava no pedido. */
 async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
-  const { provedorAtivo, gateway } = await import("./pagamentos.server");
-  const provedor = provedorAtivo();
-  if (row.pix_codigo || !provedor) return row;
+  const { temStripe, criarCheckout } = await import("./stripe.server");
+  if (row.checkout_url || !temStripe()) return row;
   try {
-    const { criarCobrancaPix } = await gateway(provedor);
-    const cobranca = await criarCobrancaPix({
+    const cobranca = await criarCheckout({
       protocolo: row.protocolo,
-      nomeCliente: row.nome_parte ?? undefined,
       email: row.email,
-      cpf: row.cpf,
-      whatsapp: row.whatsapp,
+      quantidade: row.quantidade ?? 1,
       valorCentavos: row.valor_centavos,
     });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: atualizado } = await supabaseAdmin
       .from("pedidos")
       .update({
-        pagbank_order_id: cobranca.orderId,
-        pix_codigo: cobranca.codigo,
-        pix_qrcode_url: cobranca.qrCodeUrl,
+        stripe_session_id: cobranca.sessionId,
+        checkout_url: cobranca.checkoutUrl,
         pix_expira_em: cobranca.expiraEm,
       })
       .eq("protocolo", row.protocolo)
@@ -326,10 +327,11 @@ async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
       .maybeSingle();
     return (atualizado as PedidoRow) ?? row;
   } catch (e) {
-    console.error("Falha ao criar cobrança Pix", e);
+    console.error("Falha ao criar cobrança na Stripe", e);
     return row;
   }
 }
+
 
 /**
  * Pedido sem pagamento há mais de DIAS_PARA_EXPIRAR dias vira "expirado".
@@ -454,14 +456,13 @@ export async function reenviarEmailPedidoNoBanco(protocolo: string, email: strin
   return { enviado: true };
 }
 
-/** Confere o status direto no PagBank — rede de segurança caso o webhook falhe. */
+/** Confere o status direto na Stripe — rede de segurança caso o webhook falhe. */
 async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
-  const { provedorAtivo, gateway } = await import("./pagamentos.server");
-  const provedor = provedorAtivo();
-  if (!row.pagbank_order_id || !provedor) return row;
+  const { temStripe, consultarCheckout } = await import("./stripe.server");
+  if (!row.stripe_session_id || !temStripe()) return row;
   try {
-    const { consultarCobranca } = await gateway(provedor);
-    const situacao = await consultarCobranca(row.pagbank_order_id);
+    const situacao = await consultarCheckout(row.stripe_session_id);
+
     if (!situacao.pago && !situacao.cancelado) return row;
 
     const patch = situacao.pago
