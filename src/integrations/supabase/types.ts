@@ -325,6 +325,7 @@ export type Database = {
       pedidos: {
         Row: {
           certidoes: Json
+          checkout_url: string | null
           cidade: string | null
           cpf: string
           created_at: string
@@ -342,6 +343,7 @@ export type Database = {
           protocolo: string
           quantidade: number
           status: string
+          stripe_session_id: string | null
           uf: string | null
           updated_at: string
           user_id: string | null
@@ -350,6 +352,7 @@ export type Database = {
         }
         Insert: {
           certidoes?: Json
+          checkout_url?: string | null
           cidade?: string | null
           cpf: string
           created_at?: string
@@ -367,6 +370,7 @@ export type Database = {
           protocolo: string
           quantidade?: number
           status?: string
+          stripe_session_id?: string | null
           uf?: string | null
           updated_at?: string
           user_id?: string | null
@@ -375,6 +379,7 @@ export type Database = {
         }
         Update: {
           certidoes?: Json
+          checkout_url?: string | null
           cidade?: string | null
           cpf?: string
           created_at?: string
@@ -392,6 +397,7 @@ export type Database = {
           protocolo?: string
           quantidade?: number
           status?: string
+          stripe_session_id?: string | null
           uf?: string | null
           updated_at?: string
           user_id?: string | null
