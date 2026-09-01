@@ -316,7 +316,10 @@ async function enviarNotificacaoAdmin(
 
 
 
-type PedidoRow = Parameters<typeof montar>[0] & { pagbank_order_id?: string | null };
+type PedidoRow = Parameters<typeof montar>[0] & {
+  pagbank_order_id?: string | null;
+  id?: string;
+};
 
 /** Cria a sessão de pagamento na Stripe (cartão + Pix) e grava no pedido. */
 async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
@@ -343,9 +346,71 @@ async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
     return (atualizado as PedidoRow) ?? row;
   } catch (e) {
     console.error("Falha ao criar cobrança na Stripe", e);
+    await registrarAlertaCheckout(row, e);
     return row;
   }
 }
+
+/**
+ * Registra no histórico do pedido (visível no painel) quando o link de
+ * pagamento não pôde ser gerado — a equipe age no mesmo dia.
+ * Só grava um alerta a cada 6 horas para não poluir a linha do tempo.
+ */
+async function registrarAlertaCheckout(row: PedidoRow, erro: unknown) {
+  const pedidoId = row.id;
+  if (!pedidoId) return;
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const desde = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
+    const { data: recente } = await supabaseAdmin
+      .from("pedido_andamentos")
+      .select("id")
+      .eq("pedido_id", pedidoId)
+      .gte("created_at", desde)
+      .like("observacao", "[ALERTA] Link de pagamento%")
+      .limit(1);
+    if (recente?.length) return;
+
+    await supabaseAdmin.from("pedido_andamentos").insert({
+      pedido_id: pedidoId,
+      status: row.status,
+      observacao: `[ALERTA] Link de pagamento não gerado — ${
+        erro instanceof Error ? erro.message : "erro desconhecido"
+      }. Verifique a configuração de pagamentos e reenvie o link ao cliente.`,
+    });
+  } catch (e) {
+    console.error("Falha ao registrar alerta de checkout", e);
+  }
+}
+
+/**
+ * Descarta a sessão atual e gera um novo link de pagamento.
+ * Usado pelo botão "Tentar novamente" na página do pedido.
+ */
+export async function regerarCobrancaDoPedido(protocolo: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: row } = await supabaseAdmin
+    .from("pedidos")
+    .select("*")
+    .eq("protocolo", protocolo.toUpperCase())
+    .maybeSingle();
+
+  if (!row) return null;
+  if (row.status !== "aguardando_pagamento") return montar(row as PedidoRow);
+
+  await supabaseAdmin
+    .from("pedidos")
+    .update({ stripe_session_id: null, checkout_url: null, pix_expira_em: null })
+    .eq("protocolo", row.protocolo);
+
+  const atualizado = await gerarCobranca({
+    ...(row as PedidoRow),
+    stripe_session_id: null,
+    checkout_url: null,
+  });
+  return montar(atualizado);
+}
+
 
 
 /**
