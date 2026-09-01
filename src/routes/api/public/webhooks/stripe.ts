@@ -49,14 +49,24 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
           return new Response("erro ao consultar", { status: 502 });
         }
 
-        if (!situacao.pago && !situacao.cancelado) {
-          await registrarEvento("ignorado_status_intermediario");
+        if (!situacao.pago) {
+          if (!situacao.expirado) {
+            await registrarEvento("ignorado_status_intermediario");
+            return new Response("ok");
+          }
+          // Link vencido não cancela o pedido: apenas limpamos a sessão para
+          // que um novo link de pagamento seja gerado quando o cliente voltar.
+          const limpar = supabaseAdmin
+            .from("pedidos")
+            .update({ stripe_session_id: null, checkout_url: null, pix_expira_em: null });
+          await (situacao.referenceId
+            ? limpar.eq("protocolo", situacao.referenceId)
+            : limpar.eq("stripe_session_id", sessionId));
+          await registrarEvento("link_vencido_liberado_para_novo");
           return new Response("ok");
         }
 
-        const patch = situacao.pago
-          ? { status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() }
-          : { status: "cancelado" };
+        const patch = { status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() };
 
         const query = supabaseAdmin.from("pedidos").update(patch);
         const { error } = situacao.referenceId
