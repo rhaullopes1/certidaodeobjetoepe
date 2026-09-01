@@ -17,7 +17,7 @@ export type PedidoAdmin = {
   email: string;
   whatsapp: string;
   observacoes: string | null;
-  certidoes: { numeroProcesso: string; nomeParte: string; cpf: string }[] | null;
+  certidoes: { numeroProcesso: string; nomeParte: string; cpf: string; observacoes?: string | null }[] | null;
   valor_centavos: number;
   status: string;
   created_at: string;
