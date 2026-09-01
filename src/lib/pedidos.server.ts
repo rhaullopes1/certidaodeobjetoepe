@@ -316,7 +316,10 @@ async function enviarNotificacaoAdmin(
 
 
 
-type PedidoRow = Parameters<typeof montar>[0] & { pagbank_order_id?: string | null };
+type PedidoRow = Parameters<typeof montar>[0] & {
+  pagbank_order_id?: string | null;
+  id?: string;
+};
 
 /** Cria a sessão de pagamento na Stripe (cartão + Pix) e grava no pedido. */
 async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
