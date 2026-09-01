@@ -8,6 +8,7 @@ import {
   criarPedidoNoBanco,
   buscarPedidoPorProtocolo,
   reenviarEmailPedidoNoBanco,
+  regerarCobrancaDoPedido,
 } from "./pedidos.server";
 
 export const criarPedido = createServerFn({ method: "POST" })
@@ -19,6 +20,12 @@ export const consultarPedido = createServerFn({ method: "POST" })
     z.object({ protocolo: z.string().trim().min(6).max(40) }).parse(data),
   )
   .handler(async ({ data }) => buscarPedidoPorProtocolo(data.protocolo));
+
+export const regerarCobranca = createServerFn({ method: "POST" })
+  .validator((data: unknown) =>
+    z.object({ protocolo: z.string().trim().min(6).max(40) }).parse(data),
+  )
+  .handler(async ({ data }) => regerarCobrancaDoPedido(data.protocolo));
 
 export const reenviarEmailPedido = createServerFn({ method: "POST" })
   .validator((data: unknown) =>
