@@ -9,13 +9,14 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
   head: () => ({
     meta: [
-      { title: "Acesso da equipe | Certidão Objeto e Pé" },
+      { title: "Minha conta | Certidão de Objeto e Pé" },
       {
         name: "description",
-        content: "Área restrita para a equipe acompanhar e atualizar os pedidos de certidão.",
+        content:
+          "Acesse sua conta ou crie uma conta para acompanhar seus pedidos de certidão e pagar pedidos pendentes.",
       },
-      { property: "og:title", content: "Acesso da equipe | Certidão Objeto e Pé" },
-      { property: "og:description", content: "Área restrita do painel administrativo." },
+      { property: "og:title", content: "Minha conta | Certidão de Objeto e Pé" },
+      { property: "og:description", content: "Área do cliente para acompanhar pedidos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
