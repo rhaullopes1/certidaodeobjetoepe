@@ -14,7 +14,7 @@ import {
   Download,
 } from "lucide-react";
 import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
-import { consultarPedido } from "@/lib/pedidos.functions";
+import { consultarPedido, regerarCobranca } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL, EMAIL_CONTATO } from "@/lib/site";
 import { SeloGarantia } from "@/components/site/selo-garantia";
 import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
@@ -55,7 +55,7 @@ function Linha({ label, valor }: { label: string; valor: string }) {
 function PedidoPage() {
   const { protocolo } = Route.useParams();
   const buscar = useServerFn(consultarPedido);
-  const { data, isPending, isError } = useQuery({
+  const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["pedido", protocolo],
     queryFn: () => buscar({ data: { protocolo } }),
     refetchInterval: 10_000,
@@ -64,6 +64,27 @@ function PedidoPage() {
 
   const [qr, setQr] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
+  const novoLink = useServerFn(regerarCobranca);
+  const [gerando, setGerando] = useState(false);
+  const [falhouLink, setFalhouLink] = useState(false);
+
+  async function tentarNovamente() {
+    setGerando(true);
+    setFalhouLink(false);
+    try {
+      const atualizado = await novoLink({ data: { protocolo } });
+      if (atualizado?.checkoutUrl) {
+        await refetch();
+        window.open(atualizado.checkoutUrl, "_blank", "noopener,noreferrer");
+      } else {
+        setFalhouLink(true);
+      }
+    } catch {
+      setFalhouLink(true);
+    } finally {
+      setGerando(false);
+    }
+  }
 
   useEffect(() => {
     if (!data?.protocolo) return;
@@ -388,8 +409,31 @@ function PedidoPage() {
                   </>
                 ) : (
                 <>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Escaneie o QR Code no app do seu banco ou use o código copia e cola.
+                <div className="mt-2 rounded-2xl border border-amber-500/40 bg-amber-500/5 px-4 py-4">
+                  <p className="text-sm font-bold">Pagamento com cartão indisponível no momento</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Não conseguimos gerar o link de cartão agora. Você pode tentar de novo, pagar
+                    por Pix abaixo ou falar com a nossa equipe — resolvemos em minutos.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={tentarNovamente}
+                    disabled={gerando}
+                    className="mt-3 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground disabled:opacity-60"
+                  >
+                    {gerando ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                    {gerando ? "Gerando link..." : "Tentar novamente"}
+                  </button>
+                  {falhouLink && (
+                    <p className="mt-2 text-xs text-destructive">
+                      Ainda não foi possível gerar o link. Use o Pix abaixo ou fale com a equipe.
+                    </p>
+                  )}
+                </div>
+
+                <p className="mt-5 text-sm text-muted-foreground">
+                  Ou pague por Pix: escaneie o QR Code no app do seu banco ou use o código copia e
+                  cola.
                 </p>
 
 
