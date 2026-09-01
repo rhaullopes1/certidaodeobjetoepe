@@ -117,16 +117,10 @@ export async function criarCheckout(pedido: {
     ],
   });
 
-  let sessao: StripeSession;
-  try {
-    sessao = await stripe("/checkout/sessions", {
-      idempotencyKey: `checkout-${pedido.protocolo}-pix`,
-      corpo: corpoBase(["card", "pix"]),
-    });
-  } catch {
-    // Pix pode não estar habilitado na conta Stripe: seguimos com os meios ativos.
-    sessao = await stripe("/checkout/sessions", { corpo: corpoBase(null) });
-  }
+  const sessao: StripeSession = await stripe("/checkout/sessions", {
+    idempotencyKey: `checkout-${pedido.protocolo}-auto`,
+    corpo: corpoBase(),
+  });
 
   if (!sessao.id || !sessao.url) throw new Error("Stripe não retornou o link de pagamento");
 
