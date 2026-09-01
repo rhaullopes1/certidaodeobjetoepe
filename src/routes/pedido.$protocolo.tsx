@@ -361,6 +361,8 @@ function PedidoPage() {
                   Falar pelo WhatsApp
                 </a>
                 <AlternativasContato className="mt-3" />
+                </>
+                )}
               </section>
               )}
             </div>
