@@ -460,19 +460,20 @@ function Solicitar() {
 
       <main className="mx-auto w-full max-w-4xl px-5 py-12 sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          Etapa {etapa} de 2
+          Pedido em uma única tela
         </p>
         <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
           Solicitar Certidão de Objeto e Pé
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          {etapa === 1
-            ? "Informe os dados do processo e da parte envolvida. Na próxima etapa mostramos o valor da certidão."
-            : "Escolha a quantidade de certidões, confira o valor e informe seus contatos para receber o documento."}
+          Digite o número do processo: identificamos o tribunal automaticamente. Depois é só
+          confirmar quem está no processo e seus contatos — o valor fica sempre visível aqui
+          embaixo.
         </p>
 
-        {etapa === 1 ? (
-          <form onSubmit={avancar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
+        <SeloGarantia className="mt-6" />
+
+          <form onSubmit={finalizar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
             <Campo
               label="Número do processo"
               erro={
