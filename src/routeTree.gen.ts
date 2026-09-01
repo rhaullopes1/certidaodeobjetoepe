@@ -20,6 +20,7 @@ import { Route as CertidaoObjetoEPeTrf3RouteImport } from './routes/certidao-obj
 import { Route as CertidaoObjetoEPeTrf4RouteImport } from './routes/certidao-objeto-e-pe-trf4'
 import { Route as CertidaoObjetoEPeTrf5RouteImport } from './routes/certidao-objeto-e-pe-trf5'
 import { Route as CertidaoObjetoEPeTrf6RouteImport } from './routes/certidao-objeto-e-pe-trf6'
+import { Route as GarantiaRouteImport } from './routes/garantia'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SobreRouteImport } from './routes/sobre'
@@ -104,6 +105,11 @@ const CertidaoObjetoEPeTrf5Route = CertidaoObjetoEPeTrf5RouteImport.update({
 const CertidaoObjetoEPeTrf6Route = CertidaoObjetoEPeTrf6RouteImport.update({
   id: '/certidao-objeto-e-pe-trf6',
   path: '/certidao-objeto-e-pe-trf6',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GarantiaRoute = GarantiaRouteImport.update({
+  id: '/garantia',
+  path: '/garantia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
@@ -283,6 +289,7 @@ export interface FileRoutesByFullPath {
   '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
+  '/garantia': typeof GarantiaRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -326,6 +333,7 @@ export interface FileRoutesByTo {
   '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
+  '/garantia': typeof GarantiaRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -371,6 +379,7 @@ export interface FileRoutesById {
   '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
+  '/garantia': typeof GarantiaRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -416,6 +425,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf4'
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
+    | '/garantia'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/sobre'
@@ -459,6 +469,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf4'
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
+    | '/garantia'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/sobre'
@@ -503,6 +514,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf4'
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
+    | '/garantia'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/sobre'
@@ -548,6 +560,7 @@ export interface RootRouteChildren {
   CertidaoObjetoEPeTrf4Route: typeof CertidaoObjetoEPeTrf4Route
   CertidaoObjetoEPeTrf5Route: typeof CertidaoObjetoEPeTrf5Route
   CertidaoObjetoEPeTrf6Route: typeof CertidaoObjetoEPeTrf6Route
+  GarantiaRoute: typeof GarantiaRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
@@ -651,6 +664,13 @@ declare module '@tanstack/react-router' {
       path: '/certidao-objeto-e-pe-trf6'
       fullPath: '/certidao-objeto-e-pe-trf6'
       preLoaderRoute: typeof CertidaoObjetoEPeTrf6RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/garantia': {
+      id: '/garantia'
+      path: '/garantia'
+      fullPath: '/garantia'
+      preLoaderRoute: typeof GarantiaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-de-privacidade': {
@@ -908,6 +928,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoObjetoEPeTrf4Route: CertidaoObjetoEPeTrf4Route,
   CertidaoObjetoEPeTrf5Route: CertidaoObjetoEPeTrf5Route,
   CertidaoObjetoEPeTrf6Route: CertidaoObjetoEPeTrf6Route,
+  GarantiaRoute: GarantiaRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
