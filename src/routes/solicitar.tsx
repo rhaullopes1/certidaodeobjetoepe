@@ -540,34 +540,6 @@ function Solicitar() {
               />
             </Campo>
 
-            <button
-              type="submit"
-              disabled={!principalValido}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Avançar
-            </button>
-            <p className="text-center text-xs text-muted-foreground">
-              Seus dados são usados apenas para a solicitação da certidão junto ao tribunal.
-            </p>
-          </form>
-        ) : (
-          <form onSubmit={finalizar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
-            <div className="rounded-2xl bg-secondary px-5 py-4 text-sm">
-              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Processo</p>
-              <p className="mt-1 font-semibold">{processo?.numeroProcesso}</p>
-              <p className="text-muted-foreground">
-                {processo?.nomeParte} — CPF {processo?.cpf}
-              </p>
-              <button
-                type="button"
-                onClick={() => setEtapa(1)}
-                className="mt-2 text-xs font-semibold text-primary underline underline-offset-4"
-              >
-                Editar dados do processo
-              </button>
-            </div>
-
             <div>
               <span className="text-sm font-semibold">Quantidade de certidões</span>
               <div className="mt-3 grid gap-3 sm:grid-cols-5">
