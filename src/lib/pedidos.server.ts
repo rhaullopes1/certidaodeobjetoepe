@@ -8,6 +8,9 @@ import {
   numeroProcessoValido,
   type PedidoInput,
 } from "./pedidos.schema";
+import { analisarNup } from "./cnj";
+import { decodificarPartes } from "./cnj.functions";
+
 
 export type PedidoResumo = {
   protocolo: string;
