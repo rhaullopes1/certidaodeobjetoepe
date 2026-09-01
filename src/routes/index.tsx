@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SeloGarantia } from "@/components/site/selo-garantia";
 import { useState, type FormEvent } from "react";
 import {
   ShieldCheck,
@@ -193,6 +194,8 @@ function Hero() {
               pedido junto ao tribunal responsável e acompanha até a emissão do
               documento.
             </p>
+
+            <SeloGarantia variante="escuro" className="mt-6 max-w-xl" />
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/solicitar"

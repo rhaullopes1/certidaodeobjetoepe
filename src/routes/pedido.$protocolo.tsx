@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido } from "@/lib/pedidos.functions";
-import { whatsappLink, PIX, statusPedido, formatarBRL } from "@/lib/site";
+import { whatsappLink, PIX, statusPedido, formatarBRL, EMAIL_CONTATO } from "@/lib/site";
+import { SeloGarantia } from "@/components/site/selo-garantia";
 import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 
@@ -169,6 +170,36 @@ function PedidoPage() {
               <Download className="h-4 w-4 text-accent" />
               Baixar comprovante em PDF
             </button>
+
+            <SeloGarantia className="mt-6" />
+
+            {(data.status === "expirado" || data.status === "cancelado") && (
+              <div className="mt-6 rounded-2xl border border-amber-500/40 bg-amber-500/5 px-5 py-4">
+                <p className="text-sm font-bold">Precisa retomar este pedido?</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Uma pessoa da nossa equipe resolve com você em poucos minutos — inclusive quando o
+                  processo corre em segredo de justiça.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  <a
+                    href={whatsappLink(
+                      `Olá! Preciso de ajuda com o pedido ${data.protocolo}.`,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground"
+                  >
+                    Falar no WhatsApp
+                  </a>
+                  <a
+                    href={`mailto:${EMAIL_CONTATO}`}
+                    className="inline-flex items-center justify-center rounded-full border border-input bg-card px-5 py-2.5 text-xs font-bold"
+                  >
+                    Enviar e-mail
+                  </a>
+                </div>
+              </div>
+            )}
 
             {(() => {
               const st = statusPedido(data.status);
