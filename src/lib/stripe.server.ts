@@ -84,10 +84,10 @@ export async function criarCheckout(pedido: {
   // Stripe aceita expiração entre 30 minutos e 24 horas.
   const expiraEmSegundos = Math.floor(Date.now() / 1000) + 23 * 60 * 60;
 
-  const corpoBase = (metodos: string[] | null) => ({
+  // Sem lista fixa de métodos, a Stripe oferece automaticamente tudo que está
+  // habilitado na conta (cartão, Apple Pay, Google Pay e Pix quando ativado).
+  const corpoBase = () => ({
     mode: "payment",
-    // Sem lista fixa, a Stripe usa os meios habilitados na conta.
-    ...(metodos ? { payment_method_types: metodos } : {}),
     client_reference_id: pedido.protocolo,
       customer_email: pedido.email,
       expires_at: expiraEmSegundos,
