@@ -79,7 +79,7 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
           return new Response("erro ao gravar", { status: 500 });
         }
 
-        await registrarEvento(situacao.pago ? "pedido_marcado_pago" : "pedido_marcado_cancelado");
+        await registrarEvento("pedido_marcado_pago");
         return new Response("ok");
       },
     },
