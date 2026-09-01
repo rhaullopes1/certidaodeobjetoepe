@@ -1,0 +1,21 @@
+{
+  "name": "Certidão de Objeto e Pé",
+  "short_name": "Objeto e Pé",
+  "description": "Solicite e acompanhe sua Certidão de Objeto e Pé em todo o Brasil.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "pt-BR",
+  "background_color": "#0b1b33",
+  "theme_color": "#0b1b33",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Solicitar certidão", "url": "/solicitar" },
+    { "name": "Acompanhar pedido", "url": "/acompanhar" }
+  ]
+}

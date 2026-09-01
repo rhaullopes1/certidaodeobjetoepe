@@ -47,6 +47,7 @@ export function PageShell({ children }: { children: ReactNode }) {
             <Link to="/blog" className="hover:text-primary-foreground">Blog</Link>
             <Link to="/tribunais" className="hover:text-primary-foreground">Tribunais</Link>
             <Link to="/sobre" className="hover:text-primary-foreground">Sobre</Link>
+            <Link to="/garantia" className="hover:text-primary-foreground">Garantia</Link>
             <Link to="/politica-de-privacidade" className="hover:text-primary-foreground">Privacidade</Link>
             <Link to="/termos-de-uso" className="hover:text-primary-foreground">Termos</Link>
             <a

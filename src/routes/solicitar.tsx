@@ -3,10 +3,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Loader2, ShieldCheck, CheckCircle2, Scale } from "lucide-react";
-import { TABELA_PRECOS, formatarBRL, precoCentavos } from "@/lib/site";
+import { TABELA_PRECOS, formatarBRL, precoCentavos, whatsappLink } from "@/lib/site";
+import { SeloGarantia } from "@/components/site/selo-garantia";
 import {
   pedidoSchema,
-  etapaProcessoSchema,
   certidaoSchema,
   cpfValido,
   soDigitos,
@@ -94,7 +94,7 @@ function validarCampo(campo: keyof EtapaProcessoInput, valor: string): string | 
   const v = valor.trim();
   if (campo === "cpf") {
     const digitos = soDigitos(v);
-    if (!digitos) return "Informe o CPF da parte envolvida";
+    if (!digitos) return "Informe o CPF de quem está no processo";
     if (digitos.length < 11) return "CPF incompleto (11 dígitos)";
     if (!cpfValido(digitos)) return "CPF inválido — confira os dígitos";
     return undefined;
@@ -104,7 +104,7 @@ function validarCampo(campo: keyof EtapaProcessoInput, valor: string): string | 
     if (v.length < 10) return "Número do processo incompleto";
     return undefined;
   }
-  if (!v) return "Informe o nome completo da parte envolvida";
+  if (!v) return "Informe o nome completo de quem está no processo";
   if (v.split(/\s+/).length < 2) return "Informe o nome completo (nome e sobrenome)";
   if (v.length < 5) return "Nome muito curto";
   return undefined;
@@ -183,7 +183,6 @@ function PainelReconhecimento({
 function Solicitar() {
   const navigate = useNavigate();
   const enviarPedido = useServerFn(criarPedido);
-  const [etapa, setEtapa] = useState<1 | 2>(1);
   const [processo, setProcesso] = useState<EtapaProcessoInput>(CERTIDAO_VAZIA);
   const [quantidade, setQuantidade] = useState(1);
   const [extras, setExtras] = useState<EtapaProcessoInput[]>([]);
@@ -307,29 +306,15 @@ function Solicitar() {
     return novos;
   }
 
-  function avancar(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setTocados((atual) => ({
-      ...atual,
-      "p-numeroProcesso": true,
-      "p-nomeParte": true,
-      "p-cpf": true,
-    }));
-    const parsed = etapaProcessoSchema.safeParse(processo);
-    if (!parsed.success || !principalValido) {
-      if (!parsed.success) setErros(coletarErros(parsed.error.issues));
-      return;
-    }
-    setErros({});
-    setProcesso(parsed.data);
-    setEtapa(2);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   async function finalizar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setTocados((atual) => {
-      const novo = { ...atual };
+      const novo: Record<string, boolean> = {
+        ...atual,
+        "p-numeroProcesso": true,
+        "p-nomeParte": true,
+        "p-cpf": true,
+      };
       extras.forEach((_, i) => {
         novo[`e-${i}-numeroProcesso`] = true;
         novo[`e-${i}-nomeParte`] = true;
@@ -479,19 +464,20 @@ function Solicitar() {
 
       <main className="mx-auto w-full max-w-4xl px-5 py-12 sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          Etapa {etapa} de 2
+          Pedido em uma única tela
         </p>
         <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
           Solicitar Certidão de Objeto e Pé
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          {etapa === 1
-            ? "Informe os dados do processo e da parte envolvida. Na próxima etapa mostramos o valor da certidão."
-            : "Escolha a quantidade de certidões, confira o valor e informe seus contatos para receber o documento."}
+          Digite o número do processo: identificamos o tribunal automaticamente. Depois é só
+          confirmar quem está no processo e seus contatos — o valor fica sempre visível aqui
+          embaixo.
         </p>
 
-        {etapa === 1 ? (
-          <form onSubmit={avancar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
+        <SeloGarantia className="mt-6" />
+
+          <form onSubmit={finalizar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
             <Campo
               label="Número do processo"
               erro={
@@ -519,7 +505,7 @@ function Solicitar() {
 
 
             <Campo
-              label="Nome completo da parte envolvida"
+              label="Nome de quem está no processo"
               erro={erroVisivel("p-nomeParte", "nomeParte", processo.nomeParte) ?? erros.nomeParte}
             >
               <input
@@ -537,8 +523,8 @@ function Solicitar() {
             </Campo>
 
             <Campo
-              label="CPF da parte envolvida"
-              hint="somente números"
+              label="CPF de quem está no processo"
+              hint="pode digitar só os números"
               erro={erroVisivel("p-cpf", "cpf", processo.cpf) ?? erros.cpf}
             >
               <input
@@ -558,34 +544,6 @@ function Solicitar() {
                 required
               />
             </Campo>
-
-            <button
-              type="submit"
-              disabled={!principalValido}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Avançar
-            </button>
-            <p className="text-center text-xs text-muted-foreground">
-              Seus dados são usados apenas para a solicitação da certidão junto ao tribunal.
-            </p>
-          </form>
-        ) : (
-          <form onSubmit={finalizar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
-            <div className="rounded-2xl bg-secondary px-5 py-4 text-sm">
-              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Processo</p>
-              <p className="mt-1 font-semibold">{processo?.numeroProcesso}</p>
-              <p className="text-muted-foreground">
-                {processo?.nomeParte} — CPF {processo?.cpf}
-              </p>
-              <button
-                type="button"
-                onClick={() => setEtapa(1)}
-                className="mt-2 text-xs font-semibold text-primary underline underline-offset-4"
-              >
-                Editar dados do processo
-              </button>
-            </div>
 
             <div>
               <span className="text-sm font-semibold">Quantidade de certidões</span>
@@ -628,16 +586,16 @@ function Solicitar() {
               </div>
               <p className="flex items-center gap-2 text-xs text-muted-foreground">
                 <ShieldCheck className="h-4 w-4 text-accent" />
-                Pagamento via Pix após a confirmação do pedido
+                Pix, cartão ou carteira digital na próxima tela
               </p>
             </div>
 
             {extras.length > 0 && (
               <div className="space-y-5">
                 <p className="text-sm font-semibold">
-                  Dados das demais certidões
+                  Dados das outras certidões
                   <span className="ml-2 text-xs font-normal text-muted-foreground">
-                    cada certidão exige processo, nome e CPF próprios
+                    cada certidão precisa do seu próprio processo, nome e CPF
                   </span>
                 </p>
                 {extras.map((c, i) => (
@@ -667,7 +625,7 @@ function Solicitar() {
                       />
                     </Campo>
                     <Campo
-                      label="Nome completo da parte envolvida"
+                      label="Nome de quem está no processo"
                       erro={
                         erroVisivel(`e-${i}-nomeParte`, "nomeParte", c.nomeParte) ??
                         erros[`extra-${i}-nomeParte`]
@@ -687,8 +645,8 @@ function Solicitar() {
                       />
                     </Campo>
                     <Campo
-                      label="CPF da parte envolvida"
-                      hint="somente números"
+                      label="CPF de quem está no processo"
+                      hint="pode digitar só os números"
                       erro={erroVisivel(`e-${i}-cpf`, "cpf", c.cpf) ?? erros[`extra-${i}-cpf`]}
                     >
                       <input
@@ -759,7 +717,7 @@ function Solicitar() {
                     {modoLogin ? "Entrar na sua conta" : "Criar sua conta"}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    A conta dá acesso ao histórico de pedidos, QR Code e código Pix a qualquer momento.
+                    Com a conta você volta aqui quando quiser para ver o andamento, o QR Code e o código Pix.
                   </p>
                 </div>
 
@@ -826,7 +784,7 @@ function Solicitar() {
               />
             </Campo>
 
-            <Campo label="Observações" hint="opcional" erro={erros.observacoes}>
+            <Campo label="Quer nos contar algo sobre o pedido?" hint="opcional" erro={erros.observacoes}>
               <textarea
                 name="observacoes"
                 rows={3}
@@ -855,23 +813,54 @@ function Solicitar() {
               </p>
             )}
 
-            <button
-              type="submit"
-              disabled={enviando || !principalValido || !extrasValidos}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
-            >
-              {enviando ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Gerando protocolo...
-                </>
-              ) : (
-                <>
-                  <CheckCircle2 className="h-4 w-4" /> Gerar pedido e pagar com Pix
-                </>
-              )}
-            </button>
+            <p className="text-center text-xs text-muted-foreground">
+              Seus dados são usados apenas para pedir a certidão ao tribunal. Nada é compartilhado
+              com terceiros.
+            </p>
+
+            <p className="text-center text-xs text-muted-foreground">
+              Ficou com dúvida em algum campo?{" "}
+              <a
+                href={whatsappLink("Olá! Preciso de ajuda para preencher o pedido da certidão.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-primary underline underline-offset-4"
+              >
+                fale com uma pessoa da equipe
+              </a>
+              .
+            </p>
+
+            {/* Barra fixa com o valor: sempre visível enquanto o cliente preenche. */}
+            <div className="sticky bottom-0 -mx-6 mt-2 border-t border-border/60 bg-card/95 px-6 py-4 backdrop-blur sm:-mx-8 sm:px-8">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground">
+                    {quantidade} {quantidade === 1 ? "certidão" : "certidões"} · taxa do tribunal
+                    inclusa
+                  </p>
+                  <p className="font-display text-xl font-bold">
+                    {formatarBRL(precoCentavos(quantidade))}
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  disabled={enviando || !principalValido || !extrasValidos}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 sm:flex-none"
+                >
+                  {enviando ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" /> Gerando seu pedido...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="h-4 w-4" /> Continuar para o pagamento
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </form>
-        )}
       </main>
     </div>
   );

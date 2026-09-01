@@ -41,7 +41,7 @@ export const STATUS_PEDIDO: Record<
 > = {
   aguardando_pagamento: {
     label: "Pagamento pendente",
-    descricao: "Estamos aguardando a confirmação do seu pagamento.",
+    descricao: "Assim que o pagamento cair, começamos o pedido no tribunal.",
     tom: "pendente",
   },
   pago: {
@@ -51,7 +51,7 @@ export const STATUS_PEDIDO: Record<
   },
   em_analise: {
     label: "Em análise",
-    descricao: "Nossa equipe está conferindo os dados do processo informado.",
+    descricao: "Estamos conferindo os dados do processo que você informou.",
     tom: "pendente",
   },
   protocolado: {
@@ -61,7 +61,7 @@ export const STATUS_PEDIDO: Record<
   },
   emitida: {
     label: "Certidão emitida",
-    descricao: "A certidão foi emitida e enviada para o seu e-mail e WhatsApp.",
+    descricao: "Pronto! A certidão foi emitida e enviada para o seu e-mail.",
     tom: "pago",
   },
   cancelado: {
@@ -135,3 +135,9 @@ export const FAQ = [
     a: "Não. A certidão não exclui nem altera o processo: ela apenas documenta oficialmente do que se trata e em que fase está, o que costuma esclarecer dúvidas de empresas e seguradoras.",
   },
 ];
+
+/** Prazo garantido para a entrega da certidão, contado da confirmação do pagamento. */
+export const GARANTIA_DIAS_UTEIS = 5;
+
+export const GARANTIA_TITULO =
+  "Certidão em até 5 dias úteis ou devolvemos 100% do valor";

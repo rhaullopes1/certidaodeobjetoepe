@@ -15,6 +15,7 @@ import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido, reenviarEmailPedido } from "@/lib/pedidos.functions";
 import { statusPedido, formatarBRL, whatsappLink, FLUXO_STATUS } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
+import { SeloGarantia } from "@/components/site/selo-garantia";
 
 export const Route = createFileRoute("/acompanhar")({
   component: AcompanharPage,
@@ -190,6 +191,8 @@ function AcompanharPage() {
               </span>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">{info.descricao}</p>
+
+            <SeloGarantia className="mt-5" />
 
             {!cancelado && (
               <ol className="mt-8 space-y-4">

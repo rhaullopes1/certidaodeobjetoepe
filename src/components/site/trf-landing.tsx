@@ -302,6 +302,7 @@ export function TrfLanding({ trf: t }: { trf: TrfSeo }) {
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 text-sm text-primary-foreground/70 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Certidão Objeto e Pé — atendimento em todo o Brasil.</p>
           <div className="flex gap-4">
+            <Link to="/garantia" className="hover:text-primary-foreground">Garantia</Link>
             <Link to="/politica-de-privacidade" className="hover:text-primary-foreground">Privacidade</Link>
             <Link to="/termos-de-uso" className="hover:text-primary-foreground">Termos</Link>
           </div>
