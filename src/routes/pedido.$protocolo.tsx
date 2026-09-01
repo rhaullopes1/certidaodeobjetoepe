@@ -319,12 +319,13 @@ function PedidoPage() {
                       rel="noopener noreferrer"
                       className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
                     >
-                      Pagar com cartão ou Pix
+                      Gerar QR Code e Código Pix
                     </a>
                     <p className="mt-4 text-xs text-muted-foreground">
-                      Você será direcionado ao checkout seguro. Em caso de dúvida, fale com nossa
-                      equipe pelo WhatsApp.
+                      Cartão de crédito também está disponível na mesma tela de pagamento. Em caso
+                      de dúvida, fale com nossa equipe pelo WhatsApp.
                     </p>
+
                     <a
                       href={whatsappLink(
                         `Olá! Preciso de ajuda com o pagamento do protocolo ${data.protocolo}.`,
