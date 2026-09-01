@@ -319,11 +319,11 @@ function PedidoPage() {
                       rel="noopener noreferrer"
                       className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
                     >
-                      Gerar QR Code e Código Pix
+                      Pagar agora com segurança
                     </a>
                     <p className="mt-4 text-xs text-muted-foreground">
-                      Cartão de crédito também está disponível na mesma tela de pagamento. Em caso
-                      de dúvida, fale com nossa equipe pelo WhatsApp.
+                      Você será levado ao ambiente de pagamento seguro, com todos os meios
+                      disponíveis. Em caso de dúvida, fale com nossa equipe pelo WhatsApp.
                     </p>
 
                     <a
