@@ -132,6 +132,115 @@ export type Database = {
           },
         ]
       }
+      cnj_comarcas: {
+        Row: {
+          cidade: string | null
+          codigo_origem: string
+          created_at: string
+          id: string
+          nome: string
+          tribunal_id: string
+          uf: string | null
+          updated_at: string
+        }
+        Insert: {
+          cidade?: string | null
+          codigo_origem: string
+          created_at?: string
+          id?: string
+          nome: string
+          tribunal_id: string
+          uf?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cidade?: string | null
+          codigo_origem?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          tribunal_id?: string
+          uf?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cnj_comarcas_tribunal_id_fkey"
+            columns: ["tribunal_id"]
+            isOneToOne: false
+            referencedRelation: "cnj_tribunais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cnj_segmentos: {
+        Row: {
+          codigo: number
+          descricao: string | null
+          nome: string
+        }
+        Insert: {
+          codigo: number
+          descricao?: string | null
+          nome: string
+        }
+        Update: {
+          codigo?: number
+          descricao?: string | null
+          nome?: string
+        }
+        Relationships: []
+      }
+      cnj_tribunais: {
+        Row: {
+          codigo_tr: string
+          created_at: string
+          id: string
+          nome: string
+          sede: string | null
+          segmento: number
+          sigla: string
+          sistema: string | null
+          tipo: string
+          uf: string | null
+          updated_at: string
+        }
+        Insert: {
+          codigo_tr: string
+          created_at?: string
+          id?: string
+          nome: string
+          sede?: string | null
+          segmento: number
+          sigla: string
+          sistema?: string | null
+          tipo: string
+          uf?: string | null
+          updated_at?: string
+        }
+        Update: {
+          codigo_tr?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          sede?: string | null
+          segmento?: number
+          sigla?: string
+          sistema?: string | null
+          tipo?: string
+          uf?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cnj_tribunais_segmento_fkey"
+            columns: ["segmento"]
+            isOneToOne: false
+            referencedRelation: "cnj_segmentos"
+            referencedColumns: ["codigo"]
+          },
+        ]
+      }
       cron_tokens: {
         Row: {
           created_at: string
