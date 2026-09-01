@@ -174,6 +174,39 @@ function Solicitar() {
     setTocados((atual) => ({ ...atual, [chave]: true }));
   }
 
+  // Reconhecimento automático do número único (tribunal, estado, cidade, ano, sistema).
+  const decodificar = useServerFn(decodificarProcesso);
+  const [reconhecimento, setReconhecimento] = useState<ProcessoDecodificado | null>(null);
+  const [reconhecendo, setReconhecendo] = useState(false);
+  const digitosProcesso = soDigitos(processo.numeroProcesso);
+
+  useEffect(() => {
+    if (digitosProcesso.length !== 20) {
+      setReconhecimento(null);
+      setReconhecendo(false);
+      return;
+    }
+    let ativo = true;
+    setReconhecendo(true);
+    const t = setTimeout(() => {
+      decodificar({ data: { numero: digitosProcesso } })
+        .then((r) => {
+          if (ativo) setReconhecimento(r);
+        })
+        .catch(() => {
+          if (ativo) setReconhecimento(null);
+        })
+        .finally(() => {
+          if (ativo) setReconhecendo(false);
+        });
+    }, 350);
+    return () => {
+      ativo = false;
+      clearTimeout(t);
+    };
+  }, [digitosProcesso, decodificar]);
+
+
   /** Mostra o erro assim que o campo é tocado (ou após tentativa de envio). */
   function erroVisivel(chave: string, campo: keyof EtapaProcessoInput, valor: string) {
     if (!tocados[chave]) return undefined;
