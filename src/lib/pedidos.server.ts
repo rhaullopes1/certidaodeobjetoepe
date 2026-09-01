@@ -357,20 +357,22 @@ async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
  * Só grava um alerta a cada 6 horas para não poluir a linha do tempo.
  */
 async function registrarAlertaCheckout(row: PedidoRow, erro: unknown) {
+  const pedidoId = row.id;
+  if (!pedidoId) return;
   try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const desde = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
     const { data: recente } = await supabaseAdmin
       .from("pedido_andamentos")
       .select("id")
-      .eq("pedido_id", row.id)
+      .eq("pedido_id", pedidoId)
       .gte("created_at", desde)
       .like("observacao", "[ALERTA] Link de pagamento%")
       .limit(1);
     if (recente?.length) return;
 
     await supabaseAdmin.from("pedido_andamentos").insert({
-      pedido_id: row.id,
+      pedido_id: pedidoId,
       status: row.status,
       observacao: `[ALERTA] Link de pagamento não gerado — ${
         erro instanceof Error ? erro.message : "erro desconhecido"
