@@ -135,3 +135,9 @@ export const FAQ = [
     a: "Não. A certidão não exclui nem altera o processo: ela apenas documenta oficialmente do que se trata e em que fase está, o que costuma esclarecer dúvidas de empresas e seguradoras.",
   },
 ];
+
+/** Prazo garantido para a entrega da certidão, contado da confirmação do pagamento. */
+export const GARANTIA_DIAS_UTEIS = 5;
+
+export const GARANTIA_TITULO =
+  "Certidão em até 5 dias úteis ou devolvemos 100% do valor";
