@@ -36,7 +36,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/admin", replace: true });
+      if (data.session) navigate({ to: "/minha-conta", replace: true });
     });
   }, [navigate]);
 
@@ -57,7 +57,7 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: "/admin", replace: true });
+      navigate({ to: "/minha-conta", replace: true });
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Não foi possível entrar com o Google.");
     } finally {
@@ -74,16 +74,16 @@ function AuthPage() {
       if (modo === "entrar") {
         const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
         if (error) throw error;
-        navigate({ to: "/admin", replace: true });
+        navigate({ to: "/minha-conta", replace: true });
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
           password: senha,
-          options: { emailRedirectTo: window.location.origin + "/admin" },
+          options: { emailRedirectTo: window.location.origin + "/minha-conta" },
         });
         if (error) throw error;
-        if (data.session) navigate({ to: "/admin", replace: true });
-        else setAviso("Conta criada. Confirme o e-mail para acessar o painel.");
+        if (data.session) navigate({ to: "/minha-conta", replace: true });
+        else setAviso("Conta criada. Confirme o e-mail para acessar sua conta.");
       }
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Não foi possível concluir. Tente novamente.");
