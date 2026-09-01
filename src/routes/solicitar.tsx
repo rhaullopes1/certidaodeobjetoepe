@@ -310,7 +310,12 @@ function Solicitar() {
   async function finalizar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setTocados((atual) => {
-      const novo = { ...atual, "p-numeroProcesso": true, "p-nomeParte": true, "p-cpf": true };
+      const novo: Record<string, boolean> = {
+        ...atual,
+        "p-numeroProcesso": true,
+        "p-nomeParte": true,
+        "p-cpf": true,
+      };
       extras.forEach((_, i) => {
         novo[`e-${i}-numeroProcesso`] = true;
         novo[`e-${i}-nomeParte`] = true;
