@@ -8,6 +8,9 @@ import {
   numeroProcessoValido,
   type PedidoInput,
 } from "./pedidos.schema";
+import { analisarNup } from "./cnj";
+import { decodificarPartes } from "./cnj.functions";
+
 
 export type PedidoResumo = {
   protocolo: string;
@@ -208,6 +211,10 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     return montar(await gerarCobranca(existente as PedidoRow));
   }
 
+  // Reconhecimento automático do número único: preenche tribunal/estado/cidade.
+  const partes = analisarNup(principal.numeroProcesso);
+  const decodificado = partes ? await decodificarPartes(partes) : null;
+
   const registro = {
     protocolo: novoProtocolo(),
     numero_processo: principal.numeroProcesso,
@@ -219,8 +226,11 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     whatsapp: soDigitos(data.whatsapp),
     observacoes: data.observacoes ? data.observacoes.trim() : null,
     valor_centavos: valorCentavos,
+    uf: decodificado?.uf ?? null,
+    cidade: decodificado?.cidade ?? null,
     user_id: await usuarioOpcionalDaRequisicao(),
   };
+
 
   const { data: row, error } = await supabaseAdmin
     .from("pedidos")

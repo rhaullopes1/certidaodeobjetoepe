@@ -13,7 +13,9 @@ import {
   type EtapaProcessoInput,
 } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
+import { decodificarProcesso, type ProcessoDecodificado } from "@/lib/cnj.functions";
 import { trackBeginCheckout } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/solicitar")({
   component: Solicitar,
@@ -116,6 +118,68 @@ function certidaoCompleta(c: EtapaProcessoInput) {
   );
 }
 
+/** Mostra tribunal, estado, cidade, ano e sistema identificados pelo número único. */
+function PainelReconhecimento({
+  dados,
+  carregando,
+}: {
+  dados: ProcessoDecodificado | null;
+  carregando: boolean;
+}) {
+  if (carregando) {
+    return (
+      <p className="flex items-center gap-2 rounded-xl border border-border/60 bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+        <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+        Identificando o processo...
+      </p>
+    );
+  }
+  if (!dados) return null;
+
+  const itens: { rotulo: string; valor: string }[] = [];
+  if (dados.tribunalSigla)
+    itens.push({ rotulo: "Tribunal", valor: `${dados.tribunalSigla} — ${dados.tribunalNome ?? ""}` });
+  if (dados.segmentoNome) itens.push({ rotulo: "Segmento", valor: dados.segmentoNome });
+  if (dados.uf) itens.push({ rotulo: "Estado", valor: dados.uf });
+  if (dados.cidade) itens.push({ rotulo: "Cidade", valor: dados.cidade });
+  if (dados.comarca) itens.push({ rotulo: "Comarca / Foro", valor: dados.comarca });
+  if (dados.sistema) itens.push({ rotulo: "Sistema eletrônico", valor: dados.sistema });
+  if (dados.ano) itens.push({ rotulo: "Ano do processo", valor: String(dados.ano) });
+
+  return (
+    <div
+      className={`rounded-xl border px-4 py-4 text-sm ${
+        dados.reconhecido && dados.digitoValido
+          ? "border-primary/30 bg-primary/5"
+          : "border-amber-500/40 bg-amber-500/5"
+      }`}
+      aria-live="polite"
+    >
+      <p className="flex items-center gap-2 font-semibold">
+        {dados.reconhecido && dados.digitoValido ? (
+          <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden />
+        ) : (
+          <Scale className="h-4 w-4 text-amber-600" aria-hidden />
+        )}
+        {dados.reconhecido ? "Processo reconhecido automaticamente" : "Número não reconhecido"}
+      </p>
+      {itens.length > 0 && (
+        <dl className="mt-3 grid gap-x-6 gap-y-2 sm:grid-cols-2">
+          {itens.map((i) => (
+            <div key={i.rotulo} className="min-w-0">
+              <dt className="text-xs uppercase tracking-wide text-muted-foreground">{i.rotulo}</dt>
+              <dd className="break-words font-medium">{i.valor}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {dados.mensagem && <p className="mt-3 text-xs text-muted-foreground">{dados.mensagem}</p>}
+    </div>
+  );
+}
+
+
+
 function Solicitar() {
   const navigate = useNavigate();
   const enviarPedido = useServerFn(criarPedido);
@@ -173,6 +237,39 @@ function Solicitar() {
   function marcarTocado(chave: string) {
     setTocados((atual) => ({ ...atual, [chave]: true }));
   }
+
+  // Reconhecimento automático do número único (tribunal, estado, cidade, ano, sistema).
+  const decodificar = useServerFn(decodificarProcesso);
+  const [reconhecimento, setReconhecimento] = useState<ProcessoDecodificado | null>(null);
+  const [reconhecendo, setReconhecendo] = useState(false);
+  const digitosProcesso = soDigitos(processo.numeroProcesso);
+
+  useEffect(() => {
+    if (digitosProcesso.length !== 20) {
+      setReconhecimento(null);
+      setReconhecendo(false);
+      return;
+    }
+    let ativo = true;
+    setReconhecendo(true);
+    const t = setTimeout(() => {
+      decodificar({ data: { numero: digitosProcesso } })
+        .then((r) => {
+          if (ativo) setReconhecimento(r);
+        })
+        .catch(() => {
+          if (ativo) setReconhecimento(null);
+        })
+        .finally(() => {
+          if (ativo) setReconhecendo(false);
+        });
+    }, 350);
+    return () => {
+      ativo = false;
+      clearTimeout(t);
+    };
+  }, [digitosProcesso, decodificar]);
+
 
   /** Mostra o erro assim que o campo é tocado (ou após tentativa de envio). */
   function erroVisivel(chave: string, campo: keyof EtapaProcessoInput, valor: string) {
@@ -416,6 +513,10 @@ function Solicitar() {
                 required
               />
             </Campo>
+
+            <PainelReconhecimento dados={reconhecimento} carregando={reconhecendo} />
+
+
 
             <Campo
               label="Nome completo da parte envolvida"
