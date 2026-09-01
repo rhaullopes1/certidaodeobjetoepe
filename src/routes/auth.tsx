@@ -106,10 +106,10 @@ function AuthPage() {
           <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
             <Scale className="h-5 w-5" strokeWidth={1.8} />
           </span>
-          <h1 className="mt-5 font-display text-2xl font-bold">Painel da equipe</h1>
+          <h1 className="mt-5 font-display text-2xl font-bold">Painel do usuário</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Acesso restrito para acompanhar pedidos, anexar comprovantes e atualizar o andamento
-            até a emissão da certidão.
+            Acesse sua conta ou crie uma conta para acompanhar seus pedidos, ver o status e pagar
+            pedidos pendentes.
           </p>
 
           <form onSubmit={enviar} className="mt-7 space-y-4">
