@@ -16,6 +16,7 @@ interface Certidao {
   numeroProcesso?: string
   nomeParte?: string
   cpf?: string
+  observacoes?: string | null
 }
 
 interface Props {
@@ -69,6 +70,9 @@ const Email = ({ protocolo, quantidade = 1, valor, certidoes = [], url }: Props)
                 <Text style={itemLine}>{`Processo: ${c.numeroProcesso ?? '—'}`}</Text>
                 <Text style={itemLine}>{`Parte: ${c.nomeParte ?? '—'}`}</Text>
                 <Text style={itemLine}>{`CPF: ${mascararCpf(c.cpf)}`}</Text>
+                {c.observacoes ? (
+                  <Text style={itemLine}>{`Observação: ${c.observacoes}`}</Text>
+                ) : null}
               </Section>
             ))}
           </Section>
