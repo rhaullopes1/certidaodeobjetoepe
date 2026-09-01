@@ -53,7 +53,10 @@ export const certidaoSchema = z.object({
   numeroProcesso: numeroProcessoField,
   nomeParte: nomeParteField,
   cpf: cpfField,
+  /** Observação específica daquele processo (opcional). */
+  observacoes: z.string().trim().max(1000).optional().or(z.literal("")),
 });
+
 
 export type CertidaoInput = z.infer<typeof certidaoSchema>;
 
