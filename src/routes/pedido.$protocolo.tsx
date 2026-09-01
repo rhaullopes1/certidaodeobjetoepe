@@ -266,11 +266,47 @@ function PedidoPage() {
               ) : (
               <section className="card-premium p-6 sm:p-8">
                 <h2 className="text-lg font-bold">
-                  Pagamento via Pix — {formatarBRL(data.valorCentavos)}
+                  Pagamento — {formatarBRL(data.valorCentavos)}
                 </h2>
+
+                {data.checkoutUrl ? (
+                  <>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Pague com cartão de crédito ou Pix em ambiente seguro. A confirmação é
+                      automática: assim que o pagamento for aprovado, esta página muda para
+                      “Pagamento confirmado”.
+                    </p>
+                    <a
+                      href={data.checkoutUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+                    >
+                      Pagar com cartão ou Pix
+                    </a>
+                    <p className="mt-4 text-xs text-muted-foreground">
+                      Você será direcionado ao checkout seguro. Em caso de dúvida, fale com nossa
+                      equipe pelo WhatsApp.
+                    </p>
+                    <a
+                      href={whatsappLink(
+                        `Olá! Preciso de ajuda com o pagamento do protocolo ${data.protocolo}.`,
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+                    >
+                      <MessageCircle className="h-4 w-4 text-accent" />
+                      Falar pelo WhatsApp
+                    </a>
+                    <AlternativasContato className="mt-3" />
+                  </>
+                ) : (
+                <>
                 <p className="mt-2 text-sm text-muted-foreground">
                   Escaneie o QR Code no app do seu banco ou use o código copia e cola.
                 </p>
+
 
                 <div className="mt-6 grid place-items-center rounded-2xl bg-card p-4">
                   {qr ? (
