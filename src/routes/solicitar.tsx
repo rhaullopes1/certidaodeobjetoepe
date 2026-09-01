@@ -452,6 +452,10 @@ function Solicitar() {
               />
             </Campo>
 
+            <PainelReconhecimento dados={reconhecimento} carregando={reconhecendo} />
+
+
+
             <Campo
               label="Nome completo da parte envolvida"
               erro={erroVisivel("p-nomeParte", "nomeParte", processo.nomeParte) ?? erros.nomeParte}
