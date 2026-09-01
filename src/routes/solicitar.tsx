@@ -3,7 +3,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Loader2, ShieldCheck, CheckCircle2, Scale } from "lucide-react";
-import { TABELA_PRECOS, formatarBRL, precoCentavos } from "@/lib/site";
+import { TABELA_PRECOS, formatarBRL, precoCentavos, whatsappLink } from "@/lib/site";
+import { SeloGarantia } from "@/components/site/selo-garantia";
 import {
   pedidoSchema,
   etapaProcessoSchema,
@@ -183,7 +184,6 @@ function PainelReconhecimento({
 function Solicitar() {
   const navigate = useNavigate();
   const enviarPedido = useServerFn(criarPedido);
-  const [etapa, setEtapa] = useState<1 | 2>(1);
   const [processo, setProcesso] = useState<EtapaProcessoInput>(CERTIDAO_VAZIA);
   const [quantidade, setQuantidade] = useState(1);
   const [extras, setExtras] = useState<EtapaProcessoInput[]>([]);
@@ -307,29 +307,10 @@ function Solicitar() {
     return novos;
   }
 
-  function avancar(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setTocados((atual) => ({
-      ...atual,
-      "p-numeroProcesso": true,
-      "p-nomeParte": true,
-      "p-cpf": true,
-    }));
-    const parsed = etapaProcessoSchema.safeParse(processo);
-    if (!parsed.success || !principalValido) {
-      if (!parsed.success) setErros(coletarErros(parsed.error.issues));
-      return;
-    }
-    setErros({});
-    setProcesso(parsed.data);
-    setEtapa(2);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   async function finalizar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setTocados((atual) => {
-      const novo = { ...atual };
+      const novo = { ...atual, "p-numeroProcesso": true, "p-nomeParte": true, "p-cpf": true };
       extras.forEach((_, i) => {
         novo[`e-${i}-numeroProcesso`] = true;
         novo[`e-${i}-nomeParte`] = true;
