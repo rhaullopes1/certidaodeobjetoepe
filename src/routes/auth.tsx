@@ -161,7 +161,7 @@ function AuthPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-ring"
-                placeholder="voce@empresa.com.br"
+                placeholder="voce@email.com"
               />
             </div>
             <div>
@@ -189,7 +189,7 @@ function AuthPage() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               {carregando && <Loader2 className="h-4 w-4 animate-spin" />}
-              {modo === "entrar" ? "Entrar no painel" : "Criar acesso"}
+              {modo === "entrar" ? "Entrar na minha conta" : "Criar minha conta"}
             </button>
           </form>
 
@@ -202,8 +202,8 @@ function AuthPage() {
             className="mt-5 w-full text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {modo === "entrar"
-              ? "Ainda não tem acesso? Criar conta da equipe"
-              : "Já tenho acesso — entrar"}
+              ? "Ainda não tem conta? Criar conta"
+              : "Já tenho conta — entrar"}
           </button>
         </div>
       </div>
