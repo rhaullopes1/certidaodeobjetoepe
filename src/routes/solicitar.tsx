@@ -7,7 +7,6 @@ import { TABELA_PRECOS, formatarBRL, precoCentavos, whatsappLink } from "@/lib/s
 import { SeloGarantia } from "@/components/site/selo-garantia";
 import {
   pedidoSchema,
-  etapaProcessoSchema,
   certidaoSchema,
   cpfValido,
   soDigitos,
@@ -95,7 +94,7 @@ function validarCampo(campo: keyof EtapaProcessoInput, valor: string): string | 
   const v = valor.trim();
   if (campo === "cpf") {
     const digitos = soDigitos(v);
-    if (!digitos) return "Informe o CPF da parte envolvida";
+    if (!digitos) return "Informe o CPF de quem está no processo";
     if (digitos.length < 11) return "CPF incompleto (11 dígitos)";
     if (!cpfValido(digitos)) return "CPF inválido — confira os dígitos";
     return undefined;
@@ -105,7 +104,7 @@ function validarCampo(campo: keyof EtapaProcessoInput, valor: string): string | 
     if (v.length < 10) return "Número do processo incompleto";
     return undefined;
   }
-  if (!v) return "Informe o nome completo da parte envolvida";
+  if (!v) return "Informe o nome completo de quem está no processo";
   if (v.split(/\s+/).length < 2) return "Informe o nome completo (nome e sobrenome)";
   if (v.length < 5) return "Nome muito curto";
   return undefined;
@@ -506,7 +505,7 @@ function Solicitar() {
 
 
             <Campo
-              label="Nome completo da parte envolvida"
+              label="Nome de quem está no processo"
               erro={erroVisivel("p-nomeParte", "nomeParte", processo.nomeParte) ?? erros.nomeParte}
             >
               <input
@@ -524,8 +523,8 @@ function Solicitar() {
             </Campo>
 
             <Campo
-              label="CPF da parte envolvida"
-              hint="somente números"
+              label="CPF de quem está no processo"
+              hint="pode digitar só os números"
               erro={erroVisivel("p-cpf", "cpf", processo.cpf) ?? erros.cpf}
             >
               <input
@@ -587,16 +586,16 @@ function Solicitar() {
               </div>
               <p className="flex items-center gap-2 text-xs text-muted-foreground">
                 <ShieldCheck className="h-4 w-4 text-accent" />
-                Pagamento via Pix após a confirmação do pedido
+                Pix, cartão ou carteira digital na próxima tela
               </p>
             </div>
 
             {extras.length > 0 && (
               <div className="space-y-5">
                 <p className="text-sm font-semibold">
-                  Dados das demais certidões
+                  Dados das outras certidões
                   <span className="ml-2 text-xs font-normal text-muted-foreground">
-                    cada certidão exige processo, nome e CPF próprios
+                    cada certidão precisa do seu próprio processo, nome e CPF
                   </span>
                 </p>
                 {extras.map((c, i) => (
@@ -626,7 +625,7 @@ function Solicitar() {
                       />
                     </Campo>
                     <Campo
-                      label="Nome completo da parte envolvida"
+                      label="Nome de quem está no processo"
                       erro={
                         erroVisivel(`e-${i}-nomeParte`, "nomeParte", c.nomeParte) ??
                         erros[`extra-${i}-nomeParte`]
@@ -646,8 +645,8 @@ function Solicitar() {
                       />
                     </Campo>
                     <Campo
-                      label="CPF da parte envolvida"
-                      hint="somente números"
+                      label="CPF de quem está no processo"
+                      hint="pode digitar só os números"
                       erro={erroVisivel(`e-${i}-cpf`, "cpf", c.cpf) ?? erros[`extra-${i}-cpf`]}
                     >
                       <input
@@ -718,7 +717,7 @@ function Solicitar() {
                     {modoLogin ? "Entrar na sua conta" : "Criar sua conta"}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    A conta dá acesso ao histórico de pedidos, QR Code e código Pix a qualquer momento.
+                    Com a conta você volta aqui quando quiser para ver o andamento, o QR Code e o código Pix.
                   </p>
                 </div>
 
@@ -785,7 +784,7 @@ function Solicitar() {
               />
             </Campo>
 
-            <Campo label="Observações" hint="opcional" erro={erros.observacoes}>
+            <Campo label="Quer nos contar algo sobre o pedido?" hint="opcional" erro={erros.observacoes}>
               <textarea
                 name="observacoes"
                 rows={3}
