@@ -178,7 +178,18 @@ function MinhaConta() {
               {pendentes.map((p) => (
                 <article key={p.protocolo} className="card-premium p-6">
                   <CabecalhoPedido pedido={p} />
-                  <BlocoPix pedido={p} />
+                  {p.checkoutUrl ? (
+                    <a
+                      href={p.checkoutUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+                    >
+                      Pagar com cartão ou Pix
+                    </a>
+                  ) : (
+                    <BlocoPix pedido={p} />
+                  )}
                 </article>
               ))}
             </div>

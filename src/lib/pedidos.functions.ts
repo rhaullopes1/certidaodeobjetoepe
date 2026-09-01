@@ -43,6 +43,7 @@ export type PedidoDoCliente = {
   pixCopiaECola: string;
   pixQrCodeUrl: string | null;
   pixExpiraEm: string | null;
+  checkoutUrl: string | null;
 };
 
 /** Histórico do cliente logado. A RLS garante que só retornam pedidos da própria conta. */
@@ -52,7 +53,7 @@ export const meusPedidos = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("pedidos")
       .select(
-        "protocolo, numero_processo, nome_parte, quantidade, valor_centavos, status, created_at, pago_em, pix_codigo, pix_qrcode_url, pix_expira_em",
+        "protocolo, numero_processo, nome_parte, quantidade, valor_centavos, status, created_at, pago_em, pix_codigo, pix_qrcode_url, pix_expira_em, checkout_url",
       )
       .eq("user_id", context.userId)
       .order("created_at", { ascending: false })
@@ -78,6 +79,7 @@ export const meusPedidos = createServerFn({ method: "GET" })
         pagoEm: row.pago_em,
         pixQrCodeUrl: row.pix_qrcode_url,
         pixExpiraEm: row.pix_expira_em,
+        checkoutUrl: row.checkout_url ?? null,
         pixCopiaECola:
           row.pix_codigo ??
           gerarPixCopiaECola({

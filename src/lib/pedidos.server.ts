@@ -463,11 +463,19 @@ async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
   try {
     const situacao = await consultarCheckout(row.stripe_session_id);
 
-    if (!situacao.pago && !situacao.cancelado) return row;
+    // Link vencido: o pedido continua válido até DIAS_PARA_EXPIRAR dias.
+    // Limpamos a sessão para que um novo link seja gerado na próxima leitura.
+    if (!situacao.pago) {
+      if (!situacao.expirado) return row;
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await supabaseAdmin
+        .from("pedidos")
+        .update({ stripe_session_id: null, checkout_url: null, pix_expira_em: null })
+        .eq("protocolo", row.protocolo);
+      return gerarCobranca({ ...row, stripe_session_id: null, checkout_url: null });
+    }
 
-    const patch = situacao.pago
-      ? { status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() }
-      : { status: "cancelado" };
+    const patch = { status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: atualizado } = await supabaseAdmin

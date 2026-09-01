@@ -128,12 +128,16 @@ export async function criarCheckout(pedido: {
   };
 }
 
-/** Consulta a sessão na Stripe — fonte da verdade sobre o pagamento. */
+/**
+ * Consulta a sessão na Stripe — fonte da verdade sobre o pagamento.
+ * Sessão vencida NÃO cancela o pedido: apenas indica que é preciso gerar
+ * um novo link de pagamento (o prazo do pedido é de DIAS_PARA_EXPIRAR dias).
+ */
 export async function consultarCheckout(sessionId: string) {
   const sessao = await stripe(`/checkout/sessions/${encodeURIComponent(sessionId)}`);
   return {
     pago: sessao.payment_status === "paid" || sessao.payment_status === "no_payment_required",
-    cancelado: sessao.status === "expired",
+    expirado: sessao.status === "expired",
     pagoEm: null as string | null,
     referenceId: sessao.client_reference_id ?? sessao.metadata?.["protocolo"] ?? null,
   };
