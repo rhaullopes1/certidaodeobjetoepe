@@ -309,9 +309,9 @@ function PedidoPage() {
                 {data.checkoutUrl ? (
                   <>
                     <p className="mt-2 text-sm text-muted-foreground">
-                      Pague com cartão de crédito ou Pix em ambiente seguro. A confirmação é
-                      automática: assim que o pagamento for aprovado, esta página muda para
-                      “Pagamento confirmado”.
+                      Pague com cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A
+                      confirmação é automática: assim que o pagamento for aprovado, esta página muda
+                      para “Pagamento confirmado”.
                     </p>
                     <a
                       href={data.checkoutUrl}
