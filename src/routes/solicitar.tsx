@@ -13,7 +13,9 @@ import {
   type EtapaProcessoInput,
 } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
+import { decodificarProcesso, type ProcessoDecodificado } from "@/lib/cnj.functions";
 import { trackBeginCheckout } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/solicitar")({
   component: Solicitar,
