@@ -309,9 +309,9 @@ function PedidoPage() {
                 {data.checkoutUrl ? (
                   <>
                     <p className="mt-2 text-sm text-muted-foreground">
-                      Pague com cartão de crédito ou Pix em ambiente seguro. A confirmação é
-                      automática: assim que o pagamento for aprovado, esta página muda para
-                      “Pagamento confirmado”.
+                      Pague com cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A
+                      confirmação é automática: assim que o pagamento for aprovado, esta página muda
+                      para “Pagamento confirmado”.
                     </p>
                     <a
                       href={data.checkoutUrl}
@@ -319,11 +319,11 @@ function PedidoPage() {
                       rel="noopener noreferrer"
                       className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
                     >
-                      Gerar QR Code e Código Pix
+                      Pagar agora com segurança
                     </a>
                     <p className="mt-4 text-xs text-muted-foreground">
-                      Cartão de crédito também está disponível na mesma tela de pagamento. Em caso
-                      de dúvida, fale com nossa equipe pelo WhatsApp.
+                      Você será levado ao ambiente de pagamento seguro, com todos os meios
+                      disponíveis. Em caso de dúvida, fale com nossa equipe pelo WhatsApp.
                     </p>
 
                     <a
@@ -338,6 +338,53 @@ function PedidoPage() {
                       Falar pelo WhatsApp
                     </a>
                     <AlternativasContato className="mt-3" />
+
+                    {data.pixCopiaECola ? (
+                      <details className="mt-6 rounded-2xl border border-input p-4">
+                        <summary className="cursor-pointer text-sm font-semibold">
+                          Prefiro pagar por Pix
+                        </summary>
+                        <p className="mt-3 text-sm text-muted-foreground">
+                          Escaneie o QR Code no app do seu banco ou use o código copia e cola. Depois
+                          envie o comprovante pelo WhatsApp para confirmarmos o pedido.
+                        </p>
+                        <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
+                          {qr ? (
+                            <img
+                              src={qr}
+                              width={240}
+                              height={240}
+                              alt={`QR Code Pix para o protocolo ${data.protocolo}`}
+                              className="h-60 w-60"
+                            />
+                          ) : (
+                            <div className="grid h-60 w-60 place-items-center text-muted-foreground">
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            </div>
+                          )}
+                        </div>
+                        <p className="mt-4 break-all rounded-xl bg-secondary px-4 py-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+                          {data.pixCopiaECola}
+                        </p>
+                        <button
+                          onClick={copiar}
+                          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+                        >
+                          {copiado ? (
+                            <>
+                              <Check className="h-4 w-4" /> Código copiado
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-4 w-4" /> Copiar código Pix
+                            </>
+                          )}
+                        </button>
+                        <p className="mt-3 text-xs text-muted-foreground">
+                          Recebedor: {PIX.nome} — {PIX.cidade}.
+                        </p>
+                      </details>
+                    ) : null}
                   </>
                 ) : (
                 <>
