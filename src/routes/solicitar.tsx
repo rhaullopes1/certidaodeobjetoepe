@@ -808,23 +808,54 @@ function Solicitar() {
               </p>
             )}
 
-            <button
-              type="submit"
-              disabled={enviando || !principalValido || !extrasValidos}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
-            >
-              {enviando ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Gerando protocolo...
-                </>
-              ) : (
-                <>
-                  <CheckCircle2 className="h-4 w-4" /> Gerar pedido e pagar com Pix
-                </>
-              )}
-            </button>
+            <p className="text-center text-xs text-muted-foreground">
+              Seus dados são usados apenas para pedir a certidão ao tribunal. Nada é compartilhado
+              com terceiros.
+            </p>
+
+            <p className="text-center text-xs text-muted-foreground">
+              Ficou com dúvida em algum campo?{" "}
+              <a
+                href={whatsappLink("Olá! Preciso de ajuda para preencher o pedido da certidão.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-primary underline underline-offset-4"
+              >
+                fale com uma pessoa da equipe
+              </a>
+              .
+            </p>
+
+            {/* Barra fixa com o valor: sempre visível enquanto o cliente preenche. */}
+            <div className="sticky bottom-0 -mx-6 mt-2 border-t border-border/60 bg-card/95 px-6 py-4 backdrop-blur sm:-mx-8 sm:px-8">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground">
+                    {quantidade} {quantidade === 1 ? "certidão" : "certidões"} · taxa do tribunal
+                    inclusa
+                  </p>
+                  <p className="font-display text-xl font-bold">
+                    {formatarBRL(precoCentavos(quantidade))}
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  disabled={enviando || !principalValido || !extrasValidos}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 sm:flex-none"
+                >
+                  {enviando ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" /> Gerando seu pedido...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="h-4 w-4" /> Continuar para o pagamento
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </form>
-        )}
       </main>
     </div>
   );
