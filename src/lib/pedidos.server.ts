@@ -23,7 +23,7 @@ export type PedidoResumo = {
   email: string;
   whatsapp: string;
   observacoes: string | null;
-  certidoes: { numeroProcesso: string; nomeParte: string; cpf: string }[];
+  certidoes: { numeroProcesso: string; nomeParte: string; cpf: string; observacoes?: string | null }[];
   valorCentavos: number;
   status: string;
   criadoEm: string;
@@ -90,10 +90,11 @@ function montar(row: {
     whatsapp: formatarWhatsapp(row.whatsapp),
     observacoes: row.observacoes,
     certidoes: Array.isArray(row.certidoes)
-      ? (row.certidoes as { numeroProcesso: string; nomeParte: string; cpf: string }[]).map((c) => ({
+      ? (row.certidoes as { numeroProcesso: string; nomeParte: string; cpf: string; observacoes?: string | null }[]).map((c) => ({
           numeroProcesso: c.numeroProcesso,
           nomeParte: c.nomeParte,
           cpf: mascararCpf(c.cpf ?? ""),
+          observacoes: c.observacoes ?? null,
         }))
       : [],
     valorCentavos: row.valor_centavos,
@@ -120,7 +121,10 @@ function montar(row: {
  * Revalidação no servidor: mesmo que o navegador seja contornado (chamada direta
  * ao endpoint), CPF, nome completo e número do processo são conferidos de novo.
  */
-function validarCertidaoNoServidor(c: { numeroProcesso: string; nomeParte: string; cpf: string }, rotulo: string) {
+function validarCertidaoNoServidor(
+  c: { numeroProcesso: string; nomeParte: string; cpf: string; observacoes?: string | null },
+  rotulo: string,
+) {
   const numeroProcesso = c.numeroProcesso.trim();
   const nomeParte = c.nomeParte.trim().replace(/\s+/g, " ");
   const cpf = soDigitos(c.cpf);
@@ -133,7 +137,8 @@ function validarCertidaoNoServidor(c: { numeroProcesso: string; nomeParte: strin
   if (!cpfValido(cpf)) {
     throw new Error(`${rotulo}: CPF inválido.`);
   }
-  return { numeroProcesso, nomeParte, cpf };
+  const observacoes = c.observacoes ? String(c.observacoes).trim().slice(0, 1000) : null;
+  return { numeroProcesso, nomeParte, cpf, observacoes };
 }
 
 /**
@@ -256,7 +261,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
 /** Envio best-effort do e-mail de confirmação; nunca bloqueia a criação do pedido. */
 async function enviarConfirmacaoPorEmail(
   resumo: PedidoResumo,
-  certidoes: Array<{ numeroProcesso: string; nomeParte: string; cpf: string }>,
+  certidoes: Array<{ numeroProcesso: string; nomeParte: string; cpf: string; observacoes?: string | null }>,
 ) {
   if (!resumo.email) return;
   try {
@@ -280,7 +285,7 @@ async function enviarConfirmacaoPorEmail(
 /** Notifica a equipe a cada venda confirmada pelo site. Best-effort: não bloqueia o pedido. */
 async function enviarNotificacaoAdmin(
   resumo: PedidoResumo,
-  certidoes: Array<{ numeroProcesso: string; nomeParte: string; cpf: string }>,
+  certidoes: Array<{ numeroProcesso: string; nomeParte: string; cpf: string; observacoes?: string | null }>,
 ) {
   const emailsAdmin = [
     EMAIL_CONTATO,
@@ -449,7 +454,7 @@ export async function reenviarEmailPedidoNoBanco(protocolo: string, email: strin
   }
 
   const certidoes = Array.isArray(row.certidoes)
-    ? (row.certidoes as { numeroProcesso: string; nomeParte: string; cpf: string }[])
+    ? (row.certidoes as { numeroProcesso: string; nomeParte: string; cpf: string; observacoes?: string | null }[])
     : [];
   const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
   await sendTemplateEmail("pedido-confirmacao", row.email, {
