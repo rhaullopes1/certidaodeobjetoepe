@@ -2,20 +2,21 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Loader2, ShieldCheck, CheckCircle2, Scale } from "lucide-react";
-import { TABELA_PRECOS, formatarBRL, precoCentavos, whatsappLink } from "@/lib/site";
-import { SeloGarantia } from "@/components/site/selo-garantia";
 import {
-  pedidoSchema,
-  certidaoSchema,
-  cpfValido,
-  soDigitos,
-  type EtapaProcessoInput,
-} from "@/lib/pedidos.schema";
+  ArrowLeft,
+  Loader2,
+  CheckCircle2,
+  Scale,
+  Plus,
+  Trash2,
+  Send,
+} from "lucide-react";
+import { QUANTIDADE_MAXIMA, precoCentavos, whatsappLink } from "@/lib/site";
+import { SeloGarantia } from "@/components/site/selo-garantia";
+import { cpfValido, soDigitos, pedidoSchema } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
 import { decodificarProcesso, type ProcessoDecodificado } from "@/lib/cnj.functions";
 import { trackBeginCheckout } from "@/lib/analytics";
-
 
 export const Route = createFileRoute("/solicitar")({
   component: Solicitar,
@@ -25,13 +26,13 @@ export const Route = createFileRoute("/solicitar")({
       {
         name: "description",
         content:
-          "Informe o número do processo, o nome e o CPF da parte envolvida e receba o valor da sua Certidão de Objeto e Pé para pagamento por Pix.",
+          "Informe o número de um ou mais processos, os dados de quem está no processo e envie seu pedido de Certidão de Objeto e Pé em poucos minutos.",
       },
       { property: "og:title", content: "Solicitar Certidão de Objeto e Pé Online" },
       {
         property: "og:description",
         content:
-          "Pedido online em poucos minutos: dados do processo, protocolo automático e pagamento por Pix.",
+          "Pedido online em poucos minutos: vários processos no mesmo pedido, reconhecimento automático do tribunal e protocolo na hora.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -65,9 +66,9 @@ function Campo({
   );
 }
 
-const QUANTIDADES = Object.keys(TABELA_PRECOS).map(Number);
+type Bloco = { numeroProcesso: string; nomeParte: string; observacoes: string };
 
-const CERTIDAO_VAZIA: EtapaProcessoInput = { numeroProcesso: "", nomeParte: "", cpf: "" };
+const BLOCO_VAZIO: Bloco = { numeroProcesso: "", nomeParte: "", observacoes: "" };
 
 function mascararCPF(valor: string) {
   const d = soDigitos(valor).slice(0, 11);
@@ -89,351 +90,308 @@ function mascararProcesso(valor: string) {
   return out;
 }
 
-/** Validação por campo, usada em tempo real enquanto o cliente digita. */
-function validarCampo(campo: keyof EtapaProcessoInput, valor: string): string | undefined {
-  const v = valor.trim();
-  if (campo === "cpf") {
-    const digitos = soDigitos(v);
-    if (!digitos) return "Informe o CPF de quem está no processo";
-    if (digitos.length < 11) return "CPF incompleto (11 dígitos)";
-    if (!cpfValido(digitos)) return "CPF inválido — confira os dígitos";
-    return undefined;
-  }
-  if (campo === "numeroProcesso") {
-    if (!v) return "Informe o número do processo";
-    if (v.length < 10) return "Número do processo incompleto";
-    return undefined;
-  }
-  if (!v) return "Informe o nome completo de quem está no processo";
-  if (v.split(/\s+/).length < 2) return "Informe o nome completo (nome e sobrenome)";
-  if (v.length < 5) return "Nome muito curto";
-  return undefined;
+function mascararWhatsapp(valor: string) {
+  const d = soDigitos(valor).slice(0, 11);
+  if (d.length <= 2) return d;
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
-function certidaoCompleta(c: EtapaProcessoInput) {
-  return (
-    !validarCampo("numeroProcesso", c.numeroProcesso) &&
-    !validarCampo("nomeParte", c.nomeParte) &&
-    !validarCampo("cpf", c.cpf)
-  );
+function nomeOk(v: string) {
+  const t = v.trim();
+  return t.length >= 5 && t.split(/\s+/).filter(Boolean).length >= 2;
 }
 
-/** Mostra tribunal, estado, cidade, ano e sistema identificados pelo número único. */
-function PainelReconhecimento({
-  dados,
-  carregando,
-}: {
-  dados: ProcessoDecodificado | null;
-  carregando: boolean;
-}) {
+function processoOk(v: string) {
+  const d = soDigitos(v);
+  return d.length >= 10 && d.length <= 25;
+}
+
+function blocoCompleto(b: Bloco) {
+  return processoOk(b.numeroProcesso) && nomeOk(b.nomeParte);
+}
+
+/** Pílulas discretas com o que o número único revela sobre o processo. */
+function Pilulas({ dados, carregando }: { dados: ProcessoDecodificado | null; carregando: boolean }) {
   if (carregando) {
     return (
-      <p className="flex items-center gap-2 rounded-xl border border-border/60 bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+      <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
         Identificando o processo...
       </p>
     );
   }
   if (!dados) return null;
 
-  const itens: { rotulo: string; valor: string }[] = [];
-  if (dados.tribunalSigla)
-    itens.push({ rotulo: "Tribunal", valor: `${dados.tribunalSigla} — ${dados.tribunalNome ?? ""}` });
-  if (dados.segmentoNome) itens.push({ rotulo: "Segmento", valor: dados.segmentoNome });
-  if (dados.uf) itens.push({ rotulo: "Estado", valor: dados.uf });
-  if (dados.cidade) itens.push({ rotulo: "Cidade", valor: dados.cidade });
-  if (dados.comarca) itens.push({ rotulo: "Comarca / Foro", valor: dados.comarca });
-  if (dados.sistema) itens.push({ rotulo: "Sistema eletrônico", valor: dados.sistema });
-  if (dados.ano) itens.push({ rotulo: "Ano do processo", valor: String(dados.ano) });
+  const tags: string[] = [];
+  if (dados.tribunalSigla) tags.push(dados.tribunalSigla);
+  if (dados.segmentoNome) tags.push(dados.segmentoNome);
+  if (dados.uf) tags.push(dados.uf);
+  if (dados.cidade) tags.push(dados.cidade);
+  if (dados.comarca) tags.push(dados.comarca);
+  if (dados.ano) tags.push(String(dados.ano));
 
   return (
-    <div
-      className={`rounded-xl border px-4 py-4 text-sm ${
-        dados.reconhecido && dados.digitoValido
-          ? "border-primary/30 bg-primary/5"
-          : "border-amber-500/40 bg-amber-500/5"
-      }`}
-      aria-live="polite"
-    >
-      <p className="flex items-center gap-2 font-semibold">
-        {dados.reconhecido && dados.digitoValido ? (
-          <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden />
-        ) : (
-          <Scale className="h-4 w-4 text-amber-600" aria-hidden />
-        )}
-        {dados.reconhecido ? "Processo reconhecido automaticamente" : "Número não reconhecido"}
-      </p>
-      {itens.length > 0 && (
-        <dl className="mt-3 grid gap-x-6 gap-y-2 sm:grid-cols-2">
-          {itens.map((i) => (
-            <div key={i.rotulo} className="min-w-0">
-              <dt className="text-xs uppercase tracking-wide text-muted-foreground">{i.rotulo}</dt>
-              <dd className="break-words font-medium">{i.valor}</dd>
-            </div>
+    <div className="mt-3" aria-live="polite">
+      {tags.length > 0 && (
+        <ul className="flex flex-wrap gap-2">
+          {tags.map((t) => (
+            <li
+              key={t}
+              className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-foreground"
+            >
+              {t}
+            </li>
           ))}
-        </dl>
+        </ul>
       )}
-      {dados.mensagem && <p className="mt-3 text-xs text-muted-foreground">{dados.mensagem}</p>}
+      {dados.mensagem && (
+        <p className="mt-2 text-xs text-muted-foreground">{dados.mensagem}</p>
+      )}
+      {!dados.reconhecido && tags.length === 0 && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Não reconhecemos esse número automaticamente — pode seguir mesmo assim, nossa equipe
+          confere para você.
+        </p>
+      )}
     </div>
   );
 }
 
-
-
-function Solicitar() {
-  const navigate = useNavigate();
-  const enviarPedido = useServerFn(criarPedido);
-  const [processo, setProcesso] = useState<EtapaProcessoInput>(CERTIDAO_VAZIA);
-  const [quantidade, setQuantidade] = useState(1);
-  const [extras, setExtras] = useState<EtapaProcessoInput[]>([]);
-  const [sessaoEmail, setSessaoEmail] = useState<string | null>(null);
-  const [modoLogin, setModoLogin] = useState(false);
-
-  useEffect(() => {
-    trackBeginCheckout();
-  }, []);
-
-
-  useEffect(() => {
-    let ativo = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (ativo) setSessaoEmail(data.user?.email ?? null);
-    });
-    return () => {
-      ativo = false;
-    };
-  }, []);
-  const [tocados, setTocados] = useState<Record<string, boolean>>({});
-
-  function alterarQuantidade(q: number) {
-    setQuantidade(q);
-    setExtras((atual) => {
-      const alvo = q - 1;
-      const proximo = atual.slice(0, alvo);
-      while (proximo.length < alvo) {
-        proximo.push({ ...CERTIDAO_VAZIA });
-      }
-      return proximo;
-    });
-  }
-
-  function formatarCampo(campo: keyof EtapaProcessoInput, valor: string) {
-    if (campo === "cpf") return mascararCPF(valor);
-    if (campo === "numeroProcesso") return mascararProcesso(valor);
-    return valor;
-  }
-
-  function atualizarPrincipal(campo: keyof EtapaProcessoInput, valor: string) {
-    setProcesso((atual) => ({ ...atual, [campo]: formatarCampo(campo, valor) }));
-  }
-
-  function atualizarExtra(i: number, campo: keyof EtapaProcessoInput, valor: string) {
-    setExtras((atual) =>
-      atual.map((c, idx) => (idx === i ? { ...c, [campo]: formatarCampo(campo, valor) } : c)),
-    );
-  }
-
-  function marcarTocado(chave: string) {
-    setTocados((atual) => ({ ...atual, [chave]: true }));
-  }
-
-  // Reconhecimento automático do número único (tribunal, estado, cidade, ano, sistema).
+/** Bloco de um processo: número, dados reconhecidos, parte e observação própria. */
+function BlocoProcesso({
+  indice,
+  valor,
+  onChange,
+  onRemover,
+  mostrarErros,
+}: {
+  indice: number;
+  valor: Bloco;
+  onChange: (b: Bloco) => void;
+  onRemover?: () => void;
+  mostrarErros: boolean;
+}) {
   const decodificar = useServerFn(decodificarProcesso);
-  const [reconhecimento, setReconhecimento] = useState<ProcessoDecodificado | null>(null);
-  const [reconhecendo, setReconhecendo] = useState(false);
-  const digitosProcesso = soDigitos(processo.numeroProcesso);
+  const [dados, setDados] = useState<ProcessoDecodificado | null>(null);
+  const [carregando, setCarregando] = useState(false);
+  const digitos = soDigitos(valor.numeroProcesso);
 
   useEffect(() => {
-    if (digitosProcesso.length !== 20) {
-      setReconhecimento(null);
-      setReconhecendo(false);
+    if (digitos.length !== 20) {
+      setDados(null);
+      setCarregando(false);
       return;
     }
     let ativo = true;
-    setReconhecendo(true);
+    setCarregando(true);
     const t = setTimeout(() => {
-      decodificar({ data: { numero: digitosProcesso } })
-        .then((r) => {
-          if (ativo) setReconhecimento(r);
-        })
-        .catch(() => {
-          if (ativo) setReconhecimento(null);
-        })
-        .finally(() => {
-          if (ativo) setReconhecendo(false);
-        });
+      decodificar({ data: { numero: digitos } })
+        .then((r) => ativo && setDados(r))
+        .catch(() => ativo && setDados(null))
+        .finally(() => ativo && setCarregando(false));
     }, 350);
     return () => {
       ativo = false;
       clearTimeout(t);
     };
-  }, [digitosProcesso, decodificar]);
+  }, [digitos, decodificar]);
 
+  const erroProcesso =
+    mostrarErros && !processoOk(valor.numeroProcesso) ? "Informe o número do processo" : undefined;
+  const erroNome =
+    mostrarErros && !nomeOk(valor.nomeParte)
+      ? "Informe o nome completo de quem está no processo"
+      : undefined;
 
-  /** Mostra o erro assim que o campo é tocado (ou após tentativa de envio). */
-  function erroVisivel(chave: string, campo: keyof EtapaProcessoInput, valor: string) {
-    if (!tocados[chave]) return undefined;
-    return validarCampo(campo, valor);
-  }
+  return (
+    <div className="relative rounded-2xl border border-input bg-card p-5 sm:p-6">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Processo {indice + 1}
+        </p>
+        {onRemover && (
+          <button
+            type="button"
+            onClick={onRemover}
+            aria-label={`Remover processo ${indice + 1}`}
+            className="-mt-1 -mr-1 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        )}
+      </div>
 
+      <div className="mt-3 space-y-5">
+        <Campo label="Número do processo" erro={erroProcesso}>
+          <input
+            id={`processo-${indice}`}
+            autoComplete="off"
+            inputMode="numeric"
+            value={valor.numeroProcesso}
+            onChange={(e) =>
+              onChange({ ...valor, numeroProcesso: mascararProcesso(e.target.value) })
+            }
+            className={inputClass}
+            placeholder="0000000-00.0000.0.00.0000"
+            maxLength={40}
+            required
+          />
+        </Campo>
+
+        <Pilulas dados={dados} carregando={carregando} />
+
+        <Campo label="Nome de quem está no processo" erro={erroNome}>
+          <input
+            autoComplete="off"
+            value={valor.nomeParte}
+            onChange={(e) => onChange({ ...valor, nomeParte: e.target.value })}
+            className={inputClass}
+            placeholder="Ex: Maria Aparecida da Silva"
+            maxLength={120}
+            required
+          />
+        </Campo>
+
+        <Campo label="Observações deste processo" hint="opcional">
+          <textarea
+            rows={3}
+            maxLength={1000}
+            value={valor.observacoes}
+            onChange={(e) => onChange({ ...valor, observacoes: e.target.value })}
+            className={inputClass}
+            placeholder="Observações para este processo (ex: solicitar denúncia do Ministério Público, certidão de inteiro teor, etc.)"
+          />
+        </Campo>
+      </div>
+    </div>
+  );
+}
+
+function Solicitar() {
+  const navigate = useNavigate();
+  const enviarPedido = useServerFn(criarPedido);
+
+  const [processos, setProcessos] = useState<Bloco[]>([{ ...BLOCO_VAZIO }]);
+  const [email, setEmail] = useState("");
+  const [nome, setNome] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [sessaoEmail, setSessaoEmail] = useState<string | null>(null);
+
+  const [mostrarErros, setMostrarErros] = useState(false);
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
 
-  const principalValido = certidaoCompleta(processo);
-  const extrasValidos = extras.every(certidaoCompleta);
+  useEffect(() => {
+    trackBeginCheckout();
+  }, []);
 
-  /** Resumo do que falta preencher, exibido quando o envio está bloqueado. */
-  const pendencias: string[] = [];
-  extras.forEach((c, i) => {
-    if (certidaoCompleta(c)) return;
-    const faltando: string[] = [];
-    if (validarCampo("numeroProcesso", c.numeroProcesso)) faltando.push("número do processo");
-    if (validarCampo("nomeParte", c.nomeParte)) faltando.push("nome completo");
-    if (validarCampo("cpf", c.cpf)) faltando.push("CPF válido");
-    pendencias.push(`Certidão ${i + 2}: ${faltando.join(", ")}`);
-  });
-  const algumExtraTocado = extras.some((_, i) =>
-    ["numeroProcesso", "nomeParte", "cpf"].some((campo) => tocados[`e-${i}-${campo}`]),
-  );
+  useEffect(() => {
+    let ativo = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (!ativo) return;
+      const u = data.user;
+      if (!u) return;
+      setSessaoEmail(u.email ?? null);
+      setEmail(u.email ?? "");
+      const meta = (u.user_metadata ?? {}) as Record<string, unknown>;
+      if (typeof meta['full_name'] === "string") setNome(meta['full_name']);
+    });
+    return () => {
+      ativo = false;
+    };
+  }, []);
 
-  function coletarErros(issues: { path: PropertyKey[]; message: string }[]) {
-    const novos: Record<string, string> = {};
-    for (const issue of issues) {
-      const campo = String(issue.path[0]);
-      if (!novos[campo]) novos[campo] = issue.message;
-    }
-    return novos;
+  function atualizarBloco(i: number, b: Bloco) {
+    setProcessos((atual) => atual.map((p, idx) => (idx === i ? b : p)));
   }
 
-  async function finalizar(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setTocados((atual) => {
-      const novo: Record<string, boolean> = {
-        ...atual,
-        "p-numeroProcesso": true,
-        "p-nomeParte": true,
-        "p-cpf": true,
-      };
-      extras.forEach((_, i) => {
-        novo[`e-${i}-numeroProcesso`] = true;
-        novo[`e-${i}-nomeParte`] = true;
-        novo[`e-${i}-cpf`] = true;
-      });
-      return novo;
-    });
-    if (!principalValido || !extrasValidos) {
-      setErroGeral("Confira os dados de cada certidão antes de enviar.");
-      return;
-    }
-    const form = new FormData(e.currentTarget);
-    const total = precoCentavos(quantidade);
-    const listaCertidoes = [processo, ...extras];
-    const bruto = {
-      ...processo,
-      certidoes: listaCertidoes,
-      quantidade,
-      valorTotalCentavos: total,
-      email: String(form.get("email") ?? ""),
-      whatsapp: String(form.get("whatsapp") ?? ""),
-      observacoes: String(form.get("observacoes") ?? ""),
-    };
-    const confirmaEmail = String(form.get("confirmaEmail") ?? "").trim().toLowerCase();
-    const contaNome = String(form.get("contaNome") ?? "").trim();
-    const senha = String(form.get("senha") ?? "");
-    const confirmaSenha = String(form.get("confirmaSenha") ?? "");
+  function adicionarBloco() {
+    setProcessos((atual) =>
+      atual.length >= QUANTIDADE_MAXIMA ? atual : [...atual, { ...BLOCO_VAZIO }],
+    );
+  }
 
-    const parsed = pedidoSchema.safeParse(bruto);
-    const novosErros = parsed.success ? {} : coletarErros(parsed.error.issues);
-    if (confirmaEmail !== bruto.email.trim().toLowerCase()) {
-      novosErros.confirmaEmail = "Os e-mails não conferem.";
+  function removerBloco(i: number) {
+    setProcessos((atual) => atual.filter((_, idx) => idx !== i));
+  }
+
+  async function enviar(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setMostrarErros(true);
+    setErroGeral(null);
+
+    const novosErros: Record<string, string> = {};
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      novosErros['email'] = "Informe um e-mail válido.";
     }
-    extras.forEach((c, i) => {
-      const r = certidaoSchema.safeParse(c);
-      if (!r.success) {
-        for (const issue of r.error.issues) {
-          const chave = `extra-${i}-${String(issue.path[0])}`;
-          if (!novosErros[chave]) novosErros[chave] = issue.message;
-        }
-      }
-    });
-    if (!QUANTIDADES.includes(quantidade) || total !== precoCentavos(quantidade)) {
-      novosErros.valorTotalCentavos =
-        "O valor não corresponde à quantidade selecionada. Escolha a quantidade novamente.";
-    }
-    if (!sessaoEmail) {
-      if (!modoLogin && contaNome.split(/\s+/).filter(Boolean).length < 2) {
-        novosErros.contaNome = "Informe seu nome completo.";
-      }
-      if (senha.length < 8) novosErros.senha = "A senha precisa ter ao menos 8 caracteres.";
-      if (!modoLogin && senha !== confirmaSenha) {
-        novosErros.confirmaSenha = "As senhas não conferem.";
-      }
+    if (!nomeOk(nome)) novosErros['nome'] = "Informe seu nome completo.";
+    if (!cpfValido(cpf)) novosErros['cpf'] = "CPF inválido — confira os dígitos.";
+    const wa = soDigitos(whatsapp);
+    if (wa.length < 10) novosErros['whatsapp'] = "Informe o WhatsApp com DDD.";
+    if (!processos.every(blocoCompleto)) {
+      novosErros['processos'] = "Confira o número e o nome da parte em cada processo.";
     }
     if (Object.keys(novosErros).length > 0) {
       setErros(novosErros);
-      setErroGeral(null);
+      return;
+    }
+
+    const cpfDigitos = soDigitos(cpf);
+    const certidoes = processos.map((p) => ({
+      numeroProcesso: p.numeroProcesso.trim(),
+      nomeParte: p.nomeParte.trim(),
+      cpf: cpfDigitos,
+      observacoes: p.observacoes.trim(),
+    }));
+    const bruto = {
+      numeroProcesso: certidoes[0]!.numeroProcesso,
+      nomeParte: certidoes[0]!.nomeParte,
+      cpf: cpfDigitos,
+      certidoes,
+      quantidade: certidoes.length,
+      valorTotalCentavos: precoCentavos(certidoes.length),
+      email: email.trim(),
+      whatsapp: wa,
+      observacoes: "",
+    };
+
+    const parsed = pedidoSchema.safeParse(bruto);
+    if (!parsed.success) {
+      const mapa: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        const campo = String(issue.path[0]);
+        if (!mapa[campo]) mapa[campo] = issue.message;
+      }
+      setErros(mapa);
+      setErroGeral("Confira os dados destacados antes de enviar.");
       return;
     }
 
     setErros({});
-    setErroGeral(null);
     setEnviando(true);
     try {
-      if (!sessaoEmail) {
-        const email = bruto.email.trim();
-        if (modoLogin) {
-          const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
-          if (error) {
-            setErros({ senha: "E-mail ou senha incorretos." });
-            setEnviando(false);
-            return;
-          }
-        } else {
-          const { error } = await supabase.auth.signUp({
-            email,
-            password: senha,
-            options: { data: { full_name: contaNome } },
-          });
-          if (error) {
-            const msg = error.message || "";
-            const jaExiste = /registered|already|exists/i.test(msg);
-            if (jaExiste) {
-              const entrar = await supabase.auth.signInWithPassword({ email, password: senha });
-              if (entrar.error) {
-                setModoLogin(true);
-                setErros({ senha: "Já existe conta com este e-mail. Informe sua senha para entrar." });
-                setEnviando(false);
-                return;
-              }
-            } else if (/weak|pwned|compromised/i.test(msg)) {
-              setErros({
-                senha:
-                  "Essa senha é muito comum e apareceu em vazamentos. Escolha outra, com letras, números e símbolos.",
-              });
-              setEnviando(false);
-              return;
-            } else if (/rate limit|too many/i.test(msg)) {
-              setErroGeral(
-                "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.",
-              );
-              setEnviando(false);
-              return;
-            } else if (/invalid.*email|email address.*invalid/i.test(msg)) {
-              setErros({ email: "E-mail inválido. Confira o endereço informado." });
-              setEnviando(false);
-              return;
-            } else {
-              setErroGeral(`Não foi possível criar sua conta: ${msg}`);
-              setEnviando(false);
-              return;
-            }
-          }
-        }
+      const pedido = await enviarPedido({ data: parsed.data });
 
-        setSessaoEmail(email);
+      // Conta criada em segundo plano, sem senha: o cliente recebe um link de acesso.
+      if (!sessaoEmail) {
+        try {
+          await supabase.auth.signInWithOtp({
+            email: bruto.email,
+            options: {
+              shouldCreateUser: true,
+              emailRedirectTo: `${window.location.origin}/minha-conta`,
+              data: { full_name: nome.trim(), cpf: cpfDigitos, whatsapp: wa },
+            },
+          });
+        } catch {
+          // O pedido já existe: falha no e-mail de acesso não bloqueia o cliente.
+        }
       }
-      const pedido = await enviarPedido({ data: parsed.data! });
+
       navigate({ to: "/pedido/$protocolo", params: { protocolo: pedido.protocolo } });
     } catch (error) {
       console.error(error);
@@ -442,10 +400,12 @@ function Solicitar() {
     }
   }
 
+  const podeAdicionar = processos.length < QUANTIDADE_MAXIMA;
+
   return (
     <div className="min-h-dvh bg-secondary/40">
       <header className="surface-navy">
-        <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
+        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
           <Link to="/" className="flex items-center gap-3">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-primary-foreground/15">
               <Scale className="h-5 w-5" strokeWidth={1.8} />
@@ -462,405 +422,172 @@ function Solicitar() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-4xl px-5 py-12 sm:px-8">
+      <main className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          Pedido em uma única tela
+          Solicitação em uma única tela
         </p>
         <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
           Solicitar Certidão de Objeto e Pé
         </h1>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Digite o número do processo: identificamos o tribunal automaticamente. Depois é só
-          confirmar quem está no processo e seus contatos — o valor fica sempre visível aqui
-          embaixo.
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Informe o número de cada processo — identificamos o tribunal automaticamente. Você pode
+          incluir quantos processos precisar no mesmo pedido e ver o resumo completo na tela
+          seguinte.
         </p>
 
         <SeloGarantia className="mt-6" />
 
-          <form onSubmit={finalizar} className="card-premium mt-10 space-y-6 p-6 sm:p-8">
-            <Campo
-              label="Número do processo"
-              erro={
-                erroVisivel("p-numeroProcesso", "numeroProcesso", processo.numeroProcesso) ??
-                erros.numeroProcesso
-              }
+        <form onSubmit={enviar} className="mt-8 space-y-6" noValidate>
+          <div className="space-y-5">
+            {processos.map((p, i) => (
+              <BlocoProcesso
+                key={i}
+                indice={i}
+                valor={p}
+                onChange={(b) => atualizarBloco(i, b)}
+                onRemover={processos.length > 1 ? () => removerBloco(i) : undefined}
+                mostrarErros={mostrarErros}
+              />
+            ))}
+          </div>
+
+          {podeAdicionar ? (
+            <button
+              type="button"
+              onClick={adicionarBloco}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-primary/40 bg-card px-5 py-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/5"
             >
+              <Plus className="h-4 w-4" />
+              Adicionar outro processo
+            </button>
+          ) : (
+            <p className="rounded-2xl border border-input bg-card px-5 py-4 text-sm text-muted-foreground">
+              Você chegou ao limite de {QUANTIDADE_MAXIMA} processos por pedido.{" "}
+              <a
+                href={whatsappLink(
+                  "Olá! Preciso solicitar certidões para mais processos no mesmo pedido.",
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-primary underline underline-offset-4"
+              >
+                Fale com a equipe
+              </a>{" "}
+              para volumes maiores.
+            </p>
+          )}
+
+          {erros['processos'] && (
+            <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+              {erros['processos']}
+            </p>
+          )}
+
+          <section className="space-y-5 rounded-2xl border border-input bg-card p-5 sm:p-6">
+            <div>
+              <h2 className="text-base font-bold">Dados do solicitante</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Usamos apenas para enviar o protocolo, o andamento e a certidão pronta. Sua conta é
+                criada automaticamente — você não precisa cadastrar senha.
+              </p>
+            </div>
+
+            <Campo label="E-mail" erro={erros['email']}>
               <input
-                id="processo-numero"
-                name="numeroProcesso"
-                autoComplete="off"
-                inputMode="numeric"
-                value={processo.numeroProcesso}
-                onChange={(e) => atualizarPrincipal("numeroProcesso", e.target.value)}
-                onBlur={() => marcarTocado("p-numeroProcesso")}
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                readOnly={Boolean(sessaoEmail)}
                 className={inputClass}
-                placeholder="0000000-00.0000.0.00.0000"
-                maxLength={40}
+                placeholder="seu@email.com"
+                maxLength={255}
                 required
               />
             </Campo>
 
-            <PainelReconhecimento dados={reconhecimento} carregando={reconhecendo} />
-
-
-
-            <Campo
-              label="Nome de quem está no processo"
-              erro={erroVisivel("p-nomeParte", "nomeParte", processo.nomeParte) ?? erros.nomeParte}
-            >
+            <Campo label="Nome completo" erro={erros['nome']}>
               <input
-                id="processo-nome"
-                name="nomeParte"
                 autoComplete="name"
-                value={processo.nomeParte}
-                onChange={(e) => atualizarPrincipal("nomeParte", e.target.value)}
-                onBlur={() => marcarTocado("p-nomeParte")}
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
                 className={inputClass}
-                placeholder="Ex: Maria Aparecida da Silva"
+                placeholder="Seu nome completo"
                 maxLength={120}
                 required
               />
             </Campo>
 
-            <Campo
-              label="CPF de quem está no processo"
-              hint="pode digitar só os números"
-              erro={erroVisivel("p-cpf", "cpf", processo.cpf) ?? erros.cpf}
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Campo label="CPF" hint="pode digitar só os números" erro={erros['cpf']}>
+                <input
+                  inputMode="numeric"
+                  value={cpf}
+                  onChange={(e) => setCpf(mascararCPF(e.target.value))}
+                  className={inputClass}
+                  placeholder="000.000.000-00"
+                  maxLength={14}
+                  required
+                />
+              </Campo>
+
+              <Campo label="WhatsApp" hint="com DDD" erro={erros['whatsapp']}>
+                <input
+                  inputMode="tel"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(mascararWhatsapp(e.target.value))}
+                  className={inputClass}
+                  placeholder="(47) 90000-0000"
+                  maxLength={16}
+                  required
+                />
+              </Campo>
+            </div>
+          </section>
+
+          {erroGeral && (
+            <p
+              role="alert"
+              className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive"
             >
-              <input
-                id="processo-cpf"
-                name="cpf"
-                autoComplete="off"
-                value={processo.cpf}
-                onChange={(e) => {
-                  atualizarPrincipal("cpf", e.target.value);
-                  if (soDigitos(e.target.value).length === 11) marcarTocado("p-cpf");
-                }}
-                onBlur={() => marcarTocado("p-cpf")}
-                inputMode="numeric"
-                className={inputClass}
-                placeholder="000.000.000-00"
-                maxLength={14}
-                required
-              />
-            </Campo>
+              {erroGeral}
+            </p>
+          )}
 
-            <div>
-              <span className="text-sm font-semibold">Quantidade de certidões</span>
-              <div className="mt-3 grid gap-3 sm:grid-cols-5">
-                {QUANTIDADES.map((q) => {
-                  const ativo = q === quantidade;
-                  return (
-                    <button
-                      key={q}
-                      type="button"
-                      onClick={() => alterarQuantidade(q)}
-                      className={`rounded-2xl border px-3 py-4 text-center transition-colors ${
-                        ativo
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-input bg-card hover:bg-secondary"
-                      }`}
-                    >
-                      <span className="block font-display text-lg font-bold">{q}</span>
-                      <span className="mt-1 block text-xs font-semibold">
-                        {formatarBRL(precoCentavos(q))}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-secondary px-5 py-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                  Valor total
-                </p>
-                <p className="font-display text-2xl font-bold">
-                  {formatarBRL(precoCentavos(quantidade))}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {quantidade} {quantidade === 1 ? "certidão" : "certidões"} ·{" "}
-                  {formatarBRL(precoCentavos(quantidade))}
-                </p>
-              </div>
-              <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                <ShieldCheck className="h-4 w-4 text-accent" />
-                Pix, cartão ou carteira digital na próxima tela
-              </p>
-            </div>
-
-            {extras.length > 0 && (
-              <div className="space-y-5">
-                <p className="text-sm font-semibold">
-                  Dados das outras certidões
-                  <span className="ml-2 text-xs font-normal text-muted-foreground">
-                    cada certidão precisa do seu próprio processo, nome e CPF
-                  </span>
-                </p>
-                {extras.map((c, i) => (
-                  <div key={i} className="space-y-4 rounded-2xl border border-input bg-card p-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                      Certidão {i + 2}
-                    </p>
-                    <Campo
-                      label="Número do processo"
-                      erro={
-                        erroVisivel(`e-${i}-numeroProcesso`, "numeroProcesso", c.numeroProcesso) ??
-                        erros[`extra-${i}-numeroProcesso`]
-                      }
-                    >
-                      <input
-                        id={`certidao-${i + 2}-processo`}
-                        name={`certidoes[${i + 1}].numeroProcesso`}
-                        autoComplete="off"
-                        inputMode="numeric"
-                        value={c.numeroProcesso}
-                        onChange={(e) => atualizarExtra(i, "numeroProcesso", e.target.value)}
-                        onBlur={() => marcarTocado(`e-${i}-numeroProcesso`)}
-                        className={inputClass}
-                        placeholder="0000000-00.0000.0.00.0000"
-                        maxLength={40}
-                        required
-                      />
-                    </Campo>
-                    <Campo
-                      label="Nome de quem está no processo"
-                      erro={
-                        erroVisivel(`e-${i}-nomeParte`, "nomeParte", c.nomeParte) ??
-                        erros[`extra-${i}-nomeParte`]
-                      }
-                    >
-                      <input
-                        id={`certidao-${i + 2}-nome`}
-                        name={`certidoes[${i + 1}].nomeParte`}
-                        autoComplete="off"
-                        value={c.nomeParte}
-                        onChange={(e) => atualizarExtra(i, "nomeParte", e.target.value)}
-                        onBlur={() => marcarTocado(`e-${i}-nomeParte`)}
-                        className={inputClass}
-                        placeholder="Ex: Maria Aparecida da Silva"
-                        maxLength={120}
-                        required
-                      />
-                    </Campo>
-                    <Campo
-                      label="CPF de quem está no processo"
-                      hint="pode digitar só os números"
-                      erro={erroVisivel(`e-${i}-cpf`, "cpf", c.cpf) ?? erros[`extra-${i}-cpf`]}
-                    >
-                      <input
-                        id={`certidao-${i + 2}-cpf`}
-                        name={`certidoes[${i + 1}].cpf`}
-                        autoComplete="off"
-                        value={c.cpf}
-                        onChange={(e) => {
-                          atualizarExtra(i, "cpf", e.target.value);
-                          if (soDigitos(e.target.value).length === 11) marcarTocado(`e-${i}-cpf`);
-                        }}
-                        onBlur={() => marcarTocado(`e-${i}-cpf`)}
-                        inputMode="numeric"
-                        className={inputClass}
-                        placeholder="000.000.000-00"
-                        maxLength={14}
-                        required
-                      />
-                    </Campo>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {erros.valorTotalCentavos && (
-              <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
-                {erros.valorTotalCentavos}
-              </p>
-            )}
-
-            <div className="grid gap-6 sm:grid-cols-2">
-              <Campo label="E-mail" erro={erros.email}>
-                <input
-                  name="email"
-                  type="email"
-                  className={inputClass}
-                  placeholder="seu@email.com"
-                  maxLength={255}
-                  defaultValue={sessaoEmail ?? ""}
-                  readOnly={Boolean(sessaoEmail)}
-                  required
-                />
-              </Campo>
-              <Campo label="Confirme o e-mail" erro={erros.confirmaEmail}>
-                <input
-                  name="confirmaEmail"
-                  type="email"
-                  className={inputClass}
-                  placeholder="repita o e-mail"
-                  maxLength={255}
-                  onPaste={(e) => e.preventDefault()}
-                  defaultValue={sessaoEmail ?? ""}
-                  readOnly={Boolean(sessaoEmail)}
-                  required
-                />
-              </Campo>
-            </div>
-
-            {sessaoEmail ? (
-              <p className="rounded-2xl bg-secondary px-5 py-4 text-sm text-muted-foreground">
-                Pedido vinculado à sua conta <strong className="text-foreground">{sessaoEmail}</strong>.
-                Você poderá acompanhar tudo em “Meus pedidos”.
-              </p>
+          <button
+            type="submit"
+            disabled={enviando}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-5 text-base font-bold text-primary-foreground shadow-lg shadow-primary/25 ring-1 ring-inset ring-accent/30 transition-opacity hover:opacity-90 disabled:opacity-60"
+          >
+            {enviando ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" /> Enviando seu pedido...
+              </>
             ) : (
-              <div className="space-y-5 rounded-2xl border border-input bg-card p-5">
-                <div>
-                  <p className="text-sm font-bold">
-                    {modoLogin ? "Entrar na sua conta" : "Criar sua conta"}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Com a conta você volta aqui quando quiser para ver o andamento, o QR Code e o código Pix.
-                  </p>
-                </div>
-
-                {!modoLogin && (
-                  <Campo label="Nome completo" erro={erros.contaNome}>
-                    <input
-                      name="contaNome"
-                      autoComplete="name"
-                      className={inputClass}
-                      placeholder="Seu nome completo"
-                      maxLength={120}
-                    />
-                  </Campo>
-                )}
-
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <Campo label="Senha" hint="mín. 8 caracteres" erro={erros.senha}>
-                    <input
-                      name="senha"
-                      type="password"
-                      autoComplete={modoLogin ? "current-password" : "new-password"}
-                      className={inputClass}
-                      placeholder="••••••••"
-                      minLength={8}
-                      maxLength={72}
-                      required
-                    />
-                  </Campo>
-                  {!modoLogin && (
-                    <Campo label="Confirme a senha" erro={erros.confirmaSenha}>
-                      <input
-                        name="confirmaSenha"
-                        type="password"
-                        autoComplete="new-password"
-                        className={inputClass}
-                        placeholder="••••••••"
-                        minLength={8}
-                        maxLength={72}
-                        required
-                      />
-                    </Campo>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setModoLogin((v) => !v)}
-                  className="text-xs font-semibold text-primary underline underline-offset-4"
-                >
-                  {modoLogin ? "Ainda não tenho conta — quero cadastrar" : "Já tenho conta — quero entrar"}
-                </button>
-              </div>
+              <>
+                <Send className="h-5 w-5" /> Solicitar Orçamento e Enviar Pedido
+              </>
             )}
+          </button>
 
+          <p className="flex items-center justify-center gap-2 text-center text-xs text-muted-foreground">
+            <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+            Seus dados são usados apenas para pedir a certidão ao tribunal.
+          </p>
 
-            <Campo label="WhatsApp" hint="com DDD" erro={erros.whatsapp}>
-              <input
-                name="whatsapp"
-                inputMode="tel"
-                className={inputClass}
-                placeholder="(47) 90000-0000"
-                maxLength={20}
-                required
-              />
-            </Campo>
-
-            <Campo label="Quer nos contar algo sobre o pedido?" hint="opcional" erro={erros.observacoes}>
-              <textarea
-                name="observacoes"
-                rows={3}
-                maxLength={1000}
-                className={inputClass}
-              />
-            </Campo>
-
-            {!extrasValidos && algumExtraTocado && pendencias.length > 0 && (
-              <div
-                role="alert"
-                className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive"
-              >
-                <p className="font-semibold">Para concluir o pedido, corrija:</p>
-                <ul className="mt-1 list-inside list-disc space-y-0.5">
-                  {pendencias.map((p) => (
-                    <li key={p}>{p}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {erroGeral && (
-              <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
-                {erroGeral}
-              </p>
-            )}
-
-            <p className="text-center text-xs text-muted-foreground">
-              Seus dados são usados apenas para pedir a certidão ao tribunal. Nada é compartilhado
-              com terceiros.
-            </p>
-
-            <p className="text-center text-xs text-muted-foreground">
-              Ficou com dúvida em algum campo?{" "}
-              <a
-                href={whatsappLink("Olá! Preciso de ajuda para preencher o pedido da certidão.")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-primary underline underline-offset-4"
-              >
-                fale com uma pessoa da equipe
-              </a>
-              .
-            </p>
-
-            {/* Barra fixa com o valor: sempre visível enquanto o cliente preenche. */}
-            <div className="sticky bottom-0 -mx-6 mt-2 border-t border-border/60 bg-card/95 px-6 py-4 backdrop-blur sm:-mx-8 sm:px-8">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground">
-                    {quantidade} {quantidade === 1 ? "certidão" : "certidões"} · taxa do tribunal
-                    inclusa
-                  </p>
-                  <p className="font-display text-xl font-bold">
-                    {formatarBRL(precoCentavos(quantidade))}
-                  </p>
-                </div>
-                <button
-                  type="submit"
-                  disabled={enviando || !principalValido || !extrasValidos}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60 sm:flex-none"
-                >
-                  {enviando ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" /> Gerando seu pedido...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="h-4 w-4" /> Continuar para o pagamento
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </form>
+          <p className="text-center text-xs text-muted-foreground">
+            Ficou com dúvida em algum campo?{" "}
+            <a
+              href={whatsappLink("Olá! Preciso de ajuda para preencher o pedido da certidão.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-primary underline underline-offset-4"
+            >
+              fale com uma pessoa da equipe
+            </a>
+            .
+          </p>
+        </form>
       </main>
     </div>
   );
