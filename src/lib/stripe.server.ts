@@ -84,12 +84,11 @@ export async function criarCheckout(pedido: {
   // Stripe aceita expiração entre 30 minutos e 24 horas.
   const expiraEmSegundos = Math.floor(Date.now() / 1000) + 23 * 60 * 60;
 
-  const sessao = await stripe("/checkout/sessions", {
-    idempotencyKey: `checkout-${pedido.protocolo}`,
-    corpo: {
-      mode: "payment",
-      payment_method_types: ["card", "pix"],
-      client_reference_id: pedido.protocolo,
+  const corpoBase = (metodos: string[] | null) => ({
+    mode: "payment",
+    // Sem lista fixa, a Stripe usa os meios habilitados na conta.
+    ...(metodos ? { payment_method_types: metodos } : {}),
+    client_reference_id: pedido.protocolo,
       customer_email: pedido.email,
       expires_at: expiraEmSegundos,
       locale: "pt-BR",
@@ -115,9 +114,19 @@ export async function criarCheckout(pedido: {
             },
           },
         },
-      ],
-    },
+    ],
   });
+
+  let sessao: StripeSession;
+  try {
+    sessao = await stripe("/checkout/sessions", {
+      idempotencyKey: `checkout-${pedido.protocolo}-pix`,
+      corpo: corpoBase(["card", "pix"]),
+    });
+  } catch {
+    // Pix pode não estar habilitado na conta Stripe: seguimos com os meios ativos.
+    sessao = await stripe("/checkout/sessions", { corpo: corpoBase(null) });
+  }
 
   if (!sessao.id || !sessao.url) throw new Error("Stripe não retornou o link de pagamento");
 
