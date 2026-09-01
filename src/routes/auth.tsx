@@ -9,13 +9,14 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
   head: () => ({
     meta: [
-      { title: "Acesso da equipe | Certidão Objeto e Pé" },
+      { title: "Minha conta | Certidão de Objeto e Pé" },
       {
         name: "description",
-        content: "Área restrita para a equipe acompanhar e atualizar os pedidos de certidão.",
+        content:
+          "Acesse sua conta ou crie uma conta para acompanhar seus pedidos de certidão e pagar pedidos pendentes.",
       },
-      { property: "og:title", content: "Acesso da equipe | Certidão Objeto e Pé" },
-      { property: "og:description", content: "Área restrita do painel administrativo." },
+      { property: "og:title", content: "Minha conta | Certidão de Objeto e Pé" },
+      { property: "og:description", content: "Área do cliente para acompanhar pedidos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -35,7 +36,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/admin", replace: true });
+      if (data.session) navigate({ to: "/minha-conta", replace: true });
     });
   }, [navigate]);
 
@@ -56,7 +57,7 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: "/admin", replace: true });
+      navigate({ to: "/minha-conta", replace: true });
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Não foi possível entrar com o Google.");
     } finally {
@@ -73,16 +74,16 @@ function AuthPage() {
       if (modo === "entrar") {
         const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
         if (error) throw error;
-        navigate({ to: "/admin", replace: true });
+        navigate({ to: "/minha-conta", replace: true });
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
           password: senha,
-          options: { emailRedirectTo: window.location.origin + "/admin" },
+          options: { emailRedirectTo: window.location.origin + "/minha-conta" },
         });
         if (error) throw error;
-        if (data.session) navigate({ to: "/admin", replace: true });
-        else setAviso("Conta criada. Confirme o e-mail para acessar o painel.");
+        if (data.session) navigate({ to: "/minha-conta", replace: true });
+        else setAviso("Conta criada. Confirme o e-mail para acessar sua conta.");
       }
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Não foi possível concluir. Tente novamente.");
@@ -105,10 +106,10 @@ function AuthPage() {
           <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
             <Scale className="h-5 w-5" strokeWidth={1.8} />
           </span>
-          <h1 className="mt-5 font-display text-2xl font-bold">Painel da equipe</h1>
+          <h1 className="mt-5 font-display text-2xl font-bold">Painel do usuário</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Acesso restrito para acompanhar pedidos, anexar comprovantes e atualizar o andamento
-            até a emissão da certidão.
+            Acesse sua conta ou crie uma conta para acompanhar seus pedidos, ver o status e pagar
+            pedidos pendentes.
           </p>
 
           <form onSubmit={enviar} className="mt-7 space-y-4">
@@ -160,7 +161,7 @@ function AuthPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-ring"
-                placeholder="voce@empresa.com.br"
+                placeholder="voce@email.com"
               />
             </div>
             <div>
@@ -188,7 +189,7 @@ function AuthPage() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               {carregando && <Loader2 className="h-4 w-4 animate-spin" />}
-              {modo === "entrar" ? "Entrar no painel" : "Criar acesso"}
+              {modo === "entrar" ? "Entrar na minha conta" : "Criar minha conta"}
             </button>
           </form>
 
@@ -201,8 +202,8 @@ function AuthPage() {
             className="mt-5 w-full text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {modo === "entrar"
-              ? "Ainda não tem acesso? Criar conta da equipe"
-              : "Já tenho acesso — entrar"}
+              ? "Ainda não tem conta? Criar conta"
+              : "Já tenho conta — entrar"}
           </button>
         </div>
       </div>
