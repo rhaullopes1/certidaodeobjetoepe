@@ -11,7 +11,6 @@ import {
   Scale,
   Search,
 } from "lucide-react";
-import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido, reenviarEmailPedido } from "@/lib/pedidos.functions";
 import { statusPedido, formatarBRL, whatsappLink, FLUXO_STATUS } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
@@ -265,7 +264,8 @@ function AcompanharPage() {
                 <button
                   type="button"
                   disabled={!comprovanteLiberado}
-                  onClick={() =>
+                  onClick={async () => {
+                    const { baixarComprovantePedido } = await import("@/lib/comprovante-pdf");
                     baixarComprovantePedido({
                       protocolo: pedido.protocolo,
                       numeroProcesso: pedido.numeroProcesso,
@@ -280,8 +280,8 @@ function AcompanharPage() {
                       pagoEm: pedido.pagoEm,
                       observacoes: pedido.observacoes,
                       certidoes: pedido.certidoes,
-                    })
-                  }
+                    });
+                  }}
                   className="inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary disabled:opacity-50"
                 >
                   <Download className="h-4 w-4 text-accent" />
