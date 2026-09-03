@@ -3,10 +3,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  ArrowLeft,
   Loader2,
   CheckCircle2,
-  Scale,
   Plus,
   Trash2,
   Send,
@@ -18,6 +16,7 @@ import { cpfValido, soDigitos, pedidoSchema } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
 import { decodificarProcesso, type ProcessoDecodificado } from "@/lib/cnj.functions";
 import { trackBeginCheckout } from "@/lib/analytics";
+import { SiteHeader } from "@/components/site/site-header";
 
 export const Route = createFileRoute("/solicitar")({
   component: Solicitar,
@@ -405,23 +404,7 @@ function Solicitar() {
 
   return (
     <div className="min-h-dvh bg-secondary/40">
-      <header className="surface-navy">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
-          <Link to="/" className="flex items-center gap-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-primary-foreground/15">
-              <Scale className="h-5 w-5" strokeWidth={1.8} />
-            </span>
-            <span className="font-display text-sm font-bold">Certidão Objeto e Pé</span>
-          </Link>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Voltar
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
