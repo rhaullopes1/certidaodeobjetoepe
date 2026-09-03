@@ -3,6 +3,7 @@ import { BookOpen } from "lucide-react";
 import { PageShell } from "@/components/site/page-shell";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { GUIAS_SEO } from "@/lib/guias-seo";
+import { adsenseScripts } from "@/lib/adsense";
 
 const SITE = "https://certidaodeobjetoepe.org";
 const URL = `${SITE}/guias`;
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/guias/")({
       { rel: "alternate", hrefLang: "x-default", href: URL },
     ],
     scripts: [
+      ...adsenseScripts,
       {
         type: "application/ld+json",
         children: JSON.stringify({

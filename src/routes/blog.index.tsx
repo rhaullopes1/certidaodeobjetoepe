@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { CATEGORIAS, POSTS, postsPorCategoria } from "@/lib/blog";
+import { adsenseScripts } from "@/lib/adsense";
 
 const SITE = "https://certidaodeobjetoepe.org";
 const URL = `${SITE}/blog`;
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/blog/")({
       { rel: "alternate", hrefLang: "x-default", href: URL },
     ],
     scripts: [
+      ...adsenseScripts,
       {
         type: "application/ld+json",
         children: JSON.stringify({

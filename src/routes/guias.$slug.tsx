@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { GUIAS_SEO, GUIA_POR_SLUG } from "@/lib/guias-seo";
+import { adsenseScripts } from "@/lib/adsense";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/guias/$slug")({
         { rel: "alternate", hrefLang: "x-default", href: url },
       ],
       scripts: [
+        ...adsenseScripts,
         {
           type: "application/ld+json",
           children: JSON.stringify({

@@ -8,6 +8,7 @@ import {
   postPorSlug,
   postsRelacionados,
 } from "@/lib/blog";
+import { adsenseScripts } from "@/lib/adsense";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
@@ -56,6 +57,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { rel: "alternate", hrefLang: "x-default", href: url },
       ],
       scripts: [
+        ...adsenseScripts,
         {
           type: "application/ld+json",
           children: JSON.stringify({
