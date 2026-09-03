@@ -6,14 +6,15 @@ export const POSTS_CONCEITO: Post[] = [
   {
     slug: "o-que-e-certidao-de-objeto-e-pe",
     categoria: "conceito",
-    titulo: "O que é Certidão de Objeto e Pé? Guia completo 2026",
-    h1: "O que é Certidão de Objeto e Pé",
+    titulo: "O que é Certidão de Objeto e Pé e para que serve",
+    h1: "O que é Certidão de Objeto e Pé e para que serve",
     descricao:
-      "Certidão de Objeto e Pé é o documento oficial do tribunal que descreve o objeto do processo e a fase atual em que ele se encontra. Veja o que consta, para que serve e como pedir.",
+      "O que é, o que consta, para que serve, quem pode pedir, prazo e custo da Certidão de Objeto e Pé — o documento do tribunal que descreve o processo e a fase atual.",
     resumo:
-      "O documento judicial que resume do que trata um processo e em que fase ele está — explicado do zero, com exemplos e casos de uso.",
-    atualizado: "2026-08-26",
-    leitura: 7,
+      "O documento judicial que resume do que trata um processo e em que fase ele está — explicado do zero, com os 10 usos mais cobrados na prática.",
+    atualizado: "2026-09-03",
+    leitura: 9,
+
     blocos: [
       { t: "p", x: "A Certidão de Objeto e Pé é o documento oficial expedido pelo Poder Judiciário que descreve, em um único texto, duas informações sobre um processo: o objeto (do que se trata a ação, quem são as partes e o que se pede) e o pé (a fase atual do andamento, ou seja, em que ponto o processo está hoje)." },
       { t: "p", x: "Ela é emitida pela própria unidade judiciária onde o processo tramita ou tramitou — vara estadual, federal, do trabalho ou tribunal superior — e traz código de autenticidade que permite conferir o documento no portal do tribunal." },
