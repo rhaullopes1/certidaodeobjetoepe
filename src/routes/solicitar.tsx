@@ -10,6 +10,7 @@ import {
   Plus,
   Trash2,
   Send,
+  MessageCircle,
 } from "lucide-react";
 import { QUANTIDADE_MAXIMA, precoCentavos, whatsappLink } from "@/lib/site";
 import { SeloGarantia } from "@/components/site/selo-garantia";
