@@ -284,10 +284,14 @@ function Solicitar() {
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+  // Antes da hidratação um clique dispara o envio nativo do formulário e recarrega a página.
+  const [pronto, setPronto] = useState(false);
 
   useEffect(() => {
+    setPronto(true);
     trackBeginCheckout();
   }, []);
+
 
   useEffect(() => {
     let ativo = true;
@@ -437,7 +441,13 @@ function Solicitar() {
           </p>
         </a>
 
-        <form onSubmit={enviar} className="mt-8 space-y-6" noValidate>
+        <form
+          onSubmit={enviar}
+          action="#"
+          method="post"
+          className="mt-8 space-y-6"
+          noValidate
+        >
           <div className="space-y-5">
             {processos.map((p, i) => (
               <BlocoProcesso
@@ -556,12 +566,13 @@ function Solicitar() {
 
           <button
             type="submit"
-            disabled={enviando}
+            disabled={enviando || !pronto}
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-5 text-base font-bold text-primary-foreground shadow-lg shadow-primary/25 ring-1 ring-inset ring-accent/30 transition-opacity hover:opacity-90 disabled:opacity-60"
           >
-            {enviando ? (
+            {enviando || !pronto ? (
               <>
-                <Loader2 className="h-5 w-5 animate-spin" /> Enviando seu pedido...
+                <Loader2 className="h-5 w-5 animate-spin" />{" "}
+                {enviando ? "Enviando seu pedido..." : "Carregando..."}
               </>
             ) : (
               <>
