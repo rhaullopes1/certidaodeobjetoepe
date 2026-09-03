@@ -134,6 +134,8 @@ function EstadoNaoEncontrado() {
 
 function EstadoPage() {
   const { estado: e } = Route.useLoaderData();
+  const detalhe = detalheEstado(e.slug);
+  const sistema = sistemaDoEstado(e);
   const wpp = whatsappLink(
     `Olá! Preciso de uma Certidão de Objeto e Pé de um processo em ${e.nome} (${e.tribunal}).`,
   );
