@@ -1,0 +1,538 @@
+{
+  "meta": {
+    "name": "Certidão de objeto e pé",
+    "package": "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f",
+    "version": "1.0.0",
+    "framework": "react",
+    "css_framework": "tailwind",
+    "starter_template": "custom_design_system_tailwind",
+    "theme_files": [
+      "src/styles.css"
+    ],
+    "source_type": "local",
+    "source_manifest": {
+      "#enrichment": "045886d0e4921bfcaa02054f5ec4881ba75e5a82d1a25429e4d0bc5d24ab270f",
+      ".github/dependabot.yml": "b77d0e2db67addaaf07bdaa09a65247a",
+      ".github/workflows/ci.yml": "6f48a93aabe2a2414f9696fe90e0444a",
+      ".gitignore": "6d9e901a692b46a83707c245fb03bc91",
+      ".lovable/plan/adicionar-google-e-tiktok-ao-rodapé-da-home-2026-08-28.md": "63b6f18e3596ad9371d53c8bc61bed67",
+      ".lovable/plan/ajustes-no-formulário-de-solicitação-2026-08-29.md": "ad114b02b877406a403c14d48ae6c195",
+      ".lovable/plan/ativar-pix-no-checkout-2026-09-01.md": "2c4b325fb4754107914a3222c43b47ea",
+      ".lovable/plan/atualizar-o-logo-do-site-2026-08-28.md": "9ca22e6daed9d5efc69b02ab9ac6ebdc",
+      ".lovable/plan/auditoria-do-site-resultados-e-plano-de-correções-2026-08-26.md": "35fa9003c779eea9834198bf651d1e47",
+      ".lovable/plan/automação-de-recuperação-de-pedidos-pendentes-2026-08-28.md": "158140f083aa891a4f2f05a61d21aa36",
+      ".lovable/plan/blog-de-autoridade-para-ranquear-em-certidão-de-objeto-e-pé-2026-08-26.md": "11a5785e656c47fd46f667c8c7f5a186",
+      ".lovable/plan/botão-de-acesso-vira-painel-do-usuário-2026-09-01.md": "d18aa68457c3bf089e405309af5fbd55",
+      ".lovable/plan/caixa-de-entrada-contato-certidaodeobjetoepe-org-encaminhame-2026-08-28.md": "54d4e31fd98227e25f88ccfd3387ecb3",
+      ".lovable/plan/central-de-automação-de-e-mails-2026-08-28.md": "c44171695d56d1e50ddc28e1245d66c1",
+      ".lovable/plan/conta-do-cliente-e-área-meus-pedidos-2026-08-28.md": "77a347b850a823c46fb1d8e7f5949efe",
+      ".lovable/plan/corrigir-disparo-da-conversão-do-google-ads-2026-08-28.md": "538589d828c4ffec07e1cec023051bb4",
+      ".lovable/plan/deixar-contato-certidaodeobjetoepe-org-recebendo-e-mails-2026-08-28.md": "b47982ecfa9d65b9f84d59c119e99710",
+      ".lovable/plan/duplicidade-de-pedidos-etiqueta-novo-2026-08-28.md": "90323fe9363141643e05ea9bfd338025",
+      ".lovable/plan/fazer-o-google-ads-registrar-conversões-2026-08-28.md": "2347ebf73078a78135abdaafcf23d091",
+      ".lovable/plan/finalizar-configuração-do-e-mail-contato-certidaodeobjetoepe-2026-08-28.md": "6479cb4422563ba20fb40378b4613931",
+      ".lovable/plan/melhorias-de-seo-2026-08-28.md": "330309c6d06fac140d7b6a20f0b80d2f",
+      ".lovable/plan/novo-fluxo-de-solicitação-processos-primeiro-preço-depois-2026-09-01.md": "cb08e69052fa24da23b47b1f29cc9dea",
+      ".lovable/plan/plano-adicionar-google-e-tiktok-às-redes-sociais-do-site-2026-08-28.md": "69e99f440aca6925f097aac4ed5f6866",
+      ".lovable/plan/plano-ganhar-relevância-orgânica-de-forma-rápida-e-consisten-2026-08-28.md": "9c50f749ffbbe7f21a4c868c3e034775",
+      ".lovable/plan/plano-premium-formulário-de-1-passo-garantia-de-5-dias-úteis-2026-09-01.md": "2228c56c292d7fb0bdce04c87dfb3566",
+      ".lovable/plan/páginas-por-público-nichos-para-vender-mais-2026-09-03.md": "fd4bca51b52d32614be6bc7d6cd71219",
+      ".lovable/plan/responsividade-mobile-do-painel-administrativo-2026-08-28.md": "9adbdb8e98908cea6640f189551c6405",
+      ".lovable/plan/situação-atual-do-formulário-e-do-pagamento-2026-09-01.md": "e068066ded0a8443985c4550f6bea89d",
+      ".lovable/plan/teste-ponta-a-ponta-do-novo-formulário-de-orçamento-2026-09-01.md": "03a76657c77b8c6c6083ab22f02e2a8c",
+      ".lovable/plan/trocar-e-mail-exibido-no-site-para-contato-certidaodeobjetoe-2026-08-28.md": "5ae773cea0177d46701fd70c044ee9ee",
+      ".lovable/plan/verificação-e-correção-da-tag-do-google-ads-2026-08-28.md": "7180fce01705ee2cfbb0268a7d904503",
+      ".lovable/project.json": "04de58174576161ff4ef4453a10982c8",
+      ".prettierignore": "7279a476f196a2da5f7edd18db568dc6",
+      ".prettierrc": "185ef0234746ab738ac1ab6cec5e2bd9",
+      "AGENTS.md": "3da3c4cd15b686e79a248c25735d6aaf",
+      "README.md": "15ccc2c959c0bff2136261ce044c418f",
+      "bunfig.toml": "6bba18884679812ad2b6cd0c31d34c56",
+      "components.json": "30d3d035361ce807021f5c54620962e9",
+      "eslint.config.js": "345bdd57e188e0e4525edcd00e5003f5",
+      "package.json": "24ea2dc80b072bae50b64add5dcaf2e3",
+      "public/favicon.png": "3aefca86c9dfdfc3b99ebd3f36122de4",
+      "public/icons/icon-192.png": "e5ef4bf16ed3171eab8a11a6d64945b5",
+      "public/icons/icon-512.png": "ad01cc5fe6bf545d261473fbc04ea58e",
+      "public/llms.txt": "f2e1549c7f6c6f47e3f47e6f871c5151",
+      "public/manifest.webmanifest": "e1ebd104f927455c24cebc3fc96497a1",
+      "public/robots.txt": "5a591ff0d140825ea5a1804f6af23150",
+      "public/sw.js": "8e24ac72cfd738014fe8cc0a74b3301a",
+      "renovate.json": "e10f5b92f2b24453c8db0f1c05eeabe4",
+      "src/assets/hero-certidao.jpg": "49952e4ccd45f14fe4dfd752ad71b36c",
+      "src/assets/logo-certidao.png.asset.json": "398b7061284f0fee8baaafcaef4dcc5e",
+      "src/components/blog/blog-content.tsx": "a94e66940f8e3f29a6142d89ed0423ee",
+      "src/components/site/alternativas-contato.tsx": "d6a5539e574214f2f8cd7dea8edf3646",
+      "src/components/site/page-shell.tsx": "e143a399034f49b24171bca72fe7cb1f",
+      "src/components/site/pwa.tsx": "32f90ced0e438604ca5abaa458270936",
+      "src/components/site/selo-garantia.tsx": "cfced131174885b8af986b412268d4fc",
+      "src/components/site/trf-landing.tsx": "ac7df2f6dfc290b57c77d6b8f75b3850",
+      "src/components/ui/accordion.tsx": "55f9dda62b4e3913c9b23e5015a86aef",
+      "src/components/ui/alert-dialog.tsx": "96350e949e9b7b674545430a410ab89c",
+      "src/components/ui/alert.tsx": "f993d7e96b1e25ce50e68ed97e11d2a8",
+      "src/components/ui/aspect-ratio.tsx": "c5c364545e1b25a94e9e752cd67ad048",
+      "src/components/ui/avatar.tsx": "72989cd32f72c4122802540ef32525a5",
+      "src/components/ui/badge.tsx": "81cade001fc4260f9943e18dcd79449b",
+      "src/components/ui/breadcrumb.tsx": "bb9ac254f12662b20d5d50b84308bf3a",
+      "src/components/ui/button.tsx": "7d07d520f486b12bd47373d694ecd2ee",
+      "src/components/ui/calendar.tsx": "415d91d7006d4cc654e27620fca340f6",
+      "src/components/ui/card.tsx": "d6c48ea36221b9cdc3576d305d12d5d5",
+      "src/components/ui/carousel.tsx": "e324c68ae00cd5aed49317638abd429a",
+      "src/components/ui/chart.tsx": "6a3baf94f2e89f1f97d4d7a28f3622d2",
+      "src/components/ui/checkbox.tsx": "f78aac270ca482c8c2cb907ef6260462",
+      "src/components/ui/collapsible.tsx": "767631bbc344945c236f185f4078d71d",
+      "src/components/ui/command.tsx": "014782599cc838b021ec68b07ad4ea02",
+      "src/components/ui/context-menu.tsx": "e9d689beb53d9adb63165bfe64838bf6",
+      "src/components/ui/dialog.tsx": "ef4fe8e7de8675730afe3d633b260e09",
+      "src/components/ui/drawer.tsx": "8be333e8fd8e42576b1b5f72f07f4337",
+      "src/components/ui/dropdown-menu.tsx": "32156e221f3473280114c80fdb818829",
+      "src/components/ui/form.tsx": "1b0aa6302b9017ea2a1307c22a1d2983",
+      "src/components/ui/hover-card.tsx": "1442794c5ca2a78d69e4e613b315ed3d",
+      "src/components/ui/input-otp.tsx": "58cff10c8942cac8483c0bcd65d39d3c",
+      "src/components/ui/input.tsx": "1d4cc52a4cd8afb3e18e45bda942bb8a",
+      "src/components/ui/label.tsx": "7e35df4ca8edd0835efd97ca7937ef92",
+      "src/components/ui/menubar.tsx": "5870465653e12c3d0e35a2fad6f9faa9",
+      "src/components/ui/navigation-menu.tsx": "e85351147a02b29577ff83d188b63c24",
+      "src/components/ui/pagination.tsx": "fac6cdbb4bbf78b273d85cd36d6cbb49",
+      "src/components/ui/popover.tsx": "f18aa1da2144f25ee60795c539c51bcd",
+      "src/components/ui/progress.tsx": "55c462e5c9dd678dcf2c0c510b014ac4",
+      "src/components/ui/radio-group.tsx": "0e1ace237a5da3197e3eb1e6683faba9",
+      "src/components/ui/resizable.tsx": "d9fcb9203c749fcab4e125a99bb12a86",
+      "src/components/ui/scroll-area.tsx": "87b65d3eb26f2b02ff35a7acea585ba5",
+      "src/components/ui/select.tsx": "31ea1bbd6671833b010b2e852c8a55d0",
+      "src/components/ui/separator.tsx": "433d163c4ffa00b59398a0c293198b5e",
+      "src/components/ui/sheet.tsx": "0221fbf97b69611b47fcbc10bb27669a",
+      "src/components/ui/sidebar.tsx": "83c1623eb50ebc370d7b1b84a542e369",
+      "src/components/ui/skeleton.tsx": "41b182e6e2fc3805960d41e767d4a972",
+      "src/components/ui/slider.tsx": "4752f1bfa26426988d325599e01c335b",
+      "src/components/ui/sonner.tsx": "97f59f60be3413196d095fcbf7383216",
+      "src/components/ui/switch.tsx": "82f5d8b0c59bb7ff305caa9f502e79ff",
+      "src/components/ui/table.tsx": "7cc889989d53894b659903c73aded96e",
+      "src/components/ui/tabs.tsx": "56e725558c2ce72c18243bf51717f385",
+      "src/components/ui/textarea.tsx": "c7aad96fb9545210d53135a96c76ed6b",
+      "src/components/ui/toggle-group.tsx": "ac26383acf721d116ca8e3ab5c5355d5",
+      "src/components/ui/toggle.tsx": "ee8c5adac74e7242b85b544db1a8fbad",
+      "src/components/ui/tooltip.tsx": "67d71db5a1ab935695d1def497f5b8a6",
+      "src/components/user-menu.tsx": "fd0c53411af4a83e4a32b361f1b27f3a",
+      "src/hooks/use-mobile.tsx": "c0a0bdd4638c391a1dd06ac82074e60b",
+      "src/integrations/lovable/index.ts": "c997b4d5cc51f8fe73119e270709d8f1",
+      "src/integrations/supabase/auth-attacher.ts": "dad043cda134d909e52de0346c16625e",
+      "src/integrations/supabase/auth-middleware.ts": "cd3d931e149752681dfbf58f6046488c",
+      "src/integrations/supabase/client.server.ts": "291dd248c905ba0f0eefbcb5db2d6fc2",
+      "src/integrations/supabase/client.ts": "10c4577b5c2d58dae13b65358e47cbdc",
+      "src/integrations/supabase/previewAuthStorage.ts": "bc45a76c9242c4b85d6d4345625c46e9",
+      "src/integrations/supabase/types.ts": "9968f871b40d845109b6440739ed481f",
+      "src/lib/admin.ts": "1c8f2b901bdd8ccd783256187a233bb4",
+      "src/lib/analytics.ts": "2e38ebdd5424a0eb82902bea087a59d9",
+      "src/lib/blog/categorias.ts": "5df6cf37e698c99c71a360f97a433bd0",
+      "src/lib/blog/index.ts": "f46cddd7b9c9a6996eb4148a540d57ef",
+      "src/lib/blog/posts-conceito.ts": "2fc77a87e630d8f666e48da7ba36a7e1",
+      "src/lib/blog/posts-duvidas.ts": "2d2aa0f2a0ea3098c02a50d184beb36a",
+      "src/lib/blog/posts-ramos.ts": "224e5a9f6ffad02b778f46772e097336",
+      "src/lib/blog/posts-tribunais.ts": "ccd7f279fd6a4c076848fa253e263392",
+      "src/lib/blog/posts-usos.ts": "206cb0129912e0ff99a678be9fb969f8",
+      "src/lib/blog/tipos.ts": "7de5e91803a8db7213b9aea4066d8480",
+      "src/lib/cnj.functions.ts": "69f19c834e7fcdd57eaa9dc02ff8cb2a",
+      "src/lib/cnj.ts": "553b71d4e0298a835b4d4a6562caa9b2",
+      "src/lib/comprovante-pdf.ts": "fb90cf272bb4cd40a953a663ddefb78c",
+      "src/lib/email-templates/boas-vindas.tsx": "13aa5677ce3a7d6a2bf306bd1afc3f36",
+      "src/lib/email-templates/campanha-semanal.tsx": "34c581b3d809cad6649c89e544fc63aa",
+      "src/lib/email-templates/novo-pedido-admin.tsx": "12e8f25e6db4c006b80ce34600c3c6fd",
+      "src/lib/email-templates/pedido-confirmacao.tsx": "085cd148441dfa19b75c6a022ae34ebb",
+      "src/lib/email-templates/pedido-lembrete.tsx": "f52b38bd5bea6b777a304f1035eab199",
+      "src/lib/email-templates/recuperacao-etapa.tsx": "9fb03ce526bf5a051e2453d66c2e7032",
+      "src/lib/email-templates/registry.ts": "a7f14365e46e0e03860928a5f9704c87",
+      "src/lib/email-templates/send-email.ts": "db06a1197e9726cadf3a46d37ab62e5f",
+      "src/lib/emails.functions.ts": "5d99ef6d7befe673a84ae9914d31e063",
+      "src/lib/emails.server.ts": "58da6ac40dc95411cf3850adb7a32a9e",
+      "src/lib/error-capture.ts": "f630d9686a9a989170f22eff4de7b30d",
+      "src/lib/error-page.ts": "8da0ddd7569bac2676b9a5c8edff8a36",
+      "src/lib/estados-seo.ts": "1ccb4e90109b1ffaeeeceaa6e6ded3b6",
+      "src/lib/guias-seo.ts": "c7eadbc0ff124933db246a134842f7cf",
+      "src/lib/lovable-error-reporting.ts": "b23b1b2983183c4bdd7d480686ebe6d1",
+      "src/lib/mercadopago.server.ts": "0587a956e885c032222d34c9dc62523d",
+      "src/lib/pagamentos.server.ts": "543d8f54b47222e87368387f5df1c72b",
+      "src/lib/pagbank.server.ts": "22075823a2ff54e375d5db0e31c51de9",
+      "src/lib/pedidos.functions.ts": "aaa330e34717c2e8dedb3805e39289dd",
+      "src/lib/pedidos.schema.ts": "aca0ff854f3cbec972979ce5afd843b5",
+      "src/lib/pedidos.server.ts": "ab119cd7f09a549a7a113e928bcaeacd",
+      "src/lib/perfil.ts": "3d47a08d8adeca7446e6294efe94ea59",
+      "src/lib/pix.ts": "27b011446adb26fd16f0ef13af3f8e6a",
+      "src/lib/publicos-seo.ts": "7888e3ac5b53cbd6780adac2c90c795c",
+      "src/lib/recuperacao.functions.ts": "8a35c96727322799c21957c68d21ce27",
+      "src/lib/recuperacao.server.ts": "a101cb05e88b1ed688a4a3658a7a415b",
+      "src/lib/site.ts": "38769fef37cce883a7af95ef02f8af73",
+      "src/lib/stripe.server.ts": "1ffd6fc723d0db6e3ef6aeeac45a9e18",
+      "src/lib/trf-seo.ts": "96c4b76b1bbf613cca76c2d49dc53673",
+      "src/lib/tribunais.ts": "1fa2454ad581faef42212c1fbc7f18ad",
+      "src/lib/utils.ts": "d9837f38cc05303254571985e3164050",
+      "src/routeTree.gen.ts": "90760722b628ae554c660f1144d75141",
+      "src/router.tsx": "8f905e713b0eba7fa8148b7995a708c9",
+      "src/routes/README.md": "b3a2f259b66fd1a11f54b6d5ac83bf57",
+      "src/routes/__root.tsx": "0725ea713c2b3d3769103c627102963c",
+      "src/routes/_authenticated/admin.$protocolo.tsx": "cbedba45cbb93c657c0a936073ae84ee",
+      "src/routes/_authenticated/admin.documentos.tsx": "5aeb4bd74609cf706872c11549228689",
+      "src/routes/_authenticated/admin.emails.tsx": "b0dc297f7c87ff179b3fe4f740c86662",
+      "src/routes/_authenticated/admin.historico.tsx": "41caa1ad1dc2429949e7b26e8238e6bc",
+      "src/routes/_authenticated/admin.index.tsx": "6c79537f25a1a902db3bafdc5b5dc3bb",
+      "src/routes/_authenticated/admin.recuperacao.tsx": "7119bc70b98c6463ddf2eedf990165cf",
+      "src/routes/_authenticated/minha-conta.tsx": "0c990d9554290a11a17492ded30fa016",
+      "src/routes/_authenticated/route.tsx": "47b576d6d161f598106801c52d670383",
+      "src/routes/acompanhar.tsx": "74fb2b3934b26a5718ef413b973327d2",
+      "src/routes/api/public/cron/recuperacao.ts": "07ca88b2eb86526108237f373e2aeec5",
+      "src/routes/api/public/cron/semanal.ts": "dc271eb00e79d0d9f3f41943f5f4f3ae",
+      "src/routes/api/public/e/click.$id.ts": "348407980da5d74830d8623cba809077",
+      "src/routes/api/public/e/open.$id.ts": "5ac364ea513a890db3b12c3c2e3b41e8",
+      "src/routes/api/public/webhooks/mercadopago.ts": "9b38cdb88b51b15581ab98d0f075c8f0",
+      "src/routes/api/public/webhooks/pagbank.ts": "30f0ac0305002750238f32d48fafd8b3",
+      "src/routes/api/public/webhooks/stripe.ts": "3fb1a1503f182ffc16550de83d97da0a",
+      "src/routes/auth.tsx": "d8a1ff1bb0c061d7f4a34e003abd83f8",
+      "src/routes/blog.$slug.tsx": "e2eb7fb2b34772f5d991806537feb6a8",
+      "src/routes/blog.categoria.$slug.tsx": "f11d3736feb33e6489f6456eceb4254a",
+      "src/routes/blog.index.tsx": "0249efaeca39372921e931575295058b",
+      "src/routes/certidao-de-objeto-e-pe.$uf.tsx": "ae6ef7af73c98be33d25ec1c0e9b5393",
+      "src/routes/certidao-de-objeto-e-pe.index.tsx": "d26b3a3b3e0a218efe6b2162b9576f7b",
+      "src/routes/certidao-objeto-e-pe-tjsp.tsx": "4ad3021d99c7af1ecc7a450dd7738b81",
+      "src/routes/certidao-objeto-e-pe-trf1.tsx": "864cf6abe304b7ddb1537e75e1b7c5b0",
+      "src/routes/certidao-objeto-e-pe-trf2.tsx": "1acd929a2bfff93e7cd64f65a86a1d5e",
+      "src/routes/certidao-objeto-e-pe-trf3.tsx": "e651ef649fd2d2eb3baa66cdae16dade",
+      "src/routes/certidao-objeto-e-pe-trf4.tsx": "5a3dce571abe257c4079d34dd02174fc",
+      "src/routes/certidao-objeto-e-pe-trf5.tsx": "44f9193428b92d052d7b71678ec79a51",
+      "src/routes/certidao-objeto-e-pe-trf6.tsx": "d31032830ba48dea04012845754c5dc9",
+      "src/routes/garantia.tsx": "e87ecaa4f961cc5f3238374e50438151",
+      "src/routes/guias.$slug.tsx": "0a684d522b709c6152930faabda82824",
+      "src/routes/guias.index.tsx": "2093aa7e40e93d42fd91a875c4f5b63d",
+      "src/routes/index.tsx": "18684c34358c97896745ed2f5a019de1",
+      "src/routes/lovable/email/events.ts": "a068bdbeeafa3816bf3f7479ba0df36d",
+      "src/routes/lovable/email/transactional/preview.ts": "04c9b9a4ef204d62a0ce0d32d47e0c00",
+      "src/routes/pedido.$protocolo.tsx": "453705c4acf896b8472118c0e6aa7ab4",
+      "src/routes/politica-de-privacidade.tsx": "dea2dff3b286151b80dd93a88a2070e6",
+      "src/routes/sitemap[.]xml.ts": "1ebdd4e26611bf083aff0f8c5aac07da",
+      "src/routes/sobre.tsx": "dece49523882e5d76da246f04058c3e7",
+      "src/routes/solicitar.tsx": "ac6fabb1b788e5659a571cb0fc0e8b4d",
+      "src/routes/termos-de-uso.tsx": "77bca229c2d9570c986c0329ab14d3cc",
+      "src/routes/tribunais.$sigla.tsx": "12d6f9427df873df42f0d7d2b2889e9e",
+      "src/routes/tribunais.index.tsx": "74fe271c47bcabfed225cbf60956417f",
+      "src/server.ts": "c7bbc49bb70e318af618d92775ee0f27",
+      "src/start.ts": "d77c1c12904be5077c6955d9b30071af",
+      "src/styles.css": "40711cb9589d82977989e8b08a96d4e1",
+      "supabase/config.toml": "88cec30862937e71ad69e80f6942ddbc",
+      "supabase/migrations/20260731050204_f0ed4fb8-d01b-4ffb-a715-20676087b1b2.sql": "c5455eb0f379cc2c65cbc4e0df155e6e",
+      "supabase/migrations/20260802003235_d7b75013-c497-4073-a5c4-b67566dac040.sql": "2c9fd1ac0cd1b98a9aca5ab3bff00f32",
+      "supabase/migrations/20260803211349_f1004d3f-ae03-4233-96f4-37c72b80c58d.sql": "6547e0b09b60335cf1eabe1e99b67619",
+      "supabase/migrations/20260803211439_9bd63fa3-e374-40a0-ae5f-bdbd022ed541.sql": "e54192673de3371185e659aa3c308fc5",
+      "supabase/migrations/20260803211500_4578e925-f81f-42f7-bb69-47de7687d910.sql": "7ff34ee1f0c734d32f60a2e23a9d92da",
+      "supabase/migrations/20260804004957_da3e4d31-47aa-4ed5-b036-9411a3ab3f56.sql": "b9b48691340dfe0f94c07cde8005792a",
+      "supabase/migrations/20260804005016_019f1c14-77a4-47b8-9a06-82cf78828669.sql": "fe378bf1a567aef590fd8d0bd21f3a09",
+      "supabase/migrations/20260815042739_3079deb9-150b-428f-9515-5a4fa9567655.sql": "9b6b4c0f2a245e425608e0e0a8e6b8a9",
+      "supabase/migrations/20260825220643_9d7b1c91-52fc-489b-8bdf-83c94872800d.sql": "f8ae619c7f46f82f6a409419711b416c",
+      "supabase/migrations/20260825220653_8b8bf12c-ab78-4cf1-87d0-1491d453fe21.sql": "d0ae4d2b18476f9d3e3519ac28f84c3c",
+      "supabase/migrations/20260826002749_9a1b4dff-8208-4fef-96c9-2fb478128468.sql": "d85a32ce34d47fff87868b3ee2268a4e",
+      "supabase/migrations/20260826120312_5b414124-ea97-43af-88a7-8d171f9fa063.sql": "cfd7be6c7083fefe025fa162f054309a",
+      "supabase/migrations/20260826173647_ace66eb7-faf9-4e4b-9bf6-207950a4b88e.sql": "05cf44a8c88160d77211a57e70a0508b",
+      "supabase/migrations/20260826173715_9141c1c9-b495-4286-acad-6cf66dc3191c.sql": "2083230661b73c0af91b5fd46c5d217c",
+      "supabase/migrations/20260826174049_22005aab-1651-4a31-978b-06d91b0d9d34.sql": "093b44beceae5c46f995d4c65a85e296",
+      "supabase/migrations/20260828003743_dfd279ae-1b8f-48b3-87e8-95e8f9212973.sql": "c6104bf102ae8fdd2d67650b125c3e36",
+      "supabase/migrations/20260828003754_3e170fa6-8448-4a88-8a11-933d57bd4026.sql": "31ad28f8ee504c5799a1d60e96f7810c",
+      "supabase/migrations/20260828044225_497fe957-5a6f-42b8-83cd-a57c2370223a.sql": "1a35c9d755e65edbc32fe62c0996e8f6",
+      "supabase/migrations/20260828044643_261763d2-a712-4747-bf08-3152fe791f80.sql": "5053caa0a68761387f32052dd5ede4f3",
+      "supabase/migrations/20260828044719_014c6462-9fe5-4239-a867-3188fc373b85.sql": "458b3624944b0ecdbd04b53c89d5de56",
+      "supabase/migrations/20260828051414_35d11971-3f9d-44cb-9746-0a0cbfe07cd2.sql": "67d61bf24d8bcc3561f9c86b2febc4ce",
+      "supabase/migrations/20260829022641_1a77b8e5-489b-48cd-a16c-0044b48107fe.sql": "62a6169b97fc065ad0ce302f63418108",
+      "supabase/migrations/20260901173027_cdeb9c4b-ea5c-447b-8573-4cbd4cafce99.sql": "f520dd13805ec6284c33908e43882655",
+      "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
+      "vite.config.ts": "dc5c4f69ecc6f99bd65abd900fbaaa36"
+    },
+    "pipeline_version": 8
+  },
+  "tokens": {
+    "color": [
+      {
+        "name": "--background",
+        "raw": "oklch(0.995 0.002 250)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--foreground",
+        "raw": "oklch(0.22 0.045 258)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--navy",
+        "raw": "oklch(0.28 0.075 262)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--navy-deep",
+        "raw": "oklch(0.19 0.062 264)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--gold",
+        "raw": "oklch(0.78 0.115 85)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--gold-soft",
+        "raw": "oklch(0.9 0.06 88)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--card",
+        "raw": "oklch(1 0 0)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--card-foreground",
+        "raw": "oklch(0.22 0.045 258)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--popover",
+        "raw": "oklch(1 0 0)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--popover-foreground",
+        "raw": "oklch(0.22 0.045 258)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--primary",
+        "raw": "oklch(0.28 0.075 262)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--primary-foreground",
+        "raw": "oklch(0.985 0.004 250)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--secondary",
+        "raw": "oklch(0.965 0.006 250)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--secondary-foreground",
+        "raw": "oklch(0.28 0.075 262)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--muted",
+        "raw": "oklch(0.962 0.005 250)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--muted-foreground",
+        "raw": "oklch(0.52 0.028 258)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--accent",
+        "raw": "oklch(0.78 0.115 85)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--accent-foreground",
+        "raw": "oklch(0.19 0.062 264)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--destructive",
+        "raw": "oklch(0.577 0.245 27.325)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--destructive-foreground",
+        "raw": "oklch(0.984 0.003 247.858)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--border",
+        "raw": "oklch(0.918 0.008 255)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--input",
+        "raw": "oklch(0.918 0.008 255)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--ring",
+        "raw": "oklch(0.28 0.075 262)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--chart-1",
+        "raw": "oklch(0.646 0.222 41.116)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--chart-2",
+        "raw": "oklch(0.6 0.118 184.704)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--chart-3",
+        "raw": "oklch(0.398 0.07 227.392)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--chart-4",
+        "raw": "oklch(0.828 0.189 84.429)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--chart-5",
+        "raw": "oklch(0.769 0.188 70.08)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar",
+        "raw": "oklch(0.984 0.003 247.858)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-foreground",
+        "raw": "oklch(0.129 0.042 264.695)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-primary",
+        "raw": "oklch(0.208 0.042 265.755)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-primary-foreground",
+        "raw": "oklch(0.984 0.003 247.858)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-accent",
+        "raw": "oklch(0.968 0.007 247.896)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-accent-foreground",
+        "raw": "oklch(0.208 0.042 265.755)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-border",
+        "raw": "oklch(0.929 0.013 255.508)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-ring",
+        "raw": "oklch(0.704 0.04 256.788)",
+        "source": "src/styles.css"
+      }
+    ],
+    "typography": [
+      {
+        "name": "--font-display",
+        "raw": "\"Sora\", ui-sans-serif, system-ui, sans-serif",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--font-sans",
+        "raw": "\"Manrope\", ui-sans-serif, system-ui, sans-serif",
+        "source": "src/styles.css"
+      }
+    ],
+    "radius": [
+      {
+        "name": "--radius-sm",
+        "raw": "calc(var(--radius) - 4px)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--radius-md",
+        "raw": "calc(var(--radius) - 2px)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--radius-xl",
+        "raw": "calc(var(--radius) + 4px)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--radius-2xl",
+        "raw": "calc(var(--radius) + 8px)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--radius-3xl",
+        "raw": "calc(var(--radius) + 12px)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--radius-4xl",
+        "raw": "calc(var(--radius) + 16px)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--radius",
+        "raw": "0.625rem",
+        "source": "src/styles.css"
+      }
+    ],
+    "other": [
+      {
+        "name": "--animate-rise",
+        "raw": "rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "source": "src/styles.css"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "BlogContent",
+      "file": "src/components/blog/blog-content",
+      "import_path": ""
+    },
+    {
+      "name": "AlternativasContato",
+      "file": "src/components/site/alternativas-contato",
+      "import_path": ""
+    },
+    {
+      "name": "PageShell",
+      "file": "src/components/site/page-shell",
+      "import_path": ""
+    },
+    {
+      "name": "SeloGarantia",
+      "file": "src/components/site/selo-garantia",
+      "import_path": ""
+    },
+    {
+      "name": "TrfLanding",
+      "file": "src/components/site/trf-landing",
+      "import_path": ""
+    },
+    {
+      "name": "UserMenu",
+      "file": "src/components/user-menu",
+      "import_path": ""
+    },
+    {
+      "name": "Constants",
+      "file": "src/integrations/supabase/types",
+      "import_path": ""
+    }
+  ],
+  "assets": [
+    {
+      "file": "src/assets/hero-certidao.jpg",
+      "kind": "image",
+      "format": "jpg"
+    },
+    {
+      "file": "src/assets/logo-certidao.png.asset.json",
+      "kind": "logo",
+      "format": "png",
+      "pointer": true
+    }
+  ]
+}
