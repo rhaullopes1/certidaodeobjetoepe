@@ -57,7 +57,24 @@ export type PedidoDoCliente = {
 export const meusPedidos = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<PedidoDoCliente[]> => {
+    // Pedidos feitos sem login (conta já existente) ficam com user_id nulo.
+    // Ao abrir "Minha conta", vinculamos pelo e-mail confirmado do usuário.
+    const emailClaim = (context.claims as { email?: string } | undefined)?.email;
+    if (emailClaim) {
+      try {
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        await supabaseAdmin
+          .from("pedidos")
+          .update({ user_id: context.userId })
+          .is("user_id", null)
+          .ilike("email", emailClaim.trim());
+      } catch (e) {
+        console.error("Falha ao vincular pedidos ao usuário", e);
+      }
+    }
+
     const { data, error } = await context.supabase
+
       .from("pedidos")
       .select(
         "protocolo, numero_processo, nome_parte, quantidade, valor_centavos, status, created_at, pago_em, pix_codigo, pix_qrcode_url, pix_expira_em, checkout_url",
