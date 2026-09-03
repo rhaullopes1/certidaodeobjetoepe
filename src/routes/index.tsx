@@ -21,7 +21,7 @@ import heroImage from "@/assets/hero-certidao.jpg";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
 import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE, GOOGLE_PROFILE, TIKTOK_PROFILE } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
-import { UserMenu } from "@/components/user-menu";
+import { SiteHeader } from "@/components/site/site-header";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -114,59 +114,7 @@ function Index() {
 }
 
 function Header() {
-  return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 sm:px-8">
-        <a href="#topo" className="flex min-w-0 items-center gap-3">
-          <img
-            src={logoAsset.url}
-            alt="Logo Certidão de Objeto e Pé"
-            className="h-10 w-10 shrink-0 rounded-xl object-contain"
-            width={40}
-            height={40}
-          />
-          <span className="min-w-0">
-            <span className="block truncate font-display text-sm font-bold leading-tight">
-              Certidão Objeto e Pé
-            </span>
-            <span className="block truncate text-xs text-muted-foreground">
-              Atendimento nacional
-            </span>
-          </span>
-        </a>
-        <nav className="flex items-center gap-6">
-          <a
-            href={PHONE_TEL}
-            className="hidden items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-primary sm:inline-flex"
-          >
-            <Phone className="h-4 w-4 text-accent" />
-            {PHONE_DISPLAY}
-          </a>
-          <a
-            href="#como-funciona"
-            className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground lg:block"
-          >
-            Como funciona
-          </a>
-          <a
-            href="#faq"
-            className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground lg:block"
-          >
-            Dúvidas
-          </a>
-          <Link
-            to="/solicitar"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <FileText className="h-4 w-4" />
-            <span className="hidden sm:inline">Solicitar online</span>
-            <span className="sm:hidden">Solicitar</span>
-          </Link>
-          <UserMenu />
-        </nav>
-      </div>
-    </header>
-  );
+  return <SiteHeader />;
 }
 
 const heroTrust = [
