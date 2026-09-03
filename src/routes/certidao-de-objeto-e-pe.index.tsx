@@ -7,9 +7,10 @@ import { UserMenu } from "@/components/user-menu";
 
 const SITE = "https://certidaodeobjetoepe.org";
 const URL = `${SITE}/certidao-de-objeto-e-pe`;
-const TITLE = "Certidão de Objeto e Pé por Estado: SP, MG, BA, DF e PE";
+const TITLE = "Certidão de Objeto e Pé: o que é, como pedir e prazos";
 const DESC =
-  "Certidão de Objeto e Pé em SP (TJSP), MG (TJMG), BA (TJBA), DF (TJDFT), PE (TJPE) e mais 7 estados. Solicitação online, prazo informado e suporte por WhatsApp.";
+  "Guia completo da Certidão de Objeto e Pé: o que é, o que consta, quem pode pedir, prazos por tribunal, custo e como solicitar online em todos os estados do Brasil.";
+
 
 export const Route = createFileRoute("/certidao-de-objeto-e-pe/")({
   head: () => ({
