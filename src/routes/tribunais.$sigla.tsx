@@ -239,6 +239,8 @@ function TribunalPage() {
             .
           </p>
         </section>
+
+        <LinksRelacionados className="mt-14" />
       </div>
     </PageShell>
   );
