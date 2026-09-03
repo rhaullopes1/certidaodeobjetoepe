@@ -20,8 +20,6 @@ export default defineConfig({
       { path: "/" },
       { path: "/certidao-de-objeto-e-pe" },
       { path: "/sobre" },
-      { path: "/como-funciona" },
-      { path: "/precos" },
       { path: "/blog" },
       { path: "/guias" },
       { path: "/tribunais" },
