@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import QRCode from "qrcode";
 import { ArrowLeft, Check, Copy, FileText, Loader2, Scale } from "lucide-react";
 import { meusPedidos, type PedidoDoCliente } from "@/lib/pedidos.functions";
 import { formatarBRL, statusPedido } from "@/lib/site";
@@ -43,7 +42,8 @@ function BlocoPix({ pedido }: { pedido: PedidoDoCliente }) {
 
   useEffect(() => {
     let ativo = true;
-    QRCode.toDataURL(pedido.pixCopiaECola, { width: 480, margin: 1 })
+    void import("qrcode")
+      .then(({ default: QRCode }) => QRCode.toDataURL(pedido.pixCopiaECola, { width: 480, margin: 1 }))
       .then((url) => {
         if (ativo) setQr(url);
       })
@@ -113,7 +113,14 @@ function MinhaConta() {
   const { data, isPending, isError } = useQuery({
     queryKey: ["meus-pedidos"],
     queryFn: () => buscar({}),
-    refetchInterval: 30_000,
+    refetchInterval: (query) =>
+      Array.isArray(query.state.data) &&
+      query.state.data.some((pedido) => pedido.status === "aguardando_pagamento") &&
+      typeof document !== "undefined" &&
+      document.visibilityState === "visible"
+        ? 30_000
+        : false,
+    staleTime: 15_000,
   });
 
   const pedidos = data ?? [];

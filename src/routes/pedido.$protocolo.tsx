@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import QRCode from "qrcode";
 import {
   ArrowLeft,
   Copy,
@@ -13,7 +12,6 @@ import {
   FileText,
   Download,
 } from "lucide-react";
-import { baixarComprovantePedido } from "@/lib/comprovante-pdf";
 import { consultarPedido, regerarCobranca } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL, EMAIL_CONTATO } from "@/lib/site";
 import { SeloGarantia } from "@/components/site/selo-garantia";
@@ -58,8 +56,13 @@ function PedidoPage() {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["pedido", protocolo],
     queryFn: () => buscar({ data: { protocolo } }),
-    refetchInterval: 10_000,
-    refetchOnWindowFocus: true,
+    refetchInterval: (query) =>
+      query.state.data?.status === "aguardando_pagamento" &&
+      typeof document !== "undefined" &&
+      document.visibilityState === "visible"
+        ? 15_000
+        : false,
+    staleTime: 8_000,
   });
 
   const [qr, setQr] = useState<string | null>(null);
@@ -98,9 +101,18 @@ function PedidoPage() {
 
   useEffect(() => {
     if (!data?.pixCopiaECola) return;
-    QRCode.toDataURL(data.pixCopiaECola, { width: 480, margin: 1 })
-      .then(setQr)
-      .catch((e) => console.error(e));
+    let ativo = true;
+    void import("qrcode")
+      .then(({ default: QRCode }) => QRCode.toDataURL(data.pixCopiaECola, { width: 480, margin: 1 }))
+      .then((url) => {
+        if (ativo) setQr(url);
+      })
+      .catch(() => {
+        if (ativo) setQr(null);
+      });
+    return () => {
+      ativo = false;
+    };
   }, [data?.pixCopiaECola]);
 
   async function copiar() {
@@ -169,7 +181,8 @@ function PedidoPage() {
             </p>
             <button
               type="button"
-              onClick={() =>
+              onClick={async () => {
+                const { baixarComprovantePedido } = await import("@/lib/comprovante-pdf");
                 baixarComprovantePedido({
                   protocolo: data.protocolo,
                   numeroProcesso: data.numeroProcesso,
@@ -184,8 +197,8 @@ function PedidoPage() {
                   pagoEm: data.pagoEm,
                   observacoes: data.observacoes,
                   certidoes: data.certidoes,
-                })
-              }
+                });
+              }}
               className="mt-5 inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
             >
               <Download className="h-4 w-4 text-accent" />
