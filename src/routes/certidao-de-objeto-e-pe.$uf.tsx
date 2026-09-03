@@ -16,7 +16,8 @@ import {
   TABELA_PRECOS,
   formatarBRL,
 } from "@/lib/site";
-import { ESTADOS_SEO, estadoPorSlug, faqEstado } from "@/lib/estados-seo";
+import { ESTADOS_SEO, estadoPorSlug, faqEstado, sistemaDoEstado } from "@/lib/estados-seo";
+import { detalheEstado } from "@/lib/estados-detalhes";
 import { UserMenu } from "@/components/user-menu";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 
