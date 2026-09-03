@@ -5,6 +5,7 @@ import { TRIBUNAIS } from "@/lib/tribunais";
 import { CATEGORIAS, POSTS } from "@/lib/blog";
 import { GUIAS_SEO } from "@/lib/guias-seo";
 import { TRFS_SEO } from "@/lib/trf-seo";
+import { PUBLICOS_SEO } from "@/lib/publicos-seo";
 
 
 const BASE_URL = "https://certidaodeobjetoepe.org";
