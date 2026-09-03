@@ -142,10 +142,18 @@ export const POSTS_CONCEITO: Post[] = [
     descricao:
       "A negativa diz se existe processo; a objeto e pé explica o processo que existe. Saiba quando cada uma é exigida e como se complementam.",
     resumo: "Quando a negativa vem 'positiva', a objeto e pé é o passo seguinte.",
-    atualizado: "2026-08-26",
-    leitura: 5,
+    atualizado: "2026-09-03",
+    leitura: 6,
     blocos: [
       { t: "p", x: "A certidão negativa (ou 'nada consta') responde a uma pergunta binária: existe processo em nome desta pessoa ou empresa? A Certidão de Objeto e Pé responde a outra: o que é e em que fase está este processo específico?" },
+      { t: "tabela", head: ["Aspecto", "Certidão negativa", "Objeto e Pé"], rows: [
+        ["Pergunta que responde", "Existe processo em nome desta pessoa?", "Do que trata e em que fase está este processo?"],
+        ["Pedido por", "Nome e CPF/CNPJ", "Número do processo"],
+        ["Resultado possível", "Negativa ou positiva", "Descrição detalhada do processo"],
+        ["Emissão", "Automática, em minutos", "Expedida pela vara, com prazo"],
+        ["Uso típico", "Triagem inicial", "Esclarecer o apontamento"],
+      ] },
+      { t: "h", x: "Qual documento apresentar em cada situação" },
       { t: "tabela", head: ["Situação", "Documento indicado"], rows: [
         ["Comprovar que não há processos", "Certidão negativa (nada consta)"],
         ["A negativa saiu positiva e pediram esclarecimento", "Certidão de Objeto e Pé de cada processo"],
@@ -154,12 +162,15 @@ export const POSTS_CONCEITO: Post[] = [
       ] },
       { t: "h", x: "Por que a negativa costuma vir 'positiva'" },
       { t: "p", x: "A busca é feita por nome e CPF/CNPJ. Homônimos, processos antigos, ações em que a pessoa foi apenas testemunha ou terceiro interessado e feitos já arquivados podem aparecer. A objeto e pé é exatamente o documento que esclarece cada apontamento." },
+      { t: "p", x: "O fluxo natural é: pede-se a negativa; se ela sai positiva, pede-se a Certidão de Objeto e Pé de cada processo listado para explicar o apontamento." },
       { t: "cta", x: CTA },
     ],
     faq: [
       { q: "Minha certidão negativa veio com processos. E agora?", a: "Solicite a Certidão de Objeto e Pé de cada processo apontado: ela descreve o objeto e a fase, o que normalmente basta para o banco, a gerenciadora ou o órgão público." },
-      { q: "Posso pedir as duas ao mesmo tempo?", a: "Sim, e é o mais comum em licitações e processos de admissão." },
+      { q: "Posso apresentar só a negativa positiva?", a: "Não resolve. Quem exige o documento quer saber o conteúdo e a fase do processo, e isso só a Certidão de Objeto e Pé informa." },
+      { q: "Posso pedir as duas ao mesmo tempo?", a: "Sim, e é o mais comum em licitações e processos de admissão: a negativa mostra o panorama e a objeto e pé explica cada apontamento." },
     ],
+
   },
   {
     slug: "validade-certidao-de-objeto-e-pe",
