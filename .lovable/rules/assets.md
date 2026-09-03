@@ -14,6 +14,11 @@ The full machine-readable catalog lives in this library's `design-system.json` (
 
 - `@/design-system/{slug}/assets/logo-certidao.png.asset.json` (png, R2 pointer)
 
+## Fonts
+
+- `@/design-system/{slug}/assets/fonts/manrope-latin.woff2` (woff2)
+- `@/design-system/{slug}/assets/fonts/sora-latin.woff2` (woff2)
+
 ## Images
 
 - `@/design-system/{slug}/assets/hero-certidao.jpg` (jpg)
