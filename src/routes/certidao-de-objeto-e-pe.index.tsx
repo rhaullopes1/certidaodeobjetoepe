@@ -44,9 +44,10 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/")({
             {
               "@type": "ListItem",
               position: 2,
-              name: "Estados atendidos",
+              name: "Certidão de Objeto e Pé",
               item: URL,
             },
+
           ],
         }),
       },
