@@ -172,6 +172,8 @@ function PostPage() {
             Solicitar agora
           </Link>
         </div>
+
+        <LinksRelacionados className="mt-14" />
       </article>
     </PageShell>
   );
