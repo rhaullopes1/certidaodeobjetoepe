@@ -1,36 +1,46 @@
-# Plano: subir ranqueamento e aumentar conversão
+# Plano: melhorar o ranqueamento no Google
 
-## O que os dados mostram hoje
+## Situação atual (dados reais)
 
-- Search Console (04/08 a 31/08): 231 impressões, 2 cliques, CTR 0,87%, posição média 27,7. O site está indexado e sem bloqueio.
-- Termo principal "certidão de objeto e pé" (6.600 buscas/mês, dado Semrush): o site aparece por volta da posição 30, e quem ranqueia é um post do blog, não a página de venda.
-- Vários posts do blog disputam o mesmo termo entre si ("certidão de objeto e pé tj sp" aparece com 4 URLs diferentes; "o que é certidão de objeto e pé" com 4). Isso divide a força do site e derruba todos.
-- A busca por "certidão de objeto e pé sp" e "tjpe" mostra demanda forte por tribunal/estado — onde o site já tem páginas, mas fracas.
+- Search Console (04/08 a 31/08): 231 impressões, 2 cliques, posição média 27,7. Site indexado, sem bloqueio.
+- Termo principal "certidão de objeto e pé" (6.600 buscas/mês, Semrush): o site aparece por volta da posição 30 — e quem ranqueia é um post do blog, não a página de serviço.
+- Canibalização confirmada: "certidão de objeto e pé tj sp" tem 4 URLs do próprio site concorrendo entre si; "o que é certidão de objeto e pé" também tem 4. Isso divide a força e segura todas nas posições 30-75.
+- Buscas com melhor posição são regionais ("tjpe" pos. 9,6; "sp" pos. 14) — é onde há caminho mais curto para a página 1.
 
-## Frente 1 — Ranqueamento
+## O que será feito
 
-1. **Resolver a canibalização do blog.** Escolher uma única página oficial para "certidão de objeto e pé" e outra para "o que é certidão de objeto e pé". Os posts duplicados viram redirecionamento para essas páginas, com os links internos apontando para elas.
-2. **Transformar a página principal do serviço em página forte para o termo cabeça**, com conteúdo completo (o que é, para que serve, prazo, preço, como pedir), e não só um texto de venda curto.
-3. **Reforçar as páginas de estado e tribunal** (SP, PE, RJ, TRFs) com conteúdo local real: nome e endereço do tribunal, sistema processual, comarcas principais, prazo e FAQ do estado. São as buscas com melhor posição atual e menor concorrência.
-4. **Melhorar títulos e descrições** das páginas que já recebem impressões, colocando prazo, preço e "sem sair de casa" — hoje a taxa de clique é quase zero mesmo aparecendo.
-5. **Ligação interna:** todo post do blog leva para a página do serviço e para a página do estado correspondente.
+### 1. Acabar com a canibalização do blog
+- Mapear todos os posts que tratam do mesmo assunto ("o que é", "para que serve", "como emitir", "é gratuita", cível/criminal/família/trabalho).
+- Escolher uma página oficial por tema, consolidar o melhor conteúdo nela e redirecionar as demais para ela (redirecionamento permanente), retirando-as do sitemap.
+- Ajustar todos os links internos para apontar para a página escolhida.
 
-## Frente 2 — Conversão
+### 2. Página principal do serviço vira a página do termo cabeça
+- `/certidao-de-objeto-e-pe` passa a ser a resposta completa para "certidão de objeto e pé": o que é, para que serve, quem pede, prazo, preço, como pedir, diferença para certidão de distribuição, perguntas frequentes.
+- Os posts de conceito passam a apontar para ela, concentrando autoridade.
 
-1. **Prova e clareza no topo do site:** prazo de entrega, preço a partir de, quantidade de certidões emitidas e selo de pagamento seguro visíveis sem rolar a tela.
-2. **Formulário mais curto na primeira etapa:** pedir número do processo e WhatsApp, e só depois CPF/e-mail. Menos campos na primeira tela = mais envios.
-3. **CTA fixo no rodapé no celular** ("Solicitar minha certidão"), já que a maior parte do acesso é mobile.
-4. **Bloco de dúvidas que travam a compra** perto do botão: "e se o processo for sigiloso?", "e se não achar meu processo?", "posso pedir mais de um?", garantia de reembolso.
-5. **Resgate de quem não pagou:** já existe automação por e-mail; acrescentar chamada por WhatsApp manual no painel para pedidos parados em "aguardando pagamento".
-6. **Medição:** confirmar que a conversão do Google Ads dispara no pagamento aprovado (hoje há eventos de início de checkout e lead), para saber quais páginas realmente vendem.
+### 3. Aprofundar as páginas de estado e tribunal
+As 27 páginas de UF hoje são parecidas entre si. Cada uma recebe conteúdo próprio:
+- nome, sede e sistema processual do tribunal;
+- principais comarcas e como o número do processo identifica a origem;
+- prazo típico da região e observações locais;
+- perguntas frequentes específicas do estado.
+Prioridade: SP, PE, RJ, MG (onde já há impressões).
 
-## Ordem sugerida
+### 4. Títulos e descrições das páginas que já aparecem
+Reescrever título e descrição das páginas com impressões, incluindo prazo, preço e "100% online" — hoje o site aparece e quase ninguém clica.
 
-1. Canibalização + página principal do serviço (maior impacto em ranqueamento).
-2. Títulos e descrições das páginas com impressões.
-3. Melhorias de conversão na home e no formulário.
-4. Páginas de estado/tribunal aprofundadas.
+### 5. Links internos e sitemap
+- Cada post do blog liga para a página do serviço e para a página do estado correspondente.
+- Sitemap revisado após as consolidações, sem URLs redirecionadas.
 
-## Observação técnica
+## Ordem de execução
 
-As mudanças de título, descrição e redirecionamentos só passam a valer no site ao vivo depois de publicar. Depois disso, vale pedir reindexação das páginas alteradas no Search Console.
+1. Consolidação dos posts duplicados + redirecionamentos.
+2. Reforço da página principal do serviço.
+3. Títulos e descrições das páginas com impressões.
+4. Páginas de estado aprofundadas (SP, PE, RJ, MG primeiro; depois as demais).
+5. Links internos e sitemap.
+
+## Observação
+
+Nada disso vale no site ao vivo antes de publicar. Depois de publicar, vale pedir reindexação das páginas alteradas no Search Console. Resultado costuma aparecer em algumas semanas.
