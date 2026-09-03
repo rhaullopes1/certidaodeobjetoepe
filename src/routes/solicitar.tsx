@@ -13,7 +13,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { QUANTIDADE_MAXIMA, precoCentavos, whatsappLink } from "@/lib/site";
-import { SeloGarantia } from "@/components/site/selo-garantia";
+
 import { cpfValido, soDigitos, pedidoSchema } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
 import { decodificarProcesso, type ProcessoDecodificado } from "@/lib/cnj.functions";
