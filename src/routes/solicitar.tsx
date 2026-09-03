@@ -441,7 +441,13 @@ function Solicitar() {
           </p>
         </a>
 
-        <form onSubmit={enviar} className="mt-8 space-y-6" noValidate>
+        <form
+          onSubmit={enviar}
+          action="#"
+          method="post"
+          className="mt-8 space-y-6"
+          noValidate
+        >
           <div className="space-y-5">
             {processos.map((p, i) => (
               <BlocoProcesso
