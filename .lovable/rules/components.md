@@ -20,6 +20,12 @@ import { BlogContent } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0
 import { Constants } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f"
 ```
 
+### LinksRelacionados
+
+```ts
+import { LinksRelacionados } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f"
+```
+
 ### PageShell
 
 ```ts

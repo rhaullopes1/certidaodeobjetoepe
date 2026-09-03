@@ -2,7 +2,7 @@
   "meta": {
     "name": "Certidão de objeto e pé",
     "package": "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system_tailwind",
@@ -11,7 +11,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "045886d0e4921bfcaa02054f5ec4881ba75e5a82d1a25429e4d0bc5d24ab270f",
+      "#enrichment": "a3978860424d82574984d535dfad7f29bbddc9ebc274c3eae45f0d844059239b",
       ".github/dependabot.yml": "b77d0e2db67addaaf07bdaa09a65247a",
       ".github/workflows/ci.yml": "6f48a93aabe2a2414f9696fe90e0444a",
       ".gitignore": "6d9e901a692b46a83707c245fb03bc91",
@@ -31,6 +31,7 @@
       ".lovable/plan/deixar-contato-certidaodeobjetoepe-org-recebendo-e-mails-2026-08-28.md": "b47982ecfa9d65b9f84d59c119e99710",
       ".lovable/plan/duplicidade-de-pedidos-etiqueta-novo-2026-08-28.md": "90323fe9363141643e05ea9bfd338025",
       ".lovable/plan/favicon-correto-nos-resultados-do-google-2026-09-03.md": "db5516e2df95db526586175428eee263",
+      ".lovable/plan/favicon-nas-buscas-89-páginas-não-indexadas-2026-09-03.md": "ab1195063d8418dfc7dff945480f5c3e",
       ".lovable/plan/fazer-o-google-ads-registrar-conversões-2026-08-28.md": "2347ebf73078a78135abdaafcf23d091",
       ".lovable/plan/finalizar-configuração-do-e-mail-contato-certidaodeobjetoepe-2026-08-28.md": "6479cb4422563ba20fb40378b4613931",
       ".lovable/plan/melhorias-de-seo-2026-08-28.md": "330309c6d06fac140d7b6a20f0b80d2f",
@@ -69,6 +70,7 @@
       "src/assets/logo-certidao.png.asset.json": "398b7061284f0fee8baaafcaef4dcc5e",
       "src/components/blog/blog-content.tsx": "a94e66940f8e3f29a6142d89ed0423ee",
       "src/components/site/alternativas-contato.tsx": "d6a5539e574214f2f8cd7dea8edf3646",
+      "src/components/site/links-relacionados.tsx": "fa09ef859e3e3bfeb5acf76d740f7093",
       "src/components/site/page-shell.tsx": "69713099de9d0f0d71d678e13a065460",
       "src/components/site/pwa.tsx": "32f90ced0e438604ca5abaa458270936",
       "src/components/site/selo-garantia.tsx": "cfced131174885b8af986b412268d4fc",
@@ -154,7 +156,8 @@
       "src/lib/emails.server.ts": "58da6ac40dc95411cf3850adb7a32a9e",
       "src/lib/error-capture.ts": "f630d9686a9a989170f22eff4de7b30d",
       "src/lib/error-page.ts": "8da0ddd7569bac2676b9a5c8edff8a36",
-      "src/lib/estados-seo.ts": "1ccb4e90109b1ffaeeeceaa6e6ded3b6",
+      "src/lib/estados-detalhes.ts": "5a43fa540e21c70a5fc6666fb0602a44",
+      "src/lib/estados-seo.ts": "b77b57aa7a9cbfbe31019df1b82c541e",
       "src/lib/guias-seo.ts": "c7eadbc0ff124933db246a134842f7cf",
       "src/lib/lovable-error-reporting.ts": "b23b1b2983183c4bdd7d480686ebe6d1",
       "src/lib/mercadopago.server.ts": "0587a956e885c032222d34c9dc62523d",
@@ -194,10 +197,10 @@
       "src/routes/api/public/webhooks/pagbank.ts": "30f0ac0305002750238f32d48fafd8b3",
       "src/routes/api/public/webhooks/stripe.ts": "3fb1a1503f182ffc16550de83d97da0a",
       "src/routes/auth.tsx": "d8a1ff1bb0c061d7f4a34e003abd83f8",
-      "src/routes/blog.$slug.tsx": "e2eb7fb2b34772f5d991806537feb6a8",
-      "src/routes/blog.categoria.$slug.tsx": "f11d3736feb33e6489f6456eceb4254a",
+      "src/routes/blog.$slug.tsx": "f8fcbebb21d647db04aa204264b3bf3c",
+      "src/routes/blog.categoria.$slug.tsx": "6557bdb9661e42cc0c5c64e86c38ef99",
       "src/routes/blog.index.tsx": "0249efaeca39372921e931575295058b",
-      "src/routes/certidao-de-objeto-e-pe.$uf.tsx": "ae6ef7af73c98be33d25ec1c0e9b5393",
+      "src/routes/certidao-de-objeto-e-pe.$uf.tsx": "47343c1f1a49fc82f02f14f1957d4f0f",
       "src/routes/certidao-de-objeto-e-pe.index.tsx": "d26b3a3b3e0a218efe6b2162b9576f7b",
       "src/routes/certidao-de-objeto-e-pe.para.$slug.tsx": "e59940ff557d281ce9a729602b2bc454",
       "src/routes/certidao-de-objeto-e-pe.para.index.tsx": "6b44f49ce23d0438919111470e3377e3",
@@ -220,7 +223,7 @@
       "src/routes/sobre.tsx": "dece49523882e5d76da246f04058c3e7",
       "src/routes/solicitar.tsx": "ac6fabb1b788e5659a571cb0fc0e8b4d",
       "src/routes/termos-de-uso.tsx": "77bca229c2d9570c986c0329ab14d3cc",
-      "src/routes/tribunais.$sigla.tsx": "12d6f9427df873df42f0d7d2b2889e9e",
+      "src/routes/tribunais.$sigla.tsx": "2d0289bac89106872c0d480b8d67f471",
       "src/routes/tribunais.index.tsx": "74fe271c47bcabfed225cbf60956417f",
       "src/server.ts": "c7bbc49bb70e318af618d92775ee0f27",
       "src/start.ts": "d77c1c12904be5077c6955d9b30071af",
@@ -503,6 +506,11 @@
     {
       "name": "AlternativasContato",
       "file": "src/components/site/alternativas-contato",
+      "import_path": ""
+    },
+    {
+      "name": "LinksRelacionados",
+      "file": "src/components/site/links-relacionados",
       "import_path": ""
     },
     {
