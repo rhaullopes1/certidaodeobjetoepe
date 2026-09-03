@@ -19,8 +19,8 @@ export const Route = createFileRoute("/blog/$slug")({
         to: "/blog/$slug",
         params: { slug: destino },
         statusCode: 301,
-challenge: undefined,
       });
+
     }
   },
   loader: ({ params }) => {
