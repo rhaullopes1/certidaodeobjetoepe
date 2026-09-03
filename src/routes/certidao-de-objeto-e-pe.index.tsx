@@ -89,22 +89,125 @@ function EstadosHub() {
       <main className="px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto w-full max-w-6xl">
           <h1 className="max-w-3xl font-display text-3xl font-bold leading-tight sm:text-5xl">
-            Certidão de Objeto e Pé por estado: SP, MG, BA, DF, PE e mais
+            Certidão de Objeto e Pé: o que é, como pedir e prazos
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Atendemos processos de tribunais estaduais, federais e trabalhistas em todo o Brasil.
-            Escolha o estado do processo e veja prazos, tribunal responsável e como solicitar.
+            A Certidão de Objeto e Pé é o documento oficial do tribunal que descreve o objeto do
+            processo (do que se trata, partes e pedido) e o pé (a fase em que ele está hoje).
+            Solicitamos a certidão em tribunais estaduais, federais e trabalhistas de todo o Brasil.
           </p>
-          <a
-            href={wpp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground"
-          >
-            <MessageCircle className="h-5 w-5" />
-            Falar no WhatsApp
-          </a>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              to="/solicitar"
+              className="inline-flex items-center rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground"
+            >
+              Solicitar minha certidão
+            </Link>
+            <a
+              href={wpp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-bold"
+            >
+              <MessageCircle className="h-5 w-5" />
+              Falar no WhatsApp
+            </a>
+          </div>
           <AlternativasContato className="mt-4 max-w-xl" />
+
+          <section className="mt-14 max-w-3xl">
+            <h2 className="font-display text-2xl font-bold">O que consta na certidão</h2>
+            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
+              <li>• Número do processo no padrão CNJ e classe processual.</li>
+              <li>• Vara, foro ou comarca em que o feito tramita.</li>
+              <li>• Nome e qualificação das partes.</li>
+              <li>• Objeto: resumo do que se discute e valor da causa, quando houver.</li>
+              <li>• Data da distribuição e principais movimentações.</li>
+              <li>• Pé: situação atual (instrução, sentença, recurso, execução, arquivado, extinto).</li>
+              <li>• Data de expedição, assinatura do servidor e código de autenticidade.</li>
+            </ul>
+          </section>
+
+          <section className="mt-12 max-w-3xl">
+            <h2 className="font-display text-2xl font-bold">Quem costuma exigir o documento</h2>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              Gerenciadoras de risco e transportadoras (cadastro de motorista), bancos e financeiras
+              (análise de crédito), cartórios e compradores de imóvel (due diligence), órgãos
+              públicos em licitações, bancas de concurso na investigação social, consulados em
+              pedidos de visto e departamentos de compliance em contratações.
+            </p>
+            <Link
+              to="/certidao-de-objeto-e-pe/para"
+              className="mt-4 inline-block text-sm font-semibold text-gold underline underline-offset-4"
+            >
+              Ver a página do seu caso específico
+            </Link>
+          </section>
+
+          <section className="mt-12 max-w-3xl">
+            <h2 className="font-display text-2xl font-bold">Prazo por ramo da Justiça</h2>
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full min-w-[420px] text-left text-sm">
+                <thead className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                  <tr>
+                    <th className="py-2 pr-4">Ramo</th>
+                    <th className="py-2 pr-4">Prazo médio</th>
+                    <th className="py-2">Observação</th>
+                  </tr>
+                </thead>
+                <tbody className="text-muted-foreground">
+                  <tr className="border-t border-border">
+                    <td className="py-2 pr-4">Justiça Estadual</td>
+                    <td className="py-2 pr-4">1 a 10 dias úteis</td>
+                    <td className="py-2">Processos físicos demoram mais</td>
+                  </tr>
+                  <tr className="border-t border-border">
+                    <td className="py-2 pr-4">Justiça Federal</td>
+                    <td className="py-2 pr-4">3 a 12 dias úteis</td>
+                    <td className="py-2">Varia por seção judiciária e TRF</td>
+                  </tr>
+                  <tr className="border-t border-border">
+                    <td className="py-2 pr-4">Justiça do Trabalho</td>
+                    <td className="py-2 pr-4">3 a 10 dias úteis</td>
+                    <td className="py-2">PJe agiliza a tramitação</td>
+                  </tr>
+                  <tr className="border-t border-border">
+                    <td className="py-2 pr-4">Tribunais superiores</td>
+                    <td className="py-2 pr-4">5 a 15 dias úteis</td>
+                    <td className="py-2">Volume alto de pedidos</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section className="mt-12 max-w-3xl">
+            <h2 className="font-display text-2xl font-bold">Como solicitar</h2>
+            <ol className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
+              <li>1. Informe o número do processo — o sistema identifica tribunal, estado e comarca.</li>
+              <li>2. Complete nome, CPF, e-mail e WhatsApp e receba o resumo do pedido.</li>
+              <li>3. Pague por Pix ou cartão e acompanhe o protocolo pelo site.</li>
+              <li>4. Receba a certidão digital com código de autenticidade do tribunal.</li>
+            </ol>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              Não sabe o número do processo ou tem dúvida sobre qual certidão pedir? Veja{" "}
+              <Link to="/blog/$slug" params={{ slug: "o-que-e-certidao-de-objeto-e-pe" }} className="text-gold underline underline-offset-4">
+                o guia completo do documento
+              </Link>{" "}
+              ou{" "}
+              <Link to="/blog/$slug" params={{ slug: "certidao-objeto-e-pe-x-nada-consta" }} className="text-gold underline underline-offset-4">
+                a diferença para a certidão negativa
+              </Link>
+              .
+            </p>
+          </section>
+
+          <h2 className="mt-14 font-display text-2xl font-bold">Certidão de Objeto e Pé por estado</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            Escolha o estado do processo e veja o tribunal responsável, o sistema processual e o
+            prazo praticado na região.
+          </p>
+
 
           <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {ESTADOS_SEO.map((e) => (
