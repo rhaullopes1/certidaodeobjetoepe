@@ -26,6 +26,7 @@ export function PageShell({ children }: { children: ReactNode }) {
           </Link>
           <div className="flex items-center gap-4">
             <nav className="hidden items-center gap-4 text-sm font-medium text-muted-foreground md:flex">
+              <Link to="/certidao-de-objeto-e-pe/para" className="hover:text-foreground">Para você</Link>
               <Link to="/guias" className="hover:text-foreground">Guias</Link>
               <Link to="/blog" className="hover:text-foreground">Blog</Link>
               <Link to="/tribunais" className="hover:text-foreground">Tribunais</Link>
