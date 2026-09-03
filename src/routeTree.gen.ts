@@ -43,6 +43,8 @@ import { Route as AuthenticatedAdminEmailsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
 import { Route as AuthenticatedAdminRecuperacaoRouteImport } from './routes/_authenticated/admin.recuperacao'
 import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$slug'
+import { Route as CertidaoDeObjetoEPeParaIndexRouteImport } from './routes/certidao-de-objeto-e-pe.para.index'
+import { Route as CertidaoDeObjetoEPeParaSlugRouteImport } from './routes/certidao-de-objeto-e-pe.para.$slug'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
 import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
 import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cron/semanal'
@@ -228,6 +230,18 @@ const BlogCategoriaSlugRoute = BlogCategoriaSlugRouteImport.update({
   path: '/blog/categoria/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertidaoDeObjetoEPeParaIndexRoute =
+  CertidaoDeObjetoEPeParaIndexRouteImport.update({
+    id: '/certidao-de-objeto-e-pe/para/',
+    path: '/certidao-de-objeto-e-pe/para/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const CertidaoDeObjetoEPeParaSlugRoute =
+  CertidaoDeObjetoEPeParaSlugRouteImport.update({
+    id: '/certidao-de-objeto-e-pe/para/$slug',
+    path: '/certidao-de-objeto-e-pe/para/$slug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   id: '/lovable/email/events',
   path: '/lovable/email/events',
@@ -311,8 +325,10 @@ export interface FileRoutesByFullPath {
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
+  '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -355,8 +371,10 @@ export interface FileRoutesByTo {
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
+  '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/certidao-de-objeto-e-pe/para': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -401,8 +419,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/_authenticated/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
+  '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -447,8 +467,10 @@ export interface FileRouteTypes {
     | '/admin/historico'
     | '/admin/recuperacao'
     | '/blog/categoria/$slug'
+    | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
     | '/admin/'
+    | '/certidao-de-objeto-e-pe/para/'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -491,8 +513,10 @@ export interface FileRouteTypes {
     | '/admin/historico'
     | '/admin/recuperacao'
     | '/blog/categoria/$slug'
+    | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
     | '/admin'
+    | '/certidao-de-objeto-e-pe/para'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -536,8 +560,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/historico'
     | '/_authenticated/admin/recuperacao'
     | '/blog/categoria/$slug'
+    | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
     | '/_authenticated/admin/'
+    | '/certidao-de-objeto-e-pe/para/'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -576,7 +602,9 @@ export interface RootRouteChildren {
   GuiasIndexRoute: typeof GuiasIndexRoute
   TribunaisIndexRoute: typeof TribunaisIndexRoute
   BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
+  CertidaoDeObjetoEPeParaSlugRoute: typeof CertidaoDeObjetoEPeParaSlugRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
+  CertidaoDeObjetoEPeParaIndexRoute: typeof CertidaoDeObjetoEPeParaIndexRoute
   ApiPublicCronRecuperacaoRoute: typeof ApiPublicCronRecuperacaoRoute
   ApiPublicCronSemanalRoute: typeof ApiPublicCronSemanalRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
@@ -827,6 +855,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogCategoriaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/certidao-de-objeto-e-pe/para/': {
+      id: '/certidao-de-objeto-e-pe/para/'
+      path: '/certidao-de-objeto-e-pe/para'
+      fullPath: '/certidao-de-objeto-e-pe/para/'
+      preLoaderRoute: typeof CertidaoDeObjetoEPeParaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-de-objeto-e-pe/para/$slug': {
+      id: '/certidao-de-objeto-e-pe/para/$slug'
+      path: '/certidao-de-objeto-e-pe/para/$slug'
+      fullPath: '/certidao-de-objeto-e-pe/para/$slug'
+      preLoaderRoute: typeof CertidaoDeObjetoEPeParaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/events': {
       id: '/lovable/email/events'
       path: '/lovable/email/events'
@@ -944,7 +986,9 @@ const rootRouteChildren: RootRouteChildren = {
   GuiasIndexRoute: GuiasIndexRoute,
   TribunaisIndexRoute: TribunaisIndexRoute,
   BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
+  CertidaoDeObjetoEPeParaSlugRoute: CertidaoDeObjetoEPeParaSlugRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
+  CertidaoDeObjetoEPeParaIndexRoute: CertidaoDeObjetoEPeParaIndexRoute,
   ApiPublicCronRecuperacaoRoute: ApiPublicCronRecuperacaoRoute,
   ApiPublicCronSemanalRoute: ApiPublicCronSemanalRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
