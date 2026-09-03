@@ -2,7 +2,7 @@
   "meta": {
     "name": "Certidão de objeto e pé",
     "package": "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system_tailwind",
@@ -16,6 +16,7 @@
       ".github/workflows/ci.yml": "6f48a93aabe2a2414f9696fe90e0444a",
       ".gitignore": "6d9e901a692b46a83707c245fb03bc91",
       ".lovable/meta.yaml": "954a981e8847ec1692669dbb04ae9ae9",
+      ".lovable/plan.md": "a204897374b23374d0bc24efea224782",
       ".lovable/plan/adicionar-google-e-tiktok-ao-rodapé-da-home-2026-08-28.md": "63b6f18e3596ad9371d53c8bc61bed67",
       ".lovable/plan/ajustes-no-formulário-de-solicitação-2026-08-29.md": "ad114b02b877406a403c14d48ae6c195",
       ".lovable/plan/ativar-pix-no-checkout-2026-09-01.md": "2c4b325fb4754107914a3222c43b47ea",
