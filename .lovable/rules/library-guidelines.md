@@ -4,7 +4,7 @@
 
 The design system exports these components — import them from `@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f` and compose them before building anything from scratch:
 
-`AlternativasContato`, `BlogContent`, `Constants`, `LinksRelacionados`, `PageShell`, `SeloGarantia`, `TrfLanding`, `UserMenu`
+`AlternativasContato`, `BlogContent`, `Button`, `Constants`, `LinksRelacionados`, `PageShell`, `SeloGarantia`, `SiteHeader`, `TrfLanding`, `UserMenu`
 
 Per-component details (import stanzas, props, variants, examples) live in `.lovable/rules/libraries/{slug}/components.md` — on disk, not auto-loaded. Read that file or the component source when the name alone isn't enough.
 

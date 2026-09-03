@@ -14,6 +14,20 @@ import { AlternativasContato } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b
 import { BlogContent } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f"
 ```
 
+### Button
+
+```ts
+import { Button } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | default · destructive · outline · secondary · ghost · link | `default` |
+| `size` | default · sm · lg · icon | `default` |
+| `asChild` | boolean | `false` |
+
 ### Constants
 
 ```ts
@@ -36,6 +50,12 @@ import { PageShell } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac
 
 ```ts
 import { SeloGarantia } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f"
+```
+
+### SiteHeader
+
+```ts
+import { SiteHeader } from "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f"
 ```
 
 ### TrfLanding

@@ -2,7 +2,7 @@
   "meta": {
     "name": "Certidão de objeto e pé",
     "package": "@ws-08de5d984df3deba4c32/65572438-586d-4b2b-a4d1-e0ac34b1c95f",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system_tailwind",
@@ -11,12 +11,11 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "a3978860424d82574984d535dfad7f29bbddc9ebc274c3eae45f0d844059239b",
+      "#enrichment": "72ce9ef7b4ea53d51577e241f630513002c0971836e78aa19bd310e61523d7b5",
       ".github/dependabot.yml": "b77d0e2db67addaaf07bdaa09a65247a",
       ".github/workflows/ci.yml": "6f48a93aabe2a2414f9696fe90e0444a",
       ".gitignore": "6d9e901a692b46a83707c245fb03bc91",
       ".lovable/meta.yaml": "954a981e8847ec1692669dbb04ae9ae9",
-      ".lovable/plan.md": "a16cae213b24bba994e1fec45cd63310",
       ".lovable/plan/adicionar-google-e-tiktok-ao-rodapé-da-home-2026-08-28.md": "63b6f18e3596ad9371d53c8bc61bed67",
       ".lovable/plan/ajustes-no-formulário-de-solicitação-2026-08-29.md": "ad114b02b877406a403c14d48ae6c195",
       ".lovable/plan/ativar-pix-no-checkout-2026-09-01.md": "2c4b325fb4754107914a3222c43b47ea",
@@ -37,6 +36,7 @@
       ".lovable/plan/finalizar-configuração-do-e-mail-contato-certidaodeobjetoepe-2026-08-28.md": "6479cb4422563ba20fb40378b4613931",
       ".lovable/plan/melhorias-de-seo-2026-08-28.md": "330309c6d06fac140d7b6a20f0b80d2f",
       ".lovable/plan/novo-fluxo-de-solicitação-processos-primeiro-preço-depois-2026-09-01.md": "cb08e69052fa24da23b47b1f29cc9dea",
+      ".lovable/plan/padronizar-logo-e-adicionar-menu-de-navegação-2026-09-03.md": "a16cae213b24bba994e1fec45cd63310",
       ".lovable/plan/plano-adicionar-google-e-tiktok-às-redes-sociais-do-site-2026-08-28.md": "69e99f440aca6925f097aac4ed5f6866",
       ".lovable/plan/plano-ganhar-relevância-orgânica-de-forma-rápida-e-consisten-2026-08-28.md": "9c50f749ffbbe7f21a4c868c3e034775",
       ".lovable/plan/plano-melhorar-o-ranqueamento-no-google-2026-09-03.md": "a204897374b23374d0bc24efea224782",
@@ -74,9 +74,10 @@
       "src/components/blog/blog-content.tsx": "a94e66940f8e3f29a6142d89ed0423ee",
       "src/components/site/alternativas-contato.tsx": "d6a5539e574214f2f8cd7dea8edf3646",
       "src/components/site/links-relacionados.tsx": "fa09ef859e3e3bfeb5acf76d740f7093",
-      "src/components/site/page-shell.tsx": "69713099de9d0f0d71d678e13a065460",
+      "src/components/site/page-shell.tsx": "671233050f8987b9a4ae0e0661299970",
       "src/components/site/pwa.tsx": "32f90ced0e438604ca5abaa458270936",
       "src/components/site/selo-garantia.tsx": "cfced131174885b8af986b412268d4fc",
+      "src/components/site/site-header.tsx": "d4c06d332c25d60dd6a6b9152dbb7fe9",
       "src/components/site/trf-landing.tsx": "ac7df2f6dfc290b57c77d6b8f75b3850",
       "src/components/ui/accordion.tsx": "55f9dda62b4e3913c9b23e5015a86aef",
       "src/components/ui/alert-dialog.tsx": "96350e949e9b7b674545430a410ab89c",
@@ -218,14 +219,14 @@
       "src/routes/garantia.tsx": "e87ecaa4f961cc5f3238374e50438151",
       "src/routes/guias.$slug.tsx": "0a684d522b709c6152930faabda82824",
       "src/routes/guias.index.tsx": "2093aa7e40e93d42fd91a875c4f5b63d",
-      "src/routes/index.tsx": "18684c34358c97896745ed2f5a019de1",
+      "src/routes/index.tsx": "ab9e2b044dc136a7f55ffb5af9c7c5d9",
       "src/routes/lovable/email/events.ts": "a068bdbeeafa3816bf3f7479ba0df36d",
       "src/routes/lovable/email/transactional/preview.ts": "04c9b9a4ef204d62a0ce0d32d47e0c00",
       "src/routes/pedido.$protocolo.tsx": "453705c4acf896b8472118c0e6aa7ab4",
       "src/routes/politica-de-privacidade.tsx": "dea2dff3b286151b80dd93a88a2070e6",
       "src/routes/sitemap[.]xml.ts": "ea2e9c9d43cd040b3da4961637ff049e",
       "src/routes/sobre.tsx": "dece49523882e5d76da246f04058c3e7",
-      "src/routes/solicitar.tsx": "051780eb55227c3de526d77bbd83a15a",
+      "src/routes/solicitar.tsx": "d924f49c816c455dd77f226989d85ddb",
       "src/routes/termos-de-uso.tsx": "77bca229c2d9570c986c0329ab14d3cc",
       "src/routes/tribunais.$sigla.tsx": "2d0289bac89106872c0d480b8d67f471",
       "src/routes/tribunais.index.tsx": "74fe271c47bcabfed225cbf60956417f",
@@ -528,9 +529,50 @@
       "import_path": ""
     },
     {
+      "name": "SiteHeader",
+      "file": "src/components/site/site-header",
+      "import_path": ""
+    },
+    {
       "name": "TrfLanding",
       "file": "src/components/site/trf-landing",
       "import_path": ""
+    },
+    {
+      "name": "Button",
+      "file": "src/components/ui/button",
+      "import_path": "",
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "default",
+            "destructive",
+            "outline",
+            "secondary",
+            "ghost",
+            "link"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "type": "enum",
+          "values": [
+            "default",
+            "sm",
+            "lg",
+            "icon"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "default": "false"
+        }
+      ]
     },
     {
       "name": "UserMenu",
