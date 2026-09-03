@@ -97,6 +97,8 @@ function CategoriaPage() {
             </li>
           ))}
         </ul>
+
+        <LinksRelacionados className="mt-14" />
       </div>
     </PageShell>
   );
