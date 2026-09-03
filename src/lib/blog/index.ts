@@ -7,6 +7,8 @@ import { POSTS_DUVIDAS } from "./posts-duvidas";
 
 export * from "./tipos";
 export { CATEGORIAS, categoriaPorSlug } from "./categorias";
+export { REDIRECIONAMENTOS_BLOG, destinoRedirecionamento } from "./redirecionamentos";
+
 
 export const POSTS: Post[] = [
   ...POSTS_CONCEITO,
