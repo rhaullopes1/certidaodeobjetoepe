@@ -1,12 +1,28 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { BlogContent } from "@/components/blog/blog-content";
 import { LinksRelacionados } from "@/components/site/links-relacionados";
-import { categoriaPorSlug, postPorSlug, postsRelacionados } from "@/lib/blog";
+import {
+  categoriaPorSlug,
+  destinoRedirecionamento,
+  postPorSlug,
+  postsRelacionados,
+} from "@/lib/blog";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
 export const Route = createFileRoute("/blog/$slug")({
+  beforeLoad: ({ params }) => {
+    const destino = destinoRedirecionamento(params.slug);
+    if (destino) {
+      throw redirect({
+        to: "/blog/$slug",
+        params: { slug: destino },
+        statusCode: 301,
+      });
+
+    }
+  },
   loader: ({ params }) => {
     const post = postPorSlug(params.slug);
     if (!post) throw notFound();
@@ -16,6 +32,7 @@ export const Route = createFileRoute("/blog/$slug")({
       relacionados: postsRelacionados(post),
     };
   },
+
   head: ({ params, loaderData }) => {
     const url = `${SITE}/blog/${params.slug}`;
     if (!loaderData) {
