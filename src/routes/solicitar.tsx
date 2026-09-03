@@ -10,9 +10,10 @@ import {
   Plus,
   Trash2,
   Send,
+  MessageCircle,
 } from "lucide-react";
 import { QUANTIDADE_MAXIMA, precoCentavos, whatsappLink } from "@/lib/site";
-import { SeloGarantia } from "@/components/site/selo-garantia";
+
 import { cpfValido, soDigitos, pedidoSchema } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
 import { decodificarProcesso, type ProcessoDecodificado } from "@/lib/cnj.functions";
@@ -435,7 +436,23 @@ function Solicitar() {
           seguinte.
         </p>
 
-        <SeloGarantia className="mt-6" />
+        <a
+          href={whatsappLink(
+            "Olá! Não sei o número completo do processo. Podem me ajudar a identificar?",
+          )}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-input bg-card px-4 py-3 text-sm transition-colors hover:bg-secondary/60"
+        >
+          <MessageCircle className="h-5 w-5 shrink-0 text-accent" aria-hidden />
+          <p className="min-w-0 font-semibold">
+            Não sabe o número completo do processo? Fale com a nossa equipe no
+            WhatsApp que ajudamos você a identificar agora mesmo.
+            <span className="ml-1 font-bold text-primary underline underline-offset-4">
+              Falar com Especialista
+            </span>
+          </p>
+        </a>
 
         <form onSubmit={enviar} className="mt-8 space-y-6" noValidate>
           <div className="space-y-5">
