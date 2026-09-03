@@ -209,30 +209,4 @@ export const POSTS_DUVIDAS: Post[] = [
       { q: "Preciso de advogado?", a: "Não para o pedido administrativo de certidão. Para retificar registros indevidos, pode ser necessário." },
     ],
   },
-  {
-    slug: "diferenca-certidao-de-objeto-e-pe-e-certidao-negativa",
-    categoria: "duvidas",
-    titulo: "Certidão de Objeto e Pé x certidão negativa: qual pedir",
-    h1: "Certidão de Objeto e Pé ou certidão negativa?",
-    descricao:
-      "Entenda a diferença entre certidão negativa de distribuição e Certidão de Objeto e Pé e saiba exatamente qual documento apresentar.",
-    resumo: "Uma diz se existe processo; a outra explica o processo que existe.",
-    atualizado: "2026-08-26",
-    leitura: 4,
-    blocos: [
-      { t: "tabela", head: ["Aspecto", "Certidão negativa", "Objeto e Pé"], rows: [
-        ["Pergunta que responde", "Existe processo em nome desta pessoa?", "Do que trata e em que fase está este processo?"],
-        ["Pedido por", "Nome e CPF/CNPJ", "Número do processo"],
-        ["Resultado possível", "Negativa ou positiva", "Descrição detalhada"],
-        ["Emissão", "Automática, em minutos", "Expedida pela vara, com prazo"],
-        ["Uso típico", "Triagem inicial", "Esclarecer apontamento"],
-      ] },
-      { t: "p", x: "O fluxo natural é: pede-se a negativa; se ela sai positiva, pede-se a Certidão de Objeto e Pé de cada processo listado para explicar o apontamento." },
-      { t: "cta", x: CTA },
-    ],
-    faq: [
-      { q: "Posso apresentar só a negativa positiva?", a: "Não resolve. Quem exige o documento quer saber o conteúdo e a fase, e isso só a objeto e pé informa." },
-      { q: "Preciso das duas?", a: "Na maior parte dos casos, sim: a negativa mostra o panorama e a objeto e pé explica cada apontamento." },
-    ],
-  },
 ];
