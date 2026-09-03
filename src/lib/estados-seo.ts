@@ -1,3 +1,6 @@
+import { TRIBUNAIS } from "./tribunais";
+import { detalheEstado } from "./estados-detalhes";
+
 /** Conteúdo das landing pages locais (SEO por estado). */
 export interface EstadoSeo {
   slug: string;
