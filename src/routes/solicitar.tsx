@@ -284,10 +284,14 @@ function Solicitar() {
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+  // Antes da hidratação um clique dispara o envio nativo do formulário e recarrega a página.
+  const [pronto, setPronto] = useState(false);
 
   useEffect(() => {
+    setPronto(true);
     trackBeginCheckout();
   }, []);
+
 
   useEffect(() => {
     let ativo = true;
