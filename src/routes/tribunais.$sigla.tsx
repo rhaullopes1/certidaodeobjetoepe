@@ -3,6 +3,7 @@ import { PageShell } from "@/components/site/page-shell";
 import { TRIBUNAIS, tribunalPorSlug, tribunaisPorTipo, type Tribunal } from "@/lib/tribunais";
 import { whatsappLink, formatarBRL, precoCentavos } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
+import { LinksRelacionados } from "@/components/site/links-relacionados";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
@@ -239,6 +240,8 @@ function TribunalPage() {
             .
           </p>
         </section>
+
+        <LinksRelacionados className="mt-14" />
       </div>
     </PageShell>
   );

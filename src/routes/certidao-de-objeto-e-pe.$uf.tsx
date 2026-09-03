@@ -16,7 +16,8 @@ import {
   TABELA_PRECOS,
   formatarBRL,
 } from "@/lib/site";
-import { ESTADOS_SEO, estadoPorSlug, faqEstado } from "@/lib/estados-seo";
+import { ESTADOS_SEO, estadoPorSlug, faqEstado, sistemaDoEstado } from "@/lib/estados-seo";
+import { detalheEstado } from "@/lib/estados-detalhes";
 import { UserMenu } from "@/components/user-menu";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 
@@ -133,6 +134,8 @@ function EstadoNaoEncontrado() {
 
 function EstadoPage() {
   const { estado: e } = Route.useLoaderData();
+  const detalhe = detalheEstado(e.slug);
+  const sistema = sistemaDoEstado(e);
   const wpp = whatsappLink(
     `Olá! Preciso de uma Certidão de Objeto e Pé de um processo em ${e.nome} (${e.tribunal}).`,
   );
@@ -211,6 +214,50 @@ function EstadoPage() {
             </InfoCard>
           </div>
         </section>
+
+        {detalhe && (
+          <section className="px-5 py-16 sm:px-8">
+            <div className="mx-auto w-full max-w-6xl">
+              <h2 className="text-2xl font-bold sm:text-3xl">
+                Como funciona a Certidão de Objeto e Pé no {e.tribunal}
+              </h2>
+              <dl className="mt-8 grid gap-4 sm:grid-cols-3">
+                <div className="rounded-2xl border border-border bg-card p-5">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Sistema processual
+                  </dt>
+                  <dd className="mt-2 text-sm font-medium">
+                    {sistema ?? "Processo eletrônico do tribunal"}
+                  </dd>
+                </div>
+                <div className="rounded-2xl border border-border bg-card p-5">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Justiça Federal
+                  </dt>
+                  <dd className="mt-2 text-sm font-medium">{detalhe.trf}</dd>
+                </div>
+                <div className="rounded-2xl border border-border bg-card p-5">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Justiça do Trabalho
+                  </dt>
+                  <dd className="mt-2 text-sm font-medium">{detalhe.trt}</dd>
+                </div>
+              </dl>
+              <h3 className="mt-10 text-lg font-bold">
+                O que muda no atendimento em {e.nome}
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {detalhe.particularidades.map((item) => (
+                  <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
 
         <section className="px-5 py-16 sm:px-8">
           <div className="mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.2fr_1fr]">

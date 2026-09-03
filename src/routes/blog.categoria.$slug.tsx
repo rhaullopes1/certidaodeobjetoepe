@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
+import { LinksRelacionados } from "@/components/site/links-relacionados";
 import { CATEGORIAS, categoriaPorSlug, postsPorCategoria } from "@/lib/blog";
 
 const SITE = "https://certidaodeobjetoepe.org";
@@ -97,6 +98,8 @@ function CategoriaPage() {
             </li>
           ))}
         </ul>
+
+        <LinksRelacionados className="mt-14" />
       </div>
     </PageShell>
   );

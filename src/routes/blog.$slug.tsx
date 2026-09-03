@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { BlogContent } from "@/components/blog/blog-content";
+import { LinksRelacionados } from "@/components/site/links-relacionados";
 import { categoriaPorSlug, postPorSlug, postsRelacionados } from "@/lib/blog";
 
 const SITE = "https://certidaodeobjetoepe.org";
@@ -172,6 +173,8 @@ function PostPage() {
             Solicitar agora
           </Link>
         </div>
+
+        <LinksRelacionados className="mt-14" />
       </article>
     </PageShell>
   );

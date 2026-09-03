@@ -1,3 +1,6 @@
+import { TRIBUNAIS } from "./tribunais";
+import { detalheEstado } from "./estados-detalhes";
+
 /** Conteúdo das landing pages locais (SEO por estado). */
 export interface EstadoSeo {
   slug: string;
@@ -396,8 +399,17 @@ export const ESTADOS_SEO: EstadoSeo[] = [
 export const estadoPorSlug = (slug: string) =>
   ESTADOS_SEO.find((e) => e.slug === slug.toLowerCase());
 
+/** Sistema processual do tribunal estadual, conforme a base de tribunais. */
+export function sistemaDoEstado(e: EstadoSeo): string | undefined {
+  return TRIBUNAIS.find((t) => t.sigla === e.tribunal)?.sistema;
+}
+
 /** Perguntas frequentes específicas por estado (usadas no conteúdo e no schema FAQPage). */
 export function faqEstado(e: EstadoSeo): { q: string; a: string }[] {
+  return [...faqEstadoBase(e), ...(detalheEstado(e.slug)?.faqLocal ?? [])];
+}
+
+function faqEstadoBase(e: EstadoSeo): { q: string; a: string }[] {
   return [
     {
       q: `Como solicitar a Certidão de Objeto e Pé em ${e.nome}?`,
