@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AcompanharRouteImport } from './routes/acompanhar'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CertidaoObjetoEPeTjpeRouteImport } from './routes/certidao-objeto-e-pe-tjpe'
 import { Route as CertidaoObjetoEPeTjspRouteImport } from './routes/certidao-objeto-e-pe-tjsp'
 import { Route as CertidaoObjetoEPeTrf1RouteImport } from './routes/certidao-objeto-e-pe-trf1'
 import { Route as CertidaoObjetoEPeTrf2RouteImport } from './routes/certidao-objeto-e-pe-trf2'
@@ -72,6 +73,11 @@ const AcompanharRoute = AcompanharRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertidaoObjetoEPeTjpeRoute = CertidaoObjetoEPeTjpeRouteImport.update({
+  id: '/certidao-objeto-e-pe-tjpe',
+  path: '/certidao-objeto-e-pe-tjpe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CertidaoObjetoEPeTjspRoute = CertidaoObjetoEPeTjspRouteImport.update({
@@ -296,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
+  '/certidao-objeto-e-pe-tjpe': typeof CertidaoObjetoEPeTjpeRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
   '/certidao-objeto-e-pe-trf2': typeof CertidaoObjetoEPeTrf2Route
@@ -342,6 +349,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
+  '/certidao-objeto-e-pe-tjpe': typeof CertidaoObjetoEPeTjpeRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
   '/certidao-objeto-e-pe-trf2': typeof CertidaoObjetoEPeTrf2Route
@@ -390,6 +398,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
+  '/certidao-objeto-e-pe-tjpe': typeof CertidaoObjetoEPeTjpeRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
   '/certidao-objeto-e-pe-trf2': typeof CertidaoObjetoEPeTrf2Route
@@ -438,6 +447,7 @@ export interface FileRouteTypes {
     | '/'
     | '/acompanhar'
     | '/auth'
+    | '/certidao-objeto-e-pe-tjpe'
     | '/certidao-objeto-e-pe-tjsp'
     | '/certidao-objeto-e-pe-trf1'
     | '/certidao-objeto-e-pe-trf2'
@@ -484,6 +494,7 @@ export interface FileRouteTypes {
     | '/'
     | '/acompanhar'
     | '/auth'
+    | '/certidao-objeto-e-pe-tjpe'
     | '/certidao-objeto-e-pe-tjsp'
     | '/certidao-objeto-e-pe-trf1'
     | '/certidao-objeto-e-pe-trf2'
@@ -531,6 +542,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/acompanhar'
     | '/auth'
+    | '/certidao-objeto-e-pe-tjpe'
     | '/certidao-objeto-e-pe-tjsp'
     | '/certidao-objeto-e-pe-trf1'
     | '/certidao-objeto-e-pe-trf2'
@@ -579,6 +591,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AcompanharRoute: typeof AcompanharRoute
   AuthRoute: typeof AuthRoute
+  CertidaoObjetoEPeTjpeRoute: typeof CertidaoObjetoEPeTjpeRoute
   CertidaoObjetoEPeTjspRoute: typeof CertidaoObjetoEPeTjspRoute
   CertidaoObjetoEPeTrf1Route: typeof CertidaoObjetoEPeTrf1Route
   CertidaoObjetoEPeTrf2Route: typeof CertidaoObjetoEPeTrf2Route
@@ -643,6 +656,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-objeto-e-pe-tjpe': {
+      id: '/certidao-objeto-e-pe-tjpe'
+      path: '/certidao-objeto-e-pe-tjpe'
+      fullPath: '/certidao-objeto-e-pe-tjpe'
+      preLoaderRoute: typeof CertidaoObjetoEPeTjpeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/certidao-objeto-e-pe-tjsp': {
@@ -963,6 +983,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AcompanharRoute: AcompanharRoute,
   AuthRoute: AuthRoute,
+  CertidaoObjetoEPeTjpeRoute: CertidaoObjetoEPeTjpeRoute,
   CertidaoObjetoEPeTjspRoute: CertidaoObjetoEPeTjspRoute,
   CertidaoObjetoEPeTrf1Route: CertidaoObjetoEPeTrf1Route,
   CertidaoObjetoEPeTrf2Route: CertidaoObjetoEPeTrf2Route,
