@@ -576,6 +576,7 @@ function Footer() {
             <li><Link to="/acompanhar" className="hover:text-primary-foreground">Acompanhar pedido</Link></li>
             <li><Link to="/certidao-de-objeto-e-pe" className="hover:text-primary-foreground">Certidão por estado</Link></li>
             <li><Link to="/certidao-objeto-e-pe-tjsp" className="hover:text-primary-foreground">Certidão de Objeto e Pé TJSP</Link></li>
+            <li><Link to="/certidao-objeto-e-pe-tjpe" className="hover:text-primary-foreground">Certidão de Objeto e Pé TJPE</Link></li>
             <li><Link to="/tribunais" className="hover:text-primary-foreground">Todos os tribunais</Link></li>
             <li><Link to="/blog" className="hover:text-primary-foreground">Blog</Link></li>
             <li><Link to="/guias" className="hover:text-primary-foreground">Guias: como pedir e quanto custa</Link></li>

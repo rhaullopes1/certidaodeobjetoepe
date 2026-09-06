@@ -240,6 +240,14 @@ function EstadosHub() {
                 Certidão de Objeto e Pé TJSP
               </Link>
             </li>
+            <li>
+              <Link
+                to="/certidao-objeto-e-pe-tjpe"
+                className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+              >
+                Certidão de Objeto e Pé TJPE
+              </Link>
+            </li>
           </ul>
         </div>
       </main>
