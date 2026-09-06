@@ -50,6 +50,9 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:type", content: "article" },
         { property: "og:locale", content: "pt_BR" },
         { property: "article:modified_time", content: post.atualizado },
+        { property: "og:image", content: `${SITE}/og-certidao.jpg` },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: `${SITE}/og-certidao.jpg` },
       ],
       links: [
         { rel: "canonical", href: url },
@@ -66,6 +69,7 @@ export const Route = createFileRoute("/blog/$slug")({
             "@id": `${url}#article`,
             headline: post.titulo,
             description: post.descricao,
+            image: `${SITE}/og-certidao.jpg`,
             inLanguage: "pt-BR",
             datePublished: post.atualizado,
             dateModified: post.atualizado,

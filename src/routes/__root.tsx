@@ -128,6 +128,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@id": "https://certidaodeobjetoepe.org/#organization",
               name: "Certidão Objeto e Pé",
               url: "https://certidaodeobjetoepe.org/",
+              logo: "https://certidaodeobjetoepe.org/favicon-192.png",
+              image: "https://certidaodeobjetoepe.org/og-certidao.jpg",
               description:
                 "Assessoria especializada na solicitação de Certidão de Objeto e Pé em tribunais estaduais, federais e trabalhistas de todo o Brasil.",
               areaServed: { "@type": "Country", name: "Brasil" },
