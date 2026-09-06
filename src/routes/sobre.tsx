@@ -43,6 +43,8 @@ export const Route = createFileRoute("/sobre")({
           "@type": "Organization",
           name: "Certidão de Objeto e Pé",
           url: SITE,
+          logo: `${SITE}/favicon-192.png`,
+          image: `${SITE}/og-certidao.jpg`,
           email: EMAIL_CONTATO,
           telephone: "+55 800 000 4604",
           areaServed: "BR",

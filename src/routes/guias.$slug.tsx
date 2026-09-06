@@ -33,6 +33,8 @@ export const Route = createFileRoute("/guias/$slug")({
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: g.titulo },
         { name: "twitter:description", content: g.descricao },
+        { property: "og:image", content: `${SITE}/og-certidao.jpg` },
+        { name: "twitter:image", content: `${SITE}/og-certidao.jpg` },
       ],
       links: [
         { rel: "canonical", href: url },
