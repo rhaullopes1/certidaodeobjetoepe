@@ -78,7 +78,11 @@ export function sendGoogleAdsConversion(protocolo: string, valorCentavos?: numbe
     // ignore storage access errors
   }
 
-  const payload: Record<string, unknown> = { send_to: CONVERSION_ID };
+  const payload: Record<string, unknown> = {
+    send_to: CONVERSION_ID,
+    transaction_id: protocolo,
+  };
+
   if (typeof valorCentavos === "number" && valorCentavos > 0) {
     payload.value = valorCentavos / 100;
     payload.currency = "BRL";
