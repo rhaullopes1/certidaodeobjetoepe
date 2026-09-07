@@ -352,6 +352,48 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          atendido: boolean
+          created_at: string
+          email: string | null
+          id: string
+          nome: string
+          numero_processo: string | null
+          observacoes: string | null
+          origem: string
+          uf: string | null
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          atendido?: boolean
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome: string
+          numero_processo?: string | null
+          observacoes?: string | null
+          origem?: string
+          uf?: string | null
+          updated_at?: string
+          whatsapp: string
+        }
+        Update: {
+          atendido?: boolean
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string
+          numero_processo?: string | null
+          observacoes?: string | null
+          origem?: string
+          uf?: string | null
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       pedido_andamentos: {
         Row: {
           autor_id: string | null
