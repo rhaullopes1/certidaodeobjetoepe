@@ -40,6 +40,13 @@ export function trackBeginCheckout(): void {
   });
 }
 
+/** Contato enviado pelo formulário da home (antes de abrir o WhatsApp). */
+export function trackContactLead(): void {
+  withGtag((gtag) =>
+    gtag("event", "contact", { send_to: ADS_ACCOUNT, currency: "BRL" }),
+  );
+}
+
 /** Evento de pedido criado (lead), disparado ao abrir a página do protocolo. */
 export function trackGenerateLead(protocolo: string, valorCentavos?: number): void {
   once(`ga_lead_${protocolo}`, () => {
@@ -53,6 +60,7 @@ export function trackGenerateLead(protocolo: string, valorCentavos?: number): vo
     );
   });
 }
+
 
 /**
  * Envia o evento de conversão do Google Ads para um pedido pago.
@@ -70,7 +78,11 @@ export function sendGoogleAdsConversion(protocolo: string, valorCentavos?: numbe
     // ignore storage access errors
   }
 
-  const payload: Record<string, unknown> = { send_to: CONVERSION_ID };
+  const payload: Record<string, unknown> = {
+    send_to: CONVERSION_ID,
+    transaction_id: protocolo,
+  };
+
   if (typeof valorCentavos === "number" && valorCentavos > 0) {
     payload.value = valorCentavos / 100;
     payload.currency = "BRL";

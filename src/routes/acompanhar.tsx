@@ -38,7 +38,7 @@ export const Route = createFileRoute("/acompanhar")({
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
-      { rel: "canonical", href: "https://certidaodeobjetoepe.org/acompanhar" },
+      
     ],
     links: [{ rel: "canonical", href: "https://certidaodeobjetoepe.org/acompanhar" }],
   }),
