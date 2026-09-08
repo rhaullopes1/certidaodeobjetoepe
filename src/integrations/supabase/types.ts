@@ -475,6 +475,7 @@ export type Database = {
       }
       pedidos: {
         Row: {
+          acesso_token: string
           certidoes: Json
           checkout_url: string | null
           cidade: string | null
@@ -502,6 +503,7 @@ export type Database = {
           whatsapp: string
         }
         Insert: {
+          acesso_token?: string
           certidoes?: Json
           checkout_url?: string | null
           cidade?: string | null
@@ -529,6 +531,7 @@ export type Database = {
           whatsapp: string
         }
         Update: {
+          acesso_token?: string
           certidoes?: Json
           checkout_url?: string | null
           cidade?: string | null
@@ -620,6 +623,7 @@ export type Database = {
       webhook_eventos: {
         Row: {
           created_at: string
+          evento_id: string | null
           id: string
           payload: Json | null
           payment_id: string | null
@@ -629,6 +633,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          evento_id?: string | null
           id?: string
           payload?: Json | null
           payment_id?: string | null
@@ -638,6 +643,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          evento_id?: string | null
           id?: string
           payload?: Json | null
           payment_id?: string | null
