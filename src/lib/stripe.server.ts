@@ -84,6 +84,7 @@ export async function criarCheckout(pedido: {
   // Stripe aceita expiração entre 30 minutos e 24 horas.
   const expiraEmSegundos = Math.floor(Date.now() / 1000) + 23 * 60 * 60;
 
+
   const corpoBase = (metodos: string[] | null) => ({
     mode: "payment",
     // Sem lista fixa, a Stripe usa os meios habilitados na conta.
