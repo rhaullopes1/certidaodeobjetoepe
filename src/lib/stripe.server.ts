@@ -120,10 +120,14 @@ export async function criarCheckout(pedido: {
 
   // Sem lista fixa: a Stripe oferece todos os meios habilitados na conta
   // (cartão, Apple Pay, Google Pay e, assim que liberado, Pix).
+  // A chave de idempotência tem janela de 5 minutos: protege contra duplo
+  // clique/reenvio, mas permite gerar um novo link quando o anterior vence.
+  const janela = Math.floor(Date.now() / (5 * 60 * 1000));
   const sessao: StripeSession = await stripe("/checkout/sessions", {
-    idempotencyKey: `checkout-${pedido.protocolo}`,
+    idempotencyKey: `checkout-${pedido.protocolo}-${janela}`,
     corpo: corpoBase(null),
   });
+
 
   if (!sessao.id || !sessao.url) throw new Error("Stripe não retornou o link de pagamento");
 
