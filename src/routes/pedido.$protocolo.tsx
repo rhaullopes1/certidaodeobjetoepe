@@ -342,45 +342,13 @@ function PedidoPage() {
 
                 {data.checkoutUrl ? (
                   <>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Pague com cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A
-                      confirmação é automática: assim que o pagamento for aprovado, esta página muda
-                      para “Pagamento confirmado”.
-                    </p>
-                    <a
-                      href={data.checkoutUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
-                    >
-                      Pagar agora com segurança
-                    </a>
-                    <p className="mt-4 text-xs text-muted-foreground">
-                      Você será levado ao ambiente de pagamento seguro, com todos os meios
-                      disponíveis. Em caso de dúvida, fale com nossa equipe pelo WhatsApp.
-                    </p>
-
-                    <a
-                      href={whatsappLink(
-                        `Olá! Preciso de ajuda com o pagamento do protocolo ${data.protocolo}.`,
-                      )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
-                    >
-                      <MessageCircle className="h-4 w-4 text-accent" />
-                      Falar pelo WhatsApp
-                    </a>
-                    <AlternativasContato className="mt-3" />
-
                     {data.pixCopiaECola ? (
-                      <details className="mt-6 rounded-2xl border border-input p-4">
-                        <summary className="cursor-pointer text-sm font-semibold">
-                          Prefiro pagar por Pix
-                        </summary>
-                        <p className="mt-3 text-sm text-muted-foreground">
-                          Escaneie o QR Code no app do seu banco ou use o código copia e cola. Depois
-                          envie o comprovante pelo WhatsApp para confirmarmos o pedido.
+                      <div className="mt-4 rounded-2xl border border-accent/40 bg-accent/5 p-5">
+                        <h3 className="text-base font-bold">
+                          Pagar com Pix — {formatarBRL(data.valorCentavos)}
+                        </h3>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          Escaneie o QR Code no app do seu banco ou use o código copia e cola.
                         </p>
                         <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
                           {qr ? (
@@ -402,7 +370,7 @@ function PedidoPage() {
                         </p>
                         <button
                           onClick={copiar}
-                          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+                          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
                         >
                           {copiado ? (
                             <>
@@ -417,8 +385,42 @@ function PedidoPage() {
                         <p className="mt-3 text-xs text-muted-foreground">
                           Recebedor: {PIX.nome} — {PIX.cidade}.
                         </p>
-                      </details>
+                      </div>
                     ) : null}
+
+                    <div className="mt-6 rounded-2xl border border-input p-5">
+                      <h3 className="text-base font-bold">Pagar com cartão</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A confirmação
+                        é automática: assim que o pagamento for aprovado, esta página muda para
+                        “Pagamento confirmado”.
+                      </p>
+                      <a
+                        href={data.checkoutUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+                      >
+                        Pagar com cartão com segurança
+                      </a>
+                      <p className="mt-3 text-xs text-muted-foreground">
+                        Você será levado ao ambiente de pagamento seguro. Em caso de dúvida, fale
+                        com nossa equipe pelo WhatsApp.
+                      </p>
+                    </div>
+
+                    <a
+                      href={whatsappLink(
+                        `Olá! Preciso de ajuda com o pagamento do protocolo ${data.protocolo}.`,
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+                    >
+                      <MessageCircle className="h-4 w-4 text-accent" />
+                      Falar pelo WhatsApp
+                    </a>
+                    <AlternativasContato className="mt-3" />
                   </>
                 ) : (
                 <>
