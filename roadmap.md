@@ -6,3 +6,4 @@
 - [x] Configurar pré-renderização apenas para páginas públicas estáticas
 - [x] Corrigir robustez, redirecionamentos e cache PWA
 - [x] Validar build, rotas e fluxos responsivos
+- [x] Reordenar página /pedido/$protocolo: Pix em primeiro, cartão em segundo, WhatsApp em terceiro (mantendo toda a lógica)
