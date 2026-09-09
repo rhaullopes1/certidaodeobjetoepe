@@ -195,11 +195,15 @@ export async function criarCheckout(pedido: {
  * um novo link de pagamento (o prazo do pedido é de DIAS_PARA_EXPIRAR dias).
  */
 export async function consultarCheckout(sessionId: string) {
-  const sessao = await stripe(`/checkout/sessions/${encodeURIComponent(sessionId)}`);
+  const sessao = await stripe(
+    `/checkout/sessions/${encodeURIComponent(sessionId)}?expand[]=payment_intent`,
+  );
+  const intent = typeof sessao.payment_intent === "object" ? sessao.payment_intent : null;
   return {
     pago: sessao.payment_status === "paid" || sessao.payment_status === "no_payment_required",
     expirado: sessao.status === "expired",
-    pagoEm: null as string | null,
+    pagoEm: intent?.created ? new Date(intent.created * 1000).toISOString() : null,
     referenceId: sessao.client_reference_id ?? sessao.metadata?.["protocolo"] ?? null,
+
   };
 }
