@@ -1,40 +1,82 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 // A Stripe avisa aqui quando um pagamento muda de status.
-// Nunca confiamos no corpo recebido: consultamos a sessão na API antes de gravar.
+// 1) A assinatura do aviso é conferida antes de qualquer leitura do conteúdo.
+// 2) Cada evento só produz efeito uma vez (índice único por provedor/evento).
+// 3) Mesmo assim, o pagamento é confirmado consultando a API da Stripe.
 export const Route = createFileRoute("/api/public/webhooks/stripe")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const corpoBruto = await request.text();
+        const { assinaturaStripeValida, temSegredoWebhookStripe, consultarCheckout } = await import(
+          "@/lib/stripe.server"
+        );
+
+        if (!temSegredoWebhookStripe()) {
+          console.error("STRIPE_WEBHOOK_SECRET não configurado — aviso recusado");
+          return new Response("webhook não configurado", { status: 503 });
+        }
+
+        const assinatura = request.headers.get("stripe-signature");
+        if (!(await assinaturaStripeValida(corpoBruto, assinatura))) {
+          return new Response("assinatura inválida", { status: 400 });
+        }
+
         let payload: {
+          id?: string;
           type?: string;
           data?: { object?: { id?: string; object?: string; metadata?: Record<string, string> } };
         };
         try {
-          payload = (await request.json()) as typeof payload;
+          payload = JSON.parse(corpoBruto) as typeof payload;
         } catch {
           return new Response("payload inválido", { status: 400 });
         }
 
         const objeto = payload?.data?.object;
         const tipo = payload?.type ?? "";
+        const eventoId = payload?.id ?? null;
         const sessionId = objeto?.object === "checkout.session" ? objeto?.id : undefined;
 
         if (!sessionId || !tipo.startsWith("checkout.session")) return new Response("ok");
 
-        const { consultarCheckout } = await import("@/lib/stripe.server");
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        /** Registra o evento para diagnóstico; nunca quebra o processamento. */
-        const registrarEvento = async (resultado: string) => {
+        // Idempotência: o índice único por (provedor, evento_id) impede repetição.
+        if (eventoId) {
+          const { error: duplicado } = await supabaseAdmin.from("webhook_eventos").insert({
+            provedor: "stripe",
+            evento_id: eventoId,
+            tipo,
+            payment_id: sessionId,
+            resultado: "recebido",
+            payload: payload as unknown as import("@/integrations/supabase/types").Json,
+          });
+          if (duplicado) {
+            if (duplicado.code === "23505") return new Response("ok");
+            console.error("Falha ao registrar evento de webhook", duplicado);
+          }
+        }
+
+        /** Atualiza o resultado do evento; nunca quebra o processamento. */
+        const registrarResultado = async (resultado: string) => {
           try {
-            await supabaseAdmin.from("webhook_eventos").insert({
-              provedor: "stripe",
-              tipo,
-              payment_id: sessionId,
-              resultado,
-              payload: payload as unknown as import("@/integrations/supabase/types").Json,
-            });
+            if (eventoId) {
+              await supabaseAdmin
+                .from("webhook_eventos")
+                .update({ resultado })
+                .eq("provedor", "stripe")
+                .eq("evento_id", eventoId);
+            } else {
+              await supabaseAdmin.from("webhook_eventos").insert({
+                provedor: "stripe",
+                tipo,
+                payment_id: sessionId,
+                resultado,
+                payload: payload as unknown as import("@/integrations/supabase/types").Json,
+              });
+            }
           } catch (e) {
             console.error("Falha ao registrar evento de webhook", e);
           }
@@ -45,13 +87,13 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
           situacao = await consultarCheckout(sessionId);
         } catch (e) {
           console.error("Falha ao confirmar pagamento na Stripe", e);
-          await registrarEvento("erro_consulta_api");
+          await registrarResultado("erro_consulta_api");
           return new Response("erro ao consultar", { status: 502 });
         }
 
         if (!situacao.pago) {
           if (!situacao.expirado) {
-            await registrarEvento("ignorado_status_intermediario");
+            await registrarResultado("ignorado_status_intermediario");
             return new Response("ok");
           }
           // Link vencido não cancela o pedido: apenas limpamos a sessão para
@@ -62,7 +104,7 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
           await (situacao.referenceId
             ? limpar.eq("protocolo", situacao.referenceId)
             : limpar.eq("stripe_session_id", sessionId));
-          await registrarEvento("link_vencido_liberado_para_novo");
+          await registrarResultado("link_vencido_liberado_para_novo");
           return new Response("ok");
         }
 
@@ -75,11 +117,11 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
 
         if (error) {
           console.error("Falha ao atualizar pedido pelo webhook", error);
-          await registrarEvento("erro_ao_gravar");
+          await registrarResultado("erro_ao_gravar");
           return new Response("erro ao gravar", { status: 500 });
         }
 
-        await registrarEvento("pedido_marcado_pago");
+        await registrarResultado("pedido_marcado_pago");
         return new Response("ok");
       },
     },
