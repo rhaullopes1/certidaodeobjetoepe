@@ -43,7 +43,58 @@ type StripeSession = {
   expires_at?: number;
   client_reference_id?: string | null;
   metadata?: Record<string, string> | null;
+  payment_intent?: { created?: number; status?: string } | string | null;
 };
+
+/**
+ * Confere a assinatura enviada pela Stripe (cabeçalho `Stripe-Signature`).
+ * Sem o segredo configurado, nada é aceito — evita processar avisos forjados.
+ */
+export async function assinaturaStripeValida(
+  corpoBruto: string,
+  cabecalho: string | null,
+): Promise<boolean> {
+  const segredo = process.env["STRIPE_WEBHOOK_SECRET"];
+  if (!segredo || !cabecalho) return false;
+
+  const partes = Object.fromEntries(
+    cabecalho.split(",").map((p) => {
+      const i = p.indexOf("=");
+      return [p.slice(0, i).trim(), p.slice(i + 1).trim()];
+    }),
+  ) as Record<string, string>;
+
+  const timestamp = partes["t"];
+  const assinatura = partes["v1"];
+  if (!timestamp || !assinatura) return false;
+
+  // Rejeita avisos com mais de 5 minutos (proteção contra reenvio antigo).
+  const idade = Math.abs(Date.now() / 1000 - Number(timestamp));
+  if (!Number.isFinite(idade) || idade > 300) return false;
+
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(segredo),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const mac = await crypto.subtle.sign("HMAC", key, encoder.encode(`${timestamp}.${corpoBruto}`));
+  const esperado = Array.from(new Uint8Array(mac))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  if (esperado.length !== assinatura.length) return false;
+  let diff = 0;
+  for (let i = 0; i < esperado.length; i++) diff |= esperado.charCodeAt(i) ^ assinatura.charCodeAt(i);
+  return diff === 0;
+}
+
+export function temSegredoWebhookStripe() {
+  return Boolean(process.env["STRIPE_WEBHOOK_SECRET"]);
+}
+
 
 async function stripe(
   path: string,
@@ -144,11 +195,15 @@ export async function criarCheckout(pedido: {
  * um novo link de pagamento (o prazo do pedido é de DIAS_PARA_EXPIRAR dias).
  */
 export async function consultarCheckout(sessionId: string) {
-  const sessao = await stripe(`/checkout/sessions/${encodeURIComponent(sessionId)}`);
+  const sessao = await stripe(
+    `/checkout/sessions/${encodeURIComponent(sessionId)}?expand[]=payment_intent`,
+  );
+  const intent = typeof sessao.payment_intent === "object" ? sessao.payment_intent : null;
   return {
     pago: sessao.payment_status === "paid" || sessao.payment_status === "no_payment_required",
     expirado: sessao.status === "expired",
-    pagoEm: null as string | null,
+    pagoEm: intent?.created ? new Date(intent.created * 1000).toISOString() : null,
     referenceId: sessao.client_reference_id ?? sessao.metadata?.["protocolo"] ?? null,
+
   };
 }
