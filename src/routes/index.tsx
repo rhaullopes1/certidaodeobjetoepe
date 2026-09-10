@@ -22,6 +22,8 @@ import logoAsset from "@/assets/logo-certidao.png.asset.json";
 import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE, GOOGLE_PROFILE, TIKTOK_PROFILE } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { SiteHeader } from "@/components/site/site-header";
+import { registrarLead } from "@/lib/leads.functions";
+import { trackContactLead } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -412,6 +414,21 @@ function Formulario() {
     ]
       .filter(Boolean)
       .join("\n");
+
+    // Guarda o contato antes de abrir o WhatsApp: se a janela for bloqueada
+    // ou fechada, o lead não se perde.
+    void registrarLead({
+      data: {
+        nome,
+        whatsapp: whats,
+        email,
+        numeroProcesso: processo,
+        uf: estado,
+        observacoes: obs,
+        origem: "home",
+      },
+    }).catch(() => undefined);
+    trackContactLead();
 
     window.open(whatsappLink(msg), "_blank", "noopener,noreferrer");
   }
