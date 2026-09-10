@@ -43,6 +43,14 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+        // Resultados que encerram o evento: só estes fazem a repetição ser ignorada.
+        // Falhas temporárias precisam ser reprocessadas quando a Stripe reenvia.
+        const RESULTADOS_FINAIS = [
+          "pedido_marcado_pago",
+          "ignorado_status_intermediario",
+          "link_vencido_liberado_para_novo",
+        ];
+
         // Idempotência: o índice único por (provedor, evento_id) impede repetição.
         if (eventoId) {
           const { error: duplicado } = await supabaseAdmin.from("webhook_eventos").insert({
@@ -54,8 +62,20 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
             payload: payload as unknown as import("@/integrations/supabase/types").Json,
           });
           if (duplicado) {
-            if (duplicado.code === "23505") return new Response("ok");
-            console.error("Falha ao registrar evento de webhook", duplicado);
+            if (duplicado.code === "23505") {
+              const { data: anterior } = await supabaseAdmin
+                .from("webhook_eventos")
+                .select("resultado")
+                .eq("provedor", "stripe")
+                .eq("evento_id", eventoId)
+                .maybeSingle();
+              // Já concluído antes: nada a fazer. Caso contrário, reprocessa.
+              if (anterior?.resultado && RESULTADOS_FINAIS.includes(anterior.resultado)) {
+                return new Response("ok");
+              }
+            } else {
+              console.error("Falha ao registrar evento de webhook", duplicado);
+            }
           }
         }
 
