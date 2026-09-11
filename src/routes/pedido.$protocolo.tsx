@@ -343,9 +343,17 @@ function PedidoPage() {
                 {data.checkoutUrl ? (
                   <>
                     {data.pixCopiaECola ? (
-                      <div className="mt-4 rounded-2xl border border-accent/40 bg-accent/5 p-5">
-                        <h3 className="text-base font-bold">
-                          Pagar com Pix — {formatarBRL(data.valorCentavos)}
+                      <div className="mt-4 rounded-2xl border-2 border-accent/60 bg-accent/5 p-5">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-accent-foreground">
+                            Recomendado
+                          </span>
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            Opção 1
+                          </span>
+                        </div>
+                        <h3 className="mt-2 text-base font-bold">
+                          Pague por Pix — {formatarBRL(data.valorCentavos)}
                         </h3>
                         <p className="mt-1 text-sm text-muted-foreground">
                           Escaneie o QR Code no app do seu banco ou use o código copia e cola.
@@ -405,7 +413,12 @@ function PedidoPage() {
                     ) : null}
 
                     <div className="mt-6 rounded-2xl border border-input p-5">
-                      <h3 className="text-base font-bold">Pagar com cartão</h3>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          Opção 2
+                        </span>
+                      </div>
+                      <h3 className="mt-2 text-base font-bold">Prefere pagar com cartão?</h3>
                       <p className="mt-1 text-sm text-muted-foreground">
                         Cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A confirmação
                         é automática: assim que o pagamento for aprovado, esta página muda para
@@ -440,11 +453,84 @@ function PedidoPage() {
                   </>
                 ) : (
                 <>
-                <div className="mt-2 rounded-2xl border border-amber-500/40 bg-amber-500/5 px-4 py-4">
-                  <p className="text-sm font-bold">Pagamento com cartão indisponível no momento</p>
+                <div className="mt-4 rounded-2xl border-2 border-accent/60 bg-accent/5 p-5">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-accent-foreground">
+                      Recomendado
+                    </span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Opção 1
+                    </span>
+                  </div>
+                  <h3 className="mt-2 text-base font-bold">
+                    Pague por Pix — {formatarBRL(data.valorCentavos)}
+                  </h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Não conseguimos gerar o link de cartão agora. Você pode tentar de novo, pagar
-                    por Pix abaixo ou falar com a nossa equipe — resolvemos em minutos.
+                    Escaneie o QR Code no app do seu banco ou use o código copia e cola.
+                  </p>
+                  <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
+                    {qr ? (
+                      <img
+                        src={qr}
+                        width={240}
+                        height={240}
+                        alt={`QR Code Pix para o protocolo ${data.protocolo}`}
+                        className="h-60 w-60"
+                      />
+                    ) : (
+                      <div className="grid h-60 w-60 place-items-center text-muted-foreground">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                  <p className="mt-4 break-all rounded-xl bg-secondary px-4 py-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+                    {data.pixCopiaECola}
+                  </p>
+                  <button
+                    onClick={copiar}
+                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+                  >
+                    {copiado ? (
+                      <>
+                        <Check className="h-4 w-4" /> Código copiado
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" /> Copiar código Pix
+                      </>
+                    )}
+                  </button>
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Recebedor: {PIX.nome} — {PIX.cidade}.{" "}
+                    {data.confirmacaoAutomatica
+                      ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
+                      : "Após pagar, envie o comprovante pelo WhatsApp para que nossa equipe confirme o pedido."}
+                  </p>
+                  {!data.confirmacaoAutomatica && (
+                    <a
+                      href={whatsappLink(
+                        `Olá! Realizei o pagamento do protocolo ${data.protocolo} (Certidão de Objeto e Pé). Segue o comprovante.`,
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+                    >
+                      <MessageCircle className="h-4 w-4 text-accent" />
+                      Enviar comprovante pelo WhatsApp
+                    </a>
+                  )}
+                </div>
+
+                <div className="mt-6 rounded-2xl border border-input p-5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Opção 2
+                    </span>
+                  </div>
+                  <h3 className="mt-2 text-base font-bold">Prefere pagar com cartão?</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Pagamento com cartão indisponível no momento. Você pode tentar de novo ou
+                    falar com a nossa equipe — resolvemos em minutos.
                   </p>
                   <button
                     type="button"
@@ -457,65 +543,18 @@ function PedidoPage() {
                   </button>
                   {falhouLink && (
                     <p className="mt-2 text-xs text-destructive">
-                      Ainda não foi possível gerar o link. Use o Pix abaixo ou fale com a equipe.
+                      Ainda não foi possível gerar o link. Use o Pix acima ou fale com a equipe.
                     </p>
                   )}
                 </div>
 
-                <p className="mt-5 text-sm text-muted-foreground">
-                  Ou pague por Pix: escaneie o QR Code no app do seu banco ou use o código copia e
-                  cola.
-                </p>
-
-
-                <div className="mt-6 grid place-items-center rounded-2xl bg-card p-4">
-                  {qr ? (
-                    <img
-                      src={qr}
-                      width={240}
-                      height={240}
-                      alt={`QR Code Pix para o protocolo ${data.protocolo}`}
-                      className="h-60 w-60"
-                    />
-                  ) : (
-                    <div className="grid h-60 w-60 place-items-center text-muted-foreground">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    </div>
-                  )}
-                </div>
-
-                <p className="mt-6 break-all rounded-xl bg-secondary px-4 py-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
-                  {data.pixCopiaECola}
-                </p>
-                <button
-                  onClick={copiar}
-                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
-                >
-                  {copiado ? (
-                    <>
-                      <Check className="h-4 w-4" /> Código copiado
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" /> Copiar código Pix
-                    </>
-                  )}
-                </button>
-
-                <p className="mt-4 text-xs text-muted-foreground">
-                  Recebedor: {PIX.nome} — {PIX.cidade}.{" "}
-                  {data.confirmacaoAutomatica
-                    ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
-                    : "Após pagar, envie o comprovante pelo WhatsApp para que nossa equipe confirme o pedido."}
-                </p>
-
                 <a
                   href={whatsappLink(
-                    `Olá! Realizei o pagamento do protocolo ${data.protocolo} (Certidão de Objeto e Pé). Segue o comprovante.`,
+                    `Olá! Preciso de ajuda com o pagamento do protocolo ${data.protocolo}.`,
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
                 >
                   <MessageCircle className="h-4 w-4 text-accent" />
                   Falar pelo WhatsApp
