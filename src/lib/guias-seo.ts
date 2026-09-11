@@ -17,7 +17,7 @@ export interface GuiaSeo {
 }
 
 const PRECOS =
-  "R$ 297 por 1 certidão, R$ 497 por 2, R$ 697 por 3, R$ 897 por 4 e R$ 997 por 5 certidões.";
+  "R$ 197 por 1 certidão, R$ 394 por 2, R$ 591 por 3, R$ 788 por 4 e R$ 985 por 5 certidões.";
 
 export const GUIAS_SEO: GuiaSeo[] = [
   {
@@ -89,7 +89,7 @@ export const GUIAS_SEO: GuiaSeo[] = [
     titulo: "Quanto Custa a Certidão de Objeto e Pé? Preços e Prazos 2026",
     h1: "Quanto custa a Certidão de Objeto e Pé?",
     descricao:
-      "Tabela de preços da Certidão de Objeto e Pé: R$ 297 por certidão, com desconto progressivo até 5 certidões. Veja o que está incluso, prazos e formas de pagamento.",
+      "Tabela de preços da Certidão de Objeto e Pé: R$ 197 por certidão, com desconto progressivo até 5 certidões. Veja o que está incluso, prazos e formas de pagamento.",
     resumo: `O valor do serviço completo é ${PRECOS} O preço já inclui o protocolo no tribunal, o acompanhamento e o envio da certidão em PDF.`,
     secoes: [
       {
@@ -98,11 +98,11 @@ export const GUIAS_SEO: GuiaSeo[] = [
           "O valor é por certidão e cai conforme a quantidade solicitada no mesmo pedido. Não há mensalidade, taxa de adesão nem cobrança extra após a confirmação.",
         ],
         lista: [
-          "1 certidão — R$ 297,00",
-          "2 certidões — R$ 497,00",
-          "3 certidões — R$ 697,00",
-          "4 certidões — R$ 897,00",
-          "5 certidões — R$ 997,00",
+          "1 certidão — R$ 197,00",
+          "2 certidões — R$ 394,00",
+          "3 certidões — R$ 591,00",
+          "4 certidões — R$ 788,00",
+          "5 certidões — R$ 985,00",
         ],
       },
       {

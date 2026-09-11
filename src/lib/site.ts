@@ -7,11 +7,11 @@ export const TIKTOK_PROFILE = "https://www.tiktok.com/@certidodeobjetoepe";
 
 /** Tabela de preços por quantidade de certidões (em centavos). */
 export const TABELA_PRECOS: Record<number, number> = {
-  1: 29700,
-  2: 49700,
-  3: 69700,
-  4: 89700,
-  5: 99700,
+  1: 19700,
+  2: 39400,
+  3: 59100,
+  4: 78800,
+  5: 98500,
 };
 
 export const QUANTIDADE_MAXIMA = 5;
@@ -128,7 +128,7 @@ export const FAQ = [
   },
   {
     q: "Qual o valor do serviço?",
-    a: "R$ 297 por 1 certidão, R$ 497 por 2, R$ 697 por 3, R$ 897 por 4 e R$ 997 por 5 certidões no mesmo pedido. O valor inclui protocolo, acompanhamento e envio do PDF. Eventuais custas do tribunal são informadas antes de qualquer cobrança adicional.",
+    a: "R$ 197 por 1 certidão, R$ 394 por 2, R$ 591 por 3, R$ 788 por 4 e R$ 985 por 5 certidões no mesmo pedido. O valor inclui protocolo, acompanhamento e envio do PDF. Eventuais custas do tribunal são informadas antes de qualquer cobrança adicional.",
   },
   {
     q: "A certidão remove o processo do meu nome?",

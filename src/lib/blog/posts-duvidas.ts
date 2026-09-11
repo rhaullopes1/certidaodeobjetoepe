@@ -55,7 +55,7 @@ export const POSTS_DUVIDAS: Post[] = [
         "Beneficiários da gratuidade de justiça são isentos, mediante decisão nos autos.",
       ] },
       { t: "h", x: "Serviço de assessoria" },
-      { t: "p", x: "Nosso serviço tem valor fixo por quantidade de certidões: 1 por R$ 297, 2 por R$ 497, 3 por R$ 697, 4 por R$ 897 e 5 por R$ 997. O valor cobre identificação da vara, protocolo, acompanhamento e entrega digital." },
+      { t: "p", x: "Nosso serviço tem valor fixo por quantidade de certidões: 1 por R$ 197, 2 por R$ 394, 3 por R$ 591, 4 por R$ 788 e 5 por R$ 985. O valor cobre identificação da vara, protocolo, acompanhamento e entrega digital." },
       { t: "cta", x: CTA },
     ],
     faq: [
