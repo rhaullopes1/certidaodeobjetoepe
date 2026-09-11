@@ -31,7 +31,10 @@ export type PedidoResumo = {
   pixQrCodeUrl: string | null;
   checkoutUrl: string | null;
   pagoEm: string | null;
+  /** True apenas quando o Pix exibido é de um gateway com baixa automática. */
   confirmacaoAutomatica: boolean;
+  /** True quando existe link de cartão (Stripe), que confirma automaticamente. */
+  confirmacaoAutomaticaCartao: boolean;
 };
 
 
