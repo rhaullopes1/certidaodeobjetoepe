@@ -331,8 +331,53 @@ type PedidoRow = Parameters<typeof montar>[0] & {
   id?: string;
 };
 
-/** Cria a sessão de pagamento na Stripe (cartão + Pix) e grava no pedido. */
-async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
+/**
+ * Cria a cobrança Pix dinâmica no Mercado Pago — SOMENTE quando a flag
+ * MERCADOPAGO_PIX_ENABLED está ativa (ver src/lib/pagamentos.server.ts).
+ * Com a flag desligada (padrão) esta função não faz nada e o Pix fixo segue ativo.
+ */
+async function gerarCobrancaMercadoPago(row: PedidoRow): Promise<PedidoRow> {
+  const { mercadoPagoPixHabilitado } = await import("./pagamentos.server");
+  if (!mercadoPagoPixHabilitado()) return row;
+  if (row.mercadopago_payment_id) return row;
+  if (row.status !== "aguardando_pagamento") return row;
+
+  try {
+    const { criarCobrancaPix } = await import("./mercadopago.server");
+    const cobranca = await criarCobrancaPix({
+      protocolo: row.protocolo, // external_reference + chave de idempotência
+      nomeCliente: row.nome_parte ?? undefined,
+      email: row.email,
+      cpf: row.cpf,
+      whatsapp: row.whatsapp,
+      valorCentavos: row.valor_centavos,
+    });
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: atualizado } = await supabaseAdmin
+      .from("pedidos")
+      .update({
+        mercadopago_payment_id: cobranca.orderId,
+        mercadopago_external_reference: row.protocolo,
+        mercadopago_status: "pending",
+        mercadopago_pix_expira_em: cobranca.expiraEm,
+        pix_codigo: cobranca.codigo,
+        pix_qrcode_url: cobranca.qrCodeUrl,
+      })
+      .eq("protocolo", row.protocolo)
+      .is("mercadopago_payment_id", null)
+      .select("*")
+      .maybeSingle();
+    return (atualizado as PedidoRow) ?? row;
+  } catch (e) {
+    console.error("Falha ao criar cobrança Pix no Mercado Pago", e);
+    return row;
+  }
+}
+
+/** Cria a sessão de pagamento na Stripe (cartão) e grava no pedido. */
+async function gerarCobranca(entrada: PedidoRow): Promise<PedidoRow> {
+  const row = await gerarCobrancaMercadoPago(entrada);
   const { temStripe, criarCheckout } = await import("./stripe.server");
   if (row.checkout_url || !temStripe()) return row;
   try {
