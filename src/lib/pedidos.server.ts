@@ -80,6 +80,10 @@ function montar(row: {
   stripe_session_id?: string | null;
   checkout_url?: string | null;
   pago_em?: string | null;
+  mercadopago_payment_id?: string | null;
+  mercadopago_status?: string | null;
+  mercadopago_external_reference?: string | null;
+  mercadopago_pix_expira_em?: string | null;
 }): PedidoResumo {
   return {
     protocolo: row.protocolo,
