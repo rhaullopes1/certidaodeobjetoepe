@@ -413,7 +413,12 @@ function PedidoPage() {
                     ) : null}
 
                     <div className="mt-6 rounded-2xl border border-input p-5">
-                      <h3 className="text-base font-bold">Pagar com cartão</h3>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          Opção 2
+                        </span>
+                      </div>
+                      <h3 className="mt-2 text-base font-bold">Prefere pagar com cartão?</h3>
                       <p className="mt-1 text-sm text-muted-foreground">
                         Cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A confirmação
                         é automática: assim que o pagamento for aprovado, esta página muda para
