@@ -24,7 +24,7 @@ export const formatarBRL = (centavos: number) =>
 
 export const PIX = {
   chave: "29125265000106",
-  nome: "BR BROKERS",
+  nome: "RHAUL LEONARDO LOPES IMOB",
   cidade: "BALNEARIO CAMBORIU",
 };
 
