@@ -2,31 +2,47 @@ import { createFileRoute } from "@tanstack/react-router";
 
 // Mercado Pago avisa aqui quando um pagamento muda de status.
 // Nunca confiamos no corpo recebido: consultamos o pagamento na API antes de gravar.
+// Enquanto MERCADOPAGO_PIX_ENABLED estiver desativado nenhum pedido usa este fluxo.
 export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
   server: {
     handlers: {
       POST: async ({ request }) => {
         let payload: {
           type?: string;
+          topic?: string;
           action?: string;
           data?: { id?: string | number };
+          id?: string | number;
           resource?: string;
-        };
+        } = {};
         try {
           payload = (await request.json()) as typeof payload;
         } catch {
-          return new Response("payload inválido", { status: 400 });
+          payload = {};
         }
 
         const url = new URL(request.url);
+        const recurso = payload?.resource?.split("/").pop();
         const paymentId =
           payload?.data?.id?.toString() ??
           url.searchParams.get("data.id") ??
           url.searchParams.get("id") ??
-          payload?.resource?.split("/").pop();
+          (recurso && /^\d+$/.test(recurso) ? recurso : undefined) ??
+          (typeof payload?.id === "number" ? String(payload.id) : undefined);
 
-        const tipo = payload?.type ?? url.searchParams.get("topic") ?? "payment";
-        if (tipo !== "payment" || !paymentId) return new Response("ok");
+        const tipo =
+          payload?.type ??
+          payload?.topic ??
+          url.searchParams.get("type") ??
+          url.searchParams.get("topic") ??
+          "payment";
+
+        // Só tratamos notificações de pagamento; o resto é confirmado com 200
+        // para o Mercado Pago não reenfileirar indefinidamente.
+        if (!paymentId || (tipo !== "payment" && tipo !== "merchant_order" && !tipo.includes("payment"))) {
+          return new Response("ok");
+        }
+        if (tipo === "merchant_order") return new Response("ok");
 
         const { consultarCobranca } = await import("@/lib/mercadopago.server");
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -38,11 +54,12 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
               provedor: "mercadopago",
               tipo,
               payment_id: paymentId,
+              evento_id: `mercadopago:${paymentId}:${resultado}`,
               resultado,
               payload: payload as unknown as import("@/integrations/supabase/types").Json,
             });
           } catch (e) {
-            console.error("Falha ao registrar evento de webhook", e);
+            console.error("Falha ao registrar evento de webhook (ignorado)", e);
           }
         };
 
@@ -52,22 +69,59 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
         } catch (e) {
           console.error("Falha ao confirmar pagamento no Mercado Pago", e);
           await registrarEvento("erro_consulta_api");
+          // 502 faz o Mercado Pago reenviar a notificação.
           return new Response("erro ao consultar", { status: 502 });
         }
 
+        // Localiza o pedido: primeiro pelo protocolo (external_reference),
+        // depois pelo ID do pagamento já gravado.
+        const buscarPedido = async () => {
+          if (situacao.referenceId) {
+            const { data } = await supabaseAdmin
+              .from("pedidos")
+              .select("id, protocolo, status")
+              .eq("protocolo", situacao.referenceId)
+              .maybeSingle();
+            if (data) return data;
+          }
+          const { data } = await supabaseAdmin
+            .from("pedidos")
+            .select("id, protocolo, status")
+            .eq("mercadopago_payment_id", paymentId)
+            .maybeSingle();
+          return data ?? null;
+        };
+
+        const pedido = await buscarPedido();
+        if (!pedido) {
+          await registrarEvento("pedido_nao_encontrado");
+          return new Response("ok");
+        }
+
+        const base = {
+          mercadopago_payment_id: paymentId,
+          mercadopago_status: situacao.status,
+          mercadopago_external_reference: situacao.referenceId ?? pedido.protocolo,
+        };
+
         if (!situacao.pago && !situacao.cancelado) {
+          await supabaseAdmin.from("pedidos").update(base).eq("id", pedido.id);
           await registrarEvento("ignorado_status_intermediario");
           return new Response("ok");
         }
 
-        const patch = situacao.pago
-          ? { status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() }
-          : { status: "cancelado" };
+        // Idempotência: pedido já pago não é reprocessado nem revertido.
+        if (pedido.status === "pago") {
+          await supabaseAdmin.from("pedidos").update(base).eq("id", pedido.id);
+          await registrarEvento("ja_processado");
+          return new Response("ok");
+        }
 
-        const query = supabaseAdmin.from("pedidos").update(patch);
-        const { error } = situacao.referenceId
-          ? await query.eq("protocolo", situacao.referenceId)
-          : await query.eq("pagbank_order_id", paymentId);
+        const patch = situacao.pago
+          ? { ...base, status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() }
+          : { ...base, status: "cancelado" };
+
+        const { error } = await supabaseAdmin.from("pedidos").update(patch).eq("id", pedido.id);
 
         if (error) {
           console.error("Falha ao atualizar pedido pelo webhook", error);

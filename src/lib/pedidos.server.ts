@@ -31,7 +31,10 @@ export type PedidoResumo = {
   pixQrCodeUrl: string | null;
   checkoutUrl: string | null;
   pagoEm: string | null;
+  /** True apenas quando o Pix exibido é de um gateway com baixa automática. */
   confirmacaoAutomatica: boolean;
+  /** True quando existe link de cartão (Stripe), que confirma automaticamente. */
+  confirmacaoAutomaticaCartao: boolean;
 };
 
 
@@ -77,6 +80,10 @@ function montar(row: {
   stripe_session_id?: string | null;
   checkout_url?: string | null;
   pago_em?: string | null;
+  mercadopago_payment_id?: string | null;
+  mercadopago_status?: string | null;
+  mercadopago_external_reference?: string | null;
+  mercadopago_pix_expira_em?: string | null;
 }): PedidoResumo {
   return {
     protocolo: row.protocolo,
@@ -103,7 +110,10 @@ function montar(row: {
     pixQrCodeUrl: row.pix_qrcode_url ?? null,
     checkoutUrl: row.checkout_url ?? null,
     pagoEm: row.pago_em ?? null,
-    confirmacaoAutomatica: Boolean(row.checkout_url),
+    // Pix só é automático quando existe cobrança dinâmica de gateway (Mercado Pago).
+    // O Pix fixo atual continua com confirmação manual por comprovante.
+    confirmacaoAutomatica: Boolean(row.mercadopago_payment_id),
+    confirmacaoAutomaticaCartao: Boolean(row.checkout_url),
 
     pixCopiaECola:
       row.pix_codigo ??
@@ -321,8 +331,53 @@ type PedidoRow = Parameters<typeof montar>[0] & {
   id?: string;
 };
 
-/** Cria a sessão de pagamento na Stripe (cartão + Pix) e grava no pedido. */
-async function gerarCobranca(row: PedidoRow): Promise<PedidoRow> {
+/**
+ * Cria a cobrança Pix dinâmica no Mercado Pago — SOMENTE quando a flag
+ * MERCADOPAGO_PIX_ENABLED está ativa (ver src/lib/pagamentos.server.ts).
+ * Com a flag desligada (padrão) esta função não faz nada e o Pix fixo segue ativo.
+ */
+async function gerarCobrancaMercadoPago(row: PedidoRow): Promise<PedidoRow> {
+  const { mercadoPagoPixHabilitado } = await import("./pagamentos.server");
+  if (!mercadoPagoPixHabilitado()) return row;
+  if (row.mercadopago_payment_id) return row;
+  if (row.status !== "aguardando_pagamento") return row;
+
+  try {
+    const { criarCobrancaPix } = await import("./mercadopago.server");
+    const cobranca = await criarCobrancaPix({
+      protocolo: row.protocolo, // external_reference + chave de idempotência
+      nomeCliente: row.nome_parte ?? undefined,
+      email: row.email,
+      cpf: row.cpf,
+      whatsapp: row.whatsapp,
+      valorCentavos: row.valor_centavos,
+    });
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: atualizado } = await supabaseAdmin
+      .from("pedidos")
+      .update({
+        mercadopago_payment_id: cobranca.orderId,
+        mercadopago_external_reference: row.protocolo,
+        mercadopago_status: "pending",
+        mercadopago_pix_expira_em: cobranca.expiraEm,
+        pix_codigo: cobranca.codigo,
+        pix_qrcode_url: cobranca.qrCodeUrl,
+      })
+      .eq("protocolo", row.protocolo)
+      .is("mercadopago_payment_id", null)
+      .select("*")
+      .maybeSingle();
+    return (atualizado as PedidoRow) ?? row;
+  } catch (e) {
+    console.error("Falha ao criar cobrança Pix no Mercado Pago", e);
+    return row;
+  }
+}
+
+/** Cria a sessão de pagamento na Stripe (cartão) e grava no pedido. */
+async function gerarCobranca(entrada: PedidoRow): Promise<PedidoRow> {
+  const row = await gerarCobrancaMercadoPago(entrada);
   const { temStripe, criarCheckout } = await import("./stripe.server");
   if (row.checkout_url || !temStripe()) return row;
   try {
@@ -536,8 +591,46 @@ export async function reenviarEmailPedidoNoBanco(protocolo: string, email: strin
   return { enviado: true };
 }
 
+/**
+ * Confere o status no Mercado Pago quando o pedido tem cobrança dinâmica.
+ * Pedidos sem mercadopago_payment_id ficam intocados.
+ */
+async function sincronizarPagamentoMercadoPago(row: PedidoRow): Promise<PedidoRow> {
+  if (!row.mercadopago_payment_id) return row;
+  try {
+    const { consultarCobranca } = await import("./mercadopago.server");
+    const situacao = await consultarCobranca(row.mercadopago_payment_id);
+    if (!situacao.pago && !situacao.cancelado) return row;
+
+    const patch = situacao.pago
+      ? {
+          status: "pago",
+          pago_em: situacao.pagoEm ?? new Date().toISOString(),
+          mercadopago_status: situacao.status,
+        }
+      : { status: "cancelado", mercadopago_status: situacao.status };
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: atualizado } = await supabaseAdmin
+      .from("pedidos")
+      .update(patch)
+      .eq("protocolo", row.protocolo)
+      .select("*")
+      .maybeSingle();
+    return (atualizado as PedidoRow) ?? { ...row, ...patch };
+  } catch (e) {
+    console.error("Falha ao sincronizar pagamento no Mercado Pago", e);
+    return row;
+  }
+}
+
 /** Confere o status direto na Stripe — rede de segurança caso o webhook falhe. */
 async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
+  const comMercadoPago = await sincronizarPagamentoMercadoPago(row);
+  if (comMercadoPago.status === "pago" || comMercadoPago.status === "cancelado") {
+    return comMercadoPago;
+  }
+  row = comMercadoPago;
   const { temStripe, consultarCheckout } = await import("./stripe.server");
   if (!row.stripe_session_id || !temStripe()) return row;
   try {

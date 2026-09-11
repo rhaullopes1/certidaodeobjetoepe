@@ -383,8 +383,24 @@ function PedidoPage() {
                           )}
                         </button>
                         <p className="mt-3 text-xs text-muted-foreground">
-                          Recebedor: {PIX.nome} — {PIX.cidade}.
+                          Recebedor: {PIX.nome} — {PIX.cidade}.{" "}
+                          {data.confirmacaoAutomatica
+                            ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
+                            : "Após pagar, envie o comprovante pelo WhatsApp para que nossa equipe confirme o pedido."}
                         </p>
+                        {!data.confirmacaoAutomatica && (
+                          <a
+                            href={whatsappLink(
+                              `Olá! Realizei o pagamento por Pix do protocolo ${data.protocolo} (Certidão de Objeto e Pé). Segue o comprovante.`,
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-input px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+                          >
+                            <MessageCircle className="h-4 w-4 text-accent" />
+                            Enviar comprovante pelo WhatsApp
+                          </a>
+                        )}
                       </div>
                     ) : null}
 
