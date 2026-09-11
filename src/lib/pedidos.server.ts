@@ -110,7 +110,10 @@ function montar(row: {
     pixQrCodeUrl: row.pix_qrcode_url ?? null,
     checkoutUrl: row.checkout_url ?? null,
     pagoEm: row.pago_em ?? null,
-    confirmacaoAutomatica: Boolean(row.checkout_url),
+    // Pix só é automático quando existe cobrança dinâmica de gateway (Mercado Pago).
+    // O Pix fixo atual continua com confirmação manual por comprovante.
+    confirmacaoAutomatica: Boolean(row.mercadopago_payment_id),
+    confirmacaoAutomaticaCartao: Boolean(row.checkout_url),
 
     pixCopiaECola:
       row.pix_codigo ??
