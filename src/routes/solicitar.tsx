@@ -576,7 +576,7 @@ function Solicitar() {
               </>
             ) : (
               <>
-                <Send className="h-5 w-5" /> Solicitar Orçamento e Enviar Pedido
+                <Send className="h-5 w-5" /> Continuar para pagamento — R$197
               </>
             )}
           </button>
