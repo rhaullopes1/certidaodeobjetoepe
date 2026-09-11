@@ -98,9 +98,11 @@ export async function consultarCobranca(paymentId: string) {
   const pagamento = await mp(`/v1/payments/${encodeURIComponent(paymentId)}`);
   const status = pagamento.status ?? "";
   return {
+    status,
     pago: status === "approved",
     cancelado: status === "cancelled" || status === "rejected" || status === "refunded",
     pagoEm: pagamento.date_approved ?? null,
     referenceId: pagamento.external_reference ?? null,
+    paymentId: pagamento.id ? String(pagamento.id) : paymentId,
   };
 }
