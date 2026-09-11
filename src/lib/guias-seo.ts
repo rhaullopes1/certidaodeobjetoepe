@@ -17,7 +17,7 @@ export interface GuiaSeo {
 }
 
 const PRECOS =
-  "R$ 197 por 1 certidão, R$ 394 por 2, R$ 591 por 3, R$ 788 por 4 e R$ 985 por 5 certidões.";
+  "R$ 197 por 1 certidão, R$ 347 por 2, R$ 497 por 3, R$ 647 por 4 e R$ 797 por 5 certidões.";
 
 export const GUIAS_SEO: GuiaSeo[] = [
   {
@@ -99,10 +99,10 @@ export const GUIAS_SEO: GuiaSeo[] = [
         ],
         lista: [
           "1 certidão — R$ 197,00",
-          "2 certidões — R$ 394,00",
-          "3 certidões — R$ 591,00",
-          "4 certidões — R$ 788,00",
-          "5 certidões — R$ 985,00",
+          "2 certidões — R$ 347,00",
+          "3 certidões — R$ 497,00",
+          "4 certidões — R$ 647,00",
+          "5 certidões — R$ 797,00",
         ],
       },
       {
