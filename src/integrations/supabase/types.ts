@@ -484,6 +484,10 @@ export type Database = {
           email: string
           id: string
           lembrete_enviado_em: string | null
+          mercadopago_external_reference: string | null
+          mercadopago_payment_id: string | null
+          mercadopago_pix_expira_em: string | null
+          mercadopago_status: string | null
           nome_parte: string | null
           numero_processo: string
           observacoes: string | null
@@ -512,6 +516,10 @@ export type Database = {
           email: string
           id?: string
           lembrete_enviado_em?: string | null
+          mercadopago_external_reference?: string | null
+          mercadopago_payment_id?: string | null
+          mercadopago_pix_expira_em?: string | null
+          mercadopago_status?: string | null
           nome_parte?: string | null
           numero_processo: string
           observacoes?: string | null
@@ -540,6 +548,10 @@ export type Database = {
           email?: string
           id?: string
           lembrete_enviado_em?: string | null
+          mercadopago_external_reference?: string | null
+          mercadopago_payment_id?: string | null
+          mercadopago_pix_expira_em?: string | null
+          mercadopago_status?: string | null
           nome_parte?: string | null
           numero_processo?: string
           observacoes?: string | null
