@@ -343,9 +343,17 @@ function PedidoPage() {
                 {data.checkoutUrl ? (
                   <>
                     {data.pixCopiaECola ? (
-                      <div className="mt-4 rounded-2xl border border-accent/40 bg-accent/5 p-5">
-                        <h3 className="text-base font-bold">
-                          Pagar com Pix — {formatarBRL(data.valorCentavos)}
+                      <div className="mt-4 rounded-2xl border-2 border-accent/60 bg-accent/5 p-5">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-accent-foreground">
+                            Recomendado
+                          </span>
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            Opção 1
+                          </span>
+                        </div>
+                        <h3 className="mt-2 text-base font-bold">
+                          Pague por Pix — {formatarBRL(data.valorCentavos)}
                         </h3>
                         <p className="mt-1 text-sm text-muted-foreground">
                           Escaneie o QR Code no app do seu banco ou use o código copia e cola.
