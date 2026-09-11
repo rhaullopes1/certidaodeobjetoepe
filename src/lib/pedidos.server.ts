@@ -546,8 +546,46 @@ export async function reenviarEmailPedidoNoBanco(protocolo: string, email: strin
   return { enviado: true };
 }
 
+/**
+ * Confere o status no Mercado Pago quando o pedido tem cobrança dinâmica.
+ * Pedidos sem mercadopago_payment_id ficam intocados.
+ */
+async function sincronizarPagamentoMercadoPago(row: PedidoRow): Promise<PedidoRow> {
+  if (!row.mercadopago_payment_id) return row;
+  try {
+    const { consultarCobranca } = await import("./mercadopago.server");
+    const situacao = await consultarCobranca(row.mercadopago_payment_id);
+    if (!situacao.pago && !situacao.cancelado) return row;
+
+    const patch = situacao.pago
+      ? {
+          status: "pago",
+          pago_em: situacao.pagoEm ?? new Date().toISOString(),
+          mercadopago_status: situacao.status,
+        }
+      : { status: "cancelado", mercadopago_status: situacao.status };
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: atualizado } = await supabaseAdmin
+      .from("pedidos")
+      .update(patch)
+      .eq("protocolo", row.protocolo)
+      .select("*")
+      .maybeSingle();
+    return (atualizado as PedidoRow) ?? { ...row, ...patch };
+  } catch (e) {
+    console.error("Falha ao sincronizar pagamento no Mercado Pago", e);
+    return row;
+  }
+}
+
 /** Confere o status direto na Stripe — rede de segurança caso o webhook falhe. */
 async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
+  const comMercadoPago = await sincronizarPagamentoMercadoPago(row);
+  if (comMercadoPago.status === "pago" || comMercadoPago.status === "cancelado") {
+    return comMercadoPago;
+  }
+  row = comMercadoPago;
   const { temStripe, consultarCheckout } = await import("./stripe.server");
   if (!row.stripe_session_id || !temStripe()) return row;
   try {
