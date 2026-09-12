@@ -100,7 +100,7 @@ export const template = {
   previewData: {
     protocolo: 'COP-2026-ABC123',
     quantidade: 2,
-    valor: 'R$ 497,00',
+    valor: 'R$ 347,00',
     url: 'https://certidaodeobjetoepe.org/pedido/COP-2026-ABC123',
     certidoes: [
       { numeroProcesso: '0001234-56.2024.8.26.0100', nomeParte: 'Maria Silva Souza', cpf: '12345678901' },

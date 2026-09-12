@@ -103,7 +103,7 @@ export const template = {
   previewData: {
     protocolo: 'COP-2026-ABC123',
     quantidade: 2,
-    valor: 'R$ 497,00',
+    valor: 'R$ 347,00',
     email: 'cliente@example.com',
     whatsapp: '11999999999',
     url: 'https://certidaodeobjetoepe.org/admin/COP-2026-ABC123',

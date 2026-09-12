@@ -419,7 +419,7 @@ export async function enviarTeste(etapa: Etapa, email: string) {
     protocolo: "COP2026TESTE01",
     cliente_nome: "Cliente Exemplo",
     cliente_email: email,
-    valor_total_centavos: 29700,
+    valor_total_centavos: 19700,
     link_pagamento: `${SITE_URL}/pedido/COP2026TESTE01`,
     codigo_pix: "00020126...EXEMPLO",
     data_criacao: new Date().toISOString(),
