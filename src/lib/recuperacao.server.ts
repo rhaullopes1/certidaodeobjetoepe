@@ -63,13 +63,20 @@ export function etapaAtual(row: Pick<AbandonedOrderRow, "etapa_1_em" | "etapa_2_
 
 export function aplicarVariaveis(
   texto: string,
-  vars: { nome_cliente: string; numero_pedido: string; link_pagamento: string; codigo_pix: string },
+  vars: {
+    nome_cliente: string;
+    numero_pedido: string;
+    link_pagamento: string;
+    codigo_pix: string;
+    valor_pedido: string;
+  },
 ) {
   return texto
     .replace(/\{\{\s*nome_cliente\s*\}\}/g, vars.nome_cliente)
     .replace(/\{\{\s*numero_pedido\s*\}\}/g, vars.numero_pedido)
     .replace(/\{\{\s*link_pagamento\s*\}\}/g, vars.link_pagamento)
-    .replace(/\{\{\s*codigo_pix\s*\}\}/g, vars.codigo_pix);
+    .replace(/\{\{\s*codigo_pix\s*\}\}/g, vars.codigo_pix)
+    .replace(/\{\{\s*valor_pedido\s*\}\}/g, vars.valor_pedido);
 }
 
 /** Trava de execução: evita duas rodadas simultâneas da rotina. */
@@ -210,6 +217,7 @@ export async function enviarEtapa(row: AbandonedOrderRow, etapa: Etapa, marcar =
     numero_pedido: row.protocolo,
     link_pagamento: row.link_pagamento ?? `${SITE_URL}/pedido/${row.protocolo}`,
     codigo_pix: row.codigo_pix ?? "",
+    valor_pedido: formatarBRL(row.valor_total_centavos),
   };
 
   const assunto = aplicarVariaveis(config.assunto, vars);
