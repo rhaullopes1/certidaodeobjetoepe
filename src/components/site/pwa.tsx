@@ -30,9 +30,12 @@ export function PWA() {
       e.preventDefault();
       if (localStorage.getItem(CHAVE_DISPENSADO) === "1") return;
       if (!window.matchMedia("(max-width: 768px)").matches) return;
+      const caminho = window.location.pathname;
+      if (!AREAS_CLIENTE.some((area) => caminho.startsWith(area))) return;
       setEvento(e as PromptInstalacao);
       setVisivel(true);
     }
+
 
     window.addEventListener("beforeinstallprompt", aoPoderInstalar);
     return () => window.removeEventListener("beforeinstallprompt", aoPoderInstalar);
