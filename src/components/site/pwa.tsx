@@ -52,8 +52,9 @@ export function PWA() {
     <div className="fixed inset-x-3 bottom-3 z-50 flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3 shadow-lg md:hidden">
       <Download className="h-5 w-5 shrink-0 text-accent" aria-hidden />
       <p className="min-w-0 flex-1 text-sm font-medium">
-        Instale o app para acompanhar seu pedido mais rápido.
+        Adicione um atalho na tela inicial para acompanhar seu pedido mais rápido.
       </p>
+
       <button
         type="button"
         onClick={() => {
