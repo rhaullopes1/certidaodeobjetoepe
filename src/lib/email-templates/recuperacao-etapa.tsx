@@ -45,7 +45,7 @@ export const template = {
   displayName: 'Recuperação de pedido pendente',
   previewData: {
     assunto: 'Seu pedido COP2026ABC123 está quase pronto',
-    corpo: 'Olá Maria,\n\nSeu pedido COP2026ABC123 ainda aguarda pagamento.\n\nLink: https://certidaodeobjetoepe.org/pedido/COP2026ABC123',
+    corpo: 'Olá Maria,\n\nSeu pedido COP2026ABC123 ainda aguarda pagamento.\n\nValor do pedido: R$ 197,00\n\nLink: https://certidaodeobjetoepe.org/pedido/COP2026ABC123',
   },
 } satisfies TemplateEntry
 

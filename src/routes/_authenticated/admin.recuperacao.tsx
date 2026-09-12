@@ -41,7 +41,13 @@ const ROTULO_STATUS: Record<string, string> = {
   cancelado: "Cancelado",
 };
 
-const VARIAVEIS = ["{{nome_cliente}}", "{{numero_pedido}}", "{{link_pagamento}}", "{{codigo_pix}}"];
+const VARIAVEIS = [
+  "{{nome_cliente}}",
+  "{{numero_pedido}}",
+  "{{valor_pedido}}",
+  "{{link_pagamento}}",
+  "{{codigo_pix}}",
+];
 
 function dataBr(valor: string | null) {
   if (!valor) return "—";
@@ -317,6 +323,7 @@ function EditorEmails({ config, onSalvo }: { config: ConfigEtapa[]; onSalvo: () 
     "{{numero_pedido}}": "COP2026ABC123",
     "{{link_pagamento}}": "https://certidaodeobjetoepe.org/pedido/COP2026ABC123",
     "{{codigo_pix}}": "00020126580014BR.GOV.BCB.PIX...",
+    "{{valor_pedido}}": "R$ 197,00",
   };
   const preencher = (texto: string) =>
     Object.entries(previewVars).reduce(
