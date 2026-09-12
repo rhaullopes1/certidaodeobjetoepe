@@ -63,7 +63,7 @@ export const template = {
   displayName: 'Lembrete de pagamento pendente',
   previewData: {
     protocolo: 'COP-2026-ABC123',
-    valor: 'R$ 297,00',
+    valor: 'R$ 197,00',
     url: 'https://certidaodeobjetoepe.org/pedido/COP-2026-ABC123',
   },
 } satisfies TemplateEntry
