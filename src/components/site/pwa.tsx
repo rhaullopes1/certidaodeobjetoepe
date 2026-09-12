@@ -8,10 +8,17 @@ interface PromptInstalacao extends Event {
 
 const CHAVE_DISPENSADO = "pwa-convite-dispensado";
 
-/** Registra o service worker e oferece "Instalar app" apenas no celular. */
+/** Áreas do cliente onde o atalho de instalação faz sentido. */
+const AREAS_CLIENTE = ["/minha-conta", "/acompanhar", "/pedido", "/admin"];
+
+/**
+ * Registra o service worker em todo o site e oferece o atalho de instalação
+ * apenas nas áreas do cliente (o site público é apresentado como website).
+ */
 export function PWA() {
   const [evento, setEvento] = useState<PromptInstalacao | null>(null);
   const [visivel, setVisivel] = useState(false);
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -23,9 +30,12 @@ export function PWA() {
       e.preventDefault();
       if (localStorage.getItem(CHAVE_DISPENSADO) === "1") return;
       if (!window.matchMedia("(max-width: 768px)").matches) return;
+      const caminho = window.location.pathname;
+      if (!AREAS_CLIENTE.some((area) => caminho.startsWith(area))) return;
       setEvento(e as PromptInstalacao);
       setVisivel(true);
     }
+
 
     window.addEventListener("beforeinstallprompt", aoPoderInstalar);
     return () => window.removeEventListener("beforeinstallprompt", aoPoderInstalar);
@@ -42,8 +52,9 @@ export function PWA() {
     <div className="fixed inset-x-3 bottom-3 z-50 flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3 shadow-lg md:hidden">
       <Download className="h-5 w-5 shrink-0 text-accent" aria-hidden />
       <p className="min-w-0 flex-1 text-sm font-medium">
-        Instale o app para acompanhar seu pedido mais rápido.
+        Adicione um atalho na tela inicial para acompanhar seu pedido mais rápido.
       </p>
+
       <button
         type="button"
         onClick={() => {
