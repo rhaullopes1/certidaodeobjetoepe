@@ -68,7 +68,9 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogHub() {
+  const { recentes } = Route.useLoaderData();
   return (
+
     <PageShell>
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:py-20">
         <h1 className="max-w-3xl font-display text-3xl font-bold leading-tight sm:text-5xl">
