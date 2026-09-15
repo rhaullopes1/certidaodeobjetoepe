@@ -27,7 +27,9 @@ const LINKS_ADMIN = [
   { to: "/admin/recuperacao", label: "Recuperação" },
   { to: "/admin/emails", label: "E-mails" },
   { to: "/admin/documentos", label: "Documentos" },
+  { to: "/admin/conteudo", label: "Conteúdo" },
 ] satisfies { to: string; label: string; exact?: boolean }[];
+
 
 export function AdminHeader() {
   const navigate = useNavigate();
