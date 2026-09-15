@@ -360,12 +360,54 @@ function PainelConteudo() {
               </section>
             )}
 
+            {painel.data && aba === "calendario" && (
+              <section className="mt-6 space-y-4">
+                {filtros}
+                <p className="text-xs text-muted-foreground">
+                  Horários no fuso de Brasília. Conteúdos agendados ficam aguardando revisão — nada é
+                  publicado automaticamente no blog nem nas redes sociais.
+                </p>
+                {Object.keys(porDia).length === 0 && (
+                  <p className="text-sm text-muted-foreground">Nenhuma publicação agendada no período.</p>
+                )}
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {Object.entries(porDia).map(([dia, lista]) => (
+                    <div key={dia} className="card-premium p-4">
+                      <p className="font-display text-sm font-bold capitalize">{rotuloDia(dia)}</p>
+                      <ul className="mt-3 space-y-3">
+                        {lista.map((i) => (
+                          <li key={i.id} className="rounded-xl bg-secondary/50 p-3">
+                            <div className="flex flex-wrap items-center gap-2 text-xs">
+                              <span className="font-bold">{horaBR(i.agendado_para)}</span>
+                              <span className="text-muted-foreground">
+                                {NICHOS[i.nicho as keyof typeof NICHOS] ?? i.nicho}
+                              </span>
+                              <span className="rounded-full bg-card px-2 py-0.5 font-semibold">
+                                {rotuloStatus(i.status)}
+                              </span>
+                            </div>
+                            <p className="mt-1 text-sm font-semibold leading-snug">{i.titulo}</p>
+                            <p className="mt-1 break-all text-[11px] text-muted-foreground">/blog/{i.slug}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {painel.data && aba === "conteudos" && (
               <section className="mt-6 space-y-4">
-                {painel.data.itens.length === 0 && (
-                  <p className="text-sm text-muted-foreground">Nenhum conteúdo gerado ainda.</p>
+                {filtros}
+                <p className="text-xs text-muted-foreground">
+                  {itensFiltrados.length} de {itens.length} conteúdos.
+                </p>
+                {itensFiltrados.length === 0 && (
+                  <p className="text-sm text-muted-foreground">Nenhum conteúdo para estes filtros.</p>
                 )}
-                {painel.data.itens.map((i) => (
+                {itensFiltrados.map((i) => (
+
                   <article key={i.id} className="card-premium p-5">
                     <div className="flex flex-wrap items-center gap-3">
                       <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
