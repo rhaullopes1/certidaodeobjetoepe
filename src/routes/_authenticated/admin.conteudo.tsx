@@ -138,6 +138,35 @@ function PainelConteudo() {
   const [agenda, setAgenda] = useState<Agenda | null>(null);
   const agendaAtual = agenda ?? painel.data?.agenda ?? null;
 
+  const [fDe, setFDe] = useState("");
+  const [fAte, setFAte] = useState("");
+  const [fNicho, setFNicho] = useState("");
+  const [fStatus, setFStatus] = useState("");
+
+  const itens = painel.data?.itens ?? [];
+  const itensFiltrados = itens
+    .filter((i) => {
+      const dia = diaBR(i.agendado_para);
+      if (fDe && (!dia || dia < fDe)) return false;
+      if (fAte && (!dia || dia > fAte)) return false;
+      if (fNicho && i.nicho !== fNicho) return false;
+      if (fStatus && i.status !== fStatus) return false;
+      return true;
+    })
+    .sort((a, b) => (a.agendado_para ?? "").localeCompare(b.agendado_para ?? ""));
+
+  const porDia = itensFiltrados
+    .filter((i) => i.agendado_para)
+    .reduce<Record<string, typeof itensFiltrados>>((acc, i) => {
+      const d = diaBR(i.agendado_para);
+      (acc[d] ??= []).push(i);
+      return acc;
+    }, {});
+
+  const statusDisponiveis = [...new Set(itens.map((i) => i.status))];
+
+
+
   const campo =
     "w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none focus:border-ring";
   const botao =
