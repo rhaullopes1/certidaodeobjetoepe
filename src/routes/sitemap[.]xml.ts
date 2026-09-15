@@ -72,6 +72,16 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/termos-de-uso", changefreq: "yearly", priority: "0.3" },
         ];
 
+        try {
+          const { listarPostsPublicados } = await import("@/lib/blog/publicados");
+          for (const p of await listarPostsPublicados(500)) {
+            entries.push({ path: `/blog/${p.slug}`, changefreq: "monthly", priority: "0.7" });
+          }
+        } catch (e) {
+          console.error("Sitemap: falha ao listar artigos publicados", e);
+        }
+
+
 
 
         const urls = entries.map((e) =>

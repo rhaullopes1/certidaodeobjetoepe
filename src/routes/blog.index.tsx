@@ -10,7 +10,12 @@ const DESC =
   "Guias completos sobre Certidão de Objeto e Pé: o que é, como emitir em cada tribunal e sistema, ramos da Justiça, situações em que é exigida e dúvidas frequentes.";
 
 export const Route = createFileRoute("/blog/")({
+  loader: async () => {
+    const { listarPostsPublicados } = await import("@/lib/blog/publicados");
+    return { recentes: await listarPostsPublicados(12) };
+  },
   head: () => ({
+
     meta: [
       { title: TITLE },
       { name: "description", content: DESC },
@@ -63,7 +68,9 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogHub() {
+  const { recentes } = Route.useLoaderData();
   return (
+
     <PageShell>
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:py-20">
         <h1 className="max-w-3xl font-display text-3xl font-bold leading-tight sm:text-5xl">
@@ -91,6 +98,31 @@ function BlogHub() {
             Todos os tribunais
           </Link>
         </nav>
+
+        {recentes.length > 0 && (
+          <section className="mt-14">
+            <h2 className="font-display text-2xl font-bold">Publicações recentes</h2>
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {recentes.map((p) => (
+                <li key={p.slug}>
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: p.slug }}
+                    className="block h-full rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-secondary"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                      {new Date(p.atualizado).toLocaleDateString("pt-BR")}
+                    </span>
+                    <h3 className="mt-3 text-lg font-bold leading-snug">{p.titulo}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.resumo}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+
 
         {CATEGORIAS.map((c) => {
           const posts = postsPorCategoria(c.slug);

@@ -241,6 +241,163 @@ export type Database = {
           },
         ]
       }
+      content_config: {
+        Row: {
+          atualizado_em: string
+          chave: string
+          valor: Json
+        }
+        Insert: {
+          atualizado_em?: string
+          chave: string
+          valor?: Json
+        }
+        Update: {
+          atualizado_em?: string
+          chave?: string
+          valor?: Json
+        }
+        Relationships: []
+      }
+      content_items: {
+        Row: {
+          agendado_para: string | null
+          blocos: Json
+          canais: Json
+          created_at: string
+          criado_por: string | null
+          faq: Json
+          id: string
+          meta_description: string
+          modelo: string | null
+          nicho: string
+          publicado_em: string | null
+          resumo: string
+          slug: string
+          status: string
+          titulo: string
+          topic_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          agendado_para?: string | null
+          blocos?: Json
+          canais?: Json
+          created_at?: string
+          criado_por?: string | null
+          faq?: Json
+          id?: string
+          meta_description?: string
+          modelo?: string | null
+          nicho: string
+          publicado_em?: string | null
+          resumo?: string
+          slug: string
+          status?: string
+          titulo: string
+          topic_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agendado_para?: string | null
+          blocos?: Json
+          canais?: Json
+          created_at?: string
+          criado_por?: string | null
+          faq?: Json
+          id?: string
+          meta_description?: string
+          modelo?: string | null
+          nicho?: string
+          publicado_em?: string | null
+          resumo?: string
+          slug?: string
+          status?: string
+          titulo?: string
+          topic_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_items_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "content_topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_metrics: {
+        Row: {
+          canal: string
+          cliques: number
+          coletado_em: string
+          content_item_id: string | null
+          id: string
+          impressoes: number
+        }
+        Insert: {
+          canal: string
+          cliques?: number
+          coletado_em?: string
+          content_item_id?: string | null
+          id?: string
+          impressoes?: number
+        }
+        Update: {
+          canal?: string
+          cliques?: number
+          coletado_em?: string
+          content_item_id?: string | null
+          id?: string
+          impressoes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_metrics_content_item_id_fkey"
+            columns: ["content_item_id"]
+            isOneToOne: false
+            referencedRelation: "content_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_topics: {
+        Row: {
+          angulo: string
+          ativo: boolean
+          created_at: string
+          id: string
+          nicho: string
+          palavra_chave: string
+          prioridade: number
+          titulo: string
+          ultimo_uso_em: string | null
+        }
+        Insert: {
+          angulo?: string
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nicho: string
+          palavra_chave?: string
+          prioridade?: number
+          titulo: string
+          ultimo_uso_em?: string | null
+        }
+        Update: {
+          angulo?: string
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nicho?: string
+          palavra_chave?: string
+          prioridade?: number
+          titulo?: string
+          ultimo_uso_em?: string | null
+        }
+        Relationships: []
+      }
       cron_tokens: {
         Row: {
           created_at: string
@@ -608,6 +765,137 @@ export type Database = {
           status_conta?: string
           ultimo_email_enviado?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      publication_jobs: {
+        Row: {
+          agendado_para: string
+          canal: string
+          content_item_id: string
+          created_at: string
+          id: string
+          idempotency_key: string
+          publicado_em: string | null
+          status: string
+          tentativas: number
+          ultimo_erro: string | null
+          updated_at: string
+          url_publicada: string | null
+        }
+        Insert: {
+          agendado_para?: string
+          canal: string
+          content_item_id: string
+          created_at?: string
+          id?: string
+          idempotency_key: string
+          publicado_em?: string | null
+          status?: string
+          tentativas?: number
+          ultimo_erro?: string | null
+          updated_at?: string
+          url_publicada?: string | null
+        }
+        Update: {
+          agendado_para?: string
+          canal?: string
+          content_item_id?: string
+          created_at?: string
+          id?: string
+          idempotency_key?: string
+          publicado_em?: string | null
+          status?: string
+          tentativas?: number
+          ultimo_erro?: string | null
+          updated_at?: string
+          url_publicada?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publication_jobs_content_item_id_fkey"
+            columns: ["content_item_id"]
+            isOneToOne: false
+            referencedRelation: "content_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      publication_logs: {
+        Row: {
+          canal: string | null
+          content_item_id: string | null
+          created_at: string
+          id: string
+          job_id: string | null
+          mensagem: string
+          nivel: string
+          payload: Json
+        }
+        Insert: {
+          canal?: string | null
+          content_item_id?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string | null
+          mensagem: string
+          nivel?: string
+          payload?: Json
+        }
+        Update: {
+          canal?: string | null
+          content_item_id?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string | null
+          mensagem?: string
+          nivel?: string
+          payload?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publication_logs_content_item_id_fkey"
+            columns: ["content_item_id"]
+            isOneToOne: false
+            referencedRelation: "content_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publication_logs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "publication_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_accounts: {
+        Row: {
+          atualizado_em: string
+          canal: string
+          conectado: boolean
+          config: Json
+          id: string
+          nome: string
+          secret_esperado: string
+        }
+        Insert: {
+          atualizado_em?: string
+          canal: string
+          conectado?: boolean
+          config?: Json
+          id?: string
+          nome?: string
+          secret_esperado?: string
+        }
+        Update: {
+          atualizado_em?: string
+          canal?: string
+          conectado?: boolean
+          config?: Json
+          id?: string
+          nome?: string
+          secret_esperado?: string
         }
         Relationships: []
       }

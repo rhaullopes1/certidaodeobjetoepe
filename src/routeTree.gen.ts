@@ -39,6 +39,7 @@ import { Route as TribunaisIndexRouteImport } from './routes/tribunais.index'
 import { Route as TribunaisSiglaRouteImport } from './routes/tribunais.$sigla'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
+import { Route as AuthenticatedAdminConteudoRouteImport } from './routes/_authenticated/admin.conteudo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
 import { Route as AuthenticatedAdminEmailsRouteImport } from './routes/_authenticated/admin.emails'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
@@ -47,6 +48,7 @@ import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$
 import { Route as CertidaoDeObjetoEPeParaIndexRouteImport } from './routes/certidao-de-objeto-e-pe.para.index'
 import { Route as CertidaoDeObjetoEPeParaSlugRouteImport } from './routes/certidao-de-objeto-e-pe.para.$slug'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
+import { Route as ApiPublicCronConteudoRouteImport } from './routes/api/public/cron/conteudo'
 import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
 import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cron/semanal'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
@@ -207,6 +209,12 @@ const AuthenticatedAdminProtocoloRoute =
     path: '/admin/$protocolo',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminConteudoRoute =
+  AuthenticatedAdminConteudoRouteImport.update({
+    id: '/admin/conteudo',
+    path: '/admin/conteudo',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminDocumentosRoute =
   AuthenticatedAdminDocumentosRouteImport.update({
     id: '/admin/documentos',
@@ -251,6 +259,11 @@ const CertidaoDeObjetoEPeParaSlugRoute =
 const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   id: '/lovable/email/events',
   path: '/lovable/email/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronConteudoRoute = ApiPublicCronConteudoRouteImport.update({
+  id: '/api/public/cron/conteudo',
+  path: '/api/public/cron/conteudo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicCronRecuperacaoRoute =
@@ -327,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -336,6 +350,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -374,6 +389,7 @@ export interface FileRoutesByTo {
   '/guias': typeof GuiasIndexRoute
   '/tribunais': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -383,6 +399,7 @@ export interface FileRoutesByTo {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -423,6 +440,7 @@ export interface FileRoutesById {
   '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/_authenticated/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -432,6 +450,7 @@ export interface FileRoutesById {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -472,6 +491,7 @@ export interface FileRouteTypes {
     | '/guias/'
     | '/tribunais/'
     | '/admin/$protocolo'
+    | '/admin/conteudo'
     | '/admin/documentos'
     | '/admin/emails'
     | '/admin/historico'
@@ -481,6 +501,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/admin/'
     | '/certidao-de-objeto-e-pe/para/'
+    | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -519,6 +540,7 @@ export interface FileRouteTypes {
     | '/guias'
     | '/tribunais'
     | '/admin/$protocolo'
+    | '/admin/conteudo'
     | '/admin/documentos'
     | '/admin/emails'
     | '/admin/historico'
@@ -528,6 +550,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/admin'
     | '/certidao-de-objeto-e-pe/para'
+    | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -567,6 +590,7 @@ export interface FileRouteTypes {
     | '/guias/'
     | '/tribunais/'
     | '/_authenticated/admin/$protocolo'
+    | '/_authenticated/admin/conteudo'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/emails'
     | '/_authenticated/admin/historico'
@@ -576,6 +600,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/_authenticated/admin/'
     | '/certidao-de-objeto-e-pe/para/'
+    | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -618,6 +643,7 @@ export interface RootRouteChildren {
   CertidaoDeObjetoEPeParaSlugRoute: typeof CertidaoDeObjetoEPeParaSlugRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   CertidaoDeObjetoEPeParaIndexRoute: typeof CertidaoDeObjetoEPeParaIndexRoute
+  ApiPublicCronConteudoRoute: typeof ApiPublicCronConteudoRoute
   ApiPublicCronRecuperacaoRoute: typeof ApiPublicCronRecuperacaoRoute
   ApiPublicCronSemanalRoute: typeof ApiPublicCronSemanalRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
@@ -840,6 +866,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProtocoloRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/conteudo': {
+      id: '/_authenticated/admin/conteudo'
+      path: '/admin/conteudo'
+      fullPath: '/admin/conteudo'
+      preLoaderRoute: typeof AuthenticatedAdminConteudoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/documentos': {
       id: '/_authenticated/admin/documentos'
       path: '/admin/documentos'
@@ -894,6 +927,13 @@ declare module '@tanstack/react-router' {
       path: '/lovable/email/events'
       fullPath: '/lovable/email/events'
       preLoaderRoute: typeof LovableEmailEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/conteudo': {
+      id: '/api/public/cron/conteudo'
+      path: '/api/public/cron/conteudo'
+      fullPath: '/api/public/cron/conteudo'
+      preLoaderRoute: typeof ApiPublicCronConteudoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cron/recuperacao': {
@@ -958,6 +998,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
   AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
+  AuthenticatedAdminConteudoRoute: typeof AuthenticatedAdminConteudoRoute
   AuthenticatedAdminDocumentosRoute: typeof AuthenticatedAdminDocumentosRoute
   AuthenticatedAdminEmailsRoute: typeof AuthenticatedAdminEmailsRoute
   AuthenticatedAdminHistoricoRoute: typeof AuthenticatedAdminHistoricoRoute
@@ -968,6 +1009,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
   AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
+  AuthenticatedAdminConteudoRoute: AuthenticatedAdminConteudoRoute,
   AuthenticatedAdminDocumentosRoute: AuthenticatedAdminDocumentosRoute,
   AuthenticatedAdminEmailsRoute: AuthenticatedAdminEmailsRoute,
   AuthenticatedAdminHistoricoRoute: AuthenticatedAdminHistoricoRoute,
@@ -1010,6 +1052,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoDeObjetoEPeParaSlugRoute: CertidaoDeObjetoEPeParaSlugRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
   CertidaoDeObjetoEPeParaIndexRoute: CertidaoDeObjetoEPeParaIndexRoute,
+  ApiPublicCronConteudoRoute: ApiPublicCronConteudoRoute,
   ApiPublicCronRecuperacaoRoute: ApiPublicCronRecuperacaoRoute,
   ApiPublicCronSemanalRoute: ApiPublicCronSemanalRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
