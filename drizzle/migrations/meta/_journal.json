@@ -8,6 +8,13 @@
       "when": 1789138885034,
       "tag": "0000_mercadopago_pix_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789512210768,
+      "tag": "0001_central_conteudo_cop",
+      "breakpoints": true
     }
   ]
 }
