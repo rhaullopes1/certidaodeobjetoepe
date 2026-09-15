@@ -37,6 +37,7 @@ export const Route = createFileRoute("/_authenticated/admin/conteudo")({
 
 const ABAS = [
   { id: "dashboard", nome: "Visão geral" },
+  { id: "calendario", nome: "Calendário" },
   { id: "conteudos", nome: "Conteúdos" },
   { id: "fila", nome: "Fila e logs" },
   { id: "temas", nome: "Temas" },
@@ -44,6 +45,40 @@ const ABAS = [
 ] as const;
 
 type Aba = (typeof ABAS)[number]["id"];
+
+const FUSO = "America/Sao_Paulo";
+
+/** Data AAAA-MM-DD do agendamento no fuso de Brasília. */
+function diaBR(iso: string | null) {
+  if (!iso) return "";
+  const p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: FUSO,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(iso));
+  return p;
+}
+
+function horaBR(iso: string | null) {
+  if (!iso) return "--:--";
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: FUSO,
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(iso));
+}
+
+function rotuloDia(dia: string) {
+  const d = new Date(`${dia}T12:00:00-03:00`);
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: FUSO,
+    weekday: "short",
+    day: "2-digit",
+    month: "2-digit",
+  }).format(d);
+}
+
 
 function Card({ titulo, valor }: { titulo: string; valor: number | string }) {
   return (
