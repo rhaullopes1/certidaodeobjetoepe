@@ -47,6 +47,7 @@ import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$
 import { Route as CertidaoDeObjetoEPeParaIndexRouteImport } from './routes/certidao-de-objeto-e-pe.para.index'
 import { Route as CertidaoDeObjetoEPeParaSlugRouteImport } from './routes/certidao-de-objeto-e-pe.para.$slug'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
+import { Route as ApiPublicCronConteudoRouteImport } from './routes/api/public/cron/conteudo'
 import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
 import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cron/semanal'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
@@ -253,6 +254,11 @@ const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   path: '/lovable/email/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronConteudoRoute = ApiPublicCronConteudoRouteImport.update({
+  id: '/api/public/cron/conteudo',
+  path: '/api/public/cron/conteudo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronRecuperacaoRoute =
   ApiPublicCronRecuperacaoRouteImport.update({
     id: '/api/public/cron/recuperacao',
@@ -336,6 +342,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -383,6 +390,7 @@ export interface FileRoutesByTo {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -432,6 +440,7 @@ export interface FileRoutesById {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -481,6 +490,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/admin/'
     | '/certidao-de-objeto-e-pe/para/'
+    | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -528,6 +538,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/admin'
     | '/certidao-de-objeto-e-pe/para'
+    | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -576,6 +587,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/_authenticated/admin/'
     | '/certidao-de-objeto-e-pe/para/'
+    | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -618,6 +630,7 @@ export interface RootRouteChildren {
   CertidaoDeObjetoEPeParaSlugRoute: typeof CertidaoDeObjetoEPeParaSlugRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   CertidaoDeObjetoEPeParaIndexRoute: typeof CertidaoDeObjetoEPeParaIndexRoute
+  ApiPublicCronConteudoRoute: typeof ApiPublicCronConteudoRoute
   ApiPublicCronRecuperacaoRoute: typeof ApiPublicCronRecuperacaoRoute
   ApiPublicCronSemanalRoute: typeof ApiPublicCronSemanalRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
@@ -896,6 +909,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/conteudo': {
+      id: '/api/public/cron/conteudo'
+      path: '/api/public/cron/conteudo'
+      fullPath: '/api/public/cron/conteudo'
+      preLoaderRoute: typeof ApiPublicCronConteudoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/recuperacao': {
       id: '/api/public/cron/recuperacao'
       path: '/api/public/cron/recuperacao'
@@ -1010,6 +1030,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoDeObjetoEPeParaSlugRoute: CertidaoDeObjetoEPeParaSlugRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
   CertidaoDeObjetoEPeParaIndexRoute: CertidaoDeObjetoEPeParaIndexRoute,
+  ApiPublicCronConteudoRoute: ApiPublicCronConteudoRoute,
   ApiPublicCronRecuperacaoRoute: ApiPublicCronRecuperacaoRoute,
   ApiPublicCronSemanalRoute: ApiPublicCronSemanalRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,

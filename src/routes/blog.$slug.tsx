@@ -24,15 +24,26 @@ export const Route = createFileRoute("/blog/$slug")({
 
     }
   },
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const post = postPorSlug(params.slug);
-    if (!post) throw notFound();
+    if (post) {
+      return {
+        post,
+        categoria: categoriaPorSlug(post.categoria),
+        relacionados: postsRelacionados(post),
+      };
+    }
+    const { postPublicadoPorSlug, listarPostsPublicados } = await import("@/lib/blog/publicados");
+    const publicado = await postPublicadoPorSlug(params.slug);
+    if (!publicado) throw notFound();
+    const outros = await listarPostsPublicados(8);
     return {
-      post,
-      categoria: categoriaPorSlug(post.categoria),
-      relacionados: postsRelacionados(post),
+      post: publicado,
+      categoria: categoriaPorSlug(publicado.categoria),
+      relacionados: outros.filter((p) => p.slug !== publicado.slug).slice(0, 3),
     };
   },
+
 
   head: ({ params, loaderData }) => {
     const url = `${SITE}/blog/${params.slug}`;

@@ -10,7 +10,12 @@ const DESC =
   "Guias completos sobre Certidão de Objeto e Pé: o que é, como emitir em cada tribunal e sistema, ramos da Justiça, situações em que é exigida e dúvidas frequentes.";
 
 export const Route = createFileRoute("/blog/")({
+  loader: async () => {
+    const { listarPostsPublicados } = await import("@/lib/blog/publicados");
+    return { recentes: await listarPostsPublicados(12) };
+  },
   head: () => ({
+
     meta: [
       { title: TITLE },
       { name: "description", content: DESC },
