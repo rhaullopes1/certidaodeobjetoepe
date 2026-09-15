@@ -183,7 +183,106 @@ export async function gerarConteudo(opts: { topicId?: string; nicho?: Nicho; cri
   return item;
 }
 
+/** Instante ISO de uma data (AAAA-MM-DD) + horário (HH:MM) no fuso de Brasília. */
+function instanteBrasilia(data: string, horario: string) {
+  const [h = "08", m = "00"] = (horario || "08:00").split(":");
+  return new Date(`${data}T${h.padStart(2, "0")}:${m.padStart(2, "0")}:00-03:00`).toISOString();
+}
+
+/** Gera e agenda as pautas pendentes de uma campanha do calendário editorial. */
+export async function gerarCampanha(campanha: string, limite = 3) {
+  const db = await admin();
+  const { promptPauta } = await import("@/lib/conteudo/prompts");
+
+  const { data: pautas, error } = await db
+    .from("content_topics")
+    .select("*")
+    .eq("campanha", campanha)
+    .eq("ativo", true)
+    .order("data_publicacao")
+    .order("horario");
+  if (error) throw new Error(error.message);
+
+  const { data: feitos } = await db
+    .from("content_items")
+    .select("topic_id")
+    .in("topic_id", (pautas ?? []).map((p) => p.id));
+  const prontos = new Set((feitos ?? []).map((f) => f.topic_id));
+  const pendentes = (pautas ?? []).filter((p) => !prontos.has(p.id)).slice(0, limite);
+
+  const criados: { titulo: string; slug: string; agendado: string }[] = [];
+  const erros: { titulo: string; erro: string }[] = [];
+
+  for (const p of pendentes) {
+    try {
+      const pacote = await chamarIA(
+        promptPauta({
+          nicho: p.nicho as Nicho,
+          titulo: p.titulo,
+          angulo: p.angulo,
+          palavra_chave: p.palavra_chave,
+          palavras_secundarias: p.palavras_secundarias,
+          objetivo: p.objetivo,
+          slug_sugerido: p.slug_sugerido,
+          meta_title: p.meta_title,
+          meta_description: p.meta_description,
+        }),
+      );
+
+      let slug = slugify(p.slug_sugerido || pacote.slug || pacote.titulo);
+      const { data: existe } = await db.from("content_items").select("id").eq("slug", slug).maybeSingle();
+      if (existe) slug = `${slug}-${Date.now().toString(36).slice(-4)}`;
+
+      const quando = instanteBrasilia(p.data_publicacao ?? "", p.horario ?? "08:00");
+
+      const { data: item, error: erroInsert } = await db
+        .from("content_items")
+        .insert({
+          topic_id: p.id,
+          nicho: p.nicho,
+          status: "scheduled",
+          slug,
+          titulo: (pacote.titulo || p.meta_title || p.titulo).slice(0, 120),
+          meta_description: (pacote.meta_description || p.meta_description || "").slice(0, 200),
+          resumo: pacote.resumo ?? "",
+          blocos: (pacote.blocos ?? []) as never,
+          faq: (pacote.faq ?? []) as never,
+          canais: {
+            ...(pacote.canais ?? {}),
+            h1: pacote.h1 ?? p.titulo,
+            pauta: p.titulo,
+            objetivo: p.objetivo,
+            palavra_chave: p.palavra_chave,
+            palavras_secundarias: p.palavras_secundarias ?? [],
+            cta: "Precisa de informações oficiais sobre um processo? Solicite sua Certidão de Objeto e Pé online, de qualquer lugar do Brasil. Acesse: https://certidaodeobjetoepe.org",
+            links: Object.fromEntries(CANAIS.map((c) => [c.id, utmUrl(c.id, p.nicho)])),
+          } as never,
+          modelo: MODELO,
+          agendado_para: quando,
+        })
+        .select()
+        .single();
+      if (erroInsert) throw new Error(erroInsert.message);
+
+      await db.from("content_topics").update({ ultimo_uso_em: new Date().toISOString() }).eq("id", p.id);
+      // Calendário editorial: o item fica agendado para revisão, SEM job de
+      // publicação. Nada é publicado automaticamente (nem no blog, nem em
+      // redes sociais) até que a equipe publique pelo painel.
+      await log("info", `Pauta gerada e agendada: ${p.titulo}`, { itemId: item.id });
+      criados.push({ titulo: item.titulo, slug, agendado: quando });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "erro desconhecido";
+      erros.push({ titulo: p.titulo, erro: msg });
+      await log("error", `Falha ao gerar pauta "${p.titulo}": ${msg}`);
+    }
+  }
+
+  const restantes = (pautas ?? []).length - prontos.size - criados.length;
+  return { campanha, criados, erros, restantes: Math.max(0, restantes) };
+}
+
 export async function listarItens(filtro: { status?: string; nicho?: string } = {}) {
+
   const db = await admin();
   let q = db.from("content_items").select("*").order("created_at", { ascending: false }).limit(100);
   if (filtro.status) q = q.eq("status", filtro.status);

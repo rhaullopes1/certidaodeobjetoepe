@@ -37,6 +37,7 @@ export const Route = createFileRoute("/_authenticated/admin/conteudo")({
 
 const ABAS = [
   { id: "dashboard", nome: "Visão geral" },
+  { id: "calendario", nome: "Calendário" },
   { id: "conteudos", nome: "Conteúdos" },
   { id: "fila", nome: "Fila e logs" },
   { id: "temas", nome: "Temas" },
@@ -44,6 +45,40 @@ const ABAS = [
 ] as const;
 
 type Aba = (typeof ABAS)[number]["id"];
+
+const FUSO = "America/Sao_Paulo";
+
+/** Data AAAA-MM-DD do agendamento no fuso de Brasília. */
+function diaBR(iso: string | null) {
+  if (!iso) return "";
+  const p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: FUSO,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(iso));
+  return p;
+}
+
+function horaBR(iso: string | null) {
+  if (!iso) return "--:--";
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: FUSO,
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(iso));
+}
+
+function rotuloDia(dia: string) {
+  const d = new Date(`${dia}T12:00:00-03:00`);
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: FUSO,
+    weekday: "short",
+    day: "2-digit",
+    month: "2-digit",
+  }).format(d);
+}
+
 
 function Card({ titulo, valor }: { titulo: string; valor: number | string }) {
   return (
@@ -103,10 +138,88 @@ function PainelConteudo() {
   const [agenda, setAgenda] = useState<Agenda | null>(null);
   const agendaAtual = agenda ?? painel.data?.agenda ?? null;
 
+  const [fDe, setFDe] = useState("");
+  const [fAte, setFAte] = useState("");
+  const [fNicho, setFNicho] = useState("");
+  const [fStatus, setFStatus] = useState("");
+
+  const itens = painel.data?.itens ?? [];
+  const itensFiltrados = itens
+    .filter((i) => {
+      const dia = diaBR(i.agendado_para);
+      if (fDe && (!dia || dia < fDe)) return false;
+      if (fAte && (!dia || dia > fAte)) return false;
+      if (fNicho && i.nicho !== fNicho) return false;
+      if (fStatus && i.status !== fStatus) return false;
+      return true;
+    })
+    .sort((a, b) => (a.agendado_para ?? "").localeCompare(b.agendado_para ?? ""));
+
+  const porDia = itensFiltrados
+    .filter((i) => i.agendado_para)
+    .reduce<Record<string, typeof itensFiltrados>>((acc, i) => {
+      const d = diaBR(i.agendado_para);
+      (acc[d] ??= []).push(i);
+      return acc;
+    }, {});
+
+  const statusDisponiveis = [...new Set(itens.map((i) => i.status))];
+
+
+
   const campo =
     "w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none focus:border-ring";
   const botao =
     "inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50";
+
+  const filtros = (
+    <div className="card-premium grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-5">
+      <label className="text-xs font-semibold">
+        <span className="mb-1 block">De</span>
+        <input type="date" className={campo} value={fDe} onChange={(e) => setFDe(e.target.value)} />
+      </label>
+      <label className="text-xs font-semibold">
+        <span className="mb-1 block">Até</span>
+        <input type="date" className={campo} value={fAte} onChange={(e) => setFAte(e.target.value)} />
+      </label>
+      <label className="text-xs font-semibold">
+        <span className="mb-1 block">Público</span>
+        <select className={campo} value={fNicho} onChange={(e) => setFNicho(e.target.value)}>
+          <option value="">Todos</option>
+          {Object.entries(NICHOS).map(([id, nome]) => (
+            <option key={id} value={id}>
+              {String(nome)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="text-xs font-semibold">
+        <span className="mb-1 block">Status</span>
+        <select className={campo} value={fStatus} onChange={(e) => setFStatus(e.target.value)}>
+          <option value="">Todos</option>
+          {statusDisponiveis.map((s) => (
+            <option key={s} value={s}>
+              {rotuloStatus(s)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div className="flex items-end">
+        <button
+          className="w-full rounded-full border border-border px-4 py-2.5 text-sm font-semibold"
+          onClick={() => {
+            setFDe("");
+            setFAte("");
+            setFNicho("");
+            setFStatus("");
+          }}
+        >
+          Limpar filtros
+        </button>
+      </div>
+    </div>
+  );
+
 
   return (
     <div className="min-h-dvh bg-secondary/40">
@@ -247,12 +360,54 @@ function PainelConteudo() {
               </section>
             )}
 
+            {painel.data && aba === "calendario" && (
+              <section className="mt-6 space-y-4">
+                {filtros}
+                <p className="text-xs text-muted-foreground">
+                  Horários no fuso de Brasília. Conteúdos agendados ficam aguardando revisão — nada é
+                  publicado automaticamente no blog nem nas redes sociais.
+                </p>
+                {Object.keys(porDia).length === 0 && (
+                  <p className="text-sm text-muted-foreground">Nenhuma publicação agendada no período.</p>
+                )}
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {Object.entries(porDia).map(([dia, lista]) => (
+                    <div key={dia} className="card-premium p-4">
+                      <p className="font-display text-sm font-bold capitalize">{rotuloDia(dia)}</p>
+                      <ul className="mt-3 space-y-3">
+                        {lista.map((i) => (
+                          <li key={i.id} className="rounded-xl bg-secondary/50 p-3">
+                            <div className="flex flex-wrap items-center gap-2 text-xs">
+                              <span className="font-bold">{horaBR(i.agendado_para)}</span>
+                              <span className="text-muted-foreground">
+                                {NICHOS[i.nicho as keyof typeof NICHOS] ?? i.nicho}
+                              </span>
+                              <span className="rounded-full bg-card px-2 py-0.5 font-semibold">
+                                {rotuloStatus(i.status)}
+                              </span>
+                            </div>
+                            <p className="mt-1 text-sm font-semibold leading-snug">{i.titulo}</p>
+                            <p className="mt-1 break-all text-[11px] text-muted-foreground">/blog/{i.slug}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {painel.data && aba === "conteudos" && (
               <section className="mt-6 space-y-4">
-                {painel.data.itens.length === 0 && (
-                  <p className="text-sm text-muted-foreground">Nenhum conteúdo gerado ainda.</p>
+                {filtros}
+                <p className="text-xs text-muted-foreground">
+                  {itensFiltrados.length} de {itens.length} conteúdos.
+                </p>
+                {itensFiltrados.length === 0 && (
+                  <p className="text-sm text-muted-foreground">Nenhum conteúdo para estes filtros.</p>
                 )}
-                {painel.data.itens.map((i) => (
+                {itensFiltrados.map((i) => (
+
                   <article key={i.id} className="card-premium p-5">
                     <div className="flex flex-wrap items-center gap-3">
                       <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
@@ -262,6 +417,11 @@ function PainelConteudo() {
                         {NICHOS[i.nicho as keyof typeof NICHOS] ?? i.nicho}
                       </span>
                       <span className="text-xs text-muted-foreground">/blog/{i.slug}</span>
+                      {i.agendado_para && (
+                        <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
+                          {rotuloDia(diaBR(i.agendado_para))} · {horaBR(i.agendado_para)}
+                        </span>
+                      )}
                     </div>
                     <h3 className="mt-3 font-bold">{i.titulo}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">{i.resumo}</p>
@@ -275,7 +435,7 @@ function PainelConteudo() {
                           <CheckCircle2 className="h-4 w-4" /> Aprovar
                         </button>
                       )}
-                      {(i.status === "approved" || i.status === "failed") && (
+                      {(i.status === "approved" || i.status === "scheduled" || i.status === "failed") && (
                         <button
                           className={botao}
                           disabled={agendar.isPending}
