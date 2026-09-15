@@ -240,7 +240,7 @@ export async function gerarCampanha(campanha: string, limite = 3) {
         .insert({
           topic_id: p.id,
           nicho: p.nicho,
-          status: "approved",
+          status: "scheduled",
           slug,
           titulo: (pacote.titulo || p.meta_title || p.titulo).slice(0, 120),
           meta_description: (pacote.meta_description || p.meta_description || "").slice(0, 200),
@@ -265,7 +265,9 @@ export async function gerarCampanha(campanha: string, limite = 3) {
       if (erroInsert) throw new Error(erroInsert.message);
 
       await db.from("content_topics").update({ ultimo_uso_em: new Date().toISOString() }).eq("id", p.id);
-      await agendarItem(item.id, quando, ["blog"]);
+      // Calendário editorial: o item fica agendado para revisão, SEM job de
+      // publicação. Nada é publicado automaticamente (nem no blog, nem em
+      // redes sociais) até que a equipe publique pelo painel.
       await log("info", `Pauta gerada e agendada: ${p.titulo}`, { itemId: item.id });
       criados.push({ titulo: item.titulo, slug, agendado: quando });
     } catch (e) {
