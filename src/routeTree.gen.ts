@@ -39,6 +39,7 @@ import { Route as TribunaisIndexRouteImport } from './routes/tribunais.index'
 import { Route as TribunaisSiglaRouteImport } from './routes/tribunais.$sigla'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
+import { Route as AuthenticatedAdminConteudoRouteImport } from './routes/_authenticated/admin.conteudo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
 import { Route as AuthenticatedAdminEmailsRouteImport } from './routes/_authenticated/admin.emails'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
@@ -208,6 +209,12 @@ const AuthenticatedAdminProtocoloRoute =
     path: '/admin/$protocolo',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminConteudoRoute =
+  AuthenticatedAdminConteudoRouteImport.update({
+    id: '/admin/conteudo',
+    path: '/admin/conteudo',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminDocumentosRoute =
   AuthenticatedAdminDocumentosRouteImport.update({
     id: '/admin/documentos',
@@ -333,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -381,6 +389,7 @@ export interface FileRoutesByTo {
   '/guias': typeof GuiasIndexRoute
   '/tribunais': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -431,6 +440,7 @@ export interface FileRoutesById {
   '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/_authenticated/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
@@ -481,6 +491,7 @@ export interface FileRouteTypes {
     | '/guias/'
     | '/tribunais/'
     | '/admin/$protocolo'
+    | '/admin/conteudo'
     | '/admin/documentos'
     | '/admin/emails'
     | '/admin/historico'
@@ -529,6 +540,7 @@ export interface FileRouteTypes {
     | '/guias'
     | '/tribunais'
     | '/admin/$protocolo'
+    | '/admin/conteudo'
     | '/admin/documentos'
     | '/admin/emails'
     | '/admin/historico'
@@ -578,6 +590,7 @@ export interface FileRouteTypes {
     | '/guias/'
     | '/tribunais/'
     | '/_authenticated/admin/$protocolo'
+    | '/_authenticated/admin/conteudo'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/emails'
     | '/_authenticated/admin/historico'
@@ -853,6 +866,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProtocoloRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/conteudo': {
+      id: '/_authenticated/admin/conteudo'
+      path: '/admin/conteudo'
+      fullPath: '/admin/conteudo'
+      preLoaderRoute: typeof AuthenticatedAdminConteudoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/documentos': {
       id: '/_authenticated/admin/documentos'
       path: '/admin/documentos'
@@ -978,6 +998,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
   AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
+  AuthenticatedAdminConteudoRoute: typeof AuthenticatedAdminConteudoRoute
   AuthenticatedAdminDocumentosRoute: typeof AuthenticatedAdminDocumentosRoute
   AuthenticatedAdminEmailsRoute: typeof AuthenticatedAdminEmailsRoute
   AuthenticatedAdminHistoricoRoute: typeof AuthenticatedAdminHistoricoRoute
@@ -988,6 +1009,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
   AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
+  AuthenticatedAdminConteudoRoute: AuthenticatedAdminConteudoRoute,
   AuthenticatedAdminDocumentosRoute: AuthenticatedAdminDocumentosRoute,
   AuthenticatedAdminEmailsRoute: AuthenticatedAdminEmailsRoute,
   AuthenticatedAdminHistoricoRoute: AuthenticatedAdminHistoricoRoute,

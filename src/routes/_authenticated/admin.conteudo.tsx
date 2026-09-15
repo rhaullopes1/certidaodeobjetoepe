@@ -96,7 +96,7 @@ function PainelConteudo() {
     (v: { id: string; quando: string; canais: string[] }) => agendarItemFn({ data: v }),
     "Agendado.",
   );
-  const processar = acao(() => processarFilaFn(), "Fila processada.");
+  const processar = acao((_: void) => processarFilaFn(), "Fila processada.");
   const reprocessar = acao((jobId: string) => reprocessarJobFn({ data: { jobId } }), "Job reprocessado.");
   const salvar = acao((a: Agenda) => salvarAgendaFn({ data: a }), "Agenda salva.");
 
