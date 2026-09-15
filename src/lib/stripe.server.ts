@@ -57,16 +57,18 @@ export async function assinaturaStripeValida(
   const segredo = process.env["STRIPE_WEBHOOK_SECRET"];
   if (!segredo || !cabecalho) return false;
 
-  const partes = Object.fromEntries(
-    cabecalho.split(",").map((p) => {
-      const i = p.indexOf("=");
-      return [p.slice(0, i).trim(), p.slice(i + 1).trim()];
-    }),
-  ) as Record<string, string>;
-
-  const timestamp = partes["t"];
-  const assinatura = partes["v1"];
-  if (!timestamp || !assinatura) return false;
+  // O cabeçalho pode trazer várias assinaturas v1 (janela de troca de segredo).
+  let timestamp = "";
+  const assinaturas: string[] = [];
+  for (const parte of cabecalho.split(",")) {
+    const i = parte.indexOf("=");
+    if (i < 0) continue;
+    const chaveParte = parte.slice(0, i).trim();
+    const valor = parte.slice(i + 1).trim();
+    if (chaveParte === "t") timestamp = valor;
+    else if (chaveParte === "v1") assinaturas.push(valor);
+  }
+  if (!timestamp || assinaturas.length === 0) return false;
 
   // Rejeita avisos com mais de 5 minutos (proteção contra reenvio antigo).
   const idade = Math.abs(Date.now() / 1000 - Number(timestamp));
