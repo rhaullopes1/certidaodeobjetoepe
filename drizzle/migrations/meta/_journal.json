@@ -15,6 +15,13 @@
       "when": 1789512210768,
       "tag": "0001_central_conteudo_cop",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789513064380,
+      "tag": "0002_calendario_editorial_campos",
+      "breakpoints": true
     }
   ]
 }

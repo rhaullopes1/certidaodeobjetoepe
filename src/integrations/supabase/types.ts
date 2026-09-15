@@ -366,33 +366,57 @@ export type Database = {
         Row: {
           angulo: string
           ativo: boolean
+          campanha: string | null
           created_at: string
+          data_publicacao: string | null
+          horario: string | null
           id: string
+          meta_description: string | null
+          meta_title: string | null
           nicho: string
+          objetivo: string | null
           palavra_chave: string
+          palavras_secundarias: string[] | null
           prioridade: number
+          slug_sugerido: string | null
           titulo: string
           ultimo_uso_em: string | null
         }
         Insert: {
           angulo?: string
           ativo?: boolean
+          campanha?: string | null
           created_at?: string
+          data_publicacao?: string | null
+          horario?: string | null
           id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           nicho: string
+          objetivo?: string | null
           palavra_chave?: string
+          palavras_secundarias?: string[] | null
           prioridade?: number
+          slug_sugerido?: string | null
           titulo: string
           ultimo_uso_em?: string | null
         }
         Update: {
           angulo?: string
           ativo?: boolean
+          campanha?: string | null
           created_at?: string
+          data_publicacao?: string | null
+          horario?: string | null
           id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           nicho?: string
+          objetivo?: string | null
           palavra_chave?: string
+          palavras_secundarias?: string[] | null
           prioridade?: number
+          slug_sugerido?: string | null
           titulo?: string
           ultimo_uso_em?: string | null
         }
