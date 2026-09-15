@@ -172,6 +172,55 @@ function PainelConteudo() {
   const botao =
     "inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50";
 
+  const filtros = (
+    <div className="card-premium grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-5">
+      <label className="text-xs font-semibold">
+        <span className="mb-1 block">De</span>
+        <input type="date" className={campo} value={fDe} onChange={(e) => setFDe(e.target.value)} />
+      </label>
+      <label className="text-xs font-semibold">
+        <span className="mb-1 block">Até</span>
+        <input type="date" className={campo} value={fAte} onChange={(e) => setFAte(e.target.value)} />
+      </label>
+      <label className="text-xs font-semibold">
+        <span className="mb-1 block">Público</span>
+        <select className={campo} value={fNicho} onChange={(e) => setFNicho(e.target.value)}>
+          <option value="">Todos</option>
+          {Object.entries(NICHOS).map(([id, nome]) => (
+            <option key={id} value={id}>
+              {String(nome)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="text-xs font-semibold">
+        <span className="mb-1 block">Status</span>
+        <select className={campo} value={fStatus} onChange={(e) => setFStatus(e.target.value)}>
+          <option value="">Todos</option>
+          {statusDisponiveis.map((s) => (
+            <option key={s} value={s}>
+              {rotuloStatus(s)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div className="flex items-end">
+        <button
+          className="w-full rounded-full border border-border px-4 py-2.5 text-sm font-semibold"
+          onClick={() => {
+            setFDe("");
+            setFAte("");
+            setFNicho("");
+            setFStatus("");
+          }}
+        >
+          Limpar filtros
+        </button>
+      </div>
+    </div>
+  );
+
+
   return (
     <div className="min-h-dvh bg-secondary/40">
       <AdminHeader />
