@@ -99,6 +99,31 @@ function BlogHub() {
           </Link>
         </nav>
 
+        {recentes.length > 0 && (
+          <section className="mt-14">
+            <h2 className="font-display text-2xl font-bold">Publicações recentes</h2>
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {recentes.map((p) => (
+                <li key={p.slug}>
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: p.slug }}
+                    className="block h-full rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-secondary"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                      {new Date(p.atualizado).toLocaleDateString("pt-BR")}
+                    </span>
+                    <h3 className="mt-3 text-lg font-bold leading-snug">{p.titulo}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.resumo}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+
+
         {CATEGORIAS.map((c) => {
           const posts = postsPorCategoria(c.slug);
           if (posts.length === 0) return null;
