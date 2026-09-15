@@ -417,6 +417,11 @@ function PainelConteudo() {
                         {NICHOS[i.nicho as keyof typeof NICHOS] ?? i.nicho}
                       </span>
                       <span className="text-xs text-muted-foreground">/blog/{i.slug}</span>
+                      {i.agendado_para && (
+                        <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
+                          {rotuloDia(diaBR(i.agendado_para))} · {horaBR(i.agendado_para)}
+                        </span>
+                      )}
                     </div>
                     <h3 className="mt-3 font-bold">{i.titulo}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">{i.resumo}</p>
@@ -430,7 +435,7 @@ function PainelConteudo() {
                           <CheckCircle2 className="h-4 w-4" /> Aprovar
                         </button>
                       )}
-                      {(i.status === "approved" || i.status === "failed") && (
+                      {(i.status === "approved" || i.status === "scheduled" || i.status === "failed") && (
                         <button
                           className={botao}
                           disabled={agendar.isPending}
