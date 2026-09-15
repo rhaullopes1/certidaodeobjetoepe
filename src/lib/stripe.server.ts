@@ -87,10 +87,12 @@ export async function assinaturaStripeValida(
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 
-  if (esperado.length !== assinatura.length) return false;
-  let diff = 0;
-  for (let i = 0; i < esperado.length; i++) diff |= esperado.charCodeAt(i) ^ assinatura.charCodeAt(i);
-  return diff === 0;
+  return assinaturas.some((assinatura) => {
+    if (esperado.length !== assinatura.length) return false;
+    let diff = 0;
+    for (let i = 0; i < esperado.length; i++) diff |= esperado.charCodeAt(i) ^ assinatura.charCodeAt(i);
+    return diff === 0;
+  });
 }
 
 export function temSegredoWebhookStripe() {
