@@ -131,3 +131,14 @@ export const salvarAgendaFn = createServerFn({ method: "POST" })
     const { salvarAgenda } = await import("./conteudo.server");
     return salvarAgenda(data);
   });
+
+export const gerarCampanhaFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) =>
+    z.object({ campanha: z.string().min(3), limite: z.number().min(1).max(5).optional() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    await exigirEquipe(context);
+    const { gerarCampanha } = await import("./conteudo.server");
+    return gerarCampanha(data.campanha, data.limite ?? 3);
+  });

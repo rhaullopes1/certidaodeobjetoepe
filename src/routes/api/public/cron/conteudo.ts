@@ -8,7 +8,21 @@ async function executar(request: Request) {
   }
 
   try {
-    const { executarProximoCiclo, processarFila } = await import("@/lib/conteudo.server");
+    const url = new URL(request.url);
+    const campanha = url.searchParams.get("campanha");
+    const { executarProximoCiclo, processarFila, gerarCampanha } = await import(
+      "@/lib/conteudo.server"
+    );
+
+    if (campanha) {
+      const limite = Number(url.searchParams.get("limite") ?? 3);
+      const resultado = await gerarCampanha(campanha, Math.min(Math.max(limite, 1), 5));
+      return new Response(JSON.stringify(resultado), {
+        status: 200,
+        headers: { "content-type": "application/json", "cache-control": "no-store" },
+      });
+    }
+
     const ciclo = await executarProximoCiclo();
     const fila = await processarFila(10);
     return new Response(JSON.stringify({ ciclo, fila }), {
