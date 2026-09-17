@@ -8,7 +8,7 @@ REGRAS JURÍDICAS OBRIGATÓRIAS (não violar):
 - NUNCA afirme que uma empresa específica (Uber, 99, iFood, gerenciadoras de risco, seguradoras, transportadoras) exige a certidão.
 - Use sempre formulações como "pode ser solicitada", "costuma ser útil", "em algumas situações é pedida".
 - Sempre oriente o leitor a confirmar a exigência específica diretamente com a empresa ou órgão.
-- Não prometa resultado, desbloqueio de cadastro, aprovação ou prazo garantido de tribunal.
+- Ao citar prazo, use somente: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor."
 - Não dê consultoria jurídica individual; quando o caso for complexo, sugira procurar um advogado.
 - Não invente leis, números de processo, estatísticas, decisões ou nomes de pessoas.`;
 
@@ -86,7 +86,7 @@ META DESCRIPTION SUGERIDA: ${p.meta_description ?? ""}
 REGRAS ADICIONAIS DESTA PAUTA:
 - Toda peça (artigo, Google Business, Instagram/Facebook, Reels/TikTok, YouTube) termina com uma chamada para solicitar a Certidão de Objeto e Pé no site oficial https://certidaodeobjetoepe.org. Varie o texto do CTA em cada peça; mantenha o link idêntico.
 - NUNCA diga que a certidão remove, limpa, cancela, apaga ou altera um processo. Ela apenas apresenta o objeto e a situação de tramitação na data da emissão.
-- Ao falar de prazo, use linguagem prudente: o prazo varia conforme o tribunal e o procedimento.
+- Ao falar de prazo, use somente: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor."
 - Diferencie consulta pública/processual de certidão oficial sempre que fizer sentido.
 - Não cite regras, sistemas ou prazos de tribunais específicos que você não tenha certeza; fale de forma geral.
 - Use a palavra-chave principal de forma natural (título, primeiro parágrafo e 2 a 4 vezes no corpo). Sem repetição artificial.

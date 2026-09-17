@@ -145,35 +145,35 @@ function EstadosHub() {
           </section>
 
           <section className="mt-12 max-w-3xl">
-            <h2 className="font-display text-2xl font-bold">Prazo por ramo da Justiça</h2>
+            <h2 className="font-display text-2xl font-bold">Prazo de emissão</h2>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[420px] text-left text-sm">
                 <thead className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
                   <tr>
                     <th className="py-2 pr-4">Ramo</th>
-                    <th className="py-2 pr-4">Prazo médio</th>
+                    <th className="py-2 pr-4">Prazo informado</th>
                     <th className="py-2">Observação</th>
                   </tr>
                 </thead>
                 <tbody className="text-muted-foreground">
                   <tr className="border-t border-border">
                     <td className="py-2 pr-4">Justiça Estadual</td>
-                    <td className="py-2 pr-4">1 a 10 dias úteis</td>
+                    <td className="py-2 pr-4">1 a 5 dias úteis, conforme a comarca e o tribunal emissor</td>
                     <td className="py-2">Processos físicos demoram mais</td>
                   </tr>
                   <tr className="border-t border-border">
                     <td className="py-2 pr-4">Justiça Federal</td>
-                    <td className="py-2 pr-4">3 a 12 dias úteis</td>
+                    <td className="py-2 pr-4">1 a 5 dias úteis, conforme a comarca e o tribunal emissor</td>
                     <td className="py-2">Varia por seção judiciária e TRF</td>
                   </tr>
                   <tr className="border-t border-border">
                     <td className="py-2 pr-4">Justiça do Trabalho</td>
-                    <td className="py-2 pr-4">3 a 10 dias úteis</td>
+                    <td className="py-2 pr-4">1 a 5 dias úteis, conforme a comarca e o tribunal emissor</td>
                     <td className="py-2">PJe agiliza a tramitação</td>
                   </tr>
                   <tr className="border-t border-border">
                     <td className="py-2 pr-4">Tribunais superiores</td>
-                    <td className="py-2 pr-4">5 a 15 dias úteis</td>
+                    <td className="py-2 pr-4">1 a 5 dias úteis, conforme a comarca e o tribunal emissor</td>
                     <td className="py-2">Volume alto de pedidos</td>
                   </tr>
                 </tbody>
@@ -204,8 +204,7 @@ function EstadosHub() {
 
           <h2 className="mt-14 font-display text-2xl font-bold">Certidão de Objeto e Pé por estado</h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Escolha o estado do processo e veja o tribunal responsável, o sistema processual e o
-            prazo praticado na região.
+            Escolha o estado do processo e veja o tribunal responsável, o sistema processual e o prazo geral de emissão.
           </p>
 
 

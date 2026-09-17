@@ -18,7 +18,7 @@ const URL = `${SITE}/certidao-objeto-e-pe-tjpe`;
 const OG_IMAGE = `${SITE}/og-certidao.jpg`;
 const TITLE = "Certidão de Objeto e Pé TJPE | Como Solicitar Online em Pernambuco";
 const DESC =
-  "Certidão de Objeto e Pé no TJPE: solicite online processos do Tribunal de Justiça de Pernambuco, sem advogado e sem ir ao fórum. Prazo de 1 a 7 dias úteis, PJe e Recife, Olinda, Jaboatão, Caruaru e Petrolina.";
+  "Certidão de Objeto e Pé no TJPE: solicite online processos do Tribunal de Justiça de Pernambuco, sem advogado e sem ir ao fórum. Prazo de emissão de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor, com atendimento em Recife, Olinda, Jaboatão, Caruaru e Petrolina.";
 
 const COMARCAS = [
   "Recife",
@@ -40,7 +40,7 @@ const FAQ_TJPE: { q: string; a: string }[] = [
   },
   {
     q: "Quanto tempo demora a certidão no Tribunal de Justiça de Pernambuco?",
-    a: "No TJPE o prazo médio é de 1 a 7 dias úteis após a confirmação do pagamento. Processos físicos, antigos ou arquivados podem exigir desarquivamento na comarca de origem, o que amplia o prazo.",
+    a: "O prazo de emissão é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
   },
   {
     q: "Qual o valor da Certidão de Objeto e Pé do TJPE?",
@@ -211,8 +211,7 @@ function TjpePage() {
               processos antigos permanecem em papel no cartório da vara.
             </InfoCard>
             <InfoCard icon={<Clock className="h-5 w-5 text-gold" />} titulo="Prazo médio">
-              1 a 7 dias úteis para processos digitais. Processos arquivados no interior podem exigir
-              desarquivamento na comarca de origem.
+              1 a 5 dias úteis, conforme a comarca e o tribunal emissor.
             </InfoCard>
             <InfoCard icon={<CheckCircle2 className="h-5 w-5 text-gold" />} titulo="Valor">
               A partir de {formatarBRL(TABELA_PRECOS[1]!)} por certidão, com desconto progressivo até

@@ -48,10 +48,10 @@ export const POSTS_CONCEITO: Post[] = [
       { t: "p", x: "Qualquer pessoa física ou jurídica pode pedir a certidão de processo público, mesmo sem ser parte e sem advogado, porque a publicidade dos atos processuais é regra constitucional. A exceção são os processos em segredo de justiça, restritos às partes e a seus procuradores." },
       { t: "h", x: "Quanto tempo demora e quanto custa" },
       { t: "tabela", head: ["Ramo", "Prazo médio", "Observação"], rows: [
-        ["Justiça Estadual", "1 a 10 dias úteis", "Varia por comarca; processos físicos demoram mais"],
-        ["Justiça Federal", "3 a 12 dias úteis", "Depende da seção judiciária e do TRF"],
-        ["Justiça do Trabalho", "3 a 10 dias úteis", "Tramitação eletrônica no PJe agiliza"],
-        ["Tribunais superiores", "5 a 15 dias úteis", "Volume alto de pedidos"],
+        ["Justiça Estadual", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor", "Varia conforme a comarca e o tribunal"],
+        ["Justiça Federal", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor", "Varia conforme a seção judiciária e o tribunal"],
+        ["Justiça do Trabalho", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor", "Varia conforme a unidade emissora"],
+        ["Tribunais superiores", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor", "Varia conforme o tribunal emissor"],
       ] },
       { t: "p", x: "Alguns tribunais cobram taxa ou custas de expedição; outros emitem gratuitamente pela internet quando o processo é eletrônico e público. O custo do serviço de assessoria é separado das custas e cobre a identificação da vara, o protocolo do requerimento, o acompanhamento e a entrega digital." },
       { t: "nota", x: "A certidão não remove nem altera o processo. Ela apenas documenta oficialmente o que está lá — e é justamente essa transparência que costuma resolver a exigência de quem pediu o documento." },
@@ -63,7 +63,7 @@ export const POSTS_CONCEITO: Post[] = [
       { q: "Qualquer pessoa pode pedir?", a: "Sim, para processos públicos, mesmo sem ser parte e sem advogado. Processos em segredo de justiça só podem ser certificados às partes e a seus advogados constituídos." },
       { q: "A certidão apaga o processo do meu nome?", a: "Não. Ela apenas descreve oficialmente o processo e sua fase atual. Nenhuma certidão exclui ou altera um processo judicial." },
       { q: "Preciso de uma certidão por processo?", a: "Sim. Cada certidão se refere a um processo específico. Se houver mais de um, é preciso uma para cada." },
-      { q: "Quanto tempo demora para sair?", a: "Em média de 1 a 10 dias úteis na Justiça Estadual e de 3 a 15 dias úteis nos demais ramos, conforme o tribunal e se o processo é eletrônico ou físico." },
+      { q: "Quanto tempo demora para sair?", a: "De 1 a 5 dias úteis, conforme a comarca e o tribunal emissor." },
     ],
   },
 

@@ -32,7 +32,7 @@ export const ESTADOS_DETALHES: Record<string, EstadoDetalhe> = {
       },
       {
         q: "Consigo certidão de processo criminal antigo do interior de São Paulo?",
-        a: "Sim. Em comarcas do interior com processos físicos arquivados, o requerimento é feito ao cartório da vara de origem. O prazo costuma passar de 7 dias úteis e avisamos você assim que o cartório responde.",
+        a: "Sim. Em comarcas do interior com processos físicos arquivados, o requerimento é feito ao cartório da vara de origem. O prazo informado é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor, e avisamos você assim que o cartório responde.",
       },
     ],
   },
@@ -51,7 +51,7 @@ export const ESTADOS_DETALHES: Record<string, EstadoDetalhe> = {
       },
       {
         q: "Atendem comarcas pequenas do interior de Minas?",
-        a: "Sim, todas as comarcas mineiras, incluindo as de vara única. Nesses casos o pedido é protocolado diretamente na secretaria da vara e o prazo médio fica mais próximo de 8 dias úteis.",
+        a: "Sim, todas as comarcas mineiras, incluindo as de vara única. Nesses casos o pedido é protocolado diretamente na secretaria da vara e o prazo informado é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
       },
     ],
   },

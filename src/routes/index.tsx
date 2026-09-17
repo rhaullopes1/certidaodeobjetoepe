@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { SeloGarantia } from "@/components/site/selo-garantia";
+import { PrazoEmissao } from "@/components/site/prazo-emissao";
 import { useState, type FormEvent } from "react";
 import {
   ShieldCheck,
@@ -149,7 +149,7 @@ function Hero() {
               documento.
             </p>
 
-            <SeloGarantia variante="escuro" className="mt-6 max-w-xl" />
+            <PrazoEmissao variante="escuro" className="mt-6 max-w-xl" />
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/solicitar"
@@ -612,7 +612,7 @@ function Footer() {
             Institucional
           </h3>
           <ul className="mt-4 space-y-2.5 text-sm text-primary-foreground/70">
-            <li><Link to="/garantia" className="hover:text-primary-foreground">Garantia de 5 dias úteis</Link></li>
+            <li><Link to="/garantia" className="hover:text-primary-foreground">Prazo de emissão</Link></li>
             <li><Link to="/politica-de-privacidade" className="hover:text-primary-foreground">Política de privacidade</Link></li>
             <li><Link to="/termos-de-uso" className="hover:text-primary-foreground">Termos de uso</Link></li>
           </ul>

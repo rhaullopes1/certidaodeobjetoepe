@@ -24,7 +24,7 @@ export const TRFS_SEO: TrfSeo[] = [
     regiao: "3ª Região",
     sede: "São Paulo",
     sistema: "PJe",
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     estados: ["São Paulo", "Mato Grosso do Sul"],
     ufsSlugs: ["sp", "ms"],
     intro:
@@ -47,7 +47,7 @@ export const TRFS_SEO: TrfSeo[] = [
     regiao: "1ª Região",
     sede: "Brasília",
     sistema: "PJe",
-    prazo: "4 a 12 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     estados: [
       "Acre",
       "Amazonas",
@@ -84,7 +84,7 @@ export const TRFS_SEO: TrfSeo[] = [
     regiao: "2ª Região",
     sede: "Rio de Janeiro",
     sistema: "eproc",
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     estados: ["Rio de Janeiro", "Espírito Santo"],
     ufsSlugs: ["rj", "es"],
     intro:
@@ -107,7 +107,7 @@ export const TRFS_SEO: TrfSeo[] = [
     regiao: "4ª Região",
     sede: "Porto Alegre",
     sistema: "eproc",
-    prazo: "2 a 9 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     estados: ["Rio Grande do Sul", "Santa Catarina", "Paraná"],
     ufsSlugs: ["rs", "sc", "pr"],
     intro:
@@ -130,7 +130,7 @@ export const TRFS_SEO: TrfSeo[] = [
     regiao: "5ª Região",
     sede: "Recife",
     sistema: "PJe",
-    prazo: "3 a 11 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     estados: ["Alagoas", "Ceará", "Paraíba", "Pernambuco", "Rio Grande do Norte", "Sergipe"],
     ufsSlugs: ["pe", "ce"],
     intro:
@@ -153,7 +153,7 @@ export const TRFS_SEO: TrfSeo[] = [
     regiao: "6ª Região",
     sede: "Belo Horizonte",
     sistema: "PJe",
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     estados: ["Minas Gerais"],
     ufsSlugs: ["mg"],
     intro:

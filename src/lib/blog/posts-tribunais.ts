@@ -48,7 +48,7 @@ export const POSTS_TRIBUNAIS: Post[] = [
     faq: [
       { q: "Preciso de advogado para emitir?", a: "Não, em processos públicos. Só é necessário advogado ou procuração em processos que tramitam em segredo de justiça." },
       { q: "Dá para emitir sem o número do processo?", a: "É possível localizar o processo por nome e CPF nas consultas públicas de muitos tribunais, mas o pedido da certidão sempre se refere a um processo identificado." },
-      { q: "Quanto tempo leva?", a: "De 1 a 15 dias úteis conforme o tribunal, o sistema e se o processo é eletrônico, físico ou arquivado." },
+      { q: "Quanto tempo leva?", a: "De 1 a 5 dias úteis, conforme a comarca e o tribunal emissor." },
     ],
   },
   {
@@ -160,7 +160,7 @@ export const POSTS_TRIBUNAIS: Post[] = [
       { t: "ul", items: [
         "Sistema processual: e-SAJ, PJe, Projudi, eproc ou soluções próprias.",
         "Custas: há tribunais que emitem gratuitamente e outros que cobram por página.",
-        "Prazo: de 1 a 12 dias úteis, conforme a estrutura do cartório.",
+        "Prazo: de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
         "Processos físicos: comarcas do interior ainda mantêm acervo em papel, com desarquivamento.",
       ] },
       { t: "p", x: "Reunimos página por tribunal com sistema, prazo médio e comarcas atendidas no índice de tribunais, e páginas por estado com o contexto local." },
@@ -249,11 +249,11 @@ export const POSTS_TRIBUNAIS: Post[] = [
     blocos: [
       { t: "p", x: "Se o processo está em grau de recurso especial ou extraordinário, o 'pé' atual pode estar em um tribunal superior — e a certidão de fase deve ser pedida a ele, não à vara de origem." },
       { t: "tabela", head: ["Tribunal", "Competência típica", "Prazo médio"], rows: [
-        ["STF", "Recurso extraordinário, HC, ações de controle de constitucionalidade", "5 a 15 dias úteis"],
-        ["STJ", "Recurso especial, HC, conflitos de competência", "5 a 15 dias úteis"],
-        ["TST", "Recurso de revista, dissídios coletivos", "5 a 15 dias úteis"],
-        ["STM", "Processos da Justiça Militar da União", "5 a 15 dias úteis"],
-        ["TSE", "Registros de candidatura, contas eleitorais, recursos eleitorais", "5 a 15 dias úteis"],
+        ["STF", "Recurso extraordinário, HC, ações de controle de constitucionalidade", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
+        ["STJ", "Recurso especial, HC, conflitos de competência", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
+        ["TST", "Recurso de revista, dissídios coletivos", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
+        ["STM", "Processos da Justiça Militar da União", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
+        ["TSE", "Registros de candidatura, contas eleitorais, recursos eleitorais", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
       ] },
       { t: "p", x: "Em muitos casos o destinatário aceita a certidão da origem, desde que ela informe que os autos estão em grau de recurso e indique o número no tribunal superior. Quando a exigência é do andamento no próprio superior, o requerimento vai à secretaria do órgão julgador." },
       { t: "cta", x: CTA },
