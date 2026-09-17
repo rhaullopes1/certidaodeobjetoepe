@@ -10,17 +10,17 @@ export const POSTS_DUVIDAS: Post[] = [
     h1: "Quanto tempo demora para sair a Certidão de Objeto e Pé",
     descricao:
       "Prazos reais por tipo de processo e tribunal: eletrônico, físico, arquivado e em segredo de justiça. O que acelera e o que atrasa.",
-    resumo: "De 1 dia útil a algumas semanas — depende de quatro fatores objetivos.",
+    resumo: "O prazo de emissão é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
     atualizado: "2026-08-26",
     leitura: 4,
     blocos: [
       { t: "p", x: "Não existe prazo único. O tempo depende do tribunal, do sistema, do estado do processo e das custas." },
       { t: "tabela", head: ["Situação", "Prazo típico"], rows: [
-        ["Processo eletrônico ativo", "1 a 5 dias úteis"],
-        ["Processo eletrônico arquivado", "3 a 10 dias úteis"],
-        ["Processo físico em comarca", "5 a 15 dias úteis"],
-        ["Processo físico arquivado (desarquivamento)", "10 a 30 dias"],
-        ["Processo em tribunal superior", "5 a 15 dias úteis"],
+        ["Processo eletrônico ativo", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
+        ["Processo eletrônico arquivado", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
+        ["Processo físico em comarca", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
+        ["Processo físico arquivado (desarquivamento)", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
+        ["Processo em tribunal superior", "1 a 5 dias úteis, conforme a comarca e o tribunal emissor"],
       ] },
       { t: "h", x: "O que atrasa" },
       { t: "ul", items: [

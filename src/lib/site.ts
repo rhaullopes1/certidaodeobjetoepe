@@ -108,7 +108,7 @@ export const FAQ = [
   },
   {
     q: "Quanto tempo demora?",
-    a: "O prazo depende do tribunal responsável. Em geral, a emissão ocorre entre 1 e 10 dias úteis. Você é avisado por WhatsApp em cada etapa.",
+    a: "Prazo de emissão: de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor. Você acompanha cada etapa pelo número de protocolo.",
   },
   {
     q: "Preciso de advogado para solicitar?",
@@ -136,8 +136,4 @@ export const FAQ = [
   },
 ];
 
-/** Prazo garantido para a entrega da certidão, contado da confirmação do pagamento. */
-export const GARANTIA_DIAS_UTEIS = 5;
-
-export const GARANTIA_TITULO =
-  "Certidão em até 5 dias úteis ou devolvemos 100% do valor";
+export const PRAZO_EMISSAO = "Prazo de emissão: de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.";

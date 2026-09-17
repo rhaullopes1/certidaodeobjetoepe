@@ -1,7 +1,7 @@
 export { BlogContent } from "./components/blog/blog-content"
 export { AlternativasContato } from "./components/site/alternativas-contato"
 export { PageShell } from "./components/site/page-shell"
-export { SeloGarantia } from "./components/site/selo-garantia"
+export { PrazoEmissao } from "./components/site/prazo-emissao"
 export { TrfLanding } from "./components/site/trf-landing"
 export { UserMenu } from "./components/user-menu"
 export { Constants } from "./integrations/supabase/types"

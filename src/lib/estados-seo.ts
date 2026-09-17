@@ -24,7 +24,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de São Paulo",
     capital: "São Paulo",
     cidades: ["São Paulo", "Campinas", "Guarulhos", "Santos", "Ribeirão Preto", "São Bernardo do Campo", "Sorocaba", "Osasco"],
-    prazo: "1 a 7 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Solicite a Certidão de Objeto e Pé de processos que tramitam no TJSP, na Justiça Federal da 3ª Região e no TRT da 2ª e 15ª Regiões, sem sair de casa.",
     contexto:
@@ -38,7 +38,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Minas Gerais",
     capital: "Belo Horizonte",
     cidades: ["Belo Horizonte", "Uberlândia", "Contagem", "Juiz de Fora", "Betim", "Montes Claros", "Uberaba", "Governador Valadares"],
-    prazo: "2 a 8 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJMG, da Justiça Federal da 6ª Região e do TRT da 3ª Região, com pedido 100% online.",
     contexto:
@@ -52,7 +52,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça da Bahia",
     capital: "Salvador",
     cidades: ["Salvador", "Feira de Santana", "Vitória da Conquista", "Camaçari", "Itabuna", "Juazeiro", "Ilhéus", "Lauro de Freitas"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Peça sua Certidão de Objeto e Pé de processos do TJBA, da Justiça Federal da 1ª Região e do TRT da 5ª Região com acompanhamento por WhatsApp.",
     contexto:
@@ -66,7 +66,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Distrito Federal e Territórios",
     capital: "Brasília",
     cidades: ["Brasília", "Taguatinga", "Ceilândia", "Gama", "Sobradinho", "Águas Claras", "Samambaia", "Planaltina"],
-    prazo: "1 a 5 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJDFT, da Justiça Federal da 1ª Região e do TRT da 10ª Região, solicitada online.",
     contexto:
@@ -80,7 +80,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Pernambuco",
     capital: "Recife",
     cidades: ["Recife", "Jaboatão dos Guararapes", "Olinda", "Caruaru", "Petrolina", "Paulista", "Cabo de Santo Agostinho", "Garanhuns"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Solicite a Certidão de Objeto e Pé de processos do TJPE, da Justiça Federal da 5ª Região e do TRT da 6ª Região.",
     contexto:
@@ -94,7 +94,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Goiás",
     capital: "Goiânia",
     cidades: ["Goiânia", "Aparecida de Goiânia", "Anápolis", "Rio Verde", "Luziânia", "Águas Lindas de Goiás", "Valparaíso de Goiás", "Catalão"],
-    prazo: "2 a 8 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJGO, da Justiça Federal da 1ª Região e do TRT da 18ª Região, sem burocracia.",
     contexto:
@@ -108,7 +108,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Paraná",
     capital: "Curitiba",
     cidades: ["Curitiba", "Londrina", "Maringá", "Ponta Grossa", "Cascavel", "São José dos Pinhais", "Foz do Iguaçu", "Colombo"],
-    prazo: "2 a 7 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Peça a Certidão de Objeto e Pé de processos do TJPR, da Justiça Federal da 4ª Região e do TRT da 9ª Região.",
     contexto:
@@ -122,7 +122,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Rio Grande do Sul",
     capital: "Porto Alegre",
     cidades: ["Porto Alegre", "Caxias do Sul", "Pelotas", "Canoas", "Santa Maria", "Gravataí", "Novo Hamburgo", "São Leopoldo"],
-    prazo: "2 a 8 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJRS, da Justiça Federal da 4ª Região e do TRT da 4ª Região, com pedido online.",
     contexto:
@@ -136,7 +136,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Rio de Janeiro",
     capital: "Rio de Janeiro",
     cidades: ["Rio de Janeiro", "Niterói", "São Gonçalo", "Duque de Caxias", "Nova Iguaçu", "Campos dos Goytacazes", "Petrópolis", "Volta Redonda"],
-    prazo: "1 a 7 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Solicite a Certidão de Objeto e Pé de processos do TJRJ, da Justiça Federal da 2ª Região e do TRT da 1ª Região.",
     contexto:
@@ -150,7 +150,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Santa Catarina",
     capital: "Florianópolis",
     cidades: ["Florianópolis", "Joinville", "Blumenau", "Balneário Camboriú", "Chapecó", "Itajaí", "Criciúma", "São José"],
-    prazo: "1 a 6 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJSC, da Justiça Federal da 4ª Região e do TRT da 12ª Região.",
     contexto:
@@ -164,7 +164,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Mato Grosso",
     capital: "Cuiabá",
     cidades: ["Cuiabá", "Várzea Grande", "Rondonópolis", "Sinop", "Tangará da Serra", "Cáceres", "Sorriso", "Lucas do Rio Verde"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Peça a Certidão de Objeto e Pé de processos do TJMT, da Justiça Federal da 1ª Região e do TRT da 23ª Região.",
     contexto:
@@ -178,7 +178,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Ceará",
     capital: "Fortaleza",
     cidades: ["Fortaleza", "Caucaia", "Juazeiro do Norte", "Maracanaú", "Sobral", "Crato", "Itapipoca", "Maranguape"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJCE, da Justiça Federal da 5ª Região e do TRT da 7ª Região, solicitada online.",
     contexto:
@@ -192,7 +192,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Acre",
     capital: "Rio Branco",
     cidades: ["Rio Branco", "Cruzeiro do Sul", "Sena Madureira", "Tarauacá", "Feijó"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJAC, da Justiça Federal (TRF1) e do TRT da 14ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -206,7 +206,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Alagoas",
     capital: "Maceió",
     cidades: ["Maceió", "Arapiraca", "Rio Largo", "Palmeira dos Índios", "União dos Palmares"],
-    prazo: "3 a 9 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJAL, da Justiça Federal (TRF5) e do TRT da 19ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -220,7 +220,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Amazonas",
     capital: "Manaus",
     cidades: ["Manaus", "Parintins", "Itacoatiara", "Manacapuru", "Coari"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJAM, da Justiça Federal (TRF1) e do TRT da 11ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -234,7 +234,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Amapá",
     capital: "Macapá",
     cidades: ["Macapá", "Santana", "Laranjal do Jari", "Oiapoque", "Mazagão"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJAP, da Justiça Federal (TRF1) e do TRT da 8ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -248,7 +248,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Espírito Santo",
     capital: "Vitória",
     cidades: ["Vitória", "Vila Velha", "Serra", "Cariacica", "Linhares", "Colatina"],
-    prazo: "2 a 8 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJES, da Justiça Federal (TRF2) e do TRT da 17ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -262,7 +262,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Maranhão",
     capital: "São Luís",
     cidades: ["São Luís", "Imperatriz", "Timon", "Caxias", "Codó"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJMA, da Justiça Federal (TRF1) e do TRT da 16ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -276,7 +276,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Mato Grosso do Sul",
     capital: "Campo Grande",
     cidades: ["Campo Grande", "Dourados", "Três Lagoas", "Corumbá", "Ponta Porã"],
-    prazo: "2 a 9 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJMS, da Justiça Federal (TRF3) e do TRT da 24ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -290,7 +290,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Pará",
     capital: "Belém",
     cidades: ["Belém", "Ananindeua", "Santarém", "Marabá", "Castanhal"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJPA, da Justiça Federal (TRF1) e do TRT da 8ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -304,7 +304,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça da Paraíba",
     capital: "João Pessoa",
     cidades: ["João Pessoa", "Campina Grande", "Santa Rita", "Patos", "Bayeux"],
-    prazo: "3 a 9 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJPB, da Justiça Federal (TRF5) e do TRT da 13ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -318,7 +318,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Piauí",
     capital: "Teresina",
     cidades: ["Teresina", "Parnaíba", "Picos", "Floriano", "Piripiri"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJPI, da Justiça Federal (TRF1) e do TRT da 22ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -332,7 +332,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Rio Grande do Norte",
     capital: "Natal",
     cidades: ["Natal", "Mossoró", "Parnamirim", "São Gonçalo do Amarante", "Caicó"],
-    prazo: "3 a 9 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJRN, da Justiça Federal (TRF5) e do TRT da 21ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -346,7 +346,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Rondônia",
     capital: "Porto Velho",
     cidades: ["Porto Velho", "Ji-Paraná", "Ariquemes", "Vilhena", "Cacoal"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJRO, da Justiça Federal (TRF1) e do TRT da 14ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -360,7 +360,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Roraima",
     capital: "Boa Vista",
     cidades: ["Boa Vista", "Rorainópolis", "Caracaraí", "Mucajaí", "Pacaraima"],
-    prazo: "4 a 12 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJRR, da Justiça Federal (TRF1) e do TRT da 11ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -374,7 +374,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça de Sergipe",
     capital: "Aracaju",
     cidades: ["Aracaju", "Nossa Senhora do Socorro", "Lagarto", "Itabaiana", "Estância"],
-    prazo: "3 a 9 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJSE, da Justiça Federal (TRF5) e do TRT da 20ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:
@@ -388,7 +388,7 @@ export const ESTADOS_SEO: EstadoSeo[] = [
     tribunalNome: "Tribunal de Justiça do Tocantins",
     capital: "Palmas",
     cidades: ["Palmas", "Araguaína", "Gurupi", "Porto Nacional", "Paraíso do Tocantins"],
-    prazo: "3 a 10 dias úteis",
+    prazo: "1 a 5 dias úteis, conforme a comarca e o tribunal emissor",
     intro:
       "Certidão de Objeto e Pé de processos do TJTO, da Justiça Federal (TRF1) e do TRT da 10ª Região, com solicitação 100% online e acompanhamento até a emissão.",
     contexto:

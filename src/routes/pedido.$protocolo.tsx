@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { consultarPedido, regerarCobranca } from "@/lib/pedidos.functions";
 import { whatsappLink, PIX, statusPedido, formatarBRL, EMAIL_CONTATO } from "@/lib/site";
-import { SeloGarantia } from "@/components/site/selo-garantia";
+import { PrazoEmissao } from "@/components/site/prazo-emissao";
 import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 
@@ -205,7 +205,7 @@ function PedidoPage() {
               Baixar comprovante em PDF
             </button>
 
-            <SeloGarantia className="mt-6" />
+            <PrazoEmissao className="mt-6" />
 
             {(data.status === "expirado" || data.status === "cancelado") && (
               <div className="mt-6 rounded-2xl border border-amber-500/40 bg-amber-500/5 px-5 py-4">

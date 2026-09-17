@@ -65,7 +65,7 @@ export const GUIAS_SEO: GuiaSeo[] = [
       {
         h2: "Prazo de emissão",
         paragrafos: [
-          "Na maioria dos tribunais estaduais, a certidão sai entre 1 e 7 dias úteis. Justiça Federal e Justiça do Trabalho costumam ficar entre 2 e 10 dias úteis. Processos físicos e arquivados podem levar mais tempo, porque dependem do desarquivamento pela vara.",
+          "O prazo de emissão é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
         ],
       },
     ],
@@ -190,7 +190,7 @@ export const GUIAS_SEO: GuiaSeo[] = [
       },
       {
         q: "Quanto tempo demora para receber?",
-        a: "Em geral de 1 a 7 dias úteis nos tribunais estaduais e de 2 a 10 dias úteis na Justiça Federal e do Trabalho.",
+        a: "De 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
       },
     ],
   },
@@ -223,7 +223,7 @@ export const GUIAS_SEO: GuiaSeo[] = [
       {
         h2: "Prazo e organização documental",
         paragrafos: [
-          "Peça a certidão assim que a certidão de distribuição apontar o processo, e não na véspera da sessão. Como o prazo depende do tribunal, o ideal é iniciar o pedido com pelo menos 10 dias úteis de antecedência em relação à data de entrega dos envelopes ou do envio da documentação no portal.",
+          "Peça a certidão assim que a certidão de distribuição apontar o processo, e não na véspera da sessão. O prazo de emissão é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor; considere também o prazo definido pelo edital.",
         ],
       },
     ],
@@ -313,7 +313,7 @@ export const GUIAS_SEO: GuiaSeo[] = [
       {
         h2: "Planejamento de prazo",
         paragrafos: [
-          "Some o prazo de emissão pelo tribunal (1 a 10 dias úteis), o apostilamento e a tradução juramentada. Para agendamentos consulares, o ideal é iniciar o pedido com 30 dias de antecedência.",
+          "Considere o prazo de emissão de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor, além do apostilamento e da tradução juramentada. Para agendamentos consulares, o ideal é iniciar o pedido com 30 dias de antecedência.",
         ],
       },
     ],

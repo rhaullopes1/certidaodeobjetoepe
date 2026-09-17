@@ -15,9 +15,9 @@ import { UserMenu } from "@/components/user-menu";
 
 const SITE = "https://certidaodeobjetoepe.org";
 const URL = `${SITE}/certidao-objeto-e-pe-tjsp`;
-const TITLE = "Certidão de Objeto e Pé TJSP | Solicite Online em 1 a 7 dias";
+const TITLE = "Certidão de Objeto e Pé TJSP | Solicite Online";
 const DESC =
-  "Certidão de Objeto e Pé no TJSP: solicite online processos do Tribunal de Justiça de São Paulo, sem advogado e sem ir ao fórum. Prazo de 1 a 7 dias úteis e suporte por WhatsApp.";
+  "Certidão de Objeto e Pé no TJSP: solicite online processos do Tribunal de Justiça de São Paulo, sem advogado e sem ir ao fórum. Prazo de emissão de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor e suporte por WhatsApp.";
 
 const FAQ_TJSP: { q: string; a: string }[] = [
   {
@@ -26,7 +26,7 @@ const FAQ_TJSP: { q: string; a: string }[] = [
   },
   {
     q: "Quanto tempo demora a certidão no Tribunal de Justiça de São Paulo?",
-    a: "No TJSP o prazo médio é de 1 a 7 dias úteis após a confirmação do pagamento. Processos físicos, arquivados ou que exijam desarquivamento podem levar mais tempo, conforme o cartório da vara.",
+    a: "O prazo de emissão é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
   },
   {
     q: "Qual o valor da Certidão de Objeto e Pé do TJSP?",
@@ -192,8 +192,7 @@ function TjspPage() {
               da vara quando o processo é físico.
             </InfoCard>
             <InfoCard icon={<Clock className="h-5 w-5 text-gold" />} titulo="Prazo médio">
-              1 a 7 dias úteis para processos digitais; processos arquivados podem exigir
-              desarquivamento prévio.
+              1 a 5 dias úteis, conforme a comarca e o tribunal emissor.
             </InfoCard>
             <InfoCard icon={<CheckCircle2 className="h-5 w-5 text-gold" />} titulo="Valor">
               A partir de {formatarBRL(TABELA_PRECOS[1]!)} por certidão, com desconto progressivo até
