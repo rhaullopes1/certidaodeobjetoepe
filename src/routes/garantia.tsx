@@ -12,17 +12,17 @@ export const Route = createFileRoute("/garantia")({
   component: Garantia,
   head: () => ({
     meta: [
-      { title: "Garantia de 5 dias úteis | Certidão de Objeto e Pé" },
+      { title: "Prazo de emissão | Certidão de Objeto e Pé" },
       {
         name: "description",
         content:
-          "Sua Certidão de Objeto e Pé em até 5 dias úteis após a confirmação do pagamento, ou devolvemos 100% do valor. Veja como a garantia funciona.",
+          "Prazo de emissão da Certidão de Objeto e Pé: de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor. Veja como acompanhar o seu pedido.",
       },
-      { property: "og:title", content: "Garantia de 5 dias úteis ou dinheiro de volta" },
+      { property: "og:title", content: "Prazo de emissão da Certidão de Objeto e Pé" },
       {
         property: "og:description",
         content:
-          "Entregamos sua certidão em até 5 dias úteis ou devolvemos todo o valor pago. Entenda as regras e exceções.",
+          "De 1 a 5 dias úteis, conforme a comarca e o tribunal emissor. Entenda o prazo e acompanhe cada etapa do pedido.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -103,10 +103,10 @@ function Garantia() {
         </div>
 
         <section className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
-          <h2 className="font-display text-xl font-bold">Quando o prazo pode não valer</h2>
+          <h2 className="font-display text-xl font-bold">O que pode alongar o prazo</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             São situações que dependem do tribunal e fogem do nosso controle. Em todas elas
-            avisamos você antes e, se preferir cancelar, devolvemos o valor.
+            avisamos você assim que identificamos.
           </p>
           <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
             {EXCECOES.map((e) => (
@@ -119,11 +119,10 @@ function Garantia() {
         </section>
 
         <section className="mt-10 rounded-2xl bg-secondary p-6">
-          <h2 className="font-display text-xl font-bold">Como pedir a devolução</h2>
+          <h2 className="font-display text-xl font-bold">Dúvidas sobre o seu pedido</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Fale com a gente pelo WhatsApp, pelo telefone {PHONE_DISPLAY} ou pelo e-mail{" "}
-            {EMAIL_CONTATO}, informando o seu número de acompanhamento. A devolução é feita em até
-            5 dias úteis pelo mesmo meio de pagamento.
+            {EMAIL_CONTATO}, informando o seu número de acompanhamento.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <a
