@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, CheckCircle2, ShieldCheck, Scale } from "lucide-react";
 import {
-  GARANTIA_DIAS_UTEIS,
-  GARANTIA_TITULO,
+  PRAZO_EMISSAO,
   EMAIL_CONTATO,
   PHONE_DISPLAY,
   PHONE_TEL,
@@ -13,17 +12,17 @@ export const Route = createFileRoute("/garantia")({
   component: Garantia,
   head: () => ({
     meta: [
-      { title: "Garantia de 5 dias úteis | Certidão de Objeto e Pé" },
+      { title: "Prazo de emissão | Certidão de Objeto e Pé" },
       {
         name: "description",
         content:
-          "Sua Certidão de Objeto e Pé em até 5 dias úteis após a confirmação do pagamento, ou devolvemos 100% do valor. Veja como a garantia funciona.",
+          "Prazo de emissão da Certidão de Objeto e Pé: de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor. Veja como acompanhar o seu pedido.",
       },
-      { property: "og:title", content: "Garantia de 5 dias úteis ou dinheiro de volta" },
+      { property: "og:title", content: "Prazo de emissão da Certidão de Objeto e Pé" },
       {
         property: "og:description",
         content:
-          "Entregamos sua certidão em até 5 dias úteis ou devolvemos todo o valor pago. Entenda as regras e exceções.",
+          "De 1 a 5 dias úteis, conforme a comarca e o tribunal emissor. Entenda o prazo e acompanhe cada etapa do pedido.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -45,9 +44,8 @@ const PONTOS = [
       "Na página de acompanhamento dá para ver, a qualquer momento, se o pedido já foi enviado ao tribunal e quando a certidão foi emitida.",
   },
   {
-    titulo: "Passou do prazo? Devolvemos tudo",
-    texto:
-      `Se a certidão não estiver na sua mão em até ${GARANTIA_DIAS_UTEIS} dias úteis, basta pedir: devolvemos 100% do valor pago, pelo mesmo meio de pagamento, sem burocracia.`,
+    titulo: "Prazo de emissão informado com clareza",
+    texto: PRAZO_EMISSAO,
   },
 ];
 
@@ -83,7 +81,9 @@ function Garantia() {
           <ShieldCheck className="h-3.5 w-3.5" />
           Garantia de prazo
         </span>
-        <h1 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl">{GARANTIA_TITULO}</h1>
+        <h1 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl">
+          Prazo de emissão da Certidão de Objeto e Pé
+        </h1>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
           A gente sabe que quem pede uma certidão normalmente está com pressa: um financiamento,
           uma contratação, uma seguradora esperando. Por isso assumimos um compromisso simples e
@@ -103,10 +103,10 @@ function Garantia() {
         </div>
 
         <section className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
-          <h2 className="font-display text-xl font-bold">Quando o prazo pode não valer</h2>
+          <h2 className="font-display text-xl font-bold">O que pode alongar o prazo</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             São situações que dependem do tribunal e fogem do nosso controle. Em todas elas
-            avisamos você antes e, se preferir cancelar, devolvemos o valor.
+            avisamos você assim que identificamos.
           </p>
           <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
             {EXCECOES.map((e) => (
@@ -119,11 +119,10 @@ function Garantia() {
         </section>
 
         <section className="mt-10 rounded-2xl bg-secondary p-6">
-          <h2 className="font-display text-xl font-bold">Como pedir a devolução</h2>
+          <h2 className="font-display text-xl font-bold">Dúvidas sobre o seu pedido</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Fale com a gente pelo WhatsApp, pelo telefone {PHONE_DISPLAY} ou pelo e-mail{" "}
-            {EMAIL_CONTATO}, informando o seu número de acompanhamento. A devolução é feita em até
-            5 dias úteis pelo mesmo meio de pagamento.
+            {EMAIL_CONTATO}, informando o seu número de acompanhamento.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <a
