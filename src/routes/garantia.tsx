@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, CheckCircle2, ShieldCheck, Scale } from "lucide-react";
 import {
-  GARANTIA_DIAS_UTEIS,
-  GARANTIA_TITULO,
+  PRAZO_EMISSAO,
   EMAIL_CONTATO,
   PHONE_DISPLAY,
   PHONE_TEL,
