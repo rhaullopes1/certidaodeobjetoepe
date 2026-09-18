@@ -44,9 +44,8 @@ const PONTOS = [
       "Na página de acompanhamento dá para ver, a qualquer momento, se o pedido já foi enviado ao tribunal e quando a certidão foi emitida.",
   },
   {
-    titulo: "Passou do prazo? Devolvemos tudo",
-    texto:
-      `Se a certidão não estiver na sua mão em até ${GARANTIA_DIAS_UTEIS} dias úteis, basta pedir: devolvemos 100% do valor pago, pelo mesmo meio de pagamento, sem burocracia.`,
+    titulo: "Prazo de emissão informado com clareza",
+    texto: PRAZO_EMISSAO,
   },
 ];
 
@@ -82,7 +81,9 @@ function Garantia() {
           <ShieldCheck className="h-3.5 w-3.5" />
           Garantia de prazo
         </span>
-        <h1 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl">{GARANTIA_TITULO}</h1>
+        <h1 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl">
+          Prazo de emissão da Certidão de Objeto e Pé
+        </h1>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
           A gente sabe que quem pede uma certidão normalmente está com pressa: um financiamento,
           uma contratação, uma seguradora esperando. Por isso assumimos um compromisso simples e
