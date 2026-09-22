@@ -16,6 +16,7 @@ import {
   Send,
   ChevronDown,
   Phone,
+  Star,
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
