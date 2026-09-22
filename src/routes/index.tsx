@@ -16,6 +16,7 @@ import {
   Send,
   ChevronDown,
   Phone,
+  Star,
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
@@ -150,7 +151,15 @@ function Hero() {
             </p>
 
             <PrazoEmissao variante="escuro" className="mt-6 max-w-xl" />
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex items-baseline gap-3">
+              <span className="font-display text-3xl font-extrabold text-gold-soft">
+                R$ 197,00
+              </span>
+              <span className="text-sm text-primary-foreground/70">
+                por certidão · pagamento via Pix
+              </span>
+            </div>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/solicitar"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
@@ -166,6 +175,25 @@ function Hero() {
               >
                 Tirar dúvidas no WhatsApp
               </a>
+            </div>
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-primary-foreground/70">
+              <a
+                href={GOOGLE_PROFILE}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 font-semibold text-gold-soft underline decoration-gold-soft/40 underline-offset-4 hover:decoration-gold-soft"
+              >
+                <Star className="h-3.5 w-3.5" />
+                Avaliações no Google
+              </a>
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldCheck className="h-3.5 w-3.5 text-gold" />
+                Pedido seguro com protocolo
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <MessageCircle className="h-3.5 w-3.5 text-gold" />
+                Acompanhamento por WhatsApp
+              </span>
             </div>
             <AlternativasContato tom="escuro" className="mt-4 max-w-md" />
             <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
