@@ -38,14 +38,20 @@ export type PedidoResumo = {
 };
 
 
+/**
+ * O protocolo funciona como chave de acesso ao pedido (páginas públicas de
+ * acompanhamento), por isso é gerado com aleatoriedade criptográfica e
+ * entropia suficiente para não ser adivinhado ou enumerado.
+ */
 function novoProtocolo() {
-  const agora = new Date();
-  const ano = agora.getFullYear();
-  const aleatorio = Math.floor(Math.random() * 1_000_000)
-    .toString()
-    .padStart(6, "0");
-  const tempo = agora.getTime().toString(36).toUpperCase().slice(-4);
-  return `COP${ano}${tempo}${aleatorio}`;
+  const ano = new Date().getFullYear();
+  // Alfabeto sem caracteres ambíguos (0/O, 1/I) para leitura por telefone.
+  const alfabeto = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  let aleatorio = "";
+  for (const b of bytes) aleatorio += alfabeto[b % alfabeto.length];
+  return `COP${ano}${aleatorio}`;
 }
 
 function mascararCpf(cpf: string) {
