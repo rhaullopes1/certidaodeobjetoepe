@@ -35,7 +35,10 @@ export const Route = createFileRoute("/api/public/webhooks/pagbank")({
           ? { status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() }
           : { status: "cancelado" };
 
-        const referencia = situacao.referenceId ?? payload.reference_id ?? null;
+        // Só usamos a referência confirmada pela API do PagBank. O reference_id
+        // enviado no corpo do webhook não é confiável: qualquer um poderia
+        // apontar um pagamento real para o protocolo de outro cliente.
+        const referencia = situacao.referenceId ?? null;
         const query = supabaseAdmin.from("pedidos").update(patch);
         const { error } = referencia
           ? await query.eq("protocolo", referencia)
