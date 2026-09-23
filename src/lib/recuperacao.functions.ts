@@ -66,6 +66,10 @@ export const salvarEmailSequencia = createServerFn({ method: "POST" })
     return salvarConfig(data);
   });
 
+/**
+ * Envio de teste: só pode ir para o e-mail da própria pessoa logada,
+ * evitando que a conta seja usada para mandar mensagens a terceiros.
+ */
 export const enviarEmailTeste = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((data: unknown) =>
@@ -78,6 +82,11 @@ export const enviarEmailTeste = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await exigirEquipe(context);
+    const emailDaConta = (context.claims as { email?: string } | undefined)?.email?.trim();
+    if (!emailDaConta) throw new Error("Conta sem e-mail confirmado.");
+    if (data.email.trim().toLowerCase() !== emailDaConta.toLowerCase()) {
+      throw new Error("O teste só pode ser enviado para o e-mail da sua própria conta.");
+    }
     const { enviarTeste } = await import("./recuperacao.server");
-    return enviarTeste(data.etapa, data.email);
+    return enviarTeste(data.etapa, emailDaConta);
   });
