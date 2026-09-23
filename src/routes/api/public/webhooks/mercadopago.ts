@@ -44,6 +44,33 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
         }
         if (tipo === "merchant_order") return new Response("ok");
 
+        // Autenticação do chamador: assinatura HMAC do Mercado Pago.
+        // Sem segredo configurado, nenhuma notificação é processada.
+        const segredo = process.env["MERCADOPAGO_WEBHOOK_SECRET"];
+        if (!segredo) {
+          console.error("MERCADOPAGO_WEBHOOK_SECRET ausente — webhook recusado");
+          return new Response("webhook não configurado", { status: 503 });
+        }
+        const assinatura = request.headers.get("x-signature") ?? "";
+        const partes = Object.fromEntries(
+          assinatura
+            .split(",")
+            .map((p) => p.split("=").map((v) => v.trim()))
+            .filter((p) => p.length === 2) as [string, string][],
+        );
+        const ts = partes["ts"];
+        const v1 = partes["v1"];
+        if (!ts || !v1) return new Response("assinatura ausente", { status: 401 });
+
+        const requestId = request.headers.get("x-request-id") ?? "";
+        const manifesto = `id:${paymentId};${requestId ? `request-id:${requestId};` : ""}ts:${ts};`;
+        const { createHmac } = await import("crypto");
+        const esperado = createHmac("sha256", segredo).update(manifesto).digest("hex");
+        if (esperado !== v1) {
+          console.error("Assinatura inválida no webhook do Mercado Pago");
+          return new Response("assinatura inválida", { status: 401 });
+        }
+
         const { consultarCobranca } = await import("@/lib/mercadopago.server");
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

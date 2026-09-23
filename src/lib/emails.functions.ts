@@ -48,6 +48,10 @@ export const salvarBoasVindas = createServerFn({ method: "POST" })
     return salvarConfigEmail({ chave: "boas-vindas", ...data });
   });
 
+/**
+ * Envio de teste: só pode ir para o e-mail da própria pessoa logada,
+ * evitando que a conta seja usada para mandar mensagens a terceiros.
+ */
 export const testarBoasVindas = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((data: unknown) =>
@@ -57,8 +61,13 @@ export const testarBoasVindas = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await exigirEquipe(context);
+    const emailDaConta = (context.claims as { email?: string } | undefined)?.email?.trim();
+    if (!emailDaConta) throw new Error("Conta sem e-mail confirmado.");
+    if (data.email.trim().toLowerCase() !== emailDaConta.toLowerCase()) {
+      throw new Error("O teste só pode ser enviado para o e-mail da sua própria conta.");
+    }
     const { enviarBoasVindasTeste } = await import("./emails.server");
-    return enviarBoasVindasTeste(data.email, data.nome);
+    return enviarBoasVindasTeste(emailDaConta, data.nome);
   });
 
 export const salvarCampanhaFn = createServerFn({ method: "POST" })
