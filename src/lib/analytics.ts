@@ -1,4 +1,5 @@
-const CONVERSION_ID = "AW-18411209847/ZLw3CNazkOgcEPeIk8tE";
+// Ação de conversão "Pedido Pago - Site" (categoria Compra) no Google Ads.
+const CONVERSION_ID = "AW-18411209847/KbQeCJ2cn4MdEPeIk8tE";
 const ADS_ACCOUNT = "AW-18411209847";
 
 function withGtag(run: (gtag: (...args: unknown[]) => void) => void): void {
