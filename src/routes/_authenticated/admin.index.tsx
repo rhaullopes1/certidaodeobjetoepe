@@ -3,7 +3,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { listarPedidos, souEquipe, type Filtros, type PedidoAdmin } from "@/lib/admin";
+import {
+  listarEntregasPendentes,
+  listarPedidos,
+  souEquipe,
+  type Filtros,
+  type PedidoAdmin,
+} from "@/lib/admin";
 import { ESTADOS, FLUXO_STATUS, statusPedido } from "@/lib/site";
 import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
 
@@ -78,7 +84,7 @@ const LINKS_ADMIN = [
   { to: "/admin/emails", label: "E-mails" },
   { to: "/admin/documentos", label: "Documentos" },
   { to: "/admin/conteudo", label: "Conteúdo" },
-] satisfies { to: string; label: string; exact?: boolean }[];
+] satisfies { to: string; label: string; exact?: boolean; contador?: boolean }[];
 
 
 export function AdminHeader() {
