@@ -165,10 +165,11 @@ export function AdminHeader() {
                 to={l.to as never}
                 {...(l.exact ? { activeOptions: { exact: true } } : {})}
                 activeProps={linkAtivo}
-                className={`${linkClass} rounded-lg px-2 py-2`}
+                className={`${linkClass} inline-flex items-center rounded-lg px-2 py-2`}
                 onClick={() => setAberto(false)}
               >
                 {l.label}
+                {"contador" in l && l.contador ? <Contador /> : null}
               </Link>
             ))}
             <button
