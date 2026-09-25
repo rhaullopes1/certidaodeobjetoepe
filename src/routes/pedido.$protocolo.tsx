@@ -419,7 +419,9 @@ function PedidoPage() {
                           Opção 2
                         </span>
                       </div>
-                      <h3 className="mt-2 text-base font-bold">Prefere pagar com cartão?</h3>
+                      <h3 className="mt-2 text-base font-bold">
+                        Sem saldo no Pix agora? Pague com cartão
+                      </h3>
                       <p className="mt-1 text-sm text-muted-foreground">
                         Cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A confirmação
                         é automática: assim que o pagamento for aprovado, esta página muda para
