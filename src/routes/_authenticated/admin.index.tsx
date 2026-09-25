@@ -142,9 +142,10 @@ export function AdminHeader() {
               to={l.to as never}
               {...(l.exact ? { activeOptions: { exact: true } } : {})}
               activeProps={linkAtivo}
-              className={linkClass}
+              className={`${linkClass} inline-flex items-center`}
             >
               {l.label}
+              {"contador" in l && l.contador ? <Contador /> : null}
             </Link>
           ))}
         </nav>
