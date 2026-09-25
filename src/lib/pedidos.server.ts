@@ -598,8 +598,9 @@ export async function reenviarEmailPedidoNoBanco(protocolo: string, email: strin
 }
 
 /**
- * Confere o status no Mercado Pago quando o pedido tem cobrança dinâmica.
- * Pedidos sem mercadopago_payment_id ficam intocados.
+ * Fallback seguro do webhook: confere o status direto na API do Mercado Pago
+ * (nunca em parâmetros do navegador). Só "approved" marca pago; o update é
+ * condicional para não repetir efeito se o webhook já processou.
  */
 async function sincronizarPagamentoMercadoPago(row: PedidoRow): Promise<PedidoRow> {
   if (!row.mercadopago_payment_id) return row;
@@ -621,9 +622,26 @@ async function sincronizarPagamentoMercadoPago(row: PedidoRow): Promise<PedidoRo
       .from("pedidos")
       .update(patch)
       .eq("protocolo", row.protocolo)
+      .eq("status", "aguardando_pagamento")
       .select("*")
       .maybeSingle();
-    return (atualizado as PedidoRow) ?? { ...row, ...patch };
+    if (atualizado) {
+      await supabaseAdmin.from("webhook_eventos").insert({
+        provedor: "mercadopago",
+        tipo: "fallback_consulta",
+        payment_id: row.mercadopago_payment_id,
+        evento_id: `mercadopago:${row.mercadopago_payment_id}:fallback`,
+        resultado: situacao.pago ? "pedido_marcado_pago" : "pedido_marcado_cancelado",
+        payload: { origem: "consulta_api", status: situacao.status },
+      });
+      return atualizado as PedidoRow;
+    }
+    const { data: recarregado } = await supabaseAdmin
+      .from("pedidos")
+      .select("*")
+      .eq("protocolo", row.protocolo)
+      .maybeSingle();
+    return (recarregado as PedidoRow) ?? row;
   } catch (e) {
     console.error("Falha ao sincronizar pagamento no Mercado Pago", e);
     return row;

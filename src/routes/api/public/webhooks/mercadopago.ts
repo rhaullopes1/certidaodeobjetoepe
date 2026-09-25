@@ -63,25 +63,30 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
         if (!ts || !v1) return new Response("assinatura ausente", { status: 401 });
 
         const requestId = request.headers.get("x-request-id") ?? "";
-        const manifesto = `id:${paymentId};${requestId ? `request-id:${requestId};` : ""}ts:${ts};`;
-        const { createHmac } = await import("crypto");
+        // Pela documentação, o id do manifesto vem do parâmetro data.id da URL
+        // (em minúsculas quando alfanumérico); usamos o do corpo como reserva.
+        const idManifesto = (url.searchParams.get("data.id") ?? paymentId).toLowerCase();
+        const manifesto = `id:${idManifesto};${requestId ? `request-id:${requestId};` : ""}ts:${ts};`;
+        const { createHmac, timingSafeEqual } = await import("crypto");
         const esperado = createHmac("sha256", segredo).update(manifesto).digest("hex");
-        if (esperado !== v1) {
-          console.error("Assinatura inválida no webhook do Mercado Pago");
+        const a = Buffer.from(esperado);
+        const b = Buffer.from(v1);
+        if (a.length !== b.length || !timingSafeEqual(a, b)) {
+          console.error("Assinatura inválida no webhook do Mercado Pago", { paymentId });
           return new Response("assinatura inválida", { status: 401 });
         }
 
         const { consultarCobranca } = await import("@/lib/mercadopago.server");
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        /** Registra o evento para diagnóstico; nunca quebra o processamento. */
+        /** Registra cada notificação autenticada; reenvios do mesmo aviso não duplicam. */
         const registrarEvento = async (resultado: string) => {
           try {
             await supabaseAdmin.from("webhook_eventos").insert({
               provedor: "mercadopago",
               tipo,
               payment_id: paymentId,
-              evento_id: `mercadopago:${paymentId}:${resultado}`,
+              evento_id: `mercadopago:${paymentId}:${requestId || ts}`,
               resultado,
               payload: payload as unknown as import("@/integrations/supabase/types").Json,
             });
@@ -148,7 +153,12 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
           ? { ...base, status: "pago", pago_em: situacao.pagoEm ?? new Date().toISOString() }
           : { ...base, status: "cancelado" };
 
-        const { error } = await supabaseAdmin.from("pedidos").update(patch).eq("id", pedido.id);
+        // Update condicional: se outro caminho marcou "pago" no meio tempo, nada muda.
+        const { error } = await supabaseAdmin
+          .from("pedidos")
+          .update(patch)
+          .eq("id", pedido.id)
+          .neq("status", "pago");
 
         if (error) {
           console.error("Falha ao atualizar pedido pelo webhook", error);

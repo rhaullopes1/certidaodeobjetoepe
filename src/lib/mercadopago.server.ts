@@ -2,8 +2,10 @@
 
 const API_BASE = "https://api.mercadopago.com";
 
+// Domínio oficial: o endereço *.lovable.app redireciona (307) para cá, e o
+// Mercado Pago NÃO segue redirecionamentos — as notificações se perdiam.
 export const BASE_URL =
-  process.env["PUBLIC_SITE_URL"] ?? "https://certidaodeobjetoepe.lovable.app";
+  process.env["PUBLIC_SITE_URL"] ?? "https://certidaodeobjetoepe.org";
 
 export function temMercadoPago() {
   return Boolean(process.env["MERCADOPAGO_ACCESS_TOKEN"]);
