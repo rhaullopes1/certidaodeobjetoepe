@@ -102,6 +102,19 @@ export function AdminHeader() {
   const linkClass = "text-primary-foreground/70 transition-colors hover:text-primary-foreground";
   const linkAtivo = { className: "text-primary-foreground font-semibold" };
 
+  const pendentes = useQuery({
+    queryKey: ["admin-entregas-total"],
+    queryFn: async () => (await listarEntregasPendentes()).length,
+    staleTime: 30_000,
+  });
+
+  const Contador = () =>
+    pendentes.data && pendentes.data > 0 ? (
+      <span className="ml-1.5 inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-bold text-accent-foreground">
+        {pendentes.data}
+      </span>
+    ) : null;
+
   return (
     <header className="surface-navy w-full max-w-full">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 sm:px-8 sm:py-5 md:flex md:justify-between md:gap-4">
