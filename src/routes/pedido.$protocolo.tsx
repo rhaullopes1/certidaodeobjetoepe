@@ -359,6 +359,10 @@ function PedidoPage() {
                         <p className="mt-1 text-sm text-muted-foreground">
                           Escaneie o QR Code no app do seu banco ou use o código copia e cola.
                         </p>
+                        <PassosPix
+                          className="mt-4"
+                          confirmacaoAutomatica={data.confirmacaoAutomatica}
+                        />
                         <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
                           {qr ? (
                             <img
