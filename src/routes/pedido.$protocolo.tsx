@@ -439,6 +439,9 @@ function PedidoPage() {
                       </p>
                     </div>
 
+                    <SelosPagamento className="mt-6" />
+
+
                     <a
                       href={whatsappLink(
                         `Olá! Preciso de ajuda com o pagamento do protocolo ${data.protocolo}.`,
