@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, Loader2, Paperclip, Trash2, Download } from "lucide-react";
+import { ArrowLeft, Loader2, Paperclip, Trash2, Download, MessageCircle } from "lucide-react";
 import {
   abrirAnexo,
   buscarPedidoAdmin,
