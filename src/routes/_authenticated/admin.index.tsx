@@ -1,10 +1,59 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X } from "lucide-react";
+import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { listarPedidos, souEquipe, type Filtros } from "@/lib/admin";
+import { listarPedidos, souEquipe, type Filtros, type PedidoAdmin } from "@/lib/admin";
 import { ESTADOS, FLUXO_STATUS, statusPedido } from "@/lib/site";
+import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
+
+/** Botão de contato rápido via WhatsApp para um pedido do painel. */
+function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
+  const link = linkWhatsappCliente({
+    protocolo: pedido.protocolo,
+    nome_parte: pedido.nome_parte,
+    whatsapp: pedido.whatsapp,
+    status: pedido.status,
+  });
+  const pendente = pedido.status === "aguardando_pagamento";
+  const numeroOk = normalizarWhatsapp(pedido.whatsapp) !== null;
+
+  const base =
+    "inline-flex items-center justify-center rounded-full p-2 transition-colors";
+  const cor = pendente
+    ? "bg-accent/20 text-accent hover:bg-accent/30 ring-1 ring-accent/40"
+    : "bg-secondary text-muted-foreground hover:bg-secondary/70";
+  const classe = numeroOk ? `${base} ${cor}` : `${base} bg-secondary/60 text-muted-foreground/40 cursor-not-allowed`;
+
+  const label = pendente
+    ? "Abrir WhatsApp para ajudar a finalizar o pagamento"
+    : "Abrir WhatsApp com mensagem de acompanhamento";
+
+  if (!numeroOk) {
+    return (
+      <span
+        className={classe}
+        title="Número de WhatsApp não disponível para este pedido"
+        aria-label="WhatsApp indisponível"
+      >
+        <MessageCircle className="h-4 w-4 opacity-60" />
+      </span>
+    );
+  }
+
+  return (
+    <a
+      href={link!}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={classe}
+      title={label}
+      aria-label={label}
+    >
+      <MessageCircle className="h-4 w-4" />
+    </a>
+  );
+}
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminLista,
@@ -272,7 +321,7 @@ function AdminLista() {
 
             {lista.length > 0 && (
               <div className="card-premium mt-8 w-full max-w-full overflow-x-auto">
-                <table className="w-full min-w-[760px] text-left text-sm">
+                <table className="w-full min-w-[860px] text-left text-sm">
                   <thead className="border-b border-border/70 text-xs uppercase tracking-wide text-muted-foreground">
                     <tr>
                       <th className="px-5 py-4">Protocolo</th>
@@ -281,6 +330,7 @@ function AdminLista() {
                       <th className="px-5 py-4">CPF</th>
                       <th className="px-5 py-4">Situação</th>
                       <th className="px-5 py-4">Criado em</th>
+                      <th className="px-5 py-4 text-right">Ações</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -315,6 +365,9 @@ function AdminLista() {
                         </td>
                         <td className="px-5 py-4 text-muted-foreground">
                           {new Date(p.created_at).toLocaleString("pt-BR")}
+                        </td>
+                        <td className="px-5 py-4 text-right">
+                          <BotaoWhatsApp pedido={p} />
                         </td>
                       </tr>
                     ))}

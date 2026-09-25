@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, Loader2, Paperclip, Trash2, Download } from "lucide-react";
+import { ArrowLeft, Loader2, Paperclip, Trash2, Download, MessageCircle } from "lucide-react";
 import {
   abrirAnexo,
   buscarPedidoAdmin,
@@ -15,6 +15,7 @@ import {
   souEquipe,
 } from "@/lib/admin";
 import { FLUXO_STATUS, statusPedido } from "@/lib/site";
+import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
 import { AdminHeader, SemPermissao } from "./admin.index";
 
 export const Route = createFileRoute("/_authenticated/admin/$protocolo")({
@@ -181,6 +182,41 @@ function AdminDetalhe() {
                 <Download className="h-4 w-4" />
                 Baixar comprovante PDF
               </button>
+              {(() => {
+                const p = pedido.data!;
+                const link = linkWhatsappCliente({
+                  protocolo: p.protocolo,
+                  nome_parte: p.nome_parte,
+                  whatsapp: p.whatsapp,
+                  status: p.status,
+                });
+                const pendente = p.status === "aguardando_pagamento";
+                const numeroOk = normalizarWhatsapp(p.whatsapp) !== null;
+                const cor = pendente
+                  ? "bg-accent/20 text-accent ring-1 ring-accent/40 hover:bg-accent/30"
+                  : "border border-input hover:bg-secondary";
+                if (!numeroOk) {
+                  return (
+                    <span
+                      className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-secondary/60 text-muted-foreground/50 cursor-not-allowed"
+                      title="Número de WhatsApp não disponível"
+                    >
+                      <MessageCircle className="h-4 w-4 opacity-60" /> WhatsApp indisponível
+                    </span>
+                  );
+                }
+                return (
+                  <a
+                    href={link!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${cor}`}
+                    title={pendente ? "Abrir WhatsApp para ajudar a finalizar o pagamento" : "Abrir WhatsApp com mensagem de acompanhamento"}
+                  >
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
+                  </a>
+                );
+              })()}
             </div>
 
             {erro && <p className="mt-4 text-sm font-medium text-destructive">{erro}</p>}
