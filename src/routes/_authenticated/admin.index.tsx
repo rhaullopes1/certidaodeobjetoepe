@@ -321,7 +321,7 @@ function AdminLista() {
 
             {lista.length > 0 && (
               <div className="card-premium mt-8 w-full max-w-full overflow-x-auto">
-                <table className="w-full min-w-[820px] text-left text-sm">
+                <table className="w-full min-w-[860px] text-left text-sm">
                   <thead className="border-b border-border/70 text-xs uppercase tracking-wide text-muted-foreground">
                     <tr>
                       <th className="px-5 py-4">Protocolo</th>
