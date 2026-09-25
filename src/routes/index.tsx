@@ -151,14 +151,6 @@ function Hero() {
             </p>
 
             <PrazoEmissao variante="escuro" className="mt-6 max-w-xl" />
-            <div className="mt-6 flex items-baseline gap-3">
-              <span className="font-display text-3xl font-extrabold text-gold-soft">
-                R$ 197,00
-              </span>
-              <span className="text-sm text-primary-foreground/70">
-                por certidão · pagamento via Pix
-              </span>
-            </div>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/solicitar"
