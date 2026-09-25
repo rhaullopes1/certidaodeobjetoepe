@@ -19,11 +19,15 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
   const numeroOk = normalizarWhatsapp(pedido.whatsapp) !== null;
 
   const base =
-    "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors";
+    "inline-flex items-center justify-center rounded-full p-2 transition-colors";
   const cor = pendente
     ? "bg-accent/20 text-accent hover:bg-accent/30 ring-1 ring-accent/40"
     : "bg-secondary text-muted-foreground hover:bg-secondary/70";
-  const classe = numeroOk ? `${base} ${cor}` : `${base} bg-secondary/60 text-muted-foreground/50 cursor-not-allowed`;
+  const classe = numeroOk ? `${base} ${cor}` : `${base} bg-secondary/60 text-muted-foreground/40 cursor-not-allowed`;
+
+  const label = pendente
+    ? "Abrir WhatsApp para ajudar a finalizar o pagamento"
+    : "Abrir WhatsApp com mensagem de acompanhamento";
 
   if (!numeroOk) {
     return (
@@ -33,7 +37,6 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
         aria-label="WhatsApp indisponível"
       >
         <MessageCircle className="h-4 w-4 opacity-60" />
-        <span className="hidden sm:inline">Indisp.</span>
       </span>
     );
   }
@@ -44,14 +47,10 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
       target="_blank"
       rel="noopener noreferrer"
       className={classe}
-      title={
-        pendente
-          ? "Abrir WhatsApp para ajudar a finalizar o pagamento"
-          : "Abrir WhatsApp com mensagem de acompanhamento"
-      }
+      title={label}
+      aria-label={label}
     >
       <MessageCircle className="h-4 w-4" />
-      <span className="hidden sm:inline">WhatsApp</span>
     </a>
   );
 }
