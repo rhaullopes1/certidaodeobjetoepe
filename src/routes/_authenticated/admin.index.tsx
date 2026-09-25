@@ -3,7 +3,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { listarPedidos, souEquipe, type Filtros, type PedidoAdmin } from "@/lib/admin";
+import {
+  listarEntregasPendentes,
+  listarPedidos,
+  souEquipe,
+  type Filtros,
+  type PedidoAdmin,
+} from "@/lib/admin";
 import { ESTADOS, FLUXO_STATUS, statusPedido } from "@/lib/site";
 import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
 
@@ -72,12 +78,13 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 
 const LINKS_ADMIN = [
   { to: "/admin", label: "Pedidos", exact: true },
+  { to: "/admin/entregas", label: "Entregas", contador: true },
   { to: "/admin/historico", label: "Histórico" },
   { to: "/admin/recuperacao", label: "Recuperação" },
   { to: "/admin/emails", label: "E-mails" },
   { to: "/admin/documentos", label: "Documentos" },
   { to: "/admin/conteudo", label: "Conteúdo" },
-] satisfies { to: string; label: string; exact?: boolean }[];
+] satisfies { to: string; label: string; exact?: boolean; contador?: boolean }[];
 
 
 export function AdminHeader() {
@@ -94,6 +101,19 @@ export function AdminHeader() {
 
   const linkClass = "text-primary-foreground/70 transition-colors hover:text-primary-foreground";
   const linkAtivo = { className: "text-primary-foreground font-semibold" };
+
+  const pendentes = useQuery({
+    queryKey: ["admin-entregas-total"],
+    queryFn: async () => (await listarEntregasPendentes()).length,
+    staleTime: 30_000,
+  });
+
+  const Contador = () =>
+    pendentes.data && pendentes.data > 0 ? (
+      <span className="ml-1.5 inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-bold text-accent-foreground">
+        {pendentes.data}
+      </span>
+    ) : null;
 
   return (
     <header className="surface-navy w-full max-w-full">
@@ -122,9 +142,10 @@ export function AdminHeader() {
               to={l.to as never}
               {...(l.exact ? { activeOptions: { exact: true } } : {})}
               activeProps={linkAtivo}
-              className={linkClass}
+              className={`${linkClass} inline-flex items-center`}
             >
               {l.label}
+              {"contador" in l && l.contador ? <Contador /> : null}
             </Link>
           ))}
         </nav>
@@ -144,10 +165,11 @@ export function AdminHeader() {
                 to={l.to as never}
                 {...(l.exact ? { activeOptions: { exact: true } } : {})}
                 activeProps={linkAtivo}
-                className={`${linkClass} rounded-lg px-2 py-2`}
+                className={`${linkClass} inline-flex items-center rounded-lg px-2 py-2`}
                 onClick={() => setAberto(false)}
               >
                 {l.label}
+                {"contador" in l && l.contador ? <Contador /> : null}
               </Link>
             ))}
             <button

@@ -204,6 +204,34 @@ export async function registrarAndamento(input: {
   if (error) throw error;
 }
 
+/** Situações de um pedido já pago que ainda aguarda a entrega da certidão. */
+export const STATUS_AGUARDANDO_ENTREGA = ["pago", "em_analise", "protocolado"] as const;
+
+/**
+ * Fila de entrega: pedidos pagos que ainda não tiveram a certidão entregue,
+ * ordenados pela data do pagamento (quem pagou primeiro aparece primeiro).
+ */
+export async function listarEntregasPendentes(): Promise<PedidoAdmin[]> {
+  const { data, error } = await supabase
+    .from("pedidos")
+    .select(COLUNAS as string)
+    .in("status", [...STATUS_AGUARDANDO_ENTREGA])
+    .order("pago_em", { ascending: true, nullsFirst: false })
+    .limit(200)
+    .returns<PedidoAdmin[]>();
+  if (error) throw error;
+  return (data ?? []).map((p) => ({ ...p, novo: ehNovo(p.created_at) }));
+}
+
+/** Marca a certidão como emitida e entregue, encerrando o pedido. */
+export async function concluirEntrega(pedidoId: string) {
+  await registrarAndamento({
+    pedidoId,
+    status: "emitida",
+    observacao: "Certidão emitida e entregue ao cliente.",
+  });
+}
+
 export type Anexo = {
   id: string;
   tipo: string;
