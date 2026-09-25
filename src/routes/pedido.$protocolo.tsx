@@ -17,6 +17,7 @@ import { whatsappLink, PIX, statusPedido, formatarBRL, EMAIL_CONTATO } from "@/l
 import { PrazoEmissao } from "@/components/site/prazo-emissao";
 import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
+import { PassosPix, SelosPagamento } from "@/components/site/reforco-pagamento";
 
 
 export const Route = createFileRoute("/pedido/$protocolo")({
@@ -358,6 +359,10 @@ function PedidoPage() {
                         <p className="mt-1 text-sm text-muted-foreground">
                           Escaneie o QR Code no app do seu banco ou use o código copia e cola.
                         </p>
+                        <PassosPix
+                          className="mt-4"
+                          confirmacaoAutomatica={data.confirmacaoAutomatica}
+                        />
                         <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
                           {qr ? (
                             <img
@@ -418,7 +423,9 @@ function PedidoPage() {
                           Opção 2
                         </span>
                       </div>
-                      <h3 className="mt-2 text-base font-bold">Prefere pagar com cartão?</h3>
+                      <h3 className="mt-2 text-base font-bold">
+                        Sem saldo no Pix agora? Pague com cartão
+                      </h3>
                       <p className="mt-1 text-sm text-muted-foreground">
                         Cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A confirmação
                         é automática: assim que o pagamento for aprovado, esta página muda para
@@ -437,6 +444,9 @@ function PedidoPage() {
                         com nossa equipe pelo WhatsApp.
                       </p>
                     </div>
+
+                    <SelosPagamento className="mt-6" />
+
 
                     <a
                       href={whatsappLink(
@@ -468,6 +478,10 @@ function PedidoPage() {
                   <p className="mt-1 text-sm text-muted-foreground">
                     Escaneie o QR Code no app do seu banco ou use o código copia e cola.
                   </p>
+                  <PassosPix
+                    className="mt-4"
+                    confirmacaoAutomatica={data.confirmacaoAutomatica}
+                  />
                   <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
                     {qr ? (
                       <img
@@ -547,6 +561,9 @@ function PedidoPage() {
                     </p>
                   )}
                 </div>
+
+                <SelosPagamento className="mt-6" />
+
 
                 <a
                   href={whatsappLink(
