@@ -1,10 +1,60 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X } from "lucide-react";
+import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { listarPedidos, souEquipe, type Filtros } from "@/lib/admin";
+import { listarPedidos, souEquipe, type Filtros, type PedidoAdmin } from "@/lib/admin";
 import { ESTADOS, FLUXO_STATUS, statusPedido } from "@/lib/site";
+import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
+
+/** Botão de contato rápido via WhatsApp para um pedido do painel. */
+function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
+  const link = linkWhatsappCliente({
+    protocolo: pedido.protocolo,
+    nome_parte: pedido.nome_parte,
+    whatsapp: pedido.whatsapp,
+    status: pedido.status,
+  });
+  const pendente = pedido.status === "aguardando_pagamento";
+  const numeroOk = normalizarWhatsapp(pedido.whatsapp) !== null;
+
+  const base =
+    "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors";
+  const cor = pendente
+    ? "bg-accent/20 text-accent hover:bg-accent/30 ring-1 ring-accent/40"
+    : "bg-secondary text-muted-foreground hover:bg-secondary/70";
+  const classe = numeroOk ? `${base} ${cor}` : `${base} bg-secondary/60 text-muted-foreground/50 cursor-not-allowed`;
+
+  if (!numeroOk) {
+    return (
+      <span
+        className={classe}
+        title="Número de WhatsApp não disponível para este pedido"
+        aria-label="WhatsApp indisponível"
+      >
+        <MessageCircle className="h-4 w-4 opacity-60" />
+        <span className="hidden sm:inline">Indisp.</span>
+      </span>
+    );
+  }
+
+  return (
+    <a
+      href={link!}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={classe}
+      title={
+        pendente
+          ? "Abrir WhatsApp para ajudar a finalizar o pagamento"
+          : "Abrir WhatsApp com mensagem de acompanhamento"
+      }
+    >
+      <MessageCircle className="h-4 w-4" />
+      <span className="hidden sm:inline">WhatsApp</span>
+    </a>
+  );
+}
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminLista,
