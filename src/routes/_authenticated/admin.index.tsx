@@ -331,6 +331,7 @@ function AdminLista() {
                       <th className="px-5 py-4">CPF</th>
                       <th className="px-5 py-4">Situação</th>
                       <th className="px-5 py-4">Criado em</th>
+                      <th className="px-5 py-4 text-right">Ações</th>
                     </tr>
                   </thead>
                   <tbody>
