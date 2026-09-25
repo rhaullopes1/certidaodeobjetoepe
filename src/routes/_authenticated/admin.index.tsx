@@ -367,6 +367,9 @@ function AdminLista() {
                         <td className="px-5 py-4 text-muted-foreground">
                           {new Date(p.created_at).toLocaleString("pt-BR")}
                         </td>
+                        <td className="px-5 py-4 text-right">
+                          <BotaoWhatsApp pedido={p} />
+                        </td>
                       </tr>
                     ))}
                   </tbody>
