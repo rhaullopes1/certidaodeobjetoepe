@@ -39,10 +39,14 @@ const faqTribunal = (t: Tribunal) => [
 ];
 
 export const Route = createFileRoute("/tribunais/$sigla")({
-  // TJSP consolidado em /certidao-de-objeto-e-pe/sp (evita canibalização no Google).
+  // TJSP e TJMT consolidados nas páginas estaduais (evita canibalização no Google).
   beforeLoad: ({ params }) => {
-    if (params.sigla.toLowerCase() === "tjsp") {
+    const sigla = params.sigla.toLowerCase();
+    if (sigla === "tjsp") {
       throw redirect({ to: "/certidao-de-objeto-e-pe/$uf", params: { uf: "sp" }, statusCode: 301 });
+    }
+    if (sigla === "tjmt") {
+      throw redirect({ to: "/certidao-de-objeto-e-pe/$uf", params: { uf: "mt" }, statusCode: 301 });
     }
   },
   loader: ({ params }) => {
