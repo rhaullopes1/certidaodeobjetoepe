@@ -232,8 +232,8 @@ function TribunalPage() {
             {relacionados.map((r) => (
               <li key={r.slug}>
                 <Link
-                  to={["sp", "mt", "rj"].includes(r.estadoSlug) ? "/certidao-de-objeto-e-pe/$uf" : "/tribunais/$sigla"}
-                  params={["sp", "mt", "rj"].includes(r.estadoSlug) ? { uf: r.estadoSlug } : { sigla: r.slug }}
+                  to={["sp", "mt", "rj"].includes(r.estadoSlug ?? "") ? "/certidao-de-objeto-e-pe/$uf" : "/tribunais/$sigla"}
+                  params={["sp", "mt", "rj"].includes(r.estadoSlug ?? "") ? { uf: r.estadoSlug ?? "" } : { sigla: r.slug }}
                   className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
                 >
                   {r.sigla}
