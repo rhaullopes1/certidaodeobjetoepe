@@ -253,17 +253,6 @@ function BlocoProcesso({
             required
           />
         </Campo>
-
-        <Campo label="Observações deste processo" hint="opcional">
-          <textarea
-            rows={3}
-            maxLength={1000}
-            value={valor.observacoes}
-            onChange={(e) => onChange({ ...valor, observacoes: e.target.value })}
-            className={inputClass}
-            placeholder="Observações para este processo (ex: solicitar denúncia do Ministério Público, certidão de inteiro teor, etc.)"
-          />
-        </Campo>
       </div>
     </div>
   );
