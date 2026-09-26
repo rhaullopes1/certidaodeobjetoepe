@@ -218,7 +218,7 @@ function EstadoPageGenerica() {
               {e.prazo}, conforme a comarca e a situação do processo.
             </InfoCard>
             <InfoCard icon={<CheckCircle2 className="h-5 w-5 text-gold" />} titulo="Valor">
-              A partir de {formatarBRL(TABELA_PRECOS[1]!)} por certidão, com desconto progressivo até 5 certidões.
+              Valor por certidão, com desconto progressivo até 5 certidões, apresentado no resumo do pedido antes do pagamento.
             </InfoCard>
           </div>
         </section>

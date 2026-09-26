@@ -26,7 +26,7 @@ const faqTribunal = (t: Tribunal) => [
   },
   {
     q: `Quanto custa a certidão do ${t.sigla}?`,
-    a: `Nosso serviço custa ${formatarBRL(precoCentavos(1))} para uma certidão, com valores progressivos até cinco certidões no mesmo pedido. Eventuais custas do tribunal são informadas antes do protocolo.`,
+    a: "O valor é por certidão, com desconto progressivo até cinco certidões no mesmo pedido, e é apresentado no resumo do pedido logo após o preenchimento da solicitação, antes de qualquer pagamento. Eventuais custas do tribunal são informadas antes do protocolo.",
   },
   {
     q: `A certidão do ${t.sigla} é digital e válida?`,

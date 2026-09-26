@@ -159,7 +159,7 @@ export function TrfLanding({ trf: t }: { trf: TrfSeo }) {
               desarquivamento.
             </InfoCard>
             <InfoCard icon={<CheckCircle2 className="h-5 w-5 text-gold" />} titulo="Valor">
-              A partir de {formatarBRL(TABELA_PRECOS[1]!)} por certidão, com desconto progressivo até
+              Valor por certidão, com desconto progressivo até
               5 certidões.
             </InfoCard>
           </div>
