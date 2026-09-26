@@ -236,7 +236,8 @@ function EstadosHub() {
           <ul className="mt-4 flex flex-wrap gap-2">
             <li>
               <Link
-                to="/certidao-objeto-e-pe-tjsp"
+                to="/certidao-de-objeto-e-pe/$uf"
+                params={{ uf: "sp" }}
                 className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
               >
                 Certidão de Objeto e Pé TJSP
