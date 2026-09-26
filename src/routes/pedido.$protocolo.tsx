@@ -174,7 +174,7 @@ function PedidoPage() {
             <span className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-accent-foreground/80">
               <FileText className="h-3.5 w-3.5" /> Pedido registrado
             </span>
-            <h1 className="mt-5 font-display text-3xl font-extrabold sm:text-4xl">
+            <h1 className="mt-5 break-all font-display text-2xl font-extrabold sm:text-4xl">
               Protocolo {data.protocolo}
             </h1>
             <p className="mt-3 text-sm text-muted-foreground">
