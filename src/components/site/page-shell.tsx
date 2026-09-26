@@ -2,8 +2,12 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/site/site-header";
 import {
+  EMAIL_CONTATO,
+  EMPRESA,
   GOOGLE_PROFILE,
   INSTAGRAM_PROFILE,
+  PHONE_DISPLAY,
+  PHONE_TEL,
   TIKTOK_PROFILE,
   YOUTUBE_CHANNEL,
 } from "@/lib/site";
