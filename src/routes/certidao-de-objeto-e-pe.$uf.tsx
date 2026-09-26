@@ -20,6 +20,7 @@ import { UserMenu } from "@/components/user-menu";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { TjpeLanding, tjpeHead } from "@/components/site/tjpe-landing";
 import { TjspLanding, tjspHead } from "@/components/site/tjsp-landing";
+import { TjmtLanding, tjmtHead } from "@/components/site/tjmt-landing";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
     const e = loaderData.estado;
     if (e.slug === "pe") return tjpeHead();
     if (e.slug === "sp") return tjspHead();
+    if (e.slug === "mt") return tjmtHead();
     const title = `Certidão de Objeto e Pé ${e.uf} (${e.tribunal}): Pedido Online`;
     const description = `Precisa da Certidão de Objeto e Pé em ${e.nome}? Fazemos o pedido ao ${e.tribunal}, Justiça Federal ou do Trabalho e acompanhamos até a emissão. Prazo usual: 1 a 5 dias úteis.`;
     const url = `${SITE}/certidao-de-objeto-e-pe/${params.uf}`;
@@ -138,6 +140,7 @@ function EstadoPage() {
   const { estado } = Route.useLoaderData();
   if (estado.slug === "pe") return <TjpeLanding />;
   if (estado.slug === "sp") return <TjspLanding />;
+  if (estado.slug === "mt") return <TjmtLanding />;
   return <EstadoPageGenerica />;
 }
 
