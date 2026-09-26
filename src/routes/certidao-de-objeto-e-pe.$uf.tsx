@@ -13,8 +13,6 @@ import {
   whatsappLink,
   PHONE_DISPLAY,
   PHONE_TEL,
-  TABELA_PRECOS,
-  formatarBRL,
 } from "@/lib/site";
 import { ESTADOS_SEO, estadoPorSlug, faqEstado, sistemaDoEstado } from "@/lib/estados-seo";
 import { detalheEstado } from "@/lib/estados-detalhes";
