@@ -28,6 +28,12 @@ export const PIX = {
   cidade: "BALNEARIO CAMBORIU",
 };
 
+/** Recebedor exibido pelo banco no Pix dinâmico (Mercado Pago). */
+export const PIX_DINAMICO = {
+  nome: "COP HOLDING DIGITAL",
+  cidade: "LONDRINA",
+};
+
 export const PHONE_DISPLAY = "0800 000 4604";
 export const PHONE_TEL = "tel:+558000004604";
 export const EMAIL_CONTATO = "contato@certidaodeobjetoepe.org";
