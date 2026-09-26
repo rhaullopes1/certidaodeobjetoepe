@@ -38,6 +38,15 @@ export const PHONE_DISPLAY = "0800 000 4604";
 export const PHONE_TEL = "tel:+558000004604";
 export const EMAIL_CONTATO = "contato@certidaodeobjetoepe.org";
 
+/** Dados cadastrais da empresa responsável (Decreto 7.962/2013). */
+export const EMPRESA = {
+  nomeFantasia: "Certidão de Objeto e Pé",
+  razaoSocial: "61.234.511 NEUZA FERNANDES",
+  cnpj: "61.234.511/0001-62",
+  cnae: "82.19-9-99 — Preparação de documentos e serviços especializados de apoio administrativo",
+  endereco: "Rua 1401, nº 200, Centro — Balneário Camboriú/SC — CEP 88330-798",
+};
+
 export const whatsappLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
