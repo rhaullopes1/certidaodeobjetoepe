@@ -46,7 +46,7 @@ export const Route = createFileRoute("/tribunais/")({
             "@type": "ListItem",
             position: i + 1,
             name: `Certidão de Objeto e Pé ${t.sigla}`,
-            url: t.estadoSlug === "sp" || t.estadoSlug === "mt" ? `${SITE}/certidao-de-objeto-e-pe/${t.estadoSlug}` : `${URL}/${t.slug}`,
+            url: ["sp", "mt", "rj"].includes(t.estadoSlug) ? `${SITE}/certidao-de-objeto-e-pe/${t.estadoSlug}` : `${URL}/${t.slug}`,
           })),
         }),
       },
@@ -77,8 +77,8 @@ function TribunaisHub() {
                 {lista.map((t) => (
                   <li key={t.slug}>
                     <Link
-                      to={t.estadoSlug === "sp" || t.estadoSlug === "mt" ? "/certidao-de-objeto-e-pe/$uf" : "/tribunais/$sigla"}
-                      params={t.estadoSlug === "sp" || t.estadoSlug === "mt" ? { uf: t.estadoSlug } : { sigla: t.slug }}
+                      to={["sp", "mt", "rj"].includes(t.estadoSlug) ? "/certidao-de-objeto-e-pe/$uf" : "/tribunais/$sigla"}
+                      params={["sp", "mt", "rj"].includes(t.estadoSlug) ? { uf: t.estadoSlug } : { sigla: t.slug }}
                       className="block h-full rounded-2xl border border-border bg-card p-5 transition-colors hover:bg-secondary"
                     >
                       <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
