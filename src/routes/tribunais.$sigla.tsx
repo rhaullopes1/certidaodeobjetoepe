@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { TRIBUNAIS, tribunalPorSlug, tribunaisPorTipo, type Tribunal } from "@/lib/tribunais";
 import { whatsappLink } from "@/lib/site";
@@ -39,6 +39,12 @@ const faqTribunal = (t: Tribunal) => [
 ];
 
 export const Route = createFileRoute("/tribunais/$sigla")({
+  // TJSP consolidado em /certidao-de-objeto-e-pe/sp (evita canibalização no Google).
+  beforeLoad: ({ params }) => {
+    if (params.sigla.toLowerCase() === "tjsp") {
+      throw redirect({ to: "/certidao-de-objeto-e-pe/$uf", params: { uf: "sp" }, statusCode: 301 });
+    }
+  },
   loader: ({ params }) => {
     const tribunal = tribunalPorSlug(params.sigla);
     if (!tribunal) throw notFound();
@@ -219,8 +225,8 @@ function TribunalPage() {
             {relacionados.map((r) => (
               <li key={r.slug}>
                 <Link
-                  to="/tribunais/$sigla"
-                  params={{ sigla: r.slug }}
+                  to={r.slug === "tjsp" ? "/certidao-de-objeto-e-pe/$uf" : "/tribunais/$sigla"}
+                  params={r.slug === "tjsp" ? { uf: "sp" } : { sigla: r.slug }}
                   className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
                 >
                   {r.sigla}

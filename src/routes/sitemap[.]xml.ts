@@ -50,7 +50,7 @@ export const Route = createFileRoute("/sitemap.xml")({
             priority: "0.7",
           })),
           { path: "/tribunais", changefreq: "weekly", priority: "0.8" },
-          ...TRIBUNAIS.map((t) => ({
+          ...TRIBUNAIS.filter((t) => t.slug !== "tjsp").map((t) => ({
             path: `/tribunais/${t.slug}`,
             changefreq: "monthly" as const,
             priority: "0.7",

@@ -23,7 +23,7 @@ const DESC =
 const FAQ_TJSP: { q: string; a: string }[] = [
   {
     q: "Como pedir a Certidão de Objeto e Pé no TJSP?",
-    a: "Informe o número do processo (formato CNJ), o nome completo e o CPF da parte envolvida em nosso formulário online. Nossa equipe identifica o foro e a vara no sistema e-SAJ do TJSP, protocola o requerimento e acompanha até a emissão do documento.",
+    a: "Informe o número do processo (formato CNJ), o nome completo e o CPF da parte envolvida em nosso formulário online. Nossa equipe localiza o foro e a vara do processo (nos sistemas e-SAJ ou eproc do TJSP), faz o pedido à unidade judicial e acompanha até a emissão do documento.",
   },
   {
     q: "Quanto tempo demora a certidão no Tribunal de Justiça de São Paulo?",
@@ -188,8 +188,8 @@ export function TjspLanding() {
         <section className="bg-secondary/60 px-5 py-16 sm:px-8">
           <div className="mx-auto grid w-full max-w-6xl gap-6 sm:grid-cols-3">
             <InfoCard icon={<Landmark className="h-5 w-5 text-gold" />} titulo="Tribunal">
-              Tribunal de Justiça de São Paulo (TJSP), com protocolo pelo portal e-SAJ ou no cartório
-              da vara quando o processo é físico.
+              O Tribunal de Justiça de São Paulo (TJSP) é o órgão responsável pela emissão. O pedido é
+              feito à unidade onde o processo tramita ou tramitou.
             </InfoCard>
             <InfoCard icon={<Clock className="h-5 w-5 text-gold" />} titulo="Prazo médio">
               1 a 5 dias úteis, conforme a comarca e o tribunal emissor.
@@ -208,16 +208,18 @@ export function TjspLanding() {
                 Requisitos do TJSP para emitir a Certidão de Objeto e Pé
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                O TJSP exige o número do processo no padrão CNJ e a identificação correta da parte
-                (nome completo e CPF ou CNPJ). Processos em segredo de justiça só permitem emissão
-                às partes e a seus procuradores. Em processos físicos ou arquivados, o pedido é
-                dirigido ao cartório da vara e pode depender de desarquivamento, o que altera o
-                prazo.
+                Segundo o TJSP, a Certidão de Objeto e Pé informa as partes, o objeto e a situação atual
+                do processo, e é solicitada presencialmente ou pelo balcão virtual da unidade em que o
+                processo tramita ou tramitou. O tribunal usa dois sistemas: o e-SAJ e o eproc (no eproc,
+                a certidão se chama Certidão Narratória). Para localizar o processo, pedimos o número no
+                padrão CNJ e a identificação da parte. Processos em segredo de justiça têm acesso
+                restrito às partes e a seus advogados. Em processos físicos ou arquivados, o
+                atendimento depende da unidade e pode levar mais tempo.
               </p>
               <ol className="mt-8 space-y-5">
                 {[
                   "Envie o número do processo, o nome completo e o CPF da parte envolvida.",
-                  "Confirmamos o foro, a vara e a situação do processo no e-SAJ e geramos seu protocolo.",
+                  "Confirmamos o foro, a vara e a situação do processo (e-SAJ ou eproc) e geramos seu protocolo.",
                   "Você paga por Pix com confirmação automática e acompanha o andamento pelo site.",
                   "A certidão emitida pelo TJSP é enviada em PDF por e-mail e WhatsApp.",
                 ].map((passo, i) => (

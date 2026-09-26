@@ -24,7 +24,7 @@ Informe o número do processo, o nome completo e o CPF da parte envolvida. Nossa
 
 ## Justiça Estadual
 
-- [Certidão de Objeto e Pé TJSP](/certidao-objeto-e-pe-tjsp): Processos do Tribunal de Justiça de São Paulo.
+- [Certidão de Objeto e Pé TJSP](/certidao-de-objeto-e-pe/sp): Processos do Tribunal de Justiça de São Paulo.
 - [São Paulo](/certidao-de-objeto-e-pe/sp): Certidão em todas as comarcas paulistas.
 - [Minas Gerais](/certidao-de-objeto-e-pe/mg): Certidão em todas as comarcas mineiras.
 - [Rio de Janeiro](/certidao-de-objeto-e-pe/rj): Certidão em todas as comarcas fluminenses.
