@@ -67,8 +67,12 @@ export function mensagemWhatsapp(p: PedidoContato): string {
     case "emitida":
       return (
         `Olá, ${nome}! A sua Certidão de Objeto e Pé (protocolo ${p.protocolo}) foi emitida ` +
-        `e enviada para o seu e-mail. Precisando de algo mais, é só chamar.`
+        `e enviada para o seu e-mail. ` +
+        `Se o nosso atendimento te ajudou, você poderia deixar uma avaliação de 5 estrelas no Google? ` +
+        `Leva menos de 30 segundos: ${LINK_AVALIACAO_GOOGLE} ` +
+        `Muito obrigado pela confiança!`
       );
+
     case "cancelado":
     case "expirado":
       return (
