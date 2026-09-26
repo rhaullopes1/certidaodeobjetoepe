@@ -6,6 +6,7 @@
 export const REDIRECIONAMENTOS_BLOG: Record<string, string> = {
   "para-que-serve-certidao-de-objeto-e-pe": "o-que-e-certidao-de-objeto-e-pe",
   "diferenca-certidao-de-objeto-e-pe-e-certidao-negativa": "certidao-objeto-e-pe-x-nada-consta",
+  "certidao-narratoria-o-que-e": "o-que-e-certidao-narratoria",
 };
 
 export const destinoRedirecionamento = (slug: string) => REDIRECIONAMENTOS_BLOG[slug];

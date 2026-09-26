@@ -39,8 +39,8 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/$uf")({
       };
     }
     const e = loaderData.estado;
-    const title = `Certidão de Objeto e Pé ${e.uf} (${e.tribunal}) em ${e.prazo}`;
-    const description = `Certidão de Objeto e Pé em ${e.nome} sem ir ao fórum: pedido online de processos do ${e.tribunal}, Justiça Federal e Trabalho. Entrega em ${e.prazo}, pagamento por Pix e suporte no WhatsApp.`;
+    const title = `Certidão de Objeto e Pé ${e.uf} (${e.tribunal}): Pedido Online`;
+    const description = `Precisa da Certidão de Objeto e Pé em ${e.nome}? Fazemos o pedido ao ${e.tribunal}, Justiça Federal ou do Trabalho e acompanhamos até a emissão. Prazo usual: 1 a 5 dias úteis.`;
     const url = `${SITE}/certidao-de-objeto-e-pe/${params.uf}`;
 
     return {

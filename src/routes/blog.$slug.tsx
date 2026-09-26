@@ -206,6 +206,11 @@ function PostPage() {
           >
             Solicitar agora
           </Link>
+          <p className="mt-4 text-sm text-primary-foreground/80">
+            <Link to="/certidao-de-objeto-e-pe" className="underline underline-offset-4">
+              Saiba como solicitar uma Certidão de Objeto e Pé online
+            </Link>
+          </p>
         </div>
 
         <LinksRelacionados className="mt-14" />

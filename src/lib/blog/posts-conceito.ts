@@ -105,17 +105,17 @@ export const POSTS_CONCEITO: Post[] = [
   {
     slug: "o-que-e-certidao-narratoria",
     categoria: "conceito",
-    titulo: "O que é Certidão Narratória e como pedir (guia 2026)",
-    h1: "O que é Certidão Narratória",
+    titulo: "Certidão Narratória (Objeto e Pé): O Que É e Como Pedir",
+    h1: "Certidão narratória: o que é e como solicitar",
     descricao:
-      "Certidão narratória é o documento em que o tribunal narra os atos de um processo. Veja o que consta, para que serve, diferenças para a Certidão de Objeto e Pé, prazo e como solicitar online.",
+      "Entenda o que é a certidão narratória, o que consta nela, quem emite e como se relaciona com a Certidão de Objeto e Pé. Veja como solicitar online.",
     resumo:
-      "Guia completo da certidão narratória: o que é, o que aparece no documento, quando ela é exigida e por que, na maioria dos tribunais, ela equivale à Certidão de Objeto e Pé.",
+      "Guia completo da certidão narratória: o que é, o que aparece no documento, quando ela é exigida e como ela se relaciona com a Certidão de Objeto e Pé — a nomenclatura varia conforme o tribunal.",
     atualizado: "2026-09-22",
     leitura: 7,
     blocos: [
       { t: "p", x: "Certidão narratória é o documento oficial em que a unidade judiciária narra, em texto corrido, os atos e fatos relevantes de um processo: quem são as partes, do que se trata a ação, quando foi distribuída, quais decisões foram proferidas e qual é a situação atual do feito. O nome vem justamente do verbo narrar — o servidor conta a história do processo em um documento assinado e com código de autenticidade." },
-      { t: "p", x: "Na prática forense brasileira, certidão narratória e Certidão de Objeto e Pé costumam ser tratadas como o mesmo documento. Cada tribunal adota a nomenclatura que consta no seu regimento ou no menu de requerimentos do sistema eletrônico: em alguns aparece \"objeto e pé\", em outros \"narratória\", \"circunstanciada\" ou \"de andamento processual\"." },
+      { t: "p", x: "Quem emite a certidão é sempre o órgão judiciário competente. Na prática forense, certidão narratória e Certidão de Objeto e Pé são frequentemente tratadas como documentos equivalentes, mas isso não é regra em todos os tribunais: a nomenclatura e o procedimento variam conforme o órgão. Cada tribunal adota a nomenclatura que consta no seu regimento ou no menu de requerimentos do sistema eletrônico: em alguns aparece \"objeto e pé\", em outros \"narratória\", \"circunstanciada\" ou \"de andamento processual\"." },
       { t: "h", x: "O que consta em uma certidão narratória" },
       { t: "ul", items: [
         "Número do processo no padrão CNJ, classe e assunto.",
@@ -153,11 +153,11 @@ export const POSTS_CONCEITO: Post[] = [
       { t: "p", x: "O andamento que aparece na consulta pública do site do tribunal é informativo: não tem assinatura, não é documento oficial e costuma ser recusado por quem exige comprovação. A certidão narratória, ao contrário, é expedida pela unidade judiciária, é assinada e pode ser conferida pelo código de autenticidade." },
       { t: "h", x: "Prazo e como solicitar online" },
       { t: "p", x: "O prazo usual é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor. Pela internet, o requerimento é protocolado na unidade correta a partir do número do processo, acompanhado até a expedição e entregue em arquivo digital, com protocolo de acompanhamento." },
-      { t: "cta", x: CTA },
+      { t: "cta", x: "Precisa de uma certidão narrativa / de objeto e pé? Entenda qual documento pode atender à sua necessidade e solicite orientação para realizar o pedido. A certidão é emitida pelo tribunal competente; nós cuidamos da solicitação e do acompanhamento." },
     ],
     faq: [
       { q: "O que é certidão narratória?", a: "É o documento oficial em que o tribunal narra os atos e fatos de um processo: partes, objeto, distribuição, principais movimentações e situação atual, com código de autenticidade conferível no portal do tribunal." },
-      { q: "Certidão narratória é a mesma coisa que Certidão de Objeto e Pé?", a: "Na maioria dos tribunais, sim: são nomes diferentes para a certidão que descreve o processo e sua fase. Em alguns, a narratória detalha mais a cronologia dos atos." },
+      { q: "Certidão narratória é a mesma coisa que Certidão de Objeto e Pé?", a: "Em muitos tribunais os dois nomes se referem a documentos equivalentes, que descrevem o processo e sua fase. Mas a nomenclatura e o procedimento variam conforme o órgão, e em alguns a narratória detalha mais a cronologia dos atos. Confirme com quem fez a exigência." },
       { q: "Qual devo pedir se a empresa não especificou?", a: "Peça a Certidão de Objeto e Pé com histórico de movimentações — esse conteúdo costuma atender às duas exigências. Confirme com quem pediu se há alguma especificação adicional." },
       { q: "Preciso de advogado para pedir?", a: "Não, quando o processo é público. Em processos sob segredo de justiça, apenas as partes e seus advogados constituídos podem obter a certidão." },
       { q: "Quanto tempo demora?", a: "De 1 a 5 dias úteis, conforme a comarca e o tribunal emissor." },

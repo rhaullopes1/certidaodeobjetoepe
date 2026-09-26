@@ -54,10 +54,10 @@ export const POSTS_TRIBUNAIS: Post[] = [
   {
     slug: "certidao-de-objeto-e-pe-esaj",
     categoria: "tribunais",
-    titulo: "Certidão de Objeto e Pé no e-SAJ: como pedir",
-    h1: "Certidão de Objeto e Pé no sistema e-SAJ",
+    titulo: "Certidão de Objeto e Pé no e-SAJ: Como Pedir Passo a Passo",
+    h1: "Como pedir a Certidão de Objeto e Pé no e-SAJ",
     descricao:
-      "O e-SAJ é usado por tribunais como TJSP, TJMS e TJAL. Veja como localizar o processo, requerer a certidão e validar o documento.",
+      "Veja como pedir a Certidão de Objeto e Pé no e-SAJ (TJSP, TJMS, TJAL e outros): consulta do processo, requerimento, custas e validação. Ou solicite online.",
     resumo: "Guia do sistema e-SAJ, adotado por vários tribunais estaduais.",
     atualizado: "2026-08-26",
     leitura: 5,
@@ -174,10 +174,10 @@ export const POSTS_TRIBUNAIS: Post[] = [
   {
     slug: "certidao-de-objeto-e-pe-justica-federal",
     categoria: "tribunais",
-    titulo: "Certidão de Objeto e Pé na Justiça Federal (TRF1 a TRF6)",
-    h1: "Certidão de Objeto e Pé na Justiça Federal",
+    titulo: "Certidão de Objeto e Pé na Justiça Federal: Como Pedir",
+    h1: "Como pedir a Certidão de Objeto e Pé na Justiça Federal",
     descricao:
-      "Processos com a União, INSS, Caixa e execuções fiscais federais: como pedir a certidão nas seções judiciárias e nos TRFs 1 a 6.",
+      "Processo com INSS, Caixa ou União? Saiba como pedir a Certidão de Objeto e Pé na Justiça Federal (TRF1 a TRF6), o que consta e como solicitar online.",
     resumo: "Quando o processo é federal, o caminho passa pela seção judiciária e pelo TRF competente.",
     atualizado: "2026-08-26",
     leitura: 6,
