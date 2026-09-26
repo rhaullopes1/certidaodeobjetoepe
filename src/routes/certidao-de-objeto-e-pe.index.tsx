@@ -7,9 +7,9 @@ import { UserMenu } from "@/components/user-menu";
 
 const SITE = "https://certidaodeobjetoepe.org";
 const URL = `${SITE}/certidao-de-objeto-e-pe`;
-const TITLE = "Certidão de Objeto e Pé: o que é, como pedir e prazos";
+const TITLE = "Certidão de Objeto e Pé Online: Como Solicitar e Prazos";
 const DESC =
-  "Guia completo da Certidão de Objeto e Pé: o que é, o que consta, quem pode pedir, prazos por tribunal, custo e como solicitar online em todos os estados do Brasil.";
+  "Entenda o que é a Certidão de Objeto e Pé, quem emite, o que consta e como solicitar online em tribunais de todo o Brasil, com acompanhamento do pedido.";
 
 
 export const Route = createFileRoute("/certidao-de-objeto-e-pe/")({
@@ -89,12 +89,15 @@ function EstadosHub() {
       <main className="px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto w-full max-w-6xl">
           <h1 className="max-w-3xl font-display text-3xl font-bold leading-tight sm:text-5xl">
-            Certidão de Objeto e Pé: o que é, como pedir e prazos
+            Certidão de Objeto e Pé: o que é e como solicitar online
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            A Certidão de Objeto e Pé é o documento oficial do tribunal que descreve o objeto do
-            processo (do que se trata, partes e pedido) e o pé (a fase em que ele está hoje).
-            Solicitamos a certidão em tribunais estaduais, federais e trabalhistas de todo o Brasil.
+            A Certidão de Objeto e Pé é o documento oficial, emitido pelo tribunal onde o processo
+            tramita, que descreve o objeto do processo (do que se trata, partes e pedido) e o pé (a
+            fase em que ele está hoje). É exigida em análises cadastrais, concursos, imóveis e
+            licitações. Não somos um órgão público: recebemos sua solicitação, fazemos o pedido ao
+            tribunal estadual, federal ou trabalhista, acompanhamos e entregamos o documento quando
+            ele estiver disponível.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
