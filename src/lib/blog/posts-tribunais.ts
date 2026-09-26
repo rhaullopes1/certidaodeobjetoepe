@@ -54,12 +54,12 @@ export const POSTS_TRIBUNAIS: Post[] = [
   {
     slug: "certidao-de-objeto-e-pe-esaj",
     categoria: "tribunais",
-    titulo: "Certidão de Objeto e Pé no e-SAJ: Como Pedir Passo a Passo",
+    titulo: "Certidão de Objeto e Pé no e-SAJ: Como Solicitar",
     h1: "Como pedir a Certidão de Objeto e Pé no e-SAJ",
     descricao:
-      "Veja como pedir a Certidão de Objeto e Pé no e-SAJ (TJSP, TJMS, TJAL e outros): consulta do processo, requerimento, custas e validação. Ou solicite online.",
+      "Veja como solicitar a Certidão de Objeto e Pé no portal e-SAJ passo a passo, ou conte com assessoria para auxiliar no pedido e no acompanhamento junto ao tribunal.",
     resumo: "Guia do sistema e-SAJ, adotado por vários tribunais estaduais.",
-    atualizado: "2026-08-26",
+    atualizado: "2026-09-26",
     leitura: 5,
     blocos: [
       { t: "p", x: "O e-SAJ (Sistema de Automação da Justiça) é a plataforma usada por tribunais como TJSP, TJMS e TJAL, entre outros, para consulta processual, peticionamento e emissão de certidões." },
@@ -71,13 +71,14 @@ export const POSTS_TRIBUNAIS: Post[] = [
         "Anexação do requerimento e da guia de custas, quando exigida.",
         "Aguardar a juntada e a expedição pelo cartório da vara.",
       ] },
+      { t: "cta", x: "Precisa solicitar uma Certidão de Objeto e Pé? Se você prefere não fazer o pedido sozinho no sistema do tribunal, podemos auxiliar na solicitação e no acompanhamento do pedido." },
       { t: "h", x: "Pontos de atenção no e-SAJ" },
       { t: "ul", items: [
         "Processos digitalizados antigos podem estar em 'consulta de processos físicos', com fluxo distinto.",
         "Segredo de justiça bloqueia o peticionamento por terceiros.",
         "O código de autenticidade da certidão é conferido na área de validação de documentos do portal.",
       ] },
-      { t: "cta", x: CTA },
+      { t: "cta", x: "Prefere receber auxílio para solicitar sua certidão? Solicite online e envie os dados do processo para iniciarmos o atendimento." },
     ],
     faq: [
       { q: "Preciso de certificado digital para usar o e-SAJ?", a: "Para peticionar, na maioria dos casos sim, ou um cadastro habilitado no portal. A consulta pública dispensa certificado." },
