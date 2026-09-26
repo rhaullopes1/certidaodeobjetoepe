@@ -749,10 +749,32 @@ function Footer() {
         </div>
       </div>
       <div className="mx-auto mt-12 w-full max-w-6xl border-t border-primary-foreground/15 pt-6 text-xs leading-relaxed text-primary-foreground/55">
+        <p className="mb-2 text-sm font-semibold text-primary-foreground/85">
+          Empresa responsável
+        </p>
         <p>
+          <span className="text-primary-foreground/80">Razão social:</span>{" "}
+          {EMPRESA.razaoSocial} — {EMPRESA.nomeFantasia}
+        </p>
+        <p>
+          <span className="text-primary-foreground/80">CNPJ:</span> {EMPRESA.cnpj}
+        </p>
+        <p>
+          <span className="text-primary-foreground/80">Atividade (CNAE):</span> {EMPRESA.cnae}
+        </p>
+        <p>
+          <span className="text-primary-foreground/80">Sede:</span> {EMPRESA.endereco}
+        </p>
+        <p className="mt-2">
+          <span className="text-primary-foreground/80">Atendimento:</span> {PHONE_DISPLAY} ·{" "}
+          {EMAIL_CONTATO}
+        </p>
+        <p className="mt-3">
           Serviço de assessoria administrativa para obtenção de documentos junto
           aos tribunais. Não prestamos consultoria jurídica nem representação
-          processual.
+          processual. Empresa privada, sem vínculo com órgãos públicos.
+          Informações publicadas em conformidade com o Decreto Federal nº
+          7.962/2013 e o Marco Civil da Internet (Lei nº 12.965/2014).
         </p>
         <p className="mt-2">
           © {new Date().getFullYear()} Certidão Objeto e Pé. Todos os direitos
