@@ -77,8 +77,8 @@ function TribunaisHub() {
                 {lista.map((t) => (
                   <li key={t.slug}>
                     <Link
-                      to="/tribunais/$sigla"
-                      params={{ sigla: t.slug }}
+                      to={t.slug === "tjsp" ? "/certidao-de-objeto-e-pe/$uf" : "/tribunais/$sigla"}
+                      params={t.slug === "tjsp" ? { uf: "sp" } : { sigla: t.slug }}
                       className="block h-full rounded-2xl border border-border bg-card p-5 transition-colors hover:bg-secondary"
                     >
                       <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
