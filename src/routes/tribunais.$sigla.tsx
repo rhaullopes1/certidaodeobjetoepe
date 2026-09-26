@@ -39,10 +39,14 @@ const faqTribunal = (t: Tribunal) => [
 ];
 
 export const Route = createFileRoute("/tribunais/$sigla")({
-  // TJSP consolidado em /certidao-de-objeto-e-pe/sp (evita canibalização no Google).
+  // TJSP e TJMT consolidados nas páginas estaduais (evita canibalização no Google).
   beforeLoad: ({ params }) => {
-    if (params.sigla.toLowerCase() === "tjsp") {
+    const sigla = params.sigla.toLowerCase();
+    if (sigla === "tjsp") {
       throw redirect({ to: "/certidao-de-objeto-e-pe/$uf", params: { uf: "sp" }, statusCode: 301 });
+    }
+    if (sigla === "tjmt") {
+      throw redirect({ to: "/certidao-de-objeto-e-pe/$uf", params: { uf: "mt" }, statusCode: 301 });
     }
   },
   loader: ({ params }) => {
@@ -225,8 +229,8 @@ function TribunalPage() {
             {relacionados.map((r) => (
               <li key={r.slug}>
                 <Link
-                  to={r.slug === "tjsp" ? "/certidao-de-objeto-e-pe/$uf" : "/tribunais/$sigla"}
-                  params={r.slug === "tjsp" ? { uf: "sp" } : { sigla: r.slug }}
+                  to={r.estadoSlug === "sp" || r.estadoSlug === "mt" ? "/certidao-de-objeto-e-pe/$uf" : "/tribunais/$sigla"}
+                  params={r.estadoSlug === "sp" || r.estadoSlug === "mt" ? { uf: r.estadoSlug } : { sigla: r.slug }}
                   className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
                 >
                   {r.sigla}
