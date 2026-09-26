@@ -26,7 +26,7 @@ export interface PublicoSeo {
 }
 
 const PRECOS =
-  "R$ 197 por 1 certidão, R$ 347 por 2, R$ 497 por 3, R$ 647 por 4 e R$ 797 por 5 certidões.";
+  "o valor é por certidão, com desconto progressivo conforme a quantidade, e é apresentado na tela de resumo antes de qualquer pagamento.";
 
 const COMO_PEDIR: PublicoSecao = {
   h2: "Como pedir a sua certidão",
