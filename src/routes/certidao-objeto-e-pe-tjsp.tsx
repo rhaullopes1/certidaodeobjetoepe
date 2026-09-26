@@ -9,7 +9,7 @@ import {
   Landmark,
   FileText,
 } from "lucide-react";
-import { whatsappLink, PHONE_DISPLAY, PHONE_TEL, TABELA_PRECOS, formatarBRL } from "@/lib/site";
+import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 
@@ -30,7 +30,7 @@ const FAQ_TJSP: { q: string; a: string }[] = [
   },
   {
     q: "Qual o valor da Certidão de Objeto e Pé do TJSP?",
-    a: `O valor começa em ${formatarBRL(TABELA_PRECOS[1]!)} por certidão e o total é calculado automaticamente conforme a quantidade solicitada (de 1 a 5), com desconto progressivo. O pagamento pode ser feito por Pix com confirmação automática.`,
+    a: "O valor é por certidão e o total é calculado automaticamente conforme a quantidade solicitada (de 1 a 5), com desconto progressivo. Ele é apresentado no resumo do pedido logo após o preenchimento da solicitação, antes de qualquer pagamento, que pode ser feito por Pix com confirmação automática.",
   },
   {
     q: "Preciso de advogado ou ir ao fórum em São Paulo?",
@@ -195,7 +195,7 @@ function TjspPage() {
               1 a 5 dias úteis, conforme a comarca e o tribunal emissor.
             </InfoCard>
             <InfoCard icon={<CheckCircle2 className="h-5 w-5 text-gold" />} titulo="Valor">
-              A partir de {formatarBRL(TABELA_PRECOS[1]!)} por certidão, com desconto progressivo até
+              Valor por certidão, com desconto progressivo até
               5 certidões.
             </InfoCard>
           </div>

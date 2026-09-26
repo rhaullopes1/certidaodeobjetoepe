@@ -8,7 +8,7 @@ import {
   Clock,
   FileText,
 } from "lucide-react";
-import { whatsappLink, PHONE_DISPLAY, PHONE_TEL, TABELA_PRECOS, formatarBRL } from "@/lib/site";
+import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 import { faqTrf, type TrfSeo } from "@/lib/trf-seo";
@@ -159,7 +159,7 @@ export function TrfLanding({ trf: t }: { trf: TrfSeo }) {
               desarquivamento.
             </InfoCard>
             <InfoCard icon={<CheckCircle2 className="h-5 w-5 text-gold" />} titulo="Valor">
-              A partir de {formatarBRL(TABELA_PRECOS[1]!)} por certidão, com desconto progressivo até
+              Valor por certidão, com desconto progressivo até
               5 certidões.
             </InfoCard>
           </div>

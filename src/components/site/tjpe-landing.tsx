@@ -9,7 +9,7 @@ import {
   Landmark,
   FileText,
 } from "lucide-react";
-import { whatsappLink, PHONE_DISPLAY, PHONE_TEL, TABELA_PRECOS, formatarBRL } from "@/lib/site";
+import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 
@@ -45,7 +45,7 @@ const FAQ_TJPE: { q: string; a: string }[] = [
   },
   {
     q: "Qual o valor da Certidão de Objeto e Pé do TJPE?",
-    a: `O valor começa em ${formatarBRL(TABELA_PRECOS[1]!)} por certidão, com desconto progressivo de 1 a 5 certidões. O pagamento pode ser feito por Pix com confirmação automática ou cartão.`,
+    a: "O valor é por certidão, com desconto progressivo de 1 a 5 certidões, e é apresentado no resumo do pedido logo após o preenchimento da solicitação, antes de qualquer pagamento. O pagamento pode ser feito por Pix com confirmação automática ou cartão.",
   },
   {
     q: "Qual sistema o TJPE usa para os processos?",
@@ -214,8 +214,8 @@ export function TjpeLanding() {
               1 a 5 dias úteis, conforme a comarca e o tribunal emissor.
             </InfoCard>
             <InfoCard icon={<CheckCircle2 className="h-5 w-5 text-gold" />} titulo="Valor">
-              A partir de {formatarBRL(TABELA_PRECOS[1]!)} por certidão, com desconto progressivo até
-              5 certidões.
+              Valor por certidão, com desconto progressivo até 5 certidões, apresentado no resumo do
+              pedido antes do pagamento.
             </InfoCard>
           </div>
         </section>

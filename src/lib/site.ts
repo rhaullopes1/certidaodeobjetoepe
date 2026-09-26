@@ -134,7 +134,7 @@ export const FAQ = [
   },
   {
     q: "Qual o valor do serviço?",
-    a: "R$ 197 por 1 certidão, R$ 347 por 2, R$ 497 por 3, R$ 647 por 4 e R$ 797 por 5 certidões no mesmo pedido. O valor inclui protocolo, acompanhamento e envio do PDF. Eventuais custas do tribunal são informadas antes de qualquer cobrança adicional.",
+    a: "O valor é por certidão, com desconto progressivo conforme a quantidade solicitada no mesmo pedido, e inclui protocolo, acompanhamento e envio do PDF. Ele é apresentado na tela de resumo logo após você preencher a solicitação, antes de qualquer pagamento. Eventuais custas do tribunal são informadas antes de qualquer cobrança adicional.",
   },
   {
     q: "A certidão remove o processo do meu nome?",

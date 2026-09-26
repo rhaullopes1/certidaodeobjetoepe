@@ -16,9 +16,6 @@ export interface GuiaSeo {
   faq: { q: string; a: string }[];
 }
 
-const PRECOS =
-  "R$ 197 por 1 certidão, R$ 347 por 2, R$ 497 por 3, R$ 647 por 4 e R$ 797 por 5 certidões.";
-
 export const GUIAS_SEO: GuiaSeo[] = [
   {
     slug: "como-solicitar-certidao-de-objeto-e-pe",
@@ -81,68 +78,6 @@ export const GUIAS_SEO: GuiaSeo[] = [
       {
         q: "Como acompanho o meu pedido?",
         a: "Pelo número de protocolo, na página de acompanhamento. Ele mostra o status atual, a data de cada etapa e o comprovante em PDF.",
-      },
-    ],
-  },
-  {
-    slug: "quanto-custa-certidao-de-objeto-e-pe",
-    titulo: "Quanto Custa a Certidão de Objeto e Pé? Preços e Prazos 2026",
-    h1: "Quanto custa a Certidão de Objeto e Pé?",
-    descricao:
-      "Tabela de preços da Certidão de Objeto e Pé: R$ 197 por certidão, com desconto progressivo até 5 certidões. Veja o que está incluso, prazos e formas de pagamento.",
-    resumo: `O valor do serviço completo é ${PRECOS} O preço já inclui o protocolo no tribunal, o acompanhamento e o envio da certidão em PDF.`,
-    secoes: [
-      {
-        h2: "Tabela de preços",
-        paragrafos: [
-          "O valor é por certidão e cai conforme a quantidade solicitada no mesmo pedido. Não há mensalidade, taxa de adesão nem cobrança extra após a confirmação.",
-        ],
-        lista: [
-          "1 certidão — R$ 197,00",
-          "2 certidões — R$ 347,00",
-          "3 certidões — R$ 497,00",
-          "4 certidões — R$ 647,00",
-          "5 certidões — R$ 797,00",
-        ],
-      },
-      {
-        h2: "O que está incluso no valor",
-        paragrafos: [
-          "O preço cobre o serviço completo, do protocolo à entrega. Você não precisa acompanhar o processo nem ir ao fórum.",
-        ],
-        lista: [
-          "Conferência dos dados do processo antes do protocolo",
-          "Protocolo no tribunal ou no sistema eletrônico correto",
-          "Acompanhamento do pedido até a emissão",
-          "Envio da certidão em PDF por e-mail",
-          "Comprovante do pedido em PDF e acompanhamento por protocolo",
-        ],
-      },
-      {
-        h2: "Existem custas do tribunal?",
-        paragrafos: [
-          "A maioria dos tribunais emite a Certidão de Objeto e Pé sem custas para o cidadão. Quando o tribunal cobra taxa própria — o que ocorre em alguns estados e em processos físicos que exigem desarquivamento —, informamos o valor antes de qualquer cobrança adicional. Nada é cobrado sem a sua confirmação.",
-        ],
-      },
-      {
-        h2: "Formas de pagamento",
-        paragrafos: [
-          "Você pode pagar por Pix, com QR Code e código copia e cola gerados na hora, ou por cartão de crédito. O Pix é confirmado automaticamente em poucos minutos e o pedido segue para protocolo assim que o pagamento é identificado.",
-        ],
-      },
-    ],
-    faq: [
-      {
-        q: "O valor é por processo ou por certidão?",
-        a: "Por certidão. Cada certidão corresponde a um processo, com número, nome completo e CPF da parte informados no pedido.",
-      },
-      {
-        q: "E se o tribunal não emitir a certidão?",
-        a: "Se a emissão não for possível por impedimento do próprio processo, entramos em contato para tratar o caso individualmente antes de qualquer nova cobrança.",
-      },
-      {
-        q: "O pagamento por Pix é confirmado na hora?",
-        a: "Na prática, sim: a confirmação costuma chegar em poucos minutos e o status muda automaticamente para pago na página de acompanhamento.",
       },
     ],
   },
