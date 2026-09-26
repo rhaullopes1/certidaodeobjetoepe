@@ -13,7 +13,14 @@ import {
   Download,
 } from "lucide-react";
 import { consultarPedido, regerarCobranca } from "@/lib/pedidos.functions";
-import { whatsappLink, PIX, statusPedido, formatarBRL, EMAIL_CONTATO } from "@/lib/site";
+import {
+  whatsappLink,
+  PIX,
+  PIX_DINAMICO,
+  statusPedido,
+  formatarBRL,
+  EMAIL_CONTATO,
+} from "@/lib/site";
 import { PrazoEmissao } from "@/components/site/prazo-emissao";
 import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
