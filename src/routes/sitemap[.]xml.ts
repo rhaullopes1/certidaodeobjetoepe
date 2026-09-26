@@ -40,7 +40,6 @@ export const Route = createFileRoute("/sitemap.xml")({
             priority: "0.8",
           })),
           { path: "/certidao-objeto-e-pe-tjsp", changefreq: "monthly", priority: "0.8" },
-          { path: "/certidao-objeto-e-pe-tjpe", changefreq: "monthly", priority: "0.8" },
           ...TRFS_SEO.map((t) => ({
             path: t.path,
             changefreq: "monthly" as const,
