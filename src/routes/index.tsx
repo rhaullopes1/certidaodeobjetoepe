@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
-import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE, GOOGLE_PROFILE, TIKTOK_PROFILE } from "@/lib/site";
+import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, EMAIL_CONTATO, EMPRESA, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE, GOOGLE_PROFILE, TIKTOK_PROFILE } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { SiteHeader } from "@/components/site/site-header";
 import { registrarLead } from "@/lib/leads.functions";
