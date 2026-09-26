@@ -29,10 +29,14 @@ export function normalizarWhatsapp(telefone: string): string | null {
   return null;
 }
 
+/** Link oficial do perfil da empresa no Google para avaliações de clientes. */
+export const LINK_AVALIACAO_GOOGLE = "https://g.page/r/CdVwgtTtww0_EAE/review";
+
 /** Link seguro já existente para o cliente acompanhar/pagar o próprio pedido. */
 export function linkDoPedido(protocolo: string): string {
   return `https://certidaodeobjetoepe.org/pedido/${encodeURIComponent(protocolo)}`;
 }
+
 
 /**
  * Monta a mensagem pré-preenchida conforme o status do pedido.
@@ -67,8 +71,12 @@ export function mensagemWhatsapp(p: PedidoContato): string {
     case "emitida":
       return (
         `Olá, ${nome}! A sua Certidão de Objeto e Pé (protocolo ${p.protocolo}) foi emitida ` +
-        `e enviada para o seu e-mail. Precisando de algo mais, é só chamar.`
+        `e enviada para o seu e-mail. ` +
+        `Se o nosso atendimento te ajudou, você poderia deixar uma avaliação de 5 estrelas no Google? ` +
+        `Leva menos de 30 segundos: ${LINK_AVALIACAO_GOOGLE} ` +
+        `Muito obrigado pela confiança!`
       );
+
     case "cancelado":
     case "expirado":
       return (
