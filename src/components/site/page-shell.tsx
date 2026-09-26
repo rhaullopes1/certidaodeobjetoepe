@@ -49,6 +49,40 @@ export function PageShell({ children }: { children: ReactNode }) {
             </a>
           </div>
         </div>
+
+        <div className="mx-auto mt-8 w-full max-w-6xl border-t border-primary-foreground/15 pt-6 text-xs leading-relaxed text-primary-foreground/60">
+          <p className="mb-2 text-sm font-semibold text-primary-foreground/85">
+            Empresa responsável
+          </p>
+          <p>
+            <span className="text-primary-foreground/80">Razão social:</span>{" "}
+            {EMPRESA.razaoSocial} — {EMPRESA.nomeFantasia}
+          </p>
+          <p>
+            <span className="text-primary-foreground/80">CNPJ:</span> {EMPRESA.cnpj}
+          </p>
+          <p>
+            <span className="text-primary-foreground/80">Atividade (CNAE):</span> {EMPRESA.cnae}
+          </p>
+          <p>
+            <span className="text-primary-foreground/80">Sede:</span> {EMPRESA.endereco}
+          </p>
+          <p className="mt-2">
+            <span className="text-primary-foreground/80">Atendimento:</span>{" "}
+            <a href={PHONE_TEL} className="hover:text-primary-foreground">
+              {PHONE_DISPLAY}
+            </a>{" "}
+            ·{" "}
+            <a href={`mailto:${EMAIL_CONTATO}`} className="hover:text-primary-foreground">
+              {EMAIL_CONTATO}
+            </a>
+          </p>
+          <p className="mt-3 text-primary-foreground/50">
+            Empresa privada de assessoria documental, sem vínculo com órgãos públicos. Informações
+            publicadas em conformidade com o Decreto Federal nº 7.962/2013 e o Marco Civil da
+            Internet (Lei nº 12.965/2014).
+          </p>
+        </div>
       </footer>
     </div>
   );
