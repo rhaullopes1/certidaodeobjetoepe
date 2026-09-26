@@ -29,10 +29,14 @@ export function normalizarWhatsapp(telefone: string): string | null {
   return null;
 }
 
+/** Link oficial do perfil da empresa no Google para avaliações de clientes. */
+export const LINK_AVALIACAO_GOOGLE = "https://g.page/r/CdVwgtTtww0_EAE/review";
+
 /** Link seguro já existente para o cliente acompanhar/pagar o próprio pedido. */
 export function linkDoPedido(protocolo: string): string {
   return `https://certidaodeobjetoepe.org/pedido/${encodeURIComponent(protocolo)}`;
 }
+
 
 /**
  * Monta a mensagem pré-preenchida conforme o status do pedido.
