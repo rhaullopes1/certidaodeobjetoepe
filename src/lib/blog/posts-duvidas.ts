@@ -6,10 +6,10 @@ export const POSTS_DUVIDAS: Post[] = [
   {
     slug: "quanto-tempo-demora-certidao-de-objeto-e-pe",
     categoria: "duvidas",
-    titulo: "Quanto tempo demora a Certidão de Objeto e Pé?",
+    titulo: "Quanto Tempo Demora a Certidão de Objeto e Pé? Prazos",
     h1: "Quanto tempo demora para sair a Certidão de Objeto e Pé",
     descricao:
-      "Prazos reais por tipo de processo e tribunal: eletrônico, físico, arquivado e em segredo de justiça. O que acelera e o que atrasa.",
+      "O prazo usual da Certidão de Objeto e Pé é de 1 a 5 dias úteis, conforme a comarca e o tribunal. Veja o que atrasa (processo físico, arquivado) e como pedir.",
     resumo: "O prazo de emissão é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
     atualizado: "2026-08-26",
     leitura: 4,
@@ -66,10 +66,10 @@ export const POSTS_DUVIDAS: Post[] = [
   {
     slug: "certidao-de-objeto-e-pe-segredo-de-justica",
     categoria: "duvidas",
-    titulo: "Processo em segredo de justiça: dá para tirar certidão?",
+    titulo: "Certidão de Objeto e Pé em Segredo de Justiça: Quem Pode Pedir",
     h1: "Certidão de Objeto e Pé em segredo de justiça",
     descricao:
-      "Quem pode obter certidão de processo sigiloso, o que pode ser certificado a terceiros e como comprovar legitimidade.",
+      "Processo em segredo de justiça tem certidão? Veja quem pode pedir a Certidão de Objeto e Pé de processo sigiloso, o que é informado e como comprovar legitimidade.",
     resumo: "Sigilo restringe, mas não elimina o direito à certidão.",
     atualizado: "2026-08-26",
     leitura: 4,
