@@ -244,7 +244,8 @@ function EstadosHub() {
             </li>
             <li>
               <Link
-                to="/certidao-objeto-e-pe-tjpe"
+                to="/certidao-de-objeto-e-pe/$uf"
+                params={{ uf: "pe" }}
                 className="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
               >
                 Certidão de Objeto e Pé TJPE
