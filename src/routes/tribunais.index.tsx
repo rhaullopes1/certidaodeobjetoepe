@@ -46,7 +46,7 @@ export const Route = createFileRoute("/tribunais/")({
             "@type": "ListItem",
             position: i + 1,
             name: `Certidão de Objeto e Pé ${t.sigla}`,
-            url: `${URL}/${t.slug}`,
+            url: t.slug === "tjsp" ? `${SITE}/certidao-de-objeto-e-pe/sp` : `${URL}/${t.slug}`,
           })),
         }),
       },
