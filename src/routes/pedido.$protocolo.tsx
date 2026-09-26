@@ -13,7 +13,14 @@ import {
   Download,
 } from "lucide-react";
 import { consultarPedido, regerarCobranca } from "@/lib/pedidos.functions";
-import { whatsappLink, PIX, statusPedido, formatarBRL, EMAIL_CONTATO } from "@/lib/site";
+import {
+  whatsappLink,
+  PIX,
+  PIX_DINAMICO,
+  statusPedido,
+  formatarBRL,
+  EMAIL_CONTATO,
+} from "@/lib/site";
 import { PrazoEmissao } from "@/components/site/prazo-emissao";
 import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
@@ -174,7 +181,7 @@ function PedidoPage() {
             <span className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-accent-foreground/80">
               <FileText className="h-3.5 w-3.5" /> Pedido registrado
             </span>
-            <h1 className="mt-5 font-display text-3xl font-extrabold sm:text-4xl">
+            <h1 className="mt-5 break-all font-display text-2xl font-extrabold sm:text-4xl">
               Protocolo {data.protocolo}
             </h1>
             <p className="mt-3 text-sm text-muted-foreground">
@@ -396,7 +403,12 @@ function PedidoPage() {
                           )}
                         </button>
                         <p className="mt-3 text-xs text-muted-foreground">
-                          Recebedor: {PIX.nome} — {PIX.cidade}.{" "}
+                          No seu banco aparecerá{" "}
+                          <strong className="font-semibold text-foreground">
+                            {data.confirmacaoAutomatica ? PIX_DINAMICO.nome : PIX.nome}
+                          </strong>{" "}
+                          ({data.confirmacaoAutomatica ? PIX_DINAMICO.cidade : PIX.cidade}) como
+                          recebedor — é a empresa responsável pela Certidão de Objeto e Pé.{" "}
                           {data.confirmacaoAutomatica
                             ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
                             : "Após pagar, envie o comprovante pelo WhatsApp para que nossa equipe confirme o pedido."}
@@ -515,7 +527,12 @@ function PedidoPage() {
                     )}
                   </button>
                   <p className="mt-3 text-xs text-muted-foreground">
-                    Recebedor: {PIX.nome} — {PIX.cidade}.{" "}
+                    No seu banco aparecerá{" "}
+                    <strong className="font-semibold text-foreground">
+                      {data.confirmacaoAutomatica ? PIX_DINAMICO.nome : PIX.nome}
+                    </strong>{" "}
+                    ({data.confirmacaoAutomatica ? PIX_DINAMICO.cidade : PIX.cidade}) como
+                    recebedor — é a empresa responsável pela Certidão de Objeto e Pé.{" "}
                     {data.confirmacaoAutomatica
                       ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
                       : "Após pagar, envie o comprovante pelo WhatsApp para que nossa equipe confirme o pedido."}
