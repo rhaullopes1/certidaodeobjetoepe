@@ -396,7 +396,12 @@ function PedidoPage() {
                           )}
                         </button>
                         <p className="mt-3 text-xs text-muted-foreground">
-                          Recebedor: {PIX.nome} — {PIX.cidade}.{" "}
+                          No seu banco aparecerá{" "}
+                          <strong className="font-semibold text-foreground">
+                            {data.confirmacaoAutomatica ? PIX_DINAMICO.nome : PIX.nome}
+                          </strong>{" "}
+                          ({data.confirmacaoAutomatica ? PIX_DINAMICO.cidade : PIX.cidade}) como
+                          recebedor — é a empresa responsável pela Certidão de Objeto e Pé.{" "}
                           {data.confirmacaoAutomatica
                             ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
                             : "Após pagar, envie o comprovante pelo WhatsApp para que nossa equipe confirme o pedido."}
