@@ -769,13 +769,6 @@ function Footer() {
           <span className="text-primary-foreground/80">Atendimento:</span> {PHONE_DISPLAY} ·{" "}
           {EMAIL_CONTATO}
         </p>
-        <p className="mt-3">
-          Serviço de assessoria administrativa para obtenção de documentos junto
-          aos tribunais. Não prestamos consultoria jurídica nem representação
-          processual. Empresa privada, sem vínculo com órgãos públicos.
-          Informações publicadas em conformidade com o Decreto Federal nº
-          7.962/2013 e o Marco Civil da Internet (Lei nº 12.965/2014).
-        </p>
         <p className="mt-2">
           © {new Date().getFullYear()} Certidão Objeto e Pé. Todos os direitos
           reservados.
