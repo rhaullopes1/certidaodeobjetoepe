@@ -352,5 +352,5 @@ export function badgeConfianca(p: PedidoLocalizacao): Confianca {
 /** Resumo curto para a fila: Tribunal · Comarca/Foro · Vara · Sistema. */
 export function resumoLocalizacao(p: PedidoLocalizacao) {
   const local = [p.comarca_processo, p.foro].filter(Boolean).join(" / ");
-  return [p.tribunal_sigla, local, p.vara, p.sistema_processual].filter(Boolean).join(" · ");
+  return [p.tribunal_sigla, local, p.vara || p.unidade_judiciaria, p.sistema_processual].filter(Boolean).join(" · ");
 }

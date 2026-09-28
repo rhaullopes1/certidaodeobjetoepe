@@ -2,7 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { CheckCircle2, Loader2, MapPin, MessageCircle, PackageCheck } from "lucide-react";
-import { resumoLocalizacao } from "@/lib/localizacao";
+import { badgeConfianca, resumoLocalizacao } from "@/lib/localizacao";
+import { useServerFn } from "@tanstack/react-start";
+import { reidentificarLote } from "@/lib/localizacao.functions";
+
+const SELO = {
+  confirmado: { t: "Localização confirmada", c: "bg-accent/15 text-accent" },
+  parcial: { t: "Localização parcial", c: "bg-secondary text-foreground" },
+  nao_identificado: { t: "Localização não identificada", c: "bg-destructive/10 text-destructive" },
+} as const;
 import {
   concluirEntrega,
   listarEntregasPendentes,
@@ -98,6 +106,19 @@ function AdminEntregas() {
       setErro(e instanceof Error ? e.message : "Não foi possível concluir a entrega."),
   });
 
+  const lote = useServerFn(reidentificarLote);
+  const [msgLote, setMsgLote] = useState<string | null>(null);
+  const reidentificar = useMutation({
+    mutationFn: () => lote(),
+    onSuccess: (r) => {
+      setMsgLote(
+        `${r.total} pedidos verificados · ${r.atualizados} atualizados · ${r.reconhecidos} com tribunal reconhecido · ${r.invalidos} sem número CNJ válido.`,
+      );
+      queryClient.invalidateQueries({ queryKey: ["admin-entregas"] });
+    },
+    onError: (e) => setMsgLote(e instanceof Error ? e.message : "Falha na reidentificação."),
+  });
+
   const lista = entregas.data ?? [];
   const total = lista.length;
   const faturamento = lista.reduce((soma, p) => soma + (p.valor_centavos ?? 0), 0);
@@ -144,6 +165,22 @@ function AdminEntregas() {
               </div>
             </div>
 
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => reidentificar.mutate()}
+                disabled={reidentificar.isPending}
+                className="inline-flex items-center gap-2 rounded-full border border-input px-4 py-2 text-sm font-semibold transition-colors hover:bg-secondary disabled:opacity-60"
+              >
+                {reidentificar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
+                Reidentificar pedidos pela tabela CNJ
+              </button>
+              <span className="text-xs text-muted-foreground">
+                Usa só a tabela interna; não consulta serviços externos nem apaga vara já confirmada.
+              </span>
+            </div>
+            {msgLote && <p className="mt-2 text-sm text-muted-foreground">{msgLote}</p>}
+
             {erro && (
               <p className="mt-4 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
                 {erro}
@@ -186,6 +223,9 @@ function AdminEntregas() {
                           <span className="inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
                             {statusPedido(p.status).label}
                           </span>
+                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${SELO[badgeConfianca(p)].c}`}>
+                            {SELO[badgeConfianca(p)].t}
+                          </span>
                         </div>
                         <p className="mt-2 text-sm font-semibold">{p.nome_parte ?? "—"}</p>
                         <p className="text-sm text-muted-foreground">
@@ -201,6 +241,7 @@ function AdminEntregas() {
                         <Link
                           to="/admin/$protocolo"
                           params={{ protocolo: p.protocolo }}
+                          hash="localizacao"
                           className="mt-1 inline-block text-xs font-semibold text-accent underline-offset-4 hover:underline"
                         >
                           Localização e canal de solicitação →
