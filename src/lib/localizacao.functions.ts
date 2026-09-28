@@ -21,7 +21,7 @@ async function reidentificarPedido(
   extra: ColunasPedidoLocalizacao = {},
 ) {
   const partes = analisarNup(pedido.numero_processo);
-  if (!partes) return { mudou: false, reconhecido: false };
+  if (!partes) return { mudou: false, reconhecido: false, final: null };
   const dec = await decodificarPartes(partes);
   const novo = mesclarLocalizacao(pedido, colunasLocalizacao(dec));
   const final: ColunasPedidoLocalizacao = {
@@ -41,7 +41,7 @@ async function reidentificarPedido(
     const { error } = await supabase.from("pedidos").update(final).eq("id", pedido.id);
     if (error) throw new Error("Não foi possível salvar a localização.");
   }
-  return { mudou, reconhecido: dec.reconhecido };
+  return { mudou, reconhecido: dec.reconhecido, final };
 }
 
 /**
@@ -93,33 +93,57 @@ export const atualizarLocalizacao = createServerFn({ method: "POST" })
     return { ok: true, datajudStatus };
   });
 
+export type ModoLote = "sem_localizacao" | "todos";
+
 /**
- * Reidentificação em lote pela tabela CNJ — sem chamadas externas, idempotente.
- * Processa no máximo 300 pedidos por execução; nunca apaga vara/unidade já confirmadas.
+ * Reidentificação em lote pela tabela CNJ — sem chamadas externas e sem DataJud, idempotente.
+ * "sem_localizacao": só pedidos ainda sem tribunal identificado. "todos": recalcula tudo,
+ * mas nunca apaga vara/unidade nem rebaixa identificação confirmada por outra fonte.
  */
 export const reidentificarLote = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((i: { modo?: ModoLote }) => ({
+    modo: (i?.modo === "todos" ? "todos" : "sem_localizacao") as ModoLote,
+  }))
+  .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     await exigirEquipe(supabase, userId);
-    const { data: pedidos, error } = await supabase
-      .from("pedidos")
-      .select(COLS)
-      .order("created_at", { ascending: false })
-      .limit(300);
-    if (error) throw new Error("Não foi possível listar os pedidos.");
 
-    let atualizados = 0;
-    let reconhecidos = 0;
-    let invalidos = 0;
-    for (const p of pedidos ?? []) {
-      if (!analisarNup(p.numero_processo)) {
-        invalidos++;
-        continue;
+    const r = {
+      processados: 0, atualizados: 0, invalidos: 0,
+      ganharamTribunal: 0, ganharamComarca: 0, ganharamForo: 0, ganharamSistema: 0,
+      confirmados: 0, parciais: 0, naoIdentificados: 0,
+    };
+    const PAGINA = 250;
+    for (let pagina = 0; pagina < 8; pagina++) {
+      let q = supabase.from("pedidos").select(COLS).order("created_at", { ascending: true });
+      if (data.modo === "sem_localizacao") q = q.is("tribunal_sigla", null);
+      // No modo "sem_localizacao" a lista encolhe conforme os pedidos são preenchidos;
+      // pedidos que continuam sem tribunal são pulados pelo offset acumulado de inválidos/não reconhecidos.
+      const inicio = data.modo === "todos" ? pagina * PAGINA : r.invalidos + r.naoIdentificados;
+      const { data: lista, error } = await q.range(inicio, inicio + PAGINA - 1);
+      if (error) throw new Error("Não foi possível listar os pedidos.");
+      if (!lista || lista.length === 0) break;
+
+      for (const p of lista) {
+        r.processados++;
+        if (!analisarNup(p.numero_processo)) {
+          r.invalidos++;
+          continue;
+        }
+        const antes = { ...p };
+        const res = await reidentificarPedido(supabase, p);
+        if (res.mudou) r.atualizados++;
+        const depois = res.final ?? antes;
+        if (!antes.tribunal_sigla && depois.tribunal_sigla) r.ganharamTribunal++;
+        if (!antes.comarca_processo && depois.comarca_processo) r.ganharamComarca++;
+        if (!antes.foro && depois.foro) r.ganharamForo++;
+        if (!antes.sistema_processual && depois.sistema_processual) r.ganharamSistema++;
+        if (depois.processo_confianca === "confirmado") r.confirmados++;
+        else if (depois.processo_confianca === "parcial") r.parciais++;
+        else r.naoIdentificados++;
       }
-      const r = await reidentificarPedido(supabase, p);
-      if (r.mudou) atualizados++;
-      if (r.reconhecido) reconhecidos++;
+      if (lista.length < PAGINA) break;
     }
-    return { total: pedidos?.length ?? 0, atualizados, reconhecidos, invalidos };
+    return r;
   });
