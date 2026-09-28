@@ -137,6 +137,7 @@ export type Database = {
           cidade: string | null
           codigo_origem: string
           created_at: string
+          foro: string | null
           id: string
           nome: string
           tribunal_id: string
@@ -147,6 +148,7 @@ export type Database = {
           cidade?: string | null
           codigo_origem: string
           created_at?: string
+          foro?: string | null
           id?: string
           nome: string
           tribunal_id: string
@@ -157,6 +159,7 @@ export type Database = {
           cidade?: string | null
           codigo_origem?: string
           created_at?: string
+          foro?: string | null
           id?: string
           nome?: string
           tribunal_id?: string
@@ -194,6 +197,7 @@ export type Database = {
       cnj_tribunais: {
         Row: {
           codigo_tr: string
+          consulta_processual_url: string | null
           created_at: string
           id: string
           nome: string
@@ -207,6 +211,7 @@ export type Database = {
         }
         Insert: {
           codigo_tr: string
+          consulta_processual_url?: string | null
           created_at?: string
           id?: string
           nome: string
@@ -220,6 +225,7 @@ export type Database = {
         }
         Update: {
           codigo_tr?: string
+          consulta_processual_url?: string | null
           created_at?: string
           id?: string
           nome?: string
@@ -243,46 +249,103 @@ export type Database = {
       }
       comarcas_contatos: {
         Row: {
+          ativo: boolean
           autor_id: string | null
           balcao_virtual_url: string | null
+          canal_solicitacao_email: string | null
+          canal_solicitacao_telefone: string | null
+          canal_solicitacao_tipo: string | null
+          canal_solicitacao_url: string | null
+          cep: string | null
+          codigo_origem_cnj: string | null
           comarca: string
           created_at: string
+          documentos_exigidos: string | null
           email: string | null
+          endereco: string | null
+          fonte_atualizada_em: string | null
+          fonte_tipo: string | null
+          fonte_url: string | null
+          foro: string | null
           id: string
+          instrucoes_solicitacao: string | null
           observacoes: string | null
+          prazo_info: string | null
+          responsavel_nome: string | null
+          responsavel_setor: string | null
+          taxa_info: string | null
           telefone: string | null
           tribunal: string | null
           uf: string | null
+          unidade_judiciaria: string | null
           updated_at: string
           vara_cartorio: string | null
           whatsapp: string | null
         }
         Insert: {
+          ativo?: boolean
           autor_id?: string | null
           balcao_virtual_url?: string | null
+          canal_solicitacao_email?: string | null
+          canal_solicitacao_telefone?: string | null
+          canal_solicitacao_tipo?: string | null
+          canal_solicitacao_url?: string | null
+          cep?: string | null
+          codigo_origem_cnj?: string | null
           comarca: string
           created_at?: string
+          documentos_exigidos?: string | null
           email?: string | null
+          endereco?: string | null
+          fonte_atualizada_em?: string | null
+          fonte_tipo?: string | null
+          fonte_url?: string | null
+          foro?: string | null
           id?: string
+          instrucoes_solicitacao?: string | null
           observacoes?: string | null
+          prazo_info?: string | null
+          responsavel_nome?: string | null
+          responsavel_setor?: string | null
+          taxa_info?: string | null
           telefone?: string | null
           tribunal?: string | null
           uf?: string | null
+          unidade_judiciaria?: string | null
           updated_at?: string
           vara_cartorio?: string | null
           whatsapp?: string | null
         }
         Update: {
+          ativo?: boolean
           autor_id?: string | null
           balcao_virtual_url?: string | null
+          canal_solicitacao_email?: string | null
+          canal_solicitacao_telefone?: string | null
+          canal_solicitacao_tipo?: string | null
+          canal_solicitacao_url?: string | null
+          cep?: string | null
+          codigo_origem_cnj?: string | null
           comarca?: string
           created_at?: string
+          documentos_exigidos?: string | null
           email?: string | null
+          endereco?: string | null
+          fonte_atualizada_em?: string | null
+          fonte_tipo?: string | null
+          fonte_url?: string | null
+          foro?: string | null
           id?: string
+          instrucoes_solicitacao?: string | null
           observacoes?: string | null
+          prazo_info?: string | null
+          responsavel_nome?: string | null
+          responsavel_setor?: string | null
+          taxa_info?: string | null
           telefone?: string | null
           tribunal?: string | null
           uf?: string | null
+          unidade_judiciaria?: string | null
           updated_at?: string
           vara_cartorio?: string | null
           whatsapp?: string | null
@@ -721,9 +784,13 @@ export type Database = {
           certidoes: Json
           checkout_url: string | null
           cidade: string | null
+          cidade_processo: string | null
+          codigo_origem_cnj: string | null
+          comarca_processo: string | null
           cpf: string
           created_at: string
           email: string
+          foro: string | null
           id: string
           lembrete_enviado_em: string | null
           mercadopago_external_reference: string | null
@@ -738,14 +805,26 @@ export type Database = {
           pix_codigo: string | null
           pix_expira_em: string | null
           pix_qrcode_url: string | null
+          processo_confianca: string | null
+          processo_dados: Json | null
+          processo_enriquecido: boolean
+          processo_enriquecido_em: string | null
+          processo_fonte: string | null
           protocolo: string
           quantidade: number
+          segmento_judiciario: string | null
+          sistema_processual: string | null
           status: string
           stripe_session_id: string | null
+          tribunal_nome: string | null
+          tribunal_sigla: string | null
           uf: string | null
+          uf_processo: string | null
+          unidade_judiciaria: string | null
           updated_at: string
           user_id: string | null
           valor_centavos: number
+          vara: string | null
           whatsapp: string
         }
         Insert: {
@@ -753,9 +832,13 @@ export type Database = {
           certidoes?: Json
           checkout_url?: string | null
           cidade?: string | null
+          cidade_processo?: string | null
+          codigo_origem_cnj?: string | null
+          comarca_processo?: string | null
           cpf: string
           created_at?: string
           email: string
+          foro?: string | null
           id?: string
           lembrete_enviado_em?: string | null
           mercadopago_external_reference?: string | null
@@ -770,14 +853,26 @@ export type Database = {
           pix_codigo?: string | null
           pix_expira_em?: string | null
           pix_qrcode_url?: string | null
+          processo_confianca?: string | null
+          processo_dados?: Json | null
+          processo_enriquecido?: boolean
+          processo_enriquecido_em?: string | null
+          processo_fonte?: string | null
           protocolo: string
           quantidade?: number
+          segmento_judiciario?: string | null
+          sistema_processual?: string | null
           status?: string
           stripe_session_id?: string | null
+          tribunal_nome?: string | null
+          tribunal_sigla?: string | null
           uf?: string | null
+          uf_processo?: string | null
+          unidade_judiciaria?: string | null
           updated_at?: string
           user_id?: string | null
           valor_centavos?: number
+          vara?: string | null
           whatsapp: string
         }
         Update: {
@@ -785,9 +880,13 @@ export type Database = {
           certidoes?: Json
           checkout_url?: string | null
           cidade?: string | null
+          cidade_processo?: string | null
+          codigo_origem_cnj?: string | null
+          comarca_processo?: string | null
           cpf?: string
           created_at?: string
           email?: string
+          foro?: string | null
           id?: string
           lembrete_enviado_em?: string | null
           mercadopago_external_reference?: string | null
@@ -802,14 +901,26 @@ export type Database = {
           pix_codigo?: string | null
           pix_expira_em?: string | null
           pix_qrcode_url?: string | null
+          processo_confianca?: string | null
+          processo_dados?: Json | null
+          processo_enriquecido?: boolean
+          processo_enriquecido_em?: string | null
+          processo_fonte?: string | null
           protocolo?: string
           quantidade?: number
+          segmento_judiciario?: string | null
+          sistema_processual?: string | null
           status?: string
           stripe_session_id?: string | null
+          tribunal_nome?: string | null
+          tribunal_sigla?: string | null
           uf?: string | null
+          uf_processo?: string | null
+          unidade_judiciaria?: string | null
           updated_at?: string
           user_id?: string | null
           valor_centavos?: number
+          vara?: string | null
           whatsapp?: string
         }
         Relationships: []

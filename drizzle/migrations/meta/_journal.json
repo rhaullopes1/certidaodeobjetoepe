@@ -43,6 +43,13 @@
       "when": 1790558118172,
       "tag": "0005_ajuste_fk_comarcas_contatos",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790559972827,
+      "tag": "0006_localizacao_processo_e_unidades",
+      "breakpoints": true
     }
   ]
 }
