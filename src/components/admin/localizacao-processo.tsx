@@ -404,9 +404,6 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
                   </a>
                 )}
               </div>
-                  ) : null,
-                )}
-              </div>
             </div>
           )}
         </section>
