@@ -309,6 +309,10 @@ function AdminEntregas() {
                             ? `em ${new Date(p.pago_em).toLocaleString("pt-BR")} (${tempoDesde(p.pago_em)})`
                             : "— sem data registrada"}
                         </p>
+                        <p className="text-xs text-muted-foreground">
+                          Posição {i + 1} na fila · chegada em{" "}
+                          {new Date(p.created_at).toLocaleString("pt-BR")}
+                        </p>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
