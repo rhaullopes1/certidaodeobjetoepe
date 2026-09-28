@@ -155,6 +155,58 @@ export function colunasLocalizacao(
   };
 }
 
+/** Campos de localização persistidos no pedido. */
+export type ColunasPedidoLocalizacao = Partial<TablesInsert<"pedidos">>;
+
+/**
+ * Mescla a nova identificação CNJ com o que já está salvo, sem perder dado mais específico:
+ * - vara/unidade (só DataJud/equipe) nunca são apagadas pela tabela CNJ;
+ * - campo já preenchido não é trocado por null;
+ * - identificação confirmada por outra fonte (ex.: DataJud) não é rebaixada.
+ * Idempotente: aplicar duas vezes produz o mesmo resultado.
+ */
+export function mesclarLocalizacao(
+  atual: ColunasPedidoLocalizacao,
+  novo: ColunasPedidoLocalizacao,
+): ColunasPedidoLocalizacao {
+  const campos = [
+    "tribunal_sigla", "tribunal_nome", "segmento_judiciario", "uf_processo", "cidade_processo",
+    "comarca_processo", "foro", "codigo_origem_cnj", "sistema_processual",
+  ] as const;
+  const out: ColunasPedidoLocalizacao = {};
+  for (const c of campos) {
+    const v = novo[c] ?? atual[c] ?? null;
+    (out as Record<string, unknown>)[c] = v;
+  }
+  const fonteExterna = !!atual.processo_fonte && atual.processo_fonte !== FONTE_TABELA_CNJ;
+  if (fonteExterna && atual.processo_confianca === "confirmado") {
+    out.processo_fonte = atual.processo_fonte;
+    out.processo_confianca = atual.processo_confianca;
+    // sistema informado pela fonte externa prevalece
+    out.sistema_processual = atual.sistema_processual ?? out.sistema_processual;
+  } else {
+    out.processo_fonte = novo.processo_fonte ?? atual.processo_fonte ?? null;
+    out.processo_confianca = out.processo_fonte
+      ? (novo.processo_confianca ?? atual.processo_confianca ?? "parcial")
+      : "nao_identificado";
+  }
+  const dadosAtuais = (atual.processo_dados ?? {}) as Record<string, Json>;
+  const dadosNovos = (novo.processo_dados ?? {}) as Record<string, Json>;
+  out.processo_dados = { ...dadosAtuais, cnj: dadosNovos["cnj"] ?? dadosAtuais["cnj"] ?? null };
+  return out;
+}
+
+/** Fontes consideradas oficiais (publicação do próprio órgão). */
+export function ehFonteOficial(tipo: string | null | undefined) {
+  return !!tipo && /site oficial|di[aá]rio|portaria|resposta oficial/i.test(tipo);
+}
+
+/** Rótulo honesto da fonte de um contato. */
+export function rotuloFonte(tipo: string | null | undefined) {
+  if (!tipo) return "Sem fonte registrada";
+  return ehFonteOficial(tipo) ? `Fonte oficial: ${tipo}` : `Fonte direta (não oficial): ${tipo}`;
+}
+
 /* ------------------------------------------------------------------ */
 /* Unidade / contato                                                  */
 /* ------------------------------------------------------------------ */

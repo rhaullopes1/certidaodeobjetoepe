@@ -9,6 +9,7 @@ export type DatajudStatus =
   | "tribunal_nao_suportado"
   | "nao_encontrado"
   | "indisponivel"
+  | "limite_requisicoes"
   | "ok";
 
 export interface DatajudResultado {
@@ -79,6 +80,7 @@ export async function consultarDatajud(
       }),
       signal: controle.signal,
     });
+    if (resp.status === 429) return vazio("limite_requisicoes", "HTTP 429");
     if (!resp.ok) {
       const txt = await resp.text().catch(() => "");
       return vazio("indisponivel", `HTTP ${resp.status} ${txt.slice(0, 200)}`);
