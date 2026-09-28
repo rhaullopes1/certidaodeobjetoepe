@@ -484,15 +484,17 @@ export function resumoContatoComarca(c: ComarcaContato) {
 export const STATUS_AGUARDANDO_ENTREGA = ["pago", "em_analise", "protocolado"] as const;
 
 /**
- * Fila de entrega: pedidos pagos que ainda não tiveram a certidão entregue,
- * ordenados pela data do pagamento (quem pagou primeiro aparece primeiro).
+ * Fila de entrega: pedidos pagos que ainda não tiveram a certidão entregue.
+ * Ordem FIXA por chegada (data de criação do pedido, com o id como desempate),
+ * para que a posição na fila não mude quando o operador altera a situação.
  */
 export async function listarEntregasPendentes(): Promise<PedidoAdmin[]> {
   const { data, error } = await supabase
     .from("pedidos")
     .select(COLUNAS as string)
     .in("status", [...STATUS_AGUARDANDO_ENTREGA])
-    .order("pago_em", { ascending: true, nullsFirst: false })
+    .order("created_at", { ascending: true })
+    .order("id", { ascending: true })
     .limit(200)
     .returns<PedidoAdmin[]>();
   if (error) throw error;
