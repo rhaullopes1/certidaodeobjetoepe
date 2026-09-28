@@ -29,6 +29,13 @@
       "when": 1789574617649,
       "tag": "0003_content_items_leitura_autenticados",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790558104650,
+      "tag": "0004_comarcas_contatos_e_observacao_interna",
+      "breakpoints": true
     }
   ]
 }
