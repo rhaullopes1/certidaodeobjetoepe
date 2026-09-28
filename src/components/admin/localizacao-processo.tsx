@@ -22,6 +22,7 @@ import {
   badgeConfianca,
   camposLocalizacao,
   escolherUnidade,
+  rotuloFonte,
   urlConsultaProcesso,
   urlHttpsSegura,
   type Confianca,
@@ -85,6 +86,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
     onSuccess: (r, consultou) => {
       const msgs: Record<string, string> = {
         nao_configurado: "DataJud não configurado — identificação feita apenas pela tabela CNJ.",
+        limite_requisicoes: "DataJud limitou as consultas. Tente novamente em alguns minutos.",
         tribunal_nao_suportado: "Tribunal sem índice DataJud conhecido.",
         nao_encontrado: "DataJud não retornou este processo.",
         indisponivel: "DataJud indisponível no momento. Dados CNJ mantidos.",
@@ -110,7 +112,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
   const datajud = (pedido.processo_dados as { datajud?: { status?: string } } | null)?.datajud;
 
   return (
-    <div className="mt-8 grid gap-6">
+    <div id="localizacao" className="mt-8 grid gap-6 scroll-mt-24">
       {/* LOCALIZAÇÃO DO PROCESSO */}
       <section className="card-premium border-l-4 border-l-accent p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -126,6 +128,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
             <Linha key={c.label} label={c.label} valor={c.valor} />
           ))}
           <Linha label="Fonte" valor={pedido.processo_fonte ?? "Sem fonte registrada"} />
+          <Linha label="Confiança" valor={badge.texto} />
           {fmtData(pedido.processo_enriquecido_em) && (
             <Linha label="Última atualização" valor={fmtData(pedido.processo_enriquecido_em)!} />
           )}
@@ -141,7 +144,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
         <div className="mt-4 flex flex-wrap gap-2">
           {linkProcesso && (
             <a href={linkProcesso} target="_blank" rel="noopener noreferrer" className={botao}>
-              <ExternalLink className="h-4 w-4" /> Abrir processo no tribunal
+              <ExternalLink className="h-4 w-4" /> Consulta processual oficial
             </a>
           )}
           <button
@@ -206,10 +209,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
                 {u.observacoes && <Linha label="Observações" valor={u.observacoes} />}
                 <Linha
                   label="Fonte"
-                  valor={
-                    [u.fonte_tipo, fmtData(u.fonte_atualizada_em)].filter(Boolean).join(" · ") ||
-                    "Sem fonte registrada"
-                  }
+                  valor={[rotuloFonte(u.fonte_tipo), fmtData(u.fonte_atualizada_em)].filter(Boolean).join(" · ")}
                 />
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -284,7 +284,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
             {u && (u.canal_solicitacao_url || u.canal_solicitacao_email || u.canal_solicitacao_telefone) && (
               <Linha
                 label="Fonte"
-                valor={[u.fonte_tipo, fmtData(u.fonte_atualizada_em)].filter(Boolean).join(" · ") || "—"}
+                valor={[rotuloFonte(u.fonte_tipo), fmtData(u.fonte_atualizada_em)].filter(Boolean).join(" · ")}
               />
             )}
           </div>

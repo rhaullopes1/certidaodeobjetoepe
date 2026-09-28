@@ -300,9 +300,17 @@ export function validarFonteUnidade(i: Partial<Record<string, string | null | bo
   const tipo = String(i["fonte_tipo"]);
   if (/site|di[aá]rio|portaria/i.test(tipo) && !/^https?:\/\//i.test(String(i["fonte_url"] ?? "")))
     return "Informe o link da fonte oficial (https://...).";
+  for (const c of ["telefone", "whatsapp", "canal_solicitacao_telefone"]) {
+    const v = String(i[c] ?? "").replace(/\D/g, "");
+    if (v && (v.length < 8 || v.length > 13)) return "Telefone/WhatsApp inválido (use DDD + número).";
+  }
+  for (const c of ["email", "canal_solicitacao_email"]) {
+    const v = String(i[c] ?? "").trim();
+    if (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "E-mail inválido.";
+  }
   for (const c of ["balcao_virtual_url", "canal_solicitacao_url", "fonte_url"]) {
     const v = String(i[c] ?? "").trim();
-    if (v && !/^https?:\/\/\S+$/i.test(v)) return "Os links precisam começar com https://";
+    if (v && !/^https:\/\/\S+$/i.test(v)) return "Os links precisam começar com https://";
   }
   return null;
 }

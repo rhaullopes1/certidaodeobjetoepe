@@ -50,6 +50,13 @@
       "when": 1790559972827,
       "tag": "0006_localizacao_processo_e_unidades",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790560789463,
+      "tag": "0007_cnj_comarcas_fonte",
+      "breakpoints": true
     }
   ]
 }

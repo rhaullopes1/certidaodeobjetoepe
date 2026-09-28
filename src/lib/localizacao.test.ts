@@ -141,3 +141,54 @@ describe("DataJud", () => {
     expect(r.orgaoJulgador).toBe("2ª Vara Cível");
   });
 });
+
+import { mesclarLocalizacao, rotuloFonte, FONTE_TABELA_CNJ } from "./localizacao";
+
+describe("fase 2", () => {
+  const p = analisarNup(NUMERO)!;
+  const cnj = colunasLocalizacao(montarDecodificacao(p, "Justiça Estadual", TJSP, COMARCA));
+
+  it("código OOOO nunca vira vara", () => {
+    expect(cnj.vara).toBeNull();
+    expect(cnj.unidade_judiciaria).toBeNull();
+    expect(cnj.codigo_origem_cnj).toBe("0100");
+  });
+  it("reidentificação é idempotente", () => {
+    const a = mesclarLocalizacao({}, cnj);
+    const b = mesclarLocalizacao(a, cnj);
+    const { processo_dados: _x, ...ra } = a;
+    const { processo_dados: _y, ...rb } = b;
+    expect(rb).toEqual(ra);
+  });
+  it("não rebaixa confirmação do DataJud nem apaga vara", () => {
+    const atual = { vara: "2ª Vara Cível", processo_fonte: "DataJud CNJ — API Pública", processo_confianca: "confirmado", sistema_processual: "SAJ" };
+    const r = mesclarLocalizacao(atual, colunasLocalizacao(montarDecodificacao(p, null, TJSP, null)));
+    expect(r.processo_confianca).toBe("confirmado");
+    expect(r.processo_fonte).toContain("DataJud");
+    expect("vara" in r).toBe(false); // vara não é tocada pela mescla
+  });
+  it("sem fonte não é confirmado", () => {
+    const r = mesclarLocalizacao({}, { processo_confianca: "confirmado", processo_fonte: null });
+    expect(r.processo_confianca).toBe("nao_identificado");
+    expect(FONTE_TABELA_CNJ).toBeTruthy();
+  });
+  it("campo existente não vira null", () => {
+    const r = mesclarLocalizacao({ comarca_processo: "Campinas" }, { comarca_processo: null, processo_fonte: FONTE_TABELA_CNJ, processo_confianca: "parcial" });
+    expect(r.comarca_processo).toBe("Campinas");
+  });
+  it("fonte direta não é chamada de oficial", () => {
+    expect(rotuloFonte("Contato direto com a unidade")).toMatch(/não oficial/);
+    expect(rotuloFonte("Site oficial do tribunal")).toMatch(/^Fonte oficial/);
+  });
+  it("prioridade código de origem > comarca", () => {
+    const base = { tribunal: "TJSP", comarca: "São Paulo", foro: null, vara_cartorio: null, unidade_judiciaria: null, codigo_origem_cnj: null };
+    const r = escolherUnidade([{ ...base, id: "c" }, { ...base, id: "o", codigo_origem_cnj: "0100" }], { tribunal: "TJSP", codigoOrigem: "0100", comarca: "São Paulo", foro: null, vara: null });
+    expect(r?.unidade.id).toBe("o");
+  });
+  it("DataJud com resposta vazia e limite", async () => {
+    const vazio = vi.fn().mockResolvedValue(new Response(JSON.stringify({ hits: { hits: [] } }))) as unknown as typeof fetch;
+    expect((await consultarDatajud(NUMERO, "TJSP", { apiKey: "k", fetchImpl: vazio })).status).toBe("nao_encontrado");
+    const lim = vi.fn().mockResolvedValue(new Response("", { status: 429 })) as unknown as typeof fetch;
+    expect((await consultarDatajud(NUMERO, "TJSP", { apiKey: "k", fetchImpl: lim })).status).toBe("limite_requisicoes");
+  });
+});

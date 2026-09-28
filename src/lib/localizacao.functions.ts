@@ -1,13 +1,52 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { analisarNup } from "./cnj";
 import { decodificarPartes } from "./cnj.functions";
-import { colunasLocalizacao } from "./localizacao";
-import type { Json, TablesInsert } from "@/integrations/supabase/types";
+import { colunasLocalizacao, mesclarLocalizacao, type ColunasPedidoLocalizacao } from "./localizacao";
+import type { Database, Json } from "@/integrations/supabase/types";
+
+const COLS =
+  "id, numero_processo, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_fonte, processo_confianca, processo_dados";
+
+async function exigirEquipe(supabase: SupabaseClient<Database>, userId: string) {
+  const { data: papeis } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+  if (!papeis || papeis.length === 0) throw new Error("Acesso restrito à equipe.");
+}
+
+/** Reidentifica um pedido só pela tabela CNJ (sem chamada externa). Retorna se algo mudou. */
+async function reidentificarPedido(
+  supabase: SupabaseClient<Database>,
+  pedido: ColunasPedidoLocalizacao & { id: string; numero_processo: string },
+  extra: ColunasPedidoLocalizacao = {},
+) {
+  const partes = analisarNup(pedido.numero_processo);
+  if (!partes) return { mudou: false, reconhecido: false };
+  const dec = await decodificarPartes(partes);
+  const novo = mesclarLocalizacao(pedido, colunasLocalizacao(dec));
+  const final: ColunasPedidoLocalizacao = {
+    ...novo,
+    ...extra,
+    processo_dados: {
+      ...((novo.processo_dados as Record<string, Json>) ?? {}),
+      ...((extra.processo_dados as Record<string, Json>) ?? {}),
+    },
+  };
+  const chaves = Object.keys(final).filter((k) => k !== "processo_dados") as (keyof typeof final)[];
+  const mudou =
+    Object.keys(extra).length > 0 ||
+    chaves.some((k) => (final[k] ?? null) !== ((pedido as Record<string, unknown>)[k] ?? null)) ||
+    !(pedido.processo_dados as Record<string, unknown> | null)?.["cnj"];
+  if (mudou) {
+    const { error } = await supabase.from("pedidos").update(final).eq("id", pedido.id);
+    if (error) throw new Error("Não foi possível salvar a localização.");
+  }
+  return { mudou, reconhecido: dec.reconhecido };
+}
 
 /**
- * Recalcula a localização do processo (tabelas CNJ) e, se pedido e configurado,
- * consulta o DataJud. Somente equipe. Nunca inventa dados: o que não é confirmado fica null.
+ * Recalcula a localização de um pedido (tabela CNJ) e, se pedido, consulta o DataJud —
+ * única fonte automática para vara/unidade. Somente equipe.
  */
 export const atualizarLocalizacao = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -17,41 +56,70 @@ export const atualizarLocalizacao = createServerFn({ method: "POST" })
   }))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: papeis } = await supabase.from("user_roles").select("role").eq("user_id", userId);
-    if (!papeis || papeis.length === 0) throw new Error("Acesso restrito à equipe.");
+    await exigirEquipe(supabase, userId);
 
     const { data: pedido, error } = await supabase
       .from("pedidos")
-      .select("id, numero_processo")
+      .select(COLS)
       .eq("id", data.pedidoId)
       .maybeSingle();
     if (error || !pedido) throw new Error("Pedido não encontrado.");
 
-    const partes = analisarNup(pedido.numero_processo);
-    const dec = partes ? await decodificarPartes(partes) : null;
-    const colunas: Partial<TablesInsert<"pedidos">> = colunasLocalizacao(dec);
     let datajudStatus: string | null = null;
+    const extra: ColunasPedidoLocalizacao = {};
+    const partes = analisarNup(pedido.numero_processo);
+    const sigla = pedido.tribunal_sigla ?? (partes ? (await decodificarPartes(partes)).tribunalSigla : null);
 
-    if (data.consultarDatajud && dec?.tribunalSigla) {
+    if (data.consultarDatajud && sigla) {
       const { consultarDatajud } = await import("./datajud.server");
-      const r = await consultarDatajud(pedido.numero_processo, dec.tribunalSigla);
+      const r = await consultarDatajud(pedido.numero_processo, sigla);
       datajudStatus = r.status;
-      colunas.processo_dados = {
-        ...((colunas.processo_dados as { [k: string]: Json }) ?? {}),
+      extra.processo_dados = {
+        ...((pedido.processo_dados as Record<string, Json>) ?? {}),
         datajud: r as unknown as Json,
       };
       if (r.status === "ok" && r.orgaoJulgador) {
-        colunas.vara = r.orgaoJulgador;
-        colunas.unidade_judiciaria = r.orgaoJulgador;
-        if (r.sistema) colunas.sistema_processual = r.sistema;
-        colunas.processo_fonte = "DataJud CNJ — API Pública";
-        colunas.processo_confianca = "confirmado";
-        colunas.processo_enriquecido = true;
-        colunas.processo_enriquecido_em = r.consultado_em;
+        extra.vara = r.orgaoJulgador;
+        extra.unidade_judiciaria = r.orgaoJulgador;
+        if (r.sistema) extra.sistema_processual = r.sistema;
+        extra.processo_fonte = "DataJud CNJ — API Pública";
+        extra.processo_confianca = "confirmado";
+        extra.processo_enriquecido = true;
+        extra.processo_enriquecido_em = r.consultado_em;
       }
     }
 
-    const { error: erroUp } = await supabase.from("pedidos").update(colunas).eq("id", pedido.id);
-    if (erroUp) throw new Error("Não foi possível salvar a localização.");
+    await reidentificarPedido(supabase, pedido, extra);
     return { ok: true, datajudStatus };
+  });
+
+/**
+ * Reidentificação em lote pela tabela CNJ — sem chamadas externas, idempotente.
+ * Processa no máximo 300 pedidos por execução; nunca apaga vara/unidade já confirmadas.
+ */
+export const reidentificarLote = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    await exigirEquipe(supabase, userId);
+    const { data: pedidos, error } = await supabase
+      .from("pedidos")
+      .select(COLS)
+      .order("created_at", { ascending: false })
+      .limit(300);
+    if (error) throw new Error("Não foi possível listar os pedidos.");
+
+    let atualizados = 0;
+    let reconhecidos = 0;
+    let invalidos = 0;
+    for (const p of pedidos ?? []) {
+      if (!analisarNup(p.numero_processo)) {
+        invalidos++;
+        continue;
+      }
+      const r = await reidentificarPedido(supabase, p);
+      if (r.mudou) atualizados++;
+      if (r.reconhecido) reconhecidos++;
+    }
+    return { total: pedidos?.length ?? 0, atualizados, reconhecidos, invalidos };
   });

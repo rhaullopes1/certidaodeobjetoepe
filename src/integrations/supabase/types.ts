@@ -137,6 +137,8 @@ export type Database = {
           cidade: string | null
           codigo_origem: string
           created_at: string
+          fonte_atualizada_em: string | null
+          fonte_url: string | null
           foro: string | null
           id: string
           nome: string
@@ -148,6 +150,8 @@ export type Database = {
           cidade?: string | null
           codigo_origem: string
           created_at?: string
+          fonte_atualizada_em?: string | null
+          fonte_url?: string | null
           foro?: string | null
           id?: string
           nome: string
@@ -159,6 +163,8 @@ export type Database = {
           cidade?: string | null
           codigo_origem?: string
           created_at?: string
+          fonte_atualizada_em?: string | null
+          fonte_url?: string | null
           foro?: string | null
           id?: string
           nome?: string
