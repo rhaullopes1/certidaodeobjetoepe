@@ -262,7 +262,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 {u.telefone && (
-                  <a href={`tel:${soDig(u.telefone)}`} className={botao}>
+                  <a href={`tel:${soDig(u.telefone.split("/")[0])}`} className={botao}>
                     <Phone className="h-4 w-4" /> Ligar
                   </a>
                 )}
@@ -389,7 +389,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
                 )}
                 {(canais.data.certidoes_email || canais.data.certidoes_telefone) && (
                   <p className="text-xs">
-                    Orientação geral:{" "}
+                    Contato geral do tribunal (SEDEC — não é a unidade emissora):{" "}
                     {[canais.data.certidoes_email, canais.data.certidoes_telefone].filter(Boolean).join(" · ")}
                   </p>
                 )}
