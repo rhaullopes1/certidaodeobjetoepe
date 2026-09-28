@@ -127,16 +127,17 @@ function AdminDetalhe() {
   const cadastrarComarca = useMutation({
     mutationFn: async () => {
       const dados = novaComarca!;
+      const temContato = !!(dados.telefone.trim() || dados.email.trim());
       return salvarComarca({
         comarca: dados.comarca,
-        uf: pedido.data?.uf ?? "",
-        tribunal: "",
-        vara_cartorio: "",
+        uf: pedido.data?.uf_processo ?? pedido.data?.uf ?? "",
+        tribunal: pedido.data?.tribunal_sigla ?? "",
         telefone: dados.telefone,
-        whatsapp: "",
         email: dados.email,
-        balcao_virtual_url: "",
         observacoes: dados.observacoes,
+        // Cadastro rápido: contato obtido pela equipe durante o atendimento.
+        fonte_tipo: temContato ? "Contato direto com a unidade" : "",
+        fonte_atualizada_em: temContato ? new Date().toISOString().slice(0, 10) : "",
       });
     },
     onSuccess: async (id) => {
