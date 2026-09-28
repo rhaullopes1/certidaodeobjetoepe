@@ -544,6 +544,16 @@ function AdminDetalhe() {
                         {new Date(a.created_at).toLocaleString("pt-BR")}
                       </p>
                       {a.observacao && <p className="mt-1 text-sm">{a.observacao}</p>}
+                      {a.observacao_interna && (
+                        <div className="mt-2 rounded-xl border border-dashed border-border bg-secondary/50 p-3">
+                          <p className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
+                            <Lock className="h-3.5 w-3.5" /> Anotação interna
+                          </p>
+                          <pre className="mt-1 whitespace-pre-wrap font-sans text-sm">
+                            {a.observacao_interna}
+                          </pre>
+                        </div>
+                      )}
                     </li>
                   ))}
                   {andamentos.data?.length === 0 && (
