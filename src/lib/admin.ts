@@ -385,7 +385,11 @@ export type CanaisTribunal = {
   balcao_virtual_fonte: string | null;
   balcao_virtual_verificada_em: string | null;
   certidoes_url: string | null;
-  certidoes_tipo: "geral" | "especifica_objeto_pe" | null;
+  certidoes_tipo: "geral" | "especifica_objeto_pe" | "objeto_pe_via_unidade" | null;
+  certidoes_email: string | null;
+  certidoes_telefone: string | null;
+  certidoes_instrucoes: string | null;
+  certidoes_fonte_normativa_url: string | null;
   certidoes_fonte: string | null;
   certidoes_verificada_em: string | null;
 };
@@ -396,7 +400,7 @@ export async function canaisTribunal(sigla: string | null | undefined) {
   const { data } = await supabase
     .from("cnj_tribunais")
     .select(
-      "sigla, consulta_processual_url, consulta_processual_fonte, consulta_processual_verificada_em, balcao_virtual_url, balcao_virtual_fonte, balcao_virtual_verificada_em, certidoes_url, certidoes_tipo, certidoes_fonte, certidoes_verificada_em",
+      "sigla, consulta_processual_url, consulta_processual_fonte, consulta_processual_verificada_em, balcao_virtual_url, balcao_virtual_fonte, balcao_virtual_verificada_em, certidoes_url, certidoes_tipo, certidoes_fonte, certidoes_verificada_em, certidoes_email, certidoes_telefone, certidoes_instrucoes, certidoes_fonte_normativa_url",
     )
     .eq("sigla", sigla)
     .maybeSingle();
