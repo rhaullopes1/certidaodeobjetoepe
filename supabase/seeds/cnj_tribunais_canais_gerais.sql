@@ -16,3 +16,6 @@ UPDATE public.cnj_tribunais SET balcao_virtual_url='https://www.tjpb.jus.br/balc
 -- Certidões: páginas gerais (não são páginas exclusivas de Objeto e Pé).
 UPDATE public.cnj_tribunais SET certidoes_url='https://www.tjsp.jus.br/Certidoes', certidoes_tipo='geral', certidoes_fonte='tjsp.jus.br — Certidões (e-SAJ / eproc)', certidoes_verificada_em='2026-09-28' WHERE sigla='TJSP';
 UPDATE public.cnj_tribunais SET certidoes_url='https://www.tjdft.jus.br/servicos/certidoes', certidoes_tipo='geral', certidoes_fonte='tjdft.jus.br — Certidões', certidoes_verificada_em='2026-09-28' WHERE sigla='TJDF';
+
+-- TJSP: página oficial específica de Certidão de Objeto e Pé (verificada 2026-09-28)
+UPDATE public.cnj_tribunais SET certidoes_url='https://www.tjsp.jus.br/Certidoes/Certidoes/Paginas_Default?c=12', certidoes_tipo='objeto_pe_via_unidade', certidoes_fonte='Site oficial do TJSP — Certidões: Certidão de Objeto e Pé', certidoes_verificada_em='2026-09-28', certidoes_instrucoes='Segundo o TJSP, a Certidão de Objeto e Pé é solicitada presencialmente ou pelo Balcão Virtual da unidade em que tramita ou tramitou o processo; a retirada é presencial na unidade emissora (vara competente).' WHERE sigla='TJSP';
