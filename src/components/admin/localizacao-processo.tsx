@@ -109,7 +109,22 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
     vara: pedido.vara ?? null,
   });
   const u = escolha?.unidade ?? null;
-  const datajud = (pedido.processo_dados as { datajud?: { status?: string } } | null)?.datajud;
+  const datajud = (
+    pedido.processo_dados as {
+      datajud?: {
+        status?: string;
+        consultadoEm?: string;
+        orgaoJulgador?: string | null;
+        sistema?: string | null;
+        classe?: string | null;
+        grau?: string | null;
+        assuntos?: string[];
+        ultimosMovimentos?: { nome: string; dataHora: string | null }[];
+      };
+    } | null
+  )?.datajud;
+  const dj = datajud?.status === "ok" ? datajud : null;
+  const ultimoMov = dj?.ultimosMovimentos?.[0];
 
   return (
     <div id="localizacao" className="mt-8 grid gap-6 scroll-mt-24">
@@ -132,6 +147,28 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
           {fmtData(pedido.processo_enriquecido_em) && (
             <Linha label="Última atualização" valor={fmtData(pedido.processo_enriquecido_em)!} />
           )}
+          {dj && (
+            <div className="mt-3 rounded-lg border border-accent/30 bg-accent/5 p-3">
+              <p className="text-xs font-bold uppercase text-accent">Dados públicos confirmados pelo DataJud (CNJ)</p>
+              {dj.grau && <Linha label="Grau" valor={dj.grau} />}
+              {dj.orgaoJulgador && <Linha label="Órgão julgador" valor={dj.orgaoJulgador} />}
+              {dj.classe && <Linha label="Classe" valor={dj.classe} />}
+              {dj.assuntos && dj.assuntos.length > 0 && (
+                <Linha label="Assuntos" valor={dj.assuntos.slice(0, 3).join(" · ")} />
+              )}
+              {dj.sistema && <Linha label="Sistema" valor={dj.sistema} />}
+              {ultimoMov && (
+                <Linha
+                  label="Última movimentação"
+                  valor={`${ultimoMov.nome}${fmtData(ultimoMov.dataHora) ? ` — ${fmtData(ultimoMov.dataHora)}` : ""}`}
+                />
+              )}
+              <Linha
+                label="Fonte"
+                valor={`API Pública DataJud (CNJ)${fmtData(dj.consultadoEm ?? null) ? ` — ${fmtData(dj.consultadoEm ?? null)}` : ""}`}
+              />
+            </div>
+          )}
           {datajud?.status && datajud.status !== "ok" && (
             <Linha label="DataJud" valor={datajud.status.replace(/_/g, " ")} />
           )}
@@ -144,7 +181,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
         <div className="mt-4 flex flex-wrap gap-2">
           {linkProcesso && (
             <a href={linkProcesso} target="_blank" rel="noopener noreferrer" className={botao}>
-              <ExternalLink className="h-4 w-4" /> Consulta processual oficial
+              <ExternalLink className="h-4 w-4" /> Abrir processo no tribunal
             </a>
           )}
           <button
