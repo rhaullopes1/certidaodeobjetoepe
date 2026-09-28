@@ -7,7 +7,7 @@ import { colunasLocalizacao, mesclarLocalizacao, type ColunasPedidoLocalizacao }
 import type { Database, Json } from "@/integrations/supabase/types";
 
 const COLS =
-  "id, numero_processo, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_fonte, processo_confianca, processo_dados";
+  "id, protocolo, numero_processo, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_fonte, processo_confianca, processo_dados";
 
 async function exigirEquipe(supabase: SupabaseClient<Database>, userId: string) {
   const { data: papeis } = await supabase.from("user_roles").select("role").eq("user_id", userId);
@@ -76,7 +76,7 @@ export const atualizarLocalizacao = createServerFn({ method: "POST" })
       datajudStatus = r.status;
       extra.processo_dados = {
         ...((pedido.processo_dados as Record<string, Json>) ?? {}),
-        datajud: r as unknown as Json,
+        datajud: { ...r, consultadoEm: new Date().toISOString() } as unknown as Json,
       };
       if (r.status === "ok" && r.orgaoJulgador) {
         extra.vara = r.orgaoJulgador;

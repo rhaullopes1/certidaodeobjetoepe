@@ -209,3 +209,9 @@ describe("DataJud fase 3", () => {
     expect(aliasDatajud("CNJ")).toBeNull();
   });
 });
+
+describe("DataJud fase 4", () => {
+  it("TJDF usa o alias oficial tjdft", () => {
+    expect(aliasDatajud("TJDF")).toBe("tjdft");
+  });
+});

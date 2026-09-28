@@ -109,10 +109,10 @@ function AdminEntregas() {
   const lote = useServerFn(reidentificarLote);
   const [msgLote, setMsgLote] = useState<string | null>(null);
   const reidentificar = useMutation({
-    mutationFn: (modo: "sem_localizacao" | "todos") => lote({ data: { modo } }),
+    mutationFn: (modo: "sem_localizacao" | "pendentes" | "todos") => lote({ data: { modo } }),
     onSuccess: (r) => {
       setMsgLote(
-        `${r.processados} processados · ${r.atualizados} atualizados · ganharam tribunal ${r.ganharamTribunal}, comarca ${r.ganharamComarca}, foro ${r.ganharamForo}, sistema ${r.ganharamSistema} · ${r.confirmados} confirmados, ${r.parciais} parciais, ${r.naoIdentificados} não identificados · ${r.invalidos} sem número CNJ válido.`,
+        `${r.processados} processados · ${r.atualizados} atualizados · ganharam tribunal ${r.ganharamTribunal}, comarca ${r.ganharamComarca}, foro ${r.ganharamForo}, sistema ${r.ganharamSistema} · ${r.confirmados} confirmados, ${r.parciais} parciais, ${r.naoIdentificados} não identificados · ${r.invalidos} sem número CNJ válido.${r.listaParciais.length ? ` Continuam parciais: ${r.listaParciais.join(", ")}.` : ""}`,
       );
       queryClient.invalidateQueries({ queryKey: ["admin-entregas"] });
     },
@@ -168,12 +168,14 @@ function AdminEntregas() {
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <button
                 type="button"
-                onClick={() => reidentificar.mutate("sem_localizacao")}
+                onClick={() => {
+                  if (window.confirm("Reidentificar pela tabela CNJ os pedidos ainda não confirmados? Não há consultas externas e dados confirmados são preservados.")) reidentificar.mutate("pendentes");
+                }}
                 disabled={reidentificar.isPending}
                 className="inline-flex items-center gap-2 rounded-full border border-input px-4 py-2 text-sm font-semibold transition-colors hover:bg-secondary disabled:opacity-60"
               >
                 {reidentificar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
-                Reidentificar pedidos sem localização
+                Reidentificar pedidos pendentes
               </button>
               <button
                 type="button"
