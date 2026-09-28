@@ -64,6 +64,13 @@
       "when": 1790561757754,
       "tag": "0008_cnj_tribunais_fonte_consulta",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790562191919,
+      "tag": "0009_cnj_tribunais_canais_gerais",
+      "breakpoints": true
     }
   ]
 }
