@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Rules
+- Process location is deterministic only (CNJ parser → cnj_* tables → DataJud adapter → team-registered units in comarcas_contatos); never use AI or infer the vara from the OOOO code — accuracy and traceable sources matter more than completeness.
