@@ -14,11 +14,16 @@ const SELO = {
 import {
   concluirEntrega,
   dadosCanaisFila,
+  definirEtapaEntrega,
+  etapaAtualEntrega,
+  ETAPAS_ENTREGA,
   listarEntregasPendentes,
   souEquipe,
   type ComarcaContato,
+  type EtapaEntrega,
   type PedidoAdmin,
 } from "@/lib/admin";
+
 import { escolherUnidade } from "@/lib/localizacao";
 import { resolverCanalSolicitacao } from "@/lib/canal-solicitacao";
 import { OndeSolicitarResumo } from "@/components/admin/onde-solicitar";
