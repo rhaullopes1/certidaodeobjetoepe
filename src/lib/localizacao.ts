@@ -258,7 +258,9 @@ export function escolherUnidade<T extends UnidadeCandidata>(
     const mesmoCodigo =
       !!c.codigoOrigem && !!u.codigo_origem_cnj && u.codigo_origem_cnj === c.codigoOrigem;
     const localOk = mesmaComarca || mesmoCodigo;
-    const varaU = norm(u.vara_cartorio) || norm(u.unidade_judiciaria);
+    // "Fórum ..." em unidade_judiciaria identifica o prédio do foro, não uma vara.
+    const unidadeEhForum = /^(f[oó]rum|foro)\b/i.test((u.unidade_judiciaria ?? "").trim());
+    const varaU = norm(u.vara_cartorio) || (unidadeEhForum ? "" : norm(u.unidade_judiciaria));
 
     let nivel: NivelUnidade | null = null;
     let pontos = 0;
