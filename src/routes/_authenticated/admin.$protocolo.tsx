@@ -29,6 +29,7 @@ import {
 import { FLUXO_STATUS, statusPedido } from "@/lib/site";
 import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
 import { AdminHeader, SemPermissao } from "./admin.index";
+import { LocalizacaoProcesso } from "@/components/admin/localizacao-processo";
 
 export const Route = createFileRoute("/_authenticated/admin/$protocolo")({
   component: AdminDetalhe,
@@ -301,6 +302,8 @@ function AdminDetalhe() {
                 </ul>
               </div>
             )}
+
+            <LocalizacaoProcesso pedido={pedido.data} />
 
             <div className="mt-8 grid gap-6 lg:grid-cols-2">
               <section className="card-premium p-6">
