@@ -24,7 +24,14 @@ async function reidentificarPedido(
   if (!partes) return { mudou: false, reconhecido: false };
   const dec = await decodificarPartes(partes);
   const novo = mesclarLocalizacao(pedido, colunasLocalizacao(dec));
-  const final = { ...novo, ...extra };
+  const final: ColunasPedidoLocalizacao = {
+    ...novo,
+    ...extra,
+    processo_dados: {
+      ...((novo.processo_dados as Record<string, Json>) ?? {}),
+      ...((extra.processo_dados as Record<string, Json>) ?? {}),
+    },
+  };
   const chaves = Object.keys(final).filter((k) => k !== "processo_dados") as (keyof typeof final)[];
   const mudou =
     Object.keys(extra).length > 0 ||
@@ -69,7 +76,6 @@ export const atualizarLocalizacao = createServerFn({ method: "POST" })
       datajudStatus = r.status;
       extra.processo_dados = {
         ...((pedido.processo_dados as Record<string, Json>) ?? {}),
-        ...(partes ? {} : {}),
         datajud: r as unknown as Json,
       };
       if (r.status === "ok" && r.orgaoJulgador) {
