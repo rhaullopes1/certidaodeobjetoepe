@@ -68,9 +68,15 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
         // o campo id é OMITIDO do manifesto — incluí-lo invalida a assinatura.
         // Testamos as variações possíveis para cobrir os formatos de envio.
         const idDaUrl = url.searchParams.get("data.id");
+        // Notificações no formato antigo chegam como ?id=...&topic=payment;
+        // nesse caso o manifesto usa o id da URL, que pode diferir do corpo.
+        const idLegadoDaUrl = url.searchParams.get("id");
         const candidatos: string[] = [];
         if (idDaUrl) {
           candidatos.push(`id:${idDaUrl.toLowerCase()};request-id:${requestId};ts:${ts};`);
+        }
+        if (idLegadoDaUrl && idLegadoDaUrl !== idDaUrl) {
+          candidatos.push(`id:${idLegadoDaUrl.toLowerCase()};request-id:${requestId};ts:${ts};`);
         }
         candidatos.push(`id:${paymentId.toLowerCase()};request-id:${requestId};ts:${ts};`);
         candidatos.push(`request-id:${requestId};ts:${ts};`);
@@ -84,7 +90,17 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
           return a.length === b.length && timingSafeEqual(a, b);
         });
         if (!valida) {
-          console.error("Assinatura inválida no webhook do Mercado Pago", { paymentId });
+          // Diagnóstico sem expor o segredo: se todos os formatos falham com
+          // paymentIds reais, a causa mais provável é o segredo do webhook no
+          // painel do Mercado Pago ser diferente do configurado aqui.
+          console.error("Assinatura inválida no webhook do Mercado Pago", {
+            paymentId,
+            temDataIdNaUrl: Boolean(idDaUrl),
+            temIdLegadoNaUrl: Boolean(idLegadoDaUrl),
+            temRequestId: Boolean(requestId),
+            ts,
+            candidatosTestados: candidatos.length,
+          });
           return new Response("assinatura inválida", { status: 401 });
         }
 
