@@ -499,6 +499,29 @@ export async function listarEntregasPendentes(): Promise<PedidoAdmin[]> {
   return (data ?? []).map((p) => ({ ...p, novo: ehNovo(p.created_at) }));
 }
 
+/** Etapas rápidas da fila de entrega, na ordem de operação. */
+export const ETAPAS_ENTREGA = [
+  { valor: "pago", rotulo: "Não solicitada", observacao: "Certidão ainda não solicitada ao tribunal." },
+  { valor: "protocolado", rotulo: "Certidão solicitada", observacao: "Certidão solicitada/protocolada no tribunal." },
+  { valor: "emitida", rotulo: "Certidão entregue", observacao: "Certidão emitida e entregue ao cliente." },
+] as const;
+
+export type EtapaEntrega = (typeof ETAPAS_ENTREGA)[number]["valor"];
+
+/** Etapa exibida como ativa para um status de pedido. */
+export function etapaAtualEntrega(status: string): EtapaEntrega | null {
+  if (status === "protocolado") return "protocolado";
+  if (status === "emitida") return "emitida";
+  if (status === "pago" || status === "em_analise") return "pago";
+  return null;
+}
+
+/** Aplica uma etapa da fila de entrega, registrando o andamento. */
+export async function definirEtapaEntrega(pedidoId: string, etapa: EtapaEntrega) {
+  const item = ETAPAS_ENTREGA.find((e) => e.valor === etapa)!;
+  await registrarAndamento({ pedidoId, status: item.valor, observacao: item.observacao });
+}
+
 /** Marca a certidão como emitida e entregue, encerrando o pedido. */
 export async function concluirEntrega(pedidoId: string) {
   await registrarAndamento({
@@ -507,6 +530,7 @@ export async function concluirEntrega(pedidoId: string) {
     observacao: "Certidão emitida e entregue ao cliente.",
   });
 }
+
 
 export type Anexo = {
   id: string;
