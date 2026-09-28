@@ -116,6 +116,21 @@ function AdminEntregas() {
       setErro(e instanceof Error ? e.message : "Não foi possível concluir a entrega."),
   });
 
+  const mudarEtapa = useMutation({
+    mutationFn: (v: { pedidoId: string; etapa: EtapaEntrega }) =>
+      definirEtapaEntrega(v.pedidoId, v.etapa),
+    onSuccess: () => {
+      setErro(null);
+      queryClient.invalidateQueries({ queryKey: ["admin-entregas"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-pedidos"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-entregas-total"] });
+    },
+    onError: (e) =>
+      setErro(e instanceof Error ? e.message : "Não foi possível atualizar a situação do pedido."),
+  });
+
+
+
   const lote = useServerFn(reidentificarLote);
   const [msgLote, setMsgLote] = useState<string | null>(null);
   const reidentificar = useMutation({
