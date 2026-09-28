@@ -30,6 +30,8 @@ import {
   type NivelUnidade,
 } from "@/lib/localizacao";
 import { atualizarLocalizacao } from "@/lib/localizacao.functions";
+import { resolverCanalSolicitacao, ROTULO_TIPO } from "@/lib/canal-solicitacao";
+import { AcoesCanal, SeloCanal } from "./onde-solicitar";
 
 const BADGE: Record<Confianca, { texto: string; classe: string }> = {
   confirmado: { texto: "Confirmado", classe: "bg-accent/15 text-accent" },
@@ -115,6 +117,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
     vara: pedido.vara ?? null,
   });
   const u = escolha?.unidade ?? null;
+  const canal = resolverCanalSolicitacao(escolha, canais.data ?? null);
   const datajud = (
     pedido.processo_dados as {
       datajud?: {
@@ -310,48 +313,61 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
 
         {/* SOLICITAÇÃO DA CERTIDÃO */}
         <section className="card-premium p-6">
-          <h2 className="text-lg font-bold">Solicitação da certidão</h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-lg font-bold uppercase tracking-wide">Solicitação da certidão</h2>
+            <SeloCanal status={canal.status} />
+          </div>
           <div className="mt-3">
             <Linha label="Tipo" valor="Certidão de Objeto e Pé" />
-            {u && (
-              <Linha
-                label="Unidade responsável"
-                valor={u.unidade_judiciaria || u.vara_cartorio || u.foro || u.comarca}
-              />
+            <Linha
+              label="Onde solicitar"
+              valor={
+                canal.status === "confirmado"
+                  ? `Canal oficial da unidade (${NIVEL[canal.nivel!]})`
+                  : canal.status === "canal_tribunal"
+                    ? `Fallback: ${canal.rotuloCanalTribunal}`
+                    : "Nenhum canal oficial cadastrado"
+              }
+            />
+            {canal.unidadeResponsavel && <Linha label="Unidade responsável" valor={canal.unidadeResponsavel} />}
+            {canal.tipos.length > 0 && (
+              <Linha label="Canal" valor={canal.tipos.map((t) => ROTULO_TIPO[t]).join(" · ")} />
             )}
-            {u?.canal_solicitacao_tipo && (
-              <Linha label="Tipo de canal" valor={u.canal_solicitacao_tipo.replace(/_/g, " ")} />
-            )}
-            {u?.canal_solicitacao_url && <Linha label="URL oficial" valor={u.canal_solicitacao_url} />}
-            {u?.canal_solicitacao_email && <Linha label="E-mail oficial" valor={u.canal_solicitacao_email} />}
-            {u?.canal_solicitacao_telefone && <Linha label="Telefone" valor={u.canal_solicitacao_telefone} />}
-            {u?.documentos_exigidos && <Linha label="Documentos exigidos" valor={u.documentos_exigidos} />}
-            {u?.taxa_info && <Linha label="Taxa" valor={u.taxa_info} />}
-            {u?.prazo_info && <Linha label="Prazo informado" valor={u.prazo_info} />}
-            {u?.instrucoes_solicitacao && <Linha label="Instruções" valor={u.instrucoes_solicitacao} />}
-            {u && (u.canal_solicitacao_url || u.canal_solicitacao_email || u.canal_solicitacao_telefone) && (
+            {canal.url && <Linha label="URL oficial" valor={canal.url} />}
+            {canal.balcaoVirtualUrl && <Linha label="Balcão Virtual" valor={canal.balcaoVirtualUrl} />}
+            {canal.email && <Linha label="E-mail" valor={canal.email} />}
+            {canal.telefone && <Linha label="Telefone" valor={canal.telefone} />}
+            {canal.documentos && <Linha label="Documentos exigidos" valor={canal.documentos} />}
+            {canal.taxa && <Linha label="Taxa" valor={canal.taxa} />}
+            {canal.prazo && <Linha label="Prazo informado" valor={canal.prazo} />}
+            {canal.instrucoes && <Linha label="Instruções" valor={canal.instrucoes} />}
+            {canal.status !== "nao_cadastrado" && (
               <Linha
                 label="Fonte"
-                valor={[rotuloFonte(u.fonte_tipo), fmtData(u.fonte_atualizada_em)].filter(Boolean).join(" · ")}
+                valor={[
+                  canal.origem === "unidade" ? rotuloFonte(canal.fonte) : `Fonte oficial: ${canal.fonte}`,
+                  fmtData(canal.fonteData),
+                ].filter(Boolean).join(" · ")}
               />
             )}
           </div>
-          {u && urlHttpsSegura(u.canal_solicitacao_url) ? (
-            <a
-              href={urlHttpsSegura(u.canal_solicitacao_url)!}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold uppercase text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <Send className="h-4 w-4" /> Abrir canal de solicitação
-            </a>
-          ) : (
+          {canal.status !== "confirmado" && (
             <p className="mt-4 rounded-xl bg-secondary px-4 py-3 text-sm text-muted-foreground">
               Canal específico não cadastrado.
-              {u && (u.email || u.telefone || u.balcao_virtual_url)
-                ? " Use os contatos oficiais da unidade ao lado."
-                : " Cadastre o canal oficial em “Comarcas”."}
+              {canal.status === "canal_tribunal"
+                ? " Abaixo, o canal oficial do tribunal como fallback — a emissão cabe à vara competente."
+                : " Cadastre o canal oficial em “Comarcas” (com fonte e data)."}
             </p>
+          )}
+          {canal.status !== "nao_cadastrado" && (
+            <div className="mt-4">
+              <AcoesCanal c={canal} />
+            </div>
+          )}
+          {canal.fonteUrl && (
+            <a href={canal.fonteUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs underline">
+              Ver fonte
+            </a>
           )}
           {canais.data && (canais.data.balcao_virtual_url || canais.data.certidoes_url || canais.data.consulta_processual_url) && (
             <div className="mt-4 border-t border-border pt-4">
