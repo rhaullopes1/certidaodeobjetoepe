@@ -72,14 +72,17 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
         // nesse caso o manifesto usa o id da URL, que pode diferir do corpo.
         const idLegadoDaUrl = url.searchParams.get("id");
         const candidatos: string[] = [];
+        // Quando o header x-request-id não vem, o segmento request-id deve
+        // ser OMITIDO do manifesto — incluí-lo também invalida a assinatura.
+        const segRequest = requestId ? `request-id:${requestId};` : "";
         if (idDaUrl) {
-          candidatos.push(`id:${idDaUrl.toLowerCase()};request-id:${requestId};ts:${ts};`);
+          candidatos.push(`id:${idDaUrl.toLowerCase()};${segRequest}ts:${ts};`);
         }
         if (idLegadoDaUrl && idLegadoDaUrl !== idDaUrl) {
-          candidatos.push(`id:${idLegadoDaUrl.toLowerCase()};request-id:${requestId};ts:${ts};`);
+          candidatos.push(`id:${idLegadoDaUrl.toLowerCase()};${segRequest}ts:${ts};`);
         }
-        candidatos.push(`id:${paymentId.toLowerCase()};request-id:${requestId};ts:${ts};`);
-        candidatos.push(`request-id:${requestId};ts:${ts};`);
+        candidatos.push(`id:${paymentId.toLowerCase()};${segRequest}ts:${ts};`);
+        candidatos.push(`${segRequest}ts:${ts};`);
         candidatos.push(`ts:${ts};`);
 
         const { createHmac, timingSafeEqual } = await import("crypto");
