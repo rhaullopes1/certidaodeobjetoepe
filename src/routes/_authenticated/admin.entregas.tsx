@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { CheckCircle2, Loader2, MessageCircle, PackageCheck } from "lucide-react";
+import { CheckCircle2, Loader2, MapPin, MessageCircle, PackageCheck } from "lucide-react";
+import { resumoLocalizacao } from "@/lib/localizacao";
 import {
   concluirEntrega,
   listarEntregasPendentes,
@@ -191,6 +192,19 @@ function AdminEntregas() {
                           Processo {p.numero_processo}
                           {p.uf ? ` · ${p.cidade ? `${p.cidade}/` : ""}${p.uf}` : ""}
                         </p>
+                        {resumoLocalizacao(p) && (
+                          <p className="mt-1 flex flex-wrap items-center gap-2 text-sm font-medium">
+                            <MapPin className="h-4 w-4 text-accent" />
+                            {resumoLocalizacao(p)}
+                          </p>
+                        )}
+                        <Link
+                          to="/admin/$protocolo"
+                          params={{ protocolo: p.protocolo }}
+                          className="mt-1 inline-block text-xs font-semibold text-accent underline-offset-4 hover:underline"
+                        >
+                          Localização e canal de solicitação →
+                        </Link>
                         <p className="mt-1 text-sm text-muted-foreground">
                           {p.quantidade} certidão(ões) · {formatarBRL(p.valor_centavos)} · Pago{" "}
                           {p.pago_em

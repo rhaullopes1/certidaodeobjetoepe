@@ -130,6 +130,9 @@ function Pilulas({ dados, carregando }: { dados: ProcessoDecodificado | null; ca
   if (dados.uf) tags.push(dados.uf);
   if (dados.cidade) tags.push(dados.cidade);
   if (dados.comarca) tags.push(dados.comarca);
+  if (dados.foro) tags.push(dados.foro);
+  if (dados.vara) tags.push(dados.vara);
+  if (dados.sistema) tags.push(dados.sistema);
   if (dados.ano) tags.push(String(dados.ano));
 
   return (
