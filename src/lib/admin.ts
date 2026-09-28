@@ -503,7 +503,8 @@ export async function listarEntregasPendentes(): Promise<PedidoAdmin[]> {
 
 /** Etapas rápidas da fila de entrega, na ordem de operação. */
 export const ETAPAS_ENTREGA = [
-  { valor: "pago", rotulo: "Não solicitada", observacao: "Certidão ainda não solicitada ao tribunal." },
+  { valor: "pago", rotulo: "Certidão não solicitada", observacao: "Certidão ainda não solicitada ao tribunal." },
+  { valor: "em_analise", rotulo: "Solicitação em andamento", observacao: "Solicitação da certidão em andamento junto ao tribunal." },
   { valor: "protocolado", rotulo: "Certidão solicitada", observacao: "Certidão solicitada/protocolada no tribunal." },
   { valor: "emitida", rotulo: "Certidão entregue", observacao: "Certidão emitida e entregue ao cliente." },
 ] as const;
@@ -512,9 +513,10 @@ export type EtapaEntrega = (typeof ETAPAS_ENTREGA)[number]["valor"];
 
 /** Etapa exibida como ativa para um status de pedido. */
 export function etapaAtualEntrega(status: string): EtapaEntrega | null {
+  if (status === "em_analise") return "em_analise";
   if (status === "protocolado") return "protocolado";
   if (status === "emitida") return "emitida";
-  if (status === "pago" || status === "em_analise") return "pago";
+  if (status === "pago") return "pago";
   return null;
 }
 
