@@ -407,6 +407,28 @@ export async function canaisTribunal(sigla: string | null | undefined) {
   return (data as CanaisTribunal | null) ?? null;
 }
 
+/**
+ * Dados para "Onde solicitar" na fila: todas as unidades ativas cadastradas e os
+ * canais dos tribunais presentes. Só leitura do cadastro; nenhuma consulta externa.
+ */
+export async function dadosCanaisFila(siglas: string[]) {
+  const unicas = [...new Set(siglas.filter(Boolean))];
+  const [unid, trib] = await Promise.all([
+    supabase.from("comarcas_contatos").select(COLUNAS_COMARCA).eq("ativo", true).limit(1000).returns<ComarcaContato[]>(),
+    unicas.length
+      ? supabase
+          .from("cnj_tribunais")
+          .select(
+            "sigla, consulta_processual_url, consulta_processual_fonte, consulta_processual_verificada_em, balcao_virtual_url, balcao_virtual_fonte, balcao_virtual_verificada_em, certidoes_url, certidoes_tipo, certidoes_fonte, certidoes_verificada_em, certidoes_email, certidoes_telefone, certidoes_instrucoes, certidoes_fonte_normativa_url",
+          )
+          .in("sigla", unicas)
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+  if (unid.error) throw unid.error;
+  if (trib.error) throw trib.error;
+  return { unidades: unid.data ?? [], tribunais: (trib.data ?? []) as CanaisTribunal[] };
+}
+
 export async function salvarComarca(input: ComarcaContatoInput) {
   const { data: sessao } = await supabase.auth.getUser();
   const erroFonte = validarFonteUnidade(input as unknown as Record<string, string | null>);

@@ -13,10 +13,15 @@ const SELO = {
 } as const;
 import {
   concluirEntrega,
+  dadosCanaisFila,
   listarEntregasPendentes,
   souEquipe,
+  type ComarcaContato,
   type PedidoAdmin,
 } from "@/lib/admin";
+import { escolherUnidade } from "@/lib/localizacao";
+import { resolverCanalSolicitacao } from "@/lib/canal-solicitacao";
+import { OndeSolicitarResumo } from "@/components/admin/onde-solicitar";
 import { formatarBRL, statusPedido } from "@/lib/site";
 import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
 import { AdminHeader, SemPermissao } from "./admin.index";
@@ -121,6 +126,24 @@ function AdminEntregas() {
 
   const lista = entregas.data ?? [];
   const total = lista.length;
+  const siglas = [...new Set(lista.map((p) => p.tribunal_sigla ?? "").filter(Boolean))].sort();
+  const canaisFila = useQuery({
+    queryKey: ["admin-canais-fila", siglas.join(",")],
+    queryFn: () => dadosCanaisFila(siglas),
+    enabled: permissao.data === true && entregas.isSuccess,
+  });
+  const canalDe = (p: PedidoAdmin) => {
+    const d = canaisFila.data!;
+    const escolha = escolherUnidade<ComarcaContato>(d.unidades, {
+      tribunal: p.tribunal_sigla ?? null,
+      codigoOrigem: p.codigo_origem_cnj ?? null,
+      comarca: p.comarca_processo ?? null,
+      foro: p.foro ?? null,
+      vara: p.vara ?? null,
+    });
+    const trib = d.tribunais.find((t) => t.sigla === p.tribunal_sigla) ?? null;
+    return resolverCanalSolicitacao(escolha, trib);
+  };
   const faturamento = lista.reduce((soma, p) => soma + (p.valor_centavos ?? 0), 0);
 
   return (
@@ -258,6 +281,7 @@ function AdminEntregas() {
                         >
                           Localização e canal de solicitação →
                         </Link>
+                        {canaisFila.data && <OndeSolicitarResumo c={canalDe(p)} />}
                         <p className="mt-1 text-sm text-muted-foreground">
                           {p.quantidade} certidão(ões) · {formatarBRL(p.valor_centavos)} · Pago{" "}
                           {p.pago_em
