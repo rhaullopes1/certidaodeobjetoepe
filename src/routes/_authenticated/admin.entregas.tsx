@@ -175,8 +175,9 @@ function AdminEntregas() {
           <PackageCheck className="h-6 w-6 text-accent" /> Entregas pendentes
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Pedidos já pagos, na ordem da data de pagamento, aguardando a entrega da certidão.
-          Ao entregar, clique em “Concluir entrega” para encerrar o pedido.
+          Pedidos já pagos aguardando a entrega da certidão, em ordem fixa de chegada.
+          A posição não muda quando você altera a situação. Ao entregar, clique em
+          “Concluir entrega” para encerrar o pedido.
         </p>
 
         {permissao.isPending && (
@@ -307,6 +308,10 @@ function AdminEntregas() {
                           {p.pago_em
                             ? `em ${new Date(p.pago_em).toLocaleString("pt-BR")} (${tempoDesde(p.pago_em)})`
                             : "— sem data registrada"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Posição {i + 1} na fila · chegada em{" "}
+                          {new Date(p.created_at).toLocaleString("pt-BR")}
                         </p>
                       </div>
 
