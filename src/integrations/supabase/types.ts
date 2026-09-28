@@ -287,15 +287,7 @@ export type Database = {
           vara_cartorio?: string | null
           whatsapp?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "comarcas_contatos_pedido_fk"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "comarcas_contatos"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       content_config: {
         Row: {
@@ -663,6 +655,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "pedido_andamentos_comarca_contato_fk"
+            columns: ["comarca_contato_id"]
+            isOneToOne: false
+            referencedRelation: "comarcas_contatos"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pedido_andamentos_pedido_id_fkey"
             columns: ["pedido_id"]
