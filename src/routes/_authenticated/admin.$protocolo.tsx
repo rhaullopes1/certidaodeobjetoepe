@@ -382,10 +382,144 @@ function AdminDetalhe() {
                   </select>
                   <textarea
                     className={`${campo} min-h-24`}
-                    placeholder="Observação interna (opcional)"
+                    placeholder="Observação do andamento (opcional)"
                     value={observacao}
                     onChange={(e) => setObservacao(e.target.value)}
                   />
+
+                  <div className="rounded-2xl border border-dashed border-border bg-secondary/50 p-4">
+                    <p className="flex items-center gap-2 text-sm font-bold">
+                      <Lock className="h-4 w-4" /> Anotação interna da equipe
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Nunca aparece para o cliente. Use para contatos e tratativas com a comarca.
+                    </p>
+
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <select
+                        className={`${campo} flex-1`}
+                        value={comarcaId}
+                        onChange={(e) => setComarcaId(e.target.value)}
+                        aria-label="Comarca cadastrada"
+                      >
+                        <option value="">Selecionar comarca cadastrada</option>
+                        {(comarcas.data ?? []).map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.comarca}
+                            {c.uf ? ` - ${c.uf}` : ""}
+                            {c.vara_cartorio ? ` · ${c.vara_cartorio}` : ""}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setNovaComarca({
+                            comarca: pedido.data?.cidade ?? "",
+                            telefone: "",
+                            email: "",
+                            observacoes: "",
+                          })
+                        }
+                        className="inline-flex items-center gap-1 rounded-full bg-secondary px-4 py-2 text-xs font-bold transition-colors hover:bg-secondary/70"
+                      >
+                        <Plus className="h-3.5 w-3.5" /> Nova comarca
+                      </button>
+                    </div>
+
+                    {comarcaSelecionada && (
+                      <div className="mt-3 rounded-xl bg-background p-3 text-sm">
+                        <pre className="whitespace-pre-wrap font-sans text-muted-foreground">
+                          {resumoContatoComarca(comarcaSelecionada)}
+                        </pre>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setObservacaoInterna((atual) =>
+                              [atual.trim(), resumoContatoComarca(comarcaSelecionada)]
+                                .filter(Boolean)
+                                .join("\n"),
+                            )
+                          }
+                          className="mt-2 text-xs font-bold text-accent underline"
+                        >
+                          Inserir contatos na anotação
+                        </button>
+                      </div>
+                    )}
+
+                    {novaComarca && (
+                      <div className="mt-3 space-y-2 rounded-xl bg-background p-3">
+                        <input
+                          className={campo}
+                          placeholder="Nome da comarca"
+                          value={novaComarca.comarca}
+                          onChange={(e) =>
+                            setNovaComarca({ ...novaComarca, comarca: e.target.value })
+                          }
+                        />
+                        <input
+                          className={campo}
+                          placeholder="Telefone"
+                          value={novaComarca.telefone}
+                          onChange={(e) =>
+                            setNovaComarca({ ...novaComarca, telefone: e.target.value })
+                          }
+                        />
+                        <input
+                          className={campo}
+                          placeholder="E-mail do cartório"
+                          value={novaComarca.email}
+                          onChange={(e) =>
+                            setNovaComarca({ ...novaComarca, email: e.target.value })
+                          }
+                        />
+                        <input
+                          className={campo}
+                          placeholder="Observações (ramais, horários)"
+                          value={novaComarca.observacoes}
+                          onChange={(e) =>
+                            setNovaComarca({ ...novaComarca, observacoes: e.target.value })
+                          }
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setErro(null);
+                              if (!novaComarca.comarca.trim()) {
+                                setErro("Informe o nome da comarca.");
+                                return;
+                              }
+                              cadastrarComarca.mutate();
+                            }}
+                            disabled={cadastrarComarca.isPending}
+                            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-60"
+                          >
+                            {cadastrarComarca.isPending && (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            )}
+                            Salvar comarca
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setNovaComarca(null)}
+                            className="rounded-full bg-secondary px-4 py-2 text-xs font-bold"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    <textarea
+                      className={`${campo} mt-3 min-h-24`}
+                      placeholder="Contatos, ramais, protocolo no fórum, tratativas..."
+                      value={observacaoInterna}
+                      onChange={(e) => setObservacaoInterna(e.target.value)}
+                    />
+                  </div>
+
                   <button
                     onClick={() => {
                       setErro(null);
