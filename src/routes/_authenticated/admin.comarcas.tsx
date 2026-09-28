@@ -163,9 +163,9 @@ function AdminComarcas() {
                     aria-label="Estado"
                   >
                     <option value="">Estado (UF)</option>
-                    {ESTADOS.map((e) => (
-                      <option key={e.uf} value={e.uf}>
-                        {e.uf} — {e.nome}
+                    {ESTADOS.map((uf) => (
+                      <option key={uf} value={uf}>
+                        {uf}
                       </option>
                     ))}
                   </select>
