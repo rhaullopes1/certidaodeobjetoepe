@@ -219,6 +219,11 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
         {/* CONTATO DA UNIDADE */}
         <section className="card-premium p-6">
           <h2 className="text-lg font-bold">Contato da unidade / fórum</h2>
+          {u && (
+            <span className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-xs font-bold uppercase text-primary">
+              Contato da unidade
+            </span>
+          )}
           {unidades.isPending && (
             <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" /> Buscando na base interna...
@@ -351,7 +356,7 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
           {canais.data && (canais.data.balcao_virtual_url || canais.data.certidoes_url || canais.data.consulta_processual_url) && (
             <div className="mt-4 border-t border-border pt-4">
               <p className="text-xs font-bold uppercase text-muted-foreground">
-                Canais gerais do tribunal ({canais.data.sigla})
+                Canal geral do tribunal ({canais.data.sigla}) — não é contato da unidade
               </p>
               <div className="mt-2 space-y-2 text-sm">
                 {(
@@ -359,7 +364,11 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
                     ["Consulta processual", canais.data.consulta_processual_url, canais.data.consulta_processual_fonte, canais.data.consulta_processual_verificada_em],
                     ["Balcão Virtual", canais.data.balcao_virtual_url, canais.data.balcao_virtual_fonte, canais.data.balcao_virtual_verificada_em],
                     [
-                      canais.data.certidoes_tipo === "especifica_objeto_pe" ? "Certidão de Objeto e Pé" : "Certidões — canal geral",
+                      canais.data.certidoes_tipo === "especifica_objeto_pe"
+                        ? "Certidão de Objeto e Pé"
+                        : canais.data.certidoes_tipo === "objeto_pe_via_unidade"
+                          ? "Certidão de Objeto e Pé — solicitar à unidade judicial"
+                          : "Certidões — canal geral",
                       canais.data.certidoes_url, canais.data.certidoes_fonte, canais.data.certidoes_verificada_em,
                     ],
                   ] as const
@@ -374,6 +383,25 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
                       </p>
                     </div>
                   ) : null,
+                )}
+                {canais.data.certidoes_instrucoes && (
+                  <p className="text-xs text-muted-foreground">{canais.data.certidoes_instrucoes}</p>
+                )}
+                {(canais.data.certidoes_email || canais.data.certidoes_telefone) && (
+                  <p className="text-xs">
+                    Orientação geral:{" "}
+                    {[canais.data.certidoes_email, canais.data.certidoes_telefone].filter(Boolean).join(" · ")}
+                  </p>
+                )}
+                {urlHttpsSegura(canais.data.certidoes_fonte_normativa_url) && (
+                  <a
+                    href={urlHttpsSegura(canais.data.certidoes_fonte_normativa_url)!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs underline"
+                  >
+                    Ato normativo oficial
+                  </a>
                 )}
               </div>
             </div>

@@ -205,7 +205,11 @@ export type Database = {
           balcao_virtual_fonte: string | null
           balcao_virtual_url: string | null
           balcao_virtual_verificada_em: string | null
+          certidoes_email: string | null
           certidoes_fonte: string | null
+          certidoes_fonte_normativa_url: string | null
+          certidoes_instrucoes: string | null
+          certidoes_telefone: string | null
           certidoes_tipo: string | null
           certidoes_url: string | null
           certidoes_verificada_em: string | null
@@ -228,7 +232,11 @@ export type Database = {
           balcao_virtual_fonte?: string | null
           balcao_virtual_url?: string | null
           balcao_virtual_verificada_em?: string | null
+          certidoes_email?: string | null
           certidoes_fonte?: string | null
+          certidoes_fonte_normativa_url?: string | null
+          certidoes_instrucoes?: string | null
+          certidoes_telefone?: string | null
           certidoes_tipo?: string | null
           certidoes_url?: string | null
           certidoes_verificada_em?: string | null
@@ -251,7 +259,11 @@ export type Database = {
           balcao_virtual_fonte?: string | null
           balcao_virtual_url?: string | null
           balcao_virtual_verificada_em?: string | null
+          certidoes_email?: string | null
           certidoes_fonte?: string | null
+          certidoes_fonte_normativa_url?: string | null
+          certidoes_instrucoes?: string | null
+          certidoes_telefone?: string | null
           certidoes_tipo?: string | null
           certidoes_url?: string | null
           certidoes_verificada_em?: string | null
