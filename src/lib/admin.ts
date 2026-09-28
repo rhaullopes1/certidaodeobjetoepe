@@ -485,7 +485,7 @@ export const STATUS_AGUARDANDO_ENTREGA = ["pago", "em_analise", "protocolado"] a
 
 /**
  * Fila de entrega: pedidos pagos que ainda não tiveram a certidão entregue.
- * Ordem FIXA por chegada (data de criação do pedido, com o id como desempate),
+ * Ordem FIXA por chegada em ordem DECRESCENTE (mais recentes primeiro),
  * para que a posição na fila não mude quando o operador altera a situação.
  */
 export async function listarEntregasPendentes(): Promise<PedidoAdmin[]> {
@@ -493,8 +493,8 @@ export async function listarEntregasPendentes(): Promise<PedidoAdmin[]> {
     .from("pedidos")
     .select(COLUNAS as string)
     .in("status", [...STATUS_AGUARDANDO_ENTREGA])
-    .order("created_at", { ascending: true })
-    .order("id", { ascending: true })
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
     .limit(200)
     .returns<PedidoAdmin[]>();
   if (error) throw error;
