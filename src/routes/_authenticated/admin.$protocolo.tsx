@@ -87,8 +87,23 @@ function AdminDetalhe() {
 
   const [novoStatus, setNovoStatus] = useState("");
   const [observacao, setObservacao] = useState("");
+  const [observacaoInterna, setObservacaoInterna] = useState("");
+  const [comarcaId, setComarcaId] = useState("");
+  const [novaComarca, setNovaComarca] = useState<null | {
+    comarca: string;
+    telefone: string;
+    email: string;
+    observacoes: string;
+  }>(null);
   const [tipoAnexo, setTipoAnexo] = useState("comprovante");
   const [erro, setErro] = useState<string | null>(null);
+
+  const comarcas = useQuery({
+    queryKey: ["admin-comarcas", ""],
+    queryFn: () => listarComarcas(""),
+    enabled: permissao.data === true,
+  });
+  const comarcaSelecionada = comarcas.data?.find((c) => c.id === comarcaId) ?? null;
 
   const salvarAndamento = useMutation({
     mutationFn: () =>
@@ -96,14 +111,40 @@ function AdminDetalhe() {
         pedidoId: pedidoId!,
         status: novoStatus || pedido.data!.status,
         observacao,
+        observacaoInterna,
+        comarcaContatoId: comarcaId || null,
       }),
     onSuccess: () => {
       setObservacao("");
+      setObservacaoInterna("");
       queryClient.invalidateQueries({ queryKey: ["admin-pedido", protocolo] });
       queryClient.invalidateQueries({ queryKey: ["admin-andamentos", pedidoId] });
       queryClient.invalidateQueries({ queryKey: ["admin-pedidos"] });
     },
     onError: (e) => setErro(e instanceof Error ? e.message : "Falha ao salvar o andamento."),
+  });
+
+  const cadastrarComarca = useMutation({
+    mutationFn: async () => {
+      const dados = novaComarca!;
+      return salvarComarca({
+        comarca: dados.comarca,
+        uf: pedido.data?.uf ?? "",
+        tribunal: "",
+        vara_cartorio: "",
+        telefone: dados.telefone,
+        whatsapp: "",
+        email: dados.email,
+        balcao_virtual_url: "",
+        observacoes: dados.observacoes,
+      });
+    },
+    onSuccess: async (id) => {
+      setNovaComarca(null);
+      await queryClient.invalidateQueries({ queryKey: ["admin-comarcas"] });
+      setComarcaId(id);
+    },
+    onError: (e) => setErro(e instanceof Error ? e.message : "Falha ao salvar a comarca."),
   });
 
   const upload = useMutation({
