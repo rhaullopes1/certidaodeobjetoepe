@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesInsert } from "@/integrations/supabase/types";
 import { soDigitos } from "./pedidos.schema";
 
 export const BUCKET_ANEXOS = "pedido-anexos";
@@ -22,6 +23,22 @@ export type PedidoAdmin = {
   status: string;
   created_at: string;
   pago_em: string | null;
+  tribunal_sigla?: string | null;
+  tribunal_nome?: string | null;
+  segmento_judiciario?: string | null;
+  uf_processo?: string | null;
+  cidade_processo?: string | null;
+  comarca_processo?: string | null;
+  foro?: string | null;
+  codigo_origem_cnj?: string | null;
+  vara?: string | null;
+  unidade_judiciaria?: string | null;
+  sistema_processual?: string | null;
+  processo_enriquecido?: boolean | null;
+  processo_enriquecido_em?: string | null;
+  processo_fonte?: string | null;
+  processo_confianca?: string | null;
+  processo_dados?: Record<string, unknown> | null;
   /** Calculado no cliente: repete processo + CPF de outro pedido da lista. */
   duplicado?: boolean;
   /** Calculado no cliente: criado nas últimas 24 horas. */
@@ -29,7 +46,7 @@ export type PedidoAdmin = {
 };
 
 const COLUNAS =
-  "id, protocolo, numero_processo, nome_parte, quantidade, uf, cidade, cpf, email, whatsapp, observacoes, certidoes, valor_centavos, status, created_at, pago_em";
+  "id, protocolo, numero_processo, nome_parte, quantidade, uf, cidade, cpf, email, whatsapp, observacoes, certidoes, valor_centavos, status, created_at, pago_em, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_enriquecido, processo_enriquecido_em, processo_fonte, processo_confianca, processo_dados";
 
 export async function souEquipe() {
   const { data } = await supabase.auth.getUser();
@@ -223,12 +240,75 @@ export type ComarcaContato = {
   email: string | null;
   balcao_virtual_url: string | null;
   observacoes: string | null;
+  foro: string | null;
+  codigo_origem_cnj: string | null;
+  unidade_judiciaria: string | null;
+  endereco: string | null;
+  cep: string | null;
+  responsavel_nome: string | null;
+  responsavel_setor: string | null;
+  canal_solicitacao_tipo: string | null;
+  canal_solicitacao_url: string | null;
+  canal_solicitacao_email: string | null;
+  canal_solicitacao_telefone: string | null;
+  instrucoes_solicitacao: string | null;
+  documentos_exigidos: string | null;
+  taxa_info: string | null;
+  prazo_info: string | null;
+  fonte_url: string | null;
+  fonte_tipo: string | null;
+  fonte_atualizada_em: string | null;
+  ativo: boolean;
   created_at: string;
   updated_at: string;
 };
 
+/** Campos de texto opcionais da unidade (usados no formulário e na gravação). */
+export const CAMPOS_TEXTO_UNIDADE = [
+  "uf", "tribunal", "vara_cartorio", "telefone", "whatsapp", "email", "balcao_virtual_url",
+  "observacoes", "foro", "codigo_origem_cnj", "unidade_judiciaria", "endereco", "cep",
+  "responsavel_nome", "responsavel_setor", "canal_solicitacao_tipo", "canal_solicitacao_url",
+  "canal_solicitacao_email", "canal_solicitacao_telefone", "instrucoes_solicitacao",
+  "documentos_exigidos", "taxa_info", "prazo_info", "fonte_url", "fonte_tipo", "fonte_atualizada_em",
+] as const;
+
+/** Dados operacionais que exigem fonte informada. */
+const CAMPOS_OPERACIONAIS = [
+  "telefone", "whatsapp", "email", "balcao_virtual_url", "endereco", "responsavel_nome",
+  "canal_solicitacao_url", "canal_solicitacao_email", "canal_solicitacao_telefone",
+  "instrucoes_solicitacao", "documentos_exigidos", "taxa_info", "prazo_info",
+] as const;
+
+export const TIPOS_FONTE = [
+  "Site oficial do tribunal",
+  "Diário oficial",
+  "Portaria/ato oficial",
+  "Contato direto com a unidade",
+  "Resposta oficial por e-mail",
+] as const;
+
+export const TIPOS_CANAL = [
+  "portal", "formulario", "email", "balcao_virtual", "telefone", "presencial",
+] as const;
+
+/** Retorna mensagem de erro se houver dado operacional sem fonte. */
+export function validarFonteUnidade(i: Partial<Record<string, string | null | boolean | undefined>>) {
+  const temOperacional = CAMPOS_OPERACIONAIS.some((c) => String(i[c] ?? "").trim() !== "");
+  if (!temOperacional) return null;
+  if (!String(i["fonte_tipo"] ?? "").trim()) return "Informe o tipo da fonte dos dados operacionais.";
+  if (!String(i["fonte_atualizada_em"] ?? "").trim()) return "Informe a data de atualização da fonte.";
+  const tipo = String(i["fonte_tipo"]);
+  if (/site|di[aá]rio|portaria/i.test(tipo) && !/^https?:\/\//i.test(String(i["fonte_url"] ?? "")))
+    return "Informe o link da fonte oficial (https://...).";
+  for (const c of ["balcao_virtual_url", "canal_solicitacao_url", "fonte_url"]) {
+    const v = String(i[c] ?? "").trim();
+    if (v && !/^https?:\/\/\S+$/i.test(v)) return "Os links precisam começar com https://";
+  }
+  return null;
+}
+
 const COLUNAS_COMARCA =
-  "id, uf, tribunal, comarca, vara_cartorio, telefone, whatsapp, email, balcao_virtual_url, observacoes, created_at, updated_at";
+  "id, uf, tribunal, comarca, vara_cartorio, telefone, whatsapp, email, balcao_virtual_url, observacoes, foro, codigo_origem_cnj, unidade_judiciaria, endereco, cep, responsavel_nome, responsavel_setor, canal_solicitacao_tipo, canal_solicitacao_url, canal_solicitacao_email, canal_solicitacao_telefone, instrucoes_solicitacao, documentos_exigidos, taxa_info, prazo_info, fonte_url, fonte_tipo, fonte_atualizada_em, ativo, created_at, updated_at";
 
 export async function listarComarcas(busca = ""): Promise<ComarcaContato[]> {
   let query = supabase
@@ -240,7 +320,7 @@ export async function listarComarcas(busca = ""): Promise<ComarcaContato[]> {
   const termo = busca.trim();
   if (termo) {
     query = query.or(
-      ["comarca", "tribunal", "vara_cartorio", "telefone", "whatsapp", "email"]
+      ["comarca", "tribunal", "vara_cartorio", "telefone", "whatsapp", "email", "foro", "codigo_origem_cnj", "unidade_judiciaria"]
         .map((c) => `${c}.ilike.%${termo}%`)
         .join(","),
     );
@@ -251,28 +331,60 @@ export async function listarComarcas(busca = ""): Promise<ComarcaContato[]> {
   return data ?? [];
 }
 
-export type ComarcaContatoInput = Omit<ComarcaContato, "id" | "created_at" | "updated_at"> & {
+export type ComarcaContatoInput = Partial<Omit<ComarcaContato, "id" | "created_at" | "updated_at">> & {
   id?: string;
+  comarca: string;
 };
+
+/** Candidatos de unidade para o pedido (usa apenas dados persistidos, sem consulta externa). */
+export async function unidadesParaPedido(p: {
+  comarca_processo?: string | null;
+  codigo_origem_cnj?: string | null;
+  tribunal_sigla?: string | null;
+}): Promise<ComarcaContato[]> {
+  const filtros: string[] = [];
+  if (p.comarca_processo) filtros.push(`comarca.ilike.${p.comarca_processo.replace(/[,()]/g, " ")}`);
+  if (p.codigo_origem_cnj && p.tribunal_sigla)
+    filtros.push(`and(codigo_origem_cnj.eq.${p.codigo_origem_cnj},tribunal.ilike.${p.tribunal_sigla})`);
+  if (filtros.length === 0) return [];
+  const { data, error } = await supabase
+    .from("comarcas_contatos")
+    .select(COLUNAS_COMARCA)
+    .or(filtros.join(","))
+    .limit(100)
+    .returns<ComarcaContato[]>();
+  if (error) throw error;
+  return data ?? [];
+}
+
+/** URL oficial de consulta processual cadastrada para o tribunal (ou null). */
+export async function urlConsultaTribunal(sigla: string | null | undefined) {
+  if (!sigla) return null;
+  const { data } = await supabase
+    .from("cnj_tribunais")
+    .select("consulta_processual_url")
+    .eq("sigla", sigla)
+    .maybeSingle();
+  return data?.consulta_processual_url ?? null;
+}
 
 export async function salvarComarca(input: ComarcaContatoInput) {
   const { data: sessao } = await supabase.auth.getUser();
-  const registro = {
-    uf: input.uf?.trim() || null,
-    tribunal: input.tribunal?.trim() || null,
+  const erroFonte = validarFonteUnidade(input as unknown as Record<string, string | null>);
+  if (erroFonte) throw new Error(erroFonte);
+  const registro: Record<string, string | boolean | null> = {
     comarca: input.comarca.trim(),
-    vara_cartorio: input.vara_cartorio?.trim() || null,
-    telefone: input.telefone?.trim() || null,
-    whatsapp: input.whatsapp?.trim() || null,
-    email: input.email?.trim() || null,
-    balcao_virtual_url: input.balcao_virtual_url?.trim() || null,
-    observacoes: input.observacoes?.trim() || null,
+    ativo: input.ativo ?? true,
   };
+  for (const c of CAMPOS_TEXTO_UNIDADE) {
+    const v = (input as unknown as Record<string, string | null | undefined>)[c];
+    registro[c] = typeof v === "string" && v.trim() ? v.trim() : null;
+  }
 
   if (input.id) {
     const { error } = await supabase
       .from("comarcas_contatos")
-      .update(registro)
+      .update(registro as TablesInsert<"comarcas_contatos">)
       .eq("id", input.id);
     if (error) throw error;
     return input.id;
@@ -280,7 +392,7 @@ export async function salvarComarca(input: ComarcaContatoInput) {
 
   const { data, error } = await supabase
     .from("comarcas_contatos")
-    .insert({ ...registro, autor_id: sessao.user?.id ?? null })
+    .insert({ ...(registro as TablesInsert<"comarcas_contatos">), autor_id: sessao.user?.id ?? null })
     .select("id")
     .single();
   if (error) throw error;

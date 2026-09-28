@@ -10,6 +10,7 @@ import {
 } from "./pedidos.schema";
 import { analisarNup } from "./cnj";
 import { decodificarPartes } from "./cnj.functions";
+import { colunasLocalizacao } from "./localizacao";
 
 
 export type PedidoResumo = {
@@ -249,6 +250,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     valor_centavos: valorCentavos,
     uf: decodificado?.uf ?? null,
     cidade: decodificado?.cidade ?? null,
+    ...colunasLocalizacao(partes ? decodificado : null),
     user_id: await usuarioOpcionalDaRequisicao(),
   };
 
