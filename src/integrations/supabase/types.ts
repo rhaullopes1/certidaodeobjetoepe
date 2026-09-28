@@ -203,7 +203,9 @@ export type Database = {
       cnj_tribunais: {
         Row: {
           codigo_tr: string
+          consulta_processual_fonte: string | null
           consulta_processual_url: string | null
+          consulta_processual_verificada_em: string | null
           created_at: string
           id: string
           nome: string
@@ -217,7 +219,9 @@ export type Database = {
         }
         Insert: {
           codigo_tr: string
+          consulta_processual_fonte?: string | null
           consulta_processual_url?: string | null
+          consulta_processual_verificada_em?: string | null
           created_at?: string
           id?: string
           nome: string
@@ -231,7 +235,9 @@ export type Database = {
         }
         Update: {
           codigo_tr?: string
+          consulta_processual_fonte?: string | null
           consulta_processual_url?: string | null
+          consulta_processual_verificada_em?: string | null
           created_at?: string
           id?: string
           nome?: string

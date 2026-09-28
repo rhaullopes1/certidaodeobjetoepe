@@ -57,6 +57,13 @@
       "when": 1790560789463,
       "tag": "0007_cnj_comarcas_fonte",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790561757754,
+      "tag": "0008_cnj_tribunais_fonte_consulta",
+      "breakpoints": true
     }
   ]
 }

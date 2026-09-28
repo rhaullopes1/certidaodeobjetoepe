@@ -7,7 +7,7 @@ import { colunasLocalizacao, mesclarLocalizacao, type ColunasPedidoLocalizacao }
 import type { Database, Json } from "@/integrations/supabase/types";
 
 const COLS =
-  "id, numero_processo, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_fonte, processo_confianca, processo_dados";
+  "id, protocolo, numero_processo, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_fonte, processo_confianca, processo_dados";
 
 async function exigirEquipe(supabase: SupabaseClient<Database>, userId: string) {
   const { data: papeis } = await supabase.from("user_roles").select("role").eq("user_id", userId);
@@ -76,7 +76,7 @@ export const atualizarLocalizacao = createServerFn({ method: "POST" })
       datajudStatus = r.status;
       extra.processo_dados = {
         ...((pedido.processo_dados as Record<string, Json>) ?? {}),
-        datajud: r as unknown as Json,
+        datajud: { ...r, consultadoEm: new Date().toISOString() } as unknown as Json,
       };
       if (r.status === "ok" && r.orgaoJulgador) {
         extra.vara = r.orgaoJulgador;
@@ -93,7 +93,7 @@ export const atualizarLocalizacao = createServerFn({ method: "POST" })
     return { ok: true, datajudStatus };
   });
 
-export type ModoLote = "sem_localizacao" | "todos";
+export type ModoLote = "sem_localizacao" | "pendentes" | "todos";
 
 /**
  * Reidentificação em lote pela tabela CNJ — sem chamadas externas e sem DataJud, idempotente.
@@ -103,7 +103,7 @@ export type ModoLote = "sem_localizacao" | "todos";
 export const reidentificarLote = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: { modo?: ModoLote }) => ({
-    modo: (i?.modo === "todos" ? "todos" : "sem_localizacao") as ModoLote,
+    modo: (i?.modo === "todos" || i?.modo === "pendentes" ? i.modo : "sem_localizacao") as ModoLote,
   }))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -113,14 +113,21 @@ export const reidentificarLote = createServerFn({ method: "POST" })
       processados: 0, atualizados: 0, invalidos: 0,
       ganharamTribunal: 0, ganharamComarca: 0, ganharamForo: 0, ganharamSistema: 0,
       confirmados: 0, parciais: 0, naoIdentificados: 0,
+      listaParciais: [] as string[],
     };
     const PAGINA = 250;
     for (let pagina = 0; pagina < 8; pagina++) {
       let q = supabase.from("pedidos").select(COLS).order("created_at", { ascending: true });
       if (data.modo === "sem_localizacao") q = q.is("tribunal_sigla", null);
+      if (data.modo === "pendentes") q = q.or("processo_confianca.is.null,processo_confianca.neq.confirmado");
       // No modo "sem_localizacao" a lista encolhe conforme os pedidos são preenchidos;
       // pedidos que continuam sem tribunal são pulados pelo offset acumulado de inválidos/não reconhecidos.
-      const inicio = data.modo === "todos" ? pagina * PAGINA : r.invalidos + r.naoIdentificados;
+      const inicio =
+        data.modo === "todos"
+          ? pagina * PAGINA
+          : data.modo === "pendentes"
+            ? r.invalidos + r.naoIdentificados + r.parciais
+            : r.invalidos + r.naoIdentificados;
       const { data: lista, error } = await q.range(inicio, inicio + PAGINA - 1);
       if (error) throw new Error("Não foi possível listar os pedidos.");
       if (!lista || lista.length === 0) break;
@@ -140,10 +147,14 @@ export const reidentificarLote = createServerFn({ method: "POST" })
         if (!antes.foro && depois.foro) r.ganharamForo++;
         if (!antes.sistema_processual && depois.sistema_processual) r.ganharamSistema++;
         if (depois.processo_confianca === "confirmado") r.confirmados++;
-        else if (depois.processo_confianca === "parcial") r.parciais++;
+        else if (depois.processo_confianca === "parcial") {
+          r.parciais++;
+          if (r.listaParciais.length < 50) r.listaParciais.push(`${p.protocolo} (${depois.tribunal_sigla ?? "?"} ${depois.codigo_origem_cnj ?? ""})`.trim());
+        }
         else r.naoIdentificados++;
       }
       if (lista.length < PAGINA) break;
     }
+    console.info("[reidentificarLote]", data.modo, JSON.stringify({ ...r, listaParciais: r.listaParciais.length }));
     return r;
   });

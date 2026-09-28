@@ -68,6 +68,7 @@ export function aliasDatajud(sigla: string | null) {
   if (!sigla) return null;
   let s = sigla.trim().toLowerCase().replace(/\s+/g, "");
   if (/^tre[a-z]{2}$/.test(s)) s = `tre-${s.slice(3)}`;
+  if (s === "tjdf") s = "tjdft"; // sigla interna TJDF → alias oficial tjdft
   return ALIASES_DATAJUD.has(s) ? s : null;
 }
 
