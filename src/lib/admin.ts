@@ -516,11 +516,27 @@ export function etapaAtualEntrega(status: string): EtapaEntrega | null {
   return null;
 }
 
-/** Aplica uma etapa da fila de entrega, registrando o andamento. */
+/**
+ * Aplica uma etapa da fila de entrega, registrando o andamento.
+ * Não altera a data de pagamento já registrada.
+ */
 export async function definirEtapaEntrega(pedidoId: string, etapa: EtapaEntrega) {
   const item = ETAPAS_ENTREGA.find((e) => e.valor === etapa)!;
-  await registrarAndamento({ pedidoId, status: item.valor, observacao: item.observacao });
+  const { data: sessao } = await supabase.auth.getUser();
+  const { error: erroPedido } = await supabase
+    .from("pedidos")
+    .update({ status: item.valor })
+    .eq("id", pedidoId);
+  if (erroPedido) throw erroPedido;
+  const { error } = await supabase.from("pedido_andamentos").insert({
+    pedido_id: pedidoId,
+    status: item.valor,
+    observacao: item.observacao,
+    autor_id: sessao.user?.id ?? null,
+  });
+  if (error) throw error;
 }
+
 
 /** Marca a certidão como emitida e entregue, encerrando o pedido. */
 export async function concluirEntrega(pedidoId: string) {
