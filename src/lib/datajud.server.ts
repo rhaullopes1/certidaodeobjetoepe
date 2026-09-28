@@ -22,6 +22,11 @@ export interface DatajudResultado {
   sistema: string | null;
   classe: string | null;
   grau: string | null;
+  numeroProcesso: string | null;
+  tribunal: string | null;
+  dataAjuizamento: string | null;
+  assuntos: string[];
+  ultimosMovimentos: { nome: string; dataHora: string | null }[];
   erro?: string;
 }
 
@@ -38,17 +43,32 @@ function vazio(status: DatajudStatus, erro?: string): DatajudResultado {
     sistema: null,
     classe: null,
     grau: null,
+    numeroProcesso: null,
+    tribunal: null,
+    dataAjuizamento: null,
+    assuntos: [],
+    ultimosMovimentos: [],
     ...(erro ? { erro } : {}),
   };
 }
 
-/** Alias do índice DataJud a partir da sigla do tribunal (ex.: TJSP → tjsp). */
+const UFS = ["ac","al","am","ap","ba","ce","df","es","go","ma","mg","ms","mt","pa","pb","pe","pi","pr","rj","rn","ro","rr","rs","sc","se","sp","to"];
+/** Aliases publicados na documentação oficial da API Pública DataJud. */
+export const ALIASES_DATAJUD = new Set<string>([
+  "stj", "tst", "tse", "stm",
+  ...UFS.filter((u) => u !== "df").map((u) => `tj${u}`), "tjdft",
+  ...[1, 2, 3, 4, 5, 6].map((n) => `trf${n}`),
+  ...Array.from({ length: 24 }, (_, i) => `trt${i + 1}`),
+  ...UFS.map((u) => `tre-${u}`),
+  "tjmmg", "tjmrs", "tjmsp",
+]);
+
+/** Alias do índice DataJud a partir da sigla do tribunal (ex.: TJSP → tjsp, TRE-SP → tre-sp). */
 export function aliasDatajud(sigla: string | null) {
   if (!sigla) return null;
-  const s = sigla.trim().toLowerCase();
-  return /^(tj[a-z]{2,3}|trf\d|trt\d{1,2}|tre-?[a-z]{2}|tjm[a-z]{2}|stj|tst|tse|stm)$/.test(s)
-    ? s.replace("-", "-")
-    : null;
+  let s = sigla.trim().toLowerCase().replace(/\s+/g, "");
+  if (/^tre[a-z]{2}$/.test(s)) s = `tre-${s.slice(3)}`;
+  return ALIASES_DATAJUD.has(s) ? s : null;
 }
 
 export async function consultarDatajud(
@@ -90,6 +110,21 @@ export async function consultarDatajud(
     };
     const src = json.hits?.hits?.[0]?._source;
     if (!src) return vazio("nao_encontrado");
+    // Só aceita a resposta se corresponder exatamente ao processo consultado.
+    const digitos = numero.replace(/\D/g, "");
+    if (String(src["numeroProcesso"] ?? "").replace(/\D/g, "") !== digitos) {
+      return vazio("nao_encontrado", "Resposta não corresponde ao número consultado.");
+    }
+    const assuntos = Array.isArray(src["assuntos"])
+      ? (src["assuntos"] as any[]).map((a) => a?.nome).filter((n): n is string => typeof n === "string")
+      : [];
+    const movimentos = Array.isArray(src["movimentos"])
+      ? (src["movimentos"] as any[])
+          .filter((m) => typeof m?.nome === "string")
+          .map((m) => ({ nome: m.nome as string, dataHora: typeof m.dataHora === "string" ? m.dataHora : null }))
+          .sort((x, y) => String(y.dataHora).localeCompare(String(x.dataHora)))
+          .slice(0, 5)
+      : [];
     const orgao = src["orgaoJulgador"] ?? {};
     return {
       ...vazio("ok"),
@@ -99,6 +134,11 @@ export async function consultarDatajud(
       sistema: typeof src["sistema"]?.nome === "string" ? src["sistema"].nome : null,
       classe: typeof src["classe"]?.nome === "string" ? src["classe"].nome : null,
       grau: typeof src["grau"] === "string" ? src["grau"] : null,
+      numeroProcesso: digitos,
+      tribunal: typeof src["tribunal"] === "string" ? src["tribunal"] : null,
+      dataAjuizamento: typeof src["dataAjuizamento"] === "string" ? src["dataAjuizamento"] : null,
+      assuntos,
+      ultimosMovimentos: movimentos,
     };
   } catch (e) {
     return vazio("indisponivel", e instanceof Error ? e.message : String(e));

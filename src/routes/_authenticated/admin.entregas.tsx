@@ -109,10 +109,10 @@ function AdminEntregas() {
   const lote = useServerFn(reidentificarLote);
   const [msgLote, setMsgLote] = useState<string | null>(null);
   const reidentificar = useMutation({
-    mutationFn: () => lote(),
+    mutationFn: (modo: "sem_localizacao" | "todos") => lote({ data: { modo } }),
     onSuccess: (r) => {
       setMsgLote(
-        `${r.total} pedidos verificados · ${r.atualizados} atualizados · ${r.reconhecidos} com tribunal reconhecido · ${r.invalidos} sem número CNJ válido.`,
+        `${r.processados} processados · ${r.atualizados} atualizados · ganharam tribunal ${r.ganharamTribunal}, comarca ${r.ganharamComarca}, foro ${r.ganharamForo}, sistema ${r.ganharamSistema} · ${r.confirmados} confirmados, ${r.parciais} parciais, ${r.naoIdentificados} não identificados · ${r.invalidos} sem número CNJ válido.`,
       );
       queryClient.invalidateQueries({ queryKey: ["admin-entregas"] });
     },
@@ -168,12 +168,22 @@ function AdminEntregas() {
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <button
                 type="button"
-                onClick={() => reidentificar.mutate()}
+                onClick={() => reidentificar.mutate("sem_localizacao")}
                 disabled={reidentificar.isPending}
                 className="inline-flex items-center gap-2 rounded-full border border-input px-4 py-2 text-sm font-semibold transition-colors hover:bg-secondary disabled:opacity-60"
               >
                 {reidentificar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
-                Reidentificar pedidos pela tabela CNJ
+                Reidentificar pedidos sem localização
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm("Recalcular a localização de todos os pedidos pela tabela CNJ? Dados confirmados (vara/DataJud) são preservados.")) reidentificar.mutate("todos");
+                }}
+                disabled={reidentificar.isPending}
+                className="inline-flex items-center gap-2 rounded-full border border-input px-4 py-2 text-sm font-semibold transition-colors hover:bg-secondary disabled:opacity-60"
+              >
+                Recalcular todos os pedidos
               </button>
               <span className="text-xs text-muted-foreground">
                 Usa só a tabela interna; não consulta serviços externos nem apaga vara já confirmada.

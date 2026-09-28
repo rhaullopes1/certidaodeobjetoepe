@@ -134,7 +134,7 @@ describe("DataJud", () => {
   });
   it("normaliza o órgão julgador", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ hits: { hits: [{ _source: { orgaoJulgador: { nome: "2ª Vara Cível", codigo: 1 }, sistema: { nome: "SAJ" } } }] } })),
+      new Response(JSON.stringify({ hits: { hits: [{ _source: { numeroProcesso: NUMERO, orgaoJulgador: { nome: "2ª Vara Cível", codigo: 1 }, sistema: { nome: "SAJ" }, assuntos: [{ nome: "Cobrança" }] } }] } })),
     ) as unknown as typeof fetch;
     const r = await consultarDatajud(NUMERO, "TJSP", { apiKey: "k", fetchImpl });
     expect(r.status).toBe("ok");
@@ -190,5 +190,22 @@ describe("fase 2", () => {
     expect((await consultarDatajud(NUMERO, "TJSP", { apiKey: "k", fetchImpl: vazio })).status).toBe("nao_encontrado");
     const lim = vi.fn().mockResolvedValue(new Response("", { status: 429 })) as unknown as typeof fetch;
     expect((await consultarDatajud(NUMERO, "TJSP", { apiKey: "k", fetchImpl: lim })).status).toBe("limite_requisicoes");
+  });
+});
+
+import { aliasDatajud } from "./datajud.server";
+describe("DataJud fase 3", () => {
+  it("rejeita resposta de outro processo", async () => {
+    const f = vi.fn().mockResolvedValue(new Response(JSON.stringify({ hits: { hits: [{ _source: { numeroProcesso: "999", orgaoJulgador: { nome: "X" } } }] } }))) as unknown as typeof fetch;
+    const r = await consultarDatajud(NUMERO, "TJSP", { apiKey: "k", fetchImpl: f });
+    expect(r.status).toBe("nao_encontrado");
+    expect(r.orgaoJulgador).toBeNull();
+  });
+  it("só aceita aliases oficiais", () => {
+    expect(aliasDatajud("TJSP")).toBe("tjsp");
+    expect(aliasDatajud("TRE-SP")).toBe("tre-sp");
+    expect(aliasDatajud("TJDFT")).toBe("tjdft");
+    expect(aliasDatajud("TJXX")).toBeNull();
+    expect(aliasDatajud("CNJ")).toBeNull();
   });
 });
