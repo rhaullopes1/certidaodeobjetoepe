@@ -166,13 +166,15 @@ export type Andamento = {
   id: string;
   status: string;
   observacao: string | null;
+  observacao_interna: string | null;
+  comarca_contato_id: string | null;
   created_at: string;
 };
 
 export async function listarAndamentos(pedidoId: string) {
   const { data, error } = await supabase
     .from("pedido_andamentos")
-    .select("id, status, observacao, created_at")
+    .select("id, status, observacao, observacao_interna, comarca_contato_id, created_at")
     .eq("pedido_id", pedidoId)
     .order("created_at", { ascending: false })
     .returns<Andamento[]>();
@@ -184,6 +186,8 @@ export async function registrarAndamento(input: {
   pedidoId: string;
   status: string;
   observacao: string;
+  observacaoInterna?: string;
+  comarcaContatoId?: string | null;
 }) {
   const { data: sessao } = await supabase.auth.getUser();
   const { error: erroPedido } = await supabase
@@ -195,13 +199,112 @@ export async function registrarAndamento(input: {
     .eq("id", input.pedidoId);
   if (erroPedido) throw erroPedido;
 
+  const interna = (input.observacaoInterna ?? "").trim();
   const { error } = await supabase.from("pedido_andamentos").insert({
     pedido_id: input.pedidoId,
     status: input.status,
     observacao: input.observacao.trim() ? input.observacao.trim() : null,
+    observacao_interna: interna ? interna : null,
+    comarca_contato_id: input.comarcaContatoId ?? null,
     autor_id: sessao.user?.id ?? null,
   });
   if (error) throw error;
+}
+
+/** Contato de comarca acumulado pela equipe (uso exclusivamente interno). */
+export type ComarcaContato = {
+  id: string;
+  uf: string | null;
+  tribunal: string | null;
+  comarca: string;
+  vara_cartorio: string | null;
+  telefone: string | null;
+  whatsapp: string | null;
+  email: string | null;
+  balcao_virtual_url: string | null;
+  observacoes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+const COLUNAS_COMARCA =
+  "id, uf, tribunal, comarca, vara_cartorio, telefone, whatsapp, email, balcao_virtual_url, observacoes, created_at, updated_at";
+
+export async function listarComarcas(busca = ""): Promise<ComarcaContato[]> {
+  let query = supabase
+    .from("comarcas_contatos")
+    .select(COLUNAS_COMARCA)
+    .order("comarca", { ascending: true })
+    .limit(500);
+
+  const termo = busca.trim();
+  if (termo) {
+    query = query.or(
+      ["comarca", "tribunal", "vara_cartorio", "telefone", "whatsapp", "email"]
+        .map((c) => `${c}.ilike.%${termo}%`)
+        .join(","),
+    );
+  }
+
+  const { data, error } = await query.returns<ComarcaContato[]>();
+  if (error) throw error;
+  return data ?? [];
+}
+
+export type ComarcaContatoInput = Omit<ComarcaContato, "id" | "created_at" | "updated_at"> & {
+  id?: string;
+};
+
+export async function salvarComarca(input: ComarcaContatoInput) {
+  const { data: sessao } = await supabase.auth.getUser();
+  const registro = {
+    uf: input.uf?.trim() || null,
+    tribunal: input.tribunal?.trim() || null,
+    comarca: input.comarca.trim(),
+    vara_cartorio: input.vara_cartorio?.trim() || null,
+    telefone: input.telefone?.trim() || null,
+    whatsapp: input.whatsapp?.trim() || null,
+    email: input.email?.trim() || null,
+    balcao_virtual_url: input.balcao_virtual_url?.trim() || null,
+    observacoes: input.observacoes?.trim() || null,
+  };
+
+  if (input.id) {
+    const { error } = await supabase
+      .from("comarcas_contatos")
+      .update(registro)
+      .eq("id", input.id);
+    if (error) throw error;
+    return input.id;
+  }
+
+  const { data, error } = await supabase
+    .from("comarcas_contatos")
+    .insert({ ...registro, autor_id: sessao.user?.id ?? null })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id as string;
+}
+
+export async function removerComarca(id: string) {
+  const { error } = await supabase.from("comarcas_contatos").delete().eq("id", id);
+  if (error) throw error;
+}
+
+/** Texto pronto para colar na observação interna do andamento. */
+export function resumoContatoComarca(c: ComarcaContato) {
+  const partes = [
+    `Comarca: ${c.comarca}${c.uf ? ` - ${c.uf}` : ""}`,
+    c.tribunal ? `Tribunal: ${c.tribunal}` : "",
+    c.vara_cartorio ? `Vara/Cartório: ${c.vara_cartorio}` : "",
+    c.telefone ? `Telefone: ${c.telefone}` : "",
+    c.whatsapp ? `WhatsApp: ${c.whatsapp}` : "",
+    c.email ? `E-mail: ${c.email}` : "",
+    c.balcao_virtual_url ? `Balcão virtual: ${c.balcao_virtual_url}` : "",
+    c.observacoes ? `Obs.: ${c.observacoes}` : "",
+  ].filter(Boolean);
+  return partes.join("\n");
 }
 
 /** Situações de um pedido já pago que ainda aguarda a entrega da certidão. */

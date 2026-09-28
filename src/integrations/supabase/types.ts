@@ -241,6 +241,54 @@ export type Database = {
           },
         ]
       }
+      comarcas_contatos: {
+        Row: {
+          autor_id: string | null
+          balcao_virtual_url: string | null
+          comarca: string
+          created_at: string
+          email: string | null
+          id: string
+          observacoes: string | null
+          telefone: string | null
+          tribunal: string | null
+          uf: string | null
+          updated_at: string
+          vara_cartorio: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          autor_id?: string | null
+          balcao_virtual_url?: string | null
+          comarca: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          observacoes?: string | null
+          telefone?: string | null
+          tribunal?: string | null
+          uf?: string | null
+          updated_at?: string
+          vara_cartorio?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          autor_id?: string | null
+          balcao_virtual_url?: string | null
+          comarca?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          observacoes?: string | null
+          telefone?: string | null
+          tribunal?: string | null
+          uf?: string | null
+          updated_at?: string
+          vara_cartorio?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       content_config: {
         Row: {
           atualizado_em: string
@@ -578,29 +626,42 @@ export type Database = {
       pedido_andamentos: {
         Row: {
           autor_id: string | null
+          comarca_contato_id: string | null
           created_at: string
           id: string
           observacao: string | null
+          observacao_interna: string | null
           pedido_id: string
           status: string
         }
         Insert: {
           autor_id?: string | null
+          comarca_contato_id?: string | null
           created_at?: string
           id?: string
           observacao?: string | null
+          observacao_interna?: string | null
           pedido_id: string
           status: string
         }
         Update: {
           autor_id?: string | null
+          comarca_contato_id?: string | null
           created_at?: string
           id?: string
           observacao?: string | null
+          observacao_interna?: string | null
           pedido_id?: string
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "pedido_andamentos_comarca_contato_fk"
+            columns: ["comarca_contato_id"]
+            isOneToOne: false
+            referencedRelation: "comarcas_contatos"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pedido_andamentos_pedido_id_fkey"
             columns: ["pedido_id"]
