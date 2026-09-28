@@ -202,6 +202,13 @@ export type Database = {
       }
       cnj_tribunais: {
         Row: {
+          balcao_virtual_fonte: string | null
+          balcao_virtual_url: string | null
+          balcao_virtual_verificada_em: string | null
+          certidoes_fonte: string | null
+          certidoes_tipo: string | null
+          certidoes_url: string | null
+          certidoes_verificada_em: string | null
           codigo_tr: string
           consulta_processual_fonte: string | null
           consulta_processual_url: string | null
@@ -218,6 +225,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          balcao_virtual_fonte?: string | null
+          balcao_virtual_url?: string | null
+          balcao_virtual_verificada_em?: string | null
+          certidoes_fonte?: string | null
+          certidoes_tipo?: string | null
+          certidoes_url?: string | null
+          certidoes_verificada_em?: string | null
           codigo_tr: string
           consulta_processual_fonte?: string | null
           consulta_processual_url?: string | null
@@ -234,6 +248,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          balcao_virtual_fonte?: string | null
+          balcao_virtual_url?: string | null
+          balcao_virtual_verificada_em?: string | null
+          certidoes_fonte?: string | null
+          certidoes_tipo?: string | null
+          certidoes_url?: string | null
+          certidoes_verificada_em?: string | null
           codigo_tr?: string
           consulta_processual_fonte?: string | null
           consulta_processual_url?: string | null

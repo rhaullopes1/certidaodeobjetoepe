@@ -376,6 +376,33 @@ export async function urlConsultaTribunal(sigla: string | null | undefined) {
   return data?.consulta_processual_url ?? null;
 }
 
+export type CanaisTribunal = {
+  sigla: string;
+  consulta_processual_url: string | null;
+  consulta_processual_fonte: string | null;
+  consulta_processual_verificada_em: string | null;
+  balcao_virtual_url: string | null;
+  balcao_virtual_fonte: string | null;
+  balcao_virtual_verificada_em: string | null;
+  certidoes_url: string | null;
+  certidoes_tipo: "geral" | "especifica_objeto_pe" | null;
+  certidoes_fonte: string | null;
+  certidoes_verificada_em: string | null;
+};
+
+/** Canais gerais oficiais do tribunal (último nível da prioridade de contato). */
+export async function canaisTribunal(sigla: string | null | undefined) {
+  if (!sigla) return null;
+  const { data } = await supabase
+    .from("cnj_tribunais")
+    .select(
+      "sigla, consulta_processual_url, consulta_processual_fonte, consulta_processual_verificada_em, balcao_virtual_url, balcao_virtual_fonte, balcao_virtual_verificada_em, certidoes_url, certidoes_tipo, certidoes_fonte, certidoes_verificada_em",
+    )
+    .eq("sigla", sigla)
+    .maybeSingle();
+  return (data as CanaisTribunal | null) ?? null;
+}
+
 export async function salvarComarca(input: ComarcaContatoInput) {
   const { data: sessao } = await supabase.auth.getUser();
   const erroFonte = validarFonteUnidade(input as unknown as Record<string, string | null>);

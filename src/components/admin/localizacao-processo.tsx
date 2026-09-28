@@ -15,6 +15,7 @@ import {
 import {
   unidadesParaPedido,
   urlConsultaTribunal,
+  canaisTribunal,
   type ComarcaContato,
   type PedidoAdmin,
 } from "@/lib/admin";
@@ -77,6 +78,11 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
   const consultaUrl = useQuery({
     queryKey: ["admin-tribunal-url", pedido.tribunal_sigla],
     queryFn: () => urlConsultaTribunal(pedido.tribunal_sigla),
+    enabled: !!pedido.tribunal_sigla,
+  });
+  const canais = useQuery({
+    queryKey: ["admin-tribunal-canais", pedido.tribunal_sigla],
+    queryFn: () => canaisTribunal(pedido.tribunal_sigla),
     enabled: !!pedido.tribunal_sigla,
   });
 
@@ -341,6 +347,36 @@ export function LocalizacaoProcesso({ pedido }: { pedido: PedidoAdmin }) {
                 ? " Use os contatos oficiais da unidade ao lado."
                 : " Cadastre o canal oficial em “Comarcas”."}
             </p>
+          )}
+          {canais.data && (canais.data.balcao_virtual_url || canais.data.certidoes_url || canais.data.consulta_processual_url) && (
+            <div className="mt-4 border-t border-border pt-4">
+              <p className="text-xs font-bold uppercase text-muted-foreground">
+                Canais gerais do tribunal ({canais.data.sigla})
+              </p>
+              <div className="mt-2 space-y-2 text-sm">
+                {(
+                  [
+                    ["Consulta processual", canais.data.consulta_processual_url, canais.data.consulta_processual_fonte, canais.data.consulta_processual_verificada_em],
+                    ["Balcão Virtual", canais.data.balcao_virtual_url, canais.data.balcao_virtual_fonte, canais.data.balcao_virtual_verificada_em],
+                    [
+                      canais.data.certidoes_tipo === "especifica_objeto_pe" ? "Certidão de Objeto e Pé" : "Certidões — canal geral",
+                      canais.data.certidoes_url, canais.data.certidoes_fonte, canais.data.certidoes_verificada_em,
+                    ],
+                  ] as const
+                ).map(([rot, url, fonte, data]) =>
+                  urlHttpsSegura(url) ? (
+                    <div key={rot}>
+                      <a href={urlHttpsSegura(url)!} target="_blank" rel="noopener noreferrer" className={botao}>
+                        <ExternalLink className="h-4 w-4" /> {rot}
+                      </a>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Fonte oficial: {[fonte, fmtData(data)].filter(Boolean).join(" · ")}
+                      </p>
+                    </div>
+                  ) : null,
+                )}
+              </div>
+            </div>
           )}
         </section>
       </div>
