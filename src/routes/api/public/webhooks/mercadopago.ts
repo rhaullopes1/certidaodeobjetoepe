@@ -64,14 +64,26 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
 
         const requestId = request.headers.get("x-request-id") ?? "";
         // Pela documentação, o id do manifesto vem do parâmetro data.id da URL
-        // (em minúsculas quando alfanumérico); usamos o do corpo como reserva.
-        const idManifesto = (url.searchParams.get("data.id") ?? paymentId).toLowerCase();
-        const manifesto = `id:${idManifesto};${requestId ? `request-id:${requestId};` : ""}ts:${ts};`;
+        // (em minúsculas quando alfanumérico). Quando a URL não traz data.id,
+        // o campo id é OMITIDO do manifesto — incluí-lo invalida a assinatura.
+        // Testamos as variações possíveis para cobrir os formatos de envio.
+        const idDaUrl = url.searchParams.get("data.id");
+        const candidatos: string[] = [];
+        if (idDaUrl) {
+          candidatos.push(`id:${idDaUrl.toLowerCase()};request-id:${requestId};ts:${ts};`);
+        }
+        candidatos.push(`id:${paymentId.toLowerCase()};request-id:${requestId};ts:${ts};`);
+        candidatos.push(`request-id:${requestId};ts:${ts};`);
+        candidatos.push(`ts:${ts};`);
+
         const { createHmac, timingSafeEqual } = await import("crypto");
-        const esperado = createHmac("sha256", segredo).update(manifesto).digest("hex");
-        const a = Buffer.from(esperado);
         const b = Buffer.from(v1);
-        if (a.length !== b.length || !timingSafeEqual(a, b)) {
+        const valida = candidatos.some((manifesto) => {
+          const esperado = createHmac("sha256", segredo).update(manifesto).digest("hex");
+          const a = Buffer.from(esperado);
+          return a.length === b.length && timingSafeEqual(a, b);
+        });
+        if (!valida) {
           console.error("Assinatura inválida no webhook do Mercado Pago", { paymentId });
           return new Response("assinatura inválida", { status: 401 });
         }
