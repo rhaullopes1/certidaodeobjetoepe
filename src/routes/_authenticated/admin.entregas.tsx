@@ -327,6 +327,45 @@ function AdminEntregas() {
                         </button>
                       </div>
                     </div>
+
+                    <div className="mt-4 rounded-2xl border border-border bg-secondary/40 p-3">
+                      <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                        Situação da certidão
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {ETAPAS_ENTREGA.map((etapa) => {
+                          const ativa = etapaAtualEntrega(p.status) === etapa.valor;
+                          const carregando =
+                            mudarEtapa.isPending &&
+                            mudarEtapa.variables?.pedidoId === p.id &&
+                            mudarEtapa.variables?.etapa === etapa.valor;
+                          return (
+                            <button
+                              key={etapa.valor}
+                              type="button"
+                              aria-pressed={ativa}
+                              disabled={ativa || mudarEtapa.isPending}
+                              onClick={() =>
+                                mudarEtapa.mutate({ pedidoId: p.id, etapa: etapa.valor })
+                              }
+                              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-80 ${
+                                ativa
+                                  ? "bg-accent text-accent-foreground ring-2 ring-accent/40"
+                                  : "border border-input bg-background hover:bg-secondary"
+                              }`}
+                            >
+                              {carregando ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : ativa ? (
+                                <CheckCircle2 className="h-4 w-4" />
+                              ) : null}
+                              {etapa.rotulo}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                   </li>
                 ))}
               </ul>
