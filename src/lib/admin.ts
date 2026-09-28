@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesInsert } from "@/integrations/supabase/types";
 import { soDigitos } from "./pedidos.schema";
 
 export const BUCKET_ANEXOS = "pedido-anexos";
@@ -383,7 +384,7 @@ export async function salvarComarca(input: ComarcaContatoInput) {
   if (input.id) {
     const { error } = await supabase
       .from("comarcas_contatos")
-      .update(registro)
+      .update(registro as TablesInsert<"comarcas_contatos">)
       .eq("id", input.id);
     if (error) throw error;
     return input.id;
@@ -391,7 +392,7 @@ export async function salvarComarca(input: ComarcaContatoInput) {
 
   const { data, error } = await supabase
     .from("comarcas_contatos")
-    .insert({ ...registro, autor_id: sessao.user?.id ?? null })
+    .insert({ ...(registro as TablesInsert<"comarcas_contatos">), autor_id: sessao.user?.id ?? null })
     .select("id")
     .single();
   if (error) throw error;

@@ -3,6 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { analisarNup } from "./cnj";
 import { decodificarPartes } from "./cnj.functions";
 import { colunasLocalizacao } from "./localizacao";
+import type { Json, TablesInsert } from "@/integrations/supabase/types";
 
 /**
  * Recalcula a localização do processo (tabelas CNJ) e, se pedido e configurado,
@@ -28,25 +29,25 @@ export const atualizarLocalizacao = createServerFn({ method: "POST" })
 
     const partes = analisarNup(pedido.numero_processo);
     const dec = partes ? await decodificarPartes(partes) : null;
-    const colunas: Record<string, unknown> = colunasLocalizacao(dec);
+    const colunas: Partial<TablesInsert<"pedidos">> = colunasLocalizacao(dec);
     let datajudStatus: string | null = null;
 
     if (data.consultarDatajud && dec?.tribunalSigla) {
       const { consultarDatajud } = await import("./datajud.server");
       const r = await consultarDatajud(pedido.numero_processo, dec.tribunalSigla);
       datajudStatus = r.status;
-      colunas["processo_dados"] = {
-        ...(colunas["processo_dados"] as object),
-        datajud: r,
+      colunas.processo_dados = {
+        ...((colunas.processo_dados as { [k: string]: Json }) ?? {}),
+        datajud: r as unknown as Json,
       };
       if (r.status === "ok" && r.orgaoJulgador) {
-        colunas["vara"] = r.orgaoJulgador;
-        colunas["unidade_judiciaria"] = r.orgaoJulgador;
-        if (r.sistema) colunas["sistema_processual"] = r.sistema;
-        colunas["processo_fonte"] = "DataJud CNJ — API Pública";
-        colunas["processo_confianca"] = "confirmado";
-        colunas["processo_enriquecido"] = true;
-        colunas["processo_enriquecido_em"] = r.consultado_em;
+        colunas.vara = r.orgaoJulgador;
+        colunas.unidade_judiciaria = r.orgaoJulgador;
+        if (r.sistema) colunas.sistema_processual = r.sistema;
+        colunas.processo_fonte = "DataJud CNJ — API Pública";
+        colunas.processo_confianca = "confirmado";
+        colunas.processo_enriquecido = true;
+        colunas.processo_enriquecido_em = r.consultado_em;
       }
     }
 

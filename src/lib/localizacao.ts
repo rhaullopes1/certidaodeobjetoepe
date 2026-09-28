@@ -3,6 +3,7 @@
  * determinística (sem IA, sem inferência). Tudo aqui é testável sem banco.
  */
 import type { PartesNup } from "./cnj";
+import type { Json, TablesInsert } from "@/integrations/supabase/types";
 
 export type Confianca = "confirmado" | "parcial" | "nao_identificado";
 
@@ -27,7 +28,7 @@ export interface ProcessoDecodificado {
   unidadeJudiciaria: string | null;
   fonte: string | null;
   confianca: Confianca;
-  dadosFonte: Record<string, unknown> | null;
+  dadosFonte: { [k: string]: Json } | null;
   mensagem: string | null;
 }
 
@@ -116,7 +117,10 @@ export function montarDecodificacao(
 }
 
 /** Colunas de `pedidos` gravadas a partir da decodificação (null quando não identificado). */
-export function colunasLocalizacao(dec: ProcessoDecodificado | null, agora = new Date()) {
+export function colunasLocalizacao(
+  dec: ProcessoDecodificado | null,
+  agora = new Date(),
+): Partial<TablesInsert<"pedidos">> {
   if (!dec) {
     return {
       processo_confianca: "nao_identificado",
