@@ -383,9 +383,41 @@ async function gerarCobrancaMercadoPago(row: PedidoRow): Promise<PedidoRow> {
   }
 }
 
-/** Cria a sessão de pagamento na Stripe (cartão) e grava no pedido. */
+/** Cria o link de pagamento com cartão no Mercado Pago (Checkout Pro). */
+async function gerarCheckoutCartaoMercadoPago(row: PedidoRow): Promise<PedidoRow> {
+  const { temMercadoPago, criarCheckoutCartao } = await import("./mercadopago.server");
+  if (row.checkout_url || !temMercadoPago()) return row;
+  if (row.status !== "aguardando_pagamento") return row;
+
+  try {
+    const cobranca = await criarCheckoutCartao({
+      protocolo: row.protocolo,
+      email: row.email,
+      quantidade: row.quantidade ?? 1,
+      valorCentavos: row.valor_centavos,
+    });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: atualizado } = await supabaseAdmin
+      .from("pedidos")
+      .update({
+        checkout_url: cobranca.checkoutUrl,
+        pix_expira_em: cobranca.expiraEm,
+      })
+      .eq("protocolo", row.protocolo)
+      .is("checkout_url", null)
+      .select("*")
+      .maybeSingle();
+    return (atualizado as PedidoRow) ?? row;
+  } catch (e) {
+    console.error("Falha ao criar checkout de cartão no Mercado Pago", e);
+    return row;
+  }
+}
+
+/** Gera as cobranças do pedido: Pix e cartão (Mercado Pago), Stripe como reserva. */
 async function gerarCobranca(entrada: PedidoRow): Promise<PedidoRow> {
-  const row = await gerarCobrancaMercadoPago(entrada);
+  const comPix = await gerarCobrancaMercadoPago(entrada);
+  const row = await gerarCheckoutCartaoMercadoPago(comPix);
   const { temStripe, criarCheckout } = await import("./stripe.server");
   if (row.checkout_url || !temStripe()) return row;
   try {
