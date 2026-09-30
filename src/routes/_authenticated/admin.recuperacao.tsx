@@ -194,8 +194,9 @@ function RecuperacaoPage() {
                     detalhe={`${painel.data.metricas.recuperados} pedidos recuperados`}
                   />
                   <Metrica
-                    titulo="Valor recuperado"
-                    valor={painel.data.metricas.valorRecuperadoFormatado}
+                    titulo="Valor para recuperação"
+                    valor={painel.data.metricas.valorParaRecuperarFormatado}
+                    detalhe={`${painel.data.metricas.pendentes} pedidos ainda não recuperados`}
                   />
                 </div>
 
