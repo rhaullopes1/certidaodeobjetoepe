@@ -302,6 +302,8 @@ export type MetricasRecuperacao = {
   taxaRecuperacao: number;
   valorRecuperado: number;
   valorRecuperadoFormatado: string;
+  valorParaRecuperar: number;
+  valorParaRecuperarFormatado: string;
 };
 
 export async function listarRecuperacao() {
