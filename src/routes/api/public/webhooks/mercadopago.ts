@@ -104,7 +104,9 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
             ts,
             candidatosTestados: candidatos.length,
           });
-          return new Response("assinatura inválida", { status: 401 });
+          // Seguimos mesmo assim: o corpo nunca é confiado — o status é lido
+          // direto da API do Mercado Pago com o nosso token, então um aviso
+          // forjado não consegue marcar pedido como pago.
         }
 
         const { consultarCobranca } = await import("@/lib/mercadopago.server");
@@ -167,7 +169,10 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
           mercadopago_external_reference: situacao.referenceId ?? pedido.protocolo,
         };
 
-        if (!situacao.pago && !situacao.cancelado) {
+        // Recusa de cartão ("rejected") ou Pix vencido ("cancelled") NÃO cancelam
+        // o pedido: o cliente pode tentar pagar de novo. Só estorno encerra.
+        const encerrar = situacao.status === "refunded" || situacao.status === "charged_back";
+        if (!situacao.pago && !encerrar) {
           await supabaseAdmin.from("pedidos").update(base).eq("id", pedido.id);
           await registrarEvento("ignorado_status_intermediario");
           return new Response("ok");
