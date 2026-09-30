@@ -372,9 +372,6 @@ function PedidoPage() {
                           className="mt-4"
                           confirmacaoAutomatica={data.confirmacaoAutomatica}
                         />
-                        {data.confirmacaoAutomatica && (
-                          <PixLive className="mt-4" estado={isRefetchError ? "erro" : "aguardando"} />
-                        )}
                         <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
                           {qr ? (
                             <img
@@ -407,6 +404,7 @@ function PedidoPage() {
                             </>
                           )}
                         </button>
+{data.confirmacaoAutomatica && (<PixLive className="mt-2.5" estado={isRefetchError ? "erro" : "aguardando"} />)}
                         <p className="mt-3 text-xs text-muted-foreground">
                           No seu banco aparecerá{" "}
                           <strong className="font-semibold text-foreground">
@@ -500,9 +498,6 @@ function PedidoPage() {
                     className="mt-4"
                     confirmacaoAutomatica={data.confirmacaoAutomatica}
                   />
-                  {data.confirmacaoAutomatica && (
-                    <PixLive className="mt-4" estado={isRefetchError ? "erro" : "aguardando"} />
-                  )}
                   <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
                     {qr ? (
                       <img
@@ -535,6 +530,7 @@ function PedidoPage() {
                       </>
                     )}
                   </button>
+{data.confirmacaoAutomatica && (<PixLive className="mt-2.5" estado={isRefetchError ? "erro" : "aguardando"} />)}
                   <p className="mt-3 text-xs text-muted-foreground">
                     No seu banco aparecerá{" "}
                     <strong className="font-semibold text-foreground">
