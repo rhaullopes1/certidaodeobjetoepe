@@ -134,7 +134,7 @@ export async function criarCheckoutCartao(pedido: {
       Authorization: `Bearer ${token()}`,
       "Content-Type": "application/json",
       Accept: "application/json",
-      "X-Idempotency-Key": `pref-${pedido.protocolo}`,
+      "X-Idempotency-Key": `pref-v2-${pedido.protocolo}`,
     },
     body: JSON.stringify({
       external_reference: pedido.protocolo,
@@ -142,7 +142,6 @@ export async function criarCheckoutCartao(pedido: {
       statement_descriptor: "CERTIDAO OBJ E PE",
       expires: true,
       expiration_date_to: expiraEm,
-      payer: { email: pedido.email },
       payment_methods: {
         excluded_payment_types: [{ id: "ticket" }, { id: "bank_transfer" }],
         installments: 12,
