@@ -30,7 +30,7 @@ export const PIX = {
 
 /** Recebedor exibido pelo banco no Pix dinâmico (Mercado Pago). */
 export const PIX_DINAMICO = {
-  nome: "COP HOLDING DIGITAL",
+  nome: "RHAUL LEONARDO LOPES",
   cidade: "LONDRINA",
 };
 

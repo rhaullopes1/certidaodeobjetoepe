@@ -407,7 +407,8 @@ function PedidoPage() {
                           <strong className="font-semibold text-foreground">
                             {data.confirmacaoAutomatica ? PIX_DINAMICO.nome : PIX.nome}
                           </strong>{" "}
-                          como recebedor — é a empresa responsável pela Certidão de Objeto e Pé.{" "}
+                          como recebedor — é o titular da conta oficial de recebimento da
+                          Certidão de Objeto e Pé.{" "}
 
                           {data.confirmacaoAutomatica
                             ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
@@ -531,7 +532,8 @@ function PedidoPage() {
                     <strong className="font-semibold text-foreground">
                       {data.confirmacaoAutomatica ? PIX_DINAMICO.nome : PIX.nome}
                     </strong>{" "}
-                    como recebedor — é a empresa responsável pela Certidão de Objeto e Pé.{" "}
+                    como recebedor — é o titular da conta oficial de recebimento da Certidão de
+                    Objeto e Pé.{" "}
 
                     {data.confirmacaoAutomatica
                       ? "A confirmação é automática: assim que o Pix cair, esta página muda para “Pagamento confirmado” em poucos segundos."
