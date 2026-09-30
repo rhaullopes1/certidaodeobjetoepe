@@ -393,6 +393,8 @@ async function gerarCheckoutCartaoMercadoPago(row: PedidoRow): Promise<PedidoRow
     const cobranca = await criarCheckoutCartao({
       protocolo: row.protocolo,
       email: row.email,
+      nome: row.nome_parte ?? undefined,
+      cpf: row.cpf,
       quantidade: row.quantidade ?? 1,
       valorCentavos: row.valor_centavos,
     });
@@ -641,7 +643,10 @@ async function sincronizarPagamentoMercadoPago(row: PedidoRow): Promise<PedidoRo
   try {
     const { consultarCobranca } = await import("./mercadopago.server");
     const situacao = await consultarCobranca(row.mercadopago_payment_id);
-    if (!situacao.pago && !situacao.cancelado) return row;
+    // Recusa de cartão ("rejected") ou Pix vencido ("cancelled") NÃO cancelam
+    // o pedido: o cliente pode tentar outro cartão ou pagar via Pix.
+    const encerrar = situacao.status === "refunded" || situacao.status === "charged_back";
+    if (!situacao.pago && !encerrar) return row;
 
     const patch = situacao.pago
       ? {
