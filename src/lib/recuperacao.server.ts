@@ -340,6 +340,7 @@ export async function listarRecuperacao() {
   const base = emAndamento.length + recuperados.length;
 
   const valorRecuperado = recuperados.reduce((t, l) => t + l.valorCentavos, 0);
+  const valorParaRecuperar = emAndamento.reduce((t, l) => t + l.valorCentavos, 0);
 
   const metricas: MetricasRecuperacao = {
     pendentes: emAndamento.length,
@@ -348,6 +349,8 @@ export async function listarRecuperacao() {
     taxaRecuperacao: base ? Math.round((recuperados.length / base) * 1000) / 10 : 0,
     valorRecuperado,
     valorRecuperadoFormatado: formatarBRL(valorRecuperado),
+    valorParaRecuperar,
+    valorParaRecuperarFormatado: formatarBRL(valorParaRecuperar),
   };
 
   return { linhas, metricas };
