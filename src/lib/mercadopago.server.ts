@@ -123,10 +123,23 @@ export type CheckoutCartao = {
 export async function criarCheckoutCartao(pedido: {
   protocolo: string;
   email: string;
+  nome?: string;
+  cpf?: string;
   quantidade: number;
   valorCentavos: number;
 }): Promise<CheckoutCartao> {
   const expiraEm = new Date(Date.now() + 23 * 60 * 60 * 1000).toISOString();
+
+  // Dados do pagador reduzem a pontuação de risco do antifraude do MP.
+  const partes = (pedido.nome ?? "").trim().split(/\s+/).filter(Boolean);
+  const cpfLimpo = (pedido.cpf ?? "").replace(/\D/g, "");
+  const payer: Record<string, unknown> = {};
+  if (partes.length) {
+    payer.name = partes[0];
+    if (partes.length > 1) payer.surname = partes.slice(1).join(" ");
+  }
+  if (pedido.email) payer.email = pedido.email;
+  if (cpfLimpo.length === 11) payer.identification = { type: "CPF", number: cpfLimpo };
 
   const res = await fetch(`${API_BASE}/checkout/preferences`, {
     method: "POST",
@@ -134,10 +147,11 @@ export async function criarCheckoutCartao(pedido: {
       Authorization: `Bearer ${token()}`,
       "Content-Type": "application/json",
       Accept: "application/json",
-      "X-Idempotency-Key": `pref-v2-${pedido.protocolo}`,
+      "X-Idempotency-Key": `pref-v3-${pedido.protocolo}`,
     },
     body: JSON.stringify({
       external_reference: pedido.protocolo,
+      payer,
       notification_url: `${BASE_URL}/api/public/webhooks/mercadopago`,
       statement_descriptor: "CERTIDAO OBJ E PE",
       expires: true,
