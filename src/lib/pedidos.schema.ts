@@ -24,12 +24,15 @@ export function nomeCompletoValido(raw: string) {
   return partes.length >= 2;
 }
 
-/** Número de processo válido: 10 a 25 dígitos (aceita CNJ formatado). */
+/**
+ * Número de processo válido: 10 a 25 posições (aceita CNJ formatado).
+ * Aceita X/x como dígito oculto (processo mascarado), sem validar o DV.
+ */
 export function numeroProcessoValido(raw: string) {
   const v = raw.trim();
   if (v.length < 10 || v.length > 40) return false;
-  if (!/^[0-9.\-/ ]+$/.test(v)) return false;
-  const d = soDigitos(v);
+  if (!/^[0-9xX.\-/ ]+$/.test(v)) return false;
+  const d = v.replace(/[^0-9xX]/g, "");
   return d.length >= 10 && d.length <= 25;
 }
 
@@ -38,6 +41,7 @@ export const numeroProcessoField = z
   .trim()
   .min(10, "Informe o número do processo")
   .max(40, "Número do processo muito longo")
+  .transform((v) => v.toUpperCase())
   .refine(numeroProcessoValido, "Número do processo inválido");
 
 export const nomeParteField = z

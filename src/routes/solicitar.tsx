@@ -78,9 +78,9 @@ function mascararCPF(valor: string) {
     .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
 }
 
-/** Máscara CNJ: 0000000-00.0000.0.00.0000 */
+/** Máscara CNJ: 0000000-00.0000.0.00.0000 (aceita X para dígitos ocultos). */
 function mascararProcesso(valor: string) {
-  const d = soDigitos(valor).slice(0, 20);
+  const d = valor.toUpperCase().replace(/[^0-9X]/g, "").slice(0, 20);
   let out = d.slice(0, 7);
   if (d.length > 7) out += `-${d.slice(7, 9)}`;
   if (d.length > 9) out += `.${d.slice(9, 13)}`;
@@ -104,7 +104,7 @@ function nomeOk(v: string) {
 }
 
 function processoOk(v: string) {
-  const d = soDigitos(v);
+  const d = v.toUpperCase().replace(/[^0-9X]/g, "");
   return d.length >= 10 && d.length <= 25;
 }
 
@@ -231,7 +231,8 @@ function BlocoProcesso({
           <input
             id={`processo-${indice}`}
             autoComplete="off"
-            inputMode="numeric"
+            inputMode="text"
+            autoCapitalize="characters"
             value={valor.numeroProcesso}
             onChange={(e) =>
               onChange({ ...valor, numeroProcesso: mascararProcesso(e.target.value) })
