@@ -25,6 +25,7 @@ import { PrazoEmissao } from "@/components/site/prazo-emissao";
 import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { PassosPix, SelosPagamento } from "@/components/site/reforco-pagamento";
+import { PixLive } from "@/components/site/pix-live";
 
 
 export const Route = createFileRoute("/pedido/$protocolo")({
@@ -61,14 +62,14 @@ function Linha({ label, valor }: { label: string; valor: string }) {
 function PedidoPage() {
   const { protocolo } = Route.useParams();
   const buscar = useServerFn(consultarPedido);
-  const { data, isPending, isError, refetch } = useQuery({
+  const { data, isPending, isError, isRefetchError, refetch } = useQuery({
     queryKey: ["pedido", protocolo],
     queryFn: () => buscar({ data: { protocolo } }),
     refetchInterval: (query) =>
       query.state.data?.status === "aguardando_pagamento" &&
       typeof document !== "undefined" &&
       document.visibilityState === "visible"
-        ? 15_000
+        ? 5_000
         : false,
     staleTime: 8_000,
   });
@@ -316,6 +317,7 @@ function PedidoPage() {
 
               {data.status === "pago" ? (
                 <section className="card-premium p-6 sm:p-8">
+                  <PixLive className="mb-4" estado="confirmado" />
                   <h2 className="text-lg font-bold">Pagamento confirmado</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
                     Recebemos {formatarBRL(data.valorCentavos)} referente ao protocolo{" "}
@@ -370,6 +372,9 @@ function PedidoPage() {
                           className="mt-4"
                           confirmacaoAutomatica={data.confirmacaoAutomatica}
                         />
+                        {data.confirmacaoAutomatica && (
+                          <PixLive className="mt-4" estado={isRefetchError ? "erro" : "aguardando"} />
+                        )}
                         <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
                           {qr ? (
                             <img
@@ -495,6 +500,9 @@ function PedidoPage() {
                     className="mt-4"
                     confirmacaoAutomatica={data.confirmacaoAutomatica}
                   />
+                  {data.confirmacaoAutomatica && (
+                    <PixLive className="mt-4" estado={isRefetchError ? "erro" : "aguardando"} />
+                  )}
                   <div className="mt-4 grid place-items-center rounded-2xl bg-card p-4">
                     {qr ? (
                       <img
