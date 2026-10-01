@@ -7,14 +7,12 @@ export const TIKTOK_PROFILE = "https://www.tiktok.com/@certidodeobjetoepe";
 
 /** Tabela de preços por quantidade de certidões (em centavos). */
 export const TABELA_PRECOS: Record<number, number> = {
-  1: 19700,
-  2: 34700,
-  3: 49700,
-  4: 64700,
-  5: 79700,
+  1: 24700,
+  2: 39700,
+  3: 54700,
 };
 
-export const QUANTIDADE_MAXIMA = 5;
+export const QUANTIDADE_MAXIMA = 3;
 
 /** Certidão de Antecedentes Criminais Federal (Polícia Federal), por certidão. */
 export const PRECO_ANTECEDENTES_CENTAVOS = 1970;

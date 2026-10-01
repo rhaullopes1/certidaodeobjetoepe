@@ -324,7 +324,7 @@ function EditorEmails({ config, onSalvo }: { config: ConfigEtapa[]; onSalvo: () 
     "{{numero_pedido}}": "COP2026ABC123",
     "{{link_pagamento}}": "https://certidaodeobjetoepe.org/pedido/COP2026ABC123",
     "{{codigo_pix}}": "00020126580014BR.GOV.BCB.PIX...",
-    "{{valor_pedido}}": "R$ 197,00",
+    "{{valor_pedido}}": "R$ 247,00",
   };
   const preencher = (texto: string) =>
     Object.entries(previewVars).reduce(
