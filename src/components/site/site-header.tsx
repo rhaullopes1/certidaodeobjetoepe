@@ -14,6 +14,7 @@ const links = [
   { label: "Como funciona", to: "/" as const, hash: "como-funciona" },
   { label: "Dúvidas frequentes", to: "/" as const, hash: "faq" },
   { label: "Tribunais", to: "/tribunais" as const },
+  { label: "Antecedentes criminais", to: "/certidao-de-antecedentes-criminais" as const },
   { label: "Guias", to: "/guias" as const },
   { label: "Blog", to: "/blog" as const },
   { label: "Acompanhar pedido", to: "/acompanhar" as const },
