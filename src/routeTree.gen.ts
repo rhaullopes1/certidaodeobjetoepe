@@ -27,6 +27,7 @@ import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
+import { Route as SolicitarAntecedentesRouteImport } from './routes/solicitar-antecedentes'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -150,6 +151,11 @@ const SobreRoute = SobreRouteImport.update({
 const SolicitarRoute = SolicitarRouteImport.update({
   id: '/solicitar',
   path: '/solicitar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolicitarAntecedentesRoute = SolicitarAntecedentesRouteImport.update({
+  id: '/solicitar-antecedentes',
+  path: '/solicitar-antecedentes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
@@ -357,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
+  '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -410,6 +417,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
+  '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -465,6 +473,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
+  '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -520,6 +529,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
+    | '/solicitar-antecedentes'
     | '/termos-de-uso'
     | '/minha-conta'
     | '/blog/$slug'
@@ -573,6 +583,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
+    | '/solicitar-antecedentes'
     | '/termos-de-uso'
     | '/minha-conta'
     | '/blog/$slug'
@@ -627,6 +638,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
+    | '/solicitar-antecedentes'
     | '/termos-de-uso'
     | '/_authenticated/minha-conta'
     | '/blog/$slug'
@@ -682,6 +694,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   SolicitarRoute: typeof SolicitarRoute
+  SolicitarAntecedentesRoute: typeof SolicitarAntecedentesRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
@@ -834,6 +847,13 @@ declare module '@tanstack/react-router' {
       path: '/solicitar'
       fullPath: '/solicitar'
       preLoaderRoute: typeof SolicitarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solicitar-antecedentes': {
+      id: '/solicitar-antecedentes'
+      path: '/solicitar-antecedentes'
+      fullPath: '/solicitar-antecedentes'
+      preLoaderRoute: typeof SolicitarAntecedentesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/termos-de-uso': {
@@ -1125,6 +1145,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   SolicitarRoute: SolicitarRoute,
+  SolicitarAntecedentesRoute: SolicitarAntecedentesRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
   BlogSlugRoute: BlogSlugRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
