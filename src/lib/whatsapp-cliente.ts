@@ -8,6 +8,8 @@ export type PedidoContato = {
   nome_parte: string | null;
   whatsapp: string;
   status: string;
+  /** Link de download da certidão emitida, quando já anexada ao pedido. */
+  linkCertidao?: string | null;
 };
 
 /**
