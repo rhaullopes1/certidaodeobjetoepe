@@ -31,9 +31,9 @@ export const PIX = {
   cidade: "BALNEARIO CAMBORIU",
 };
 
-/** Recebedor exibido pelo banco no Pix dinâmico (Mercado Pago — conta CNPJ). */
+/** Recebedor exibido pelo banco no Pix dinâmico (Mercado Pago — conta CNPJ MEI). */
 export const PIX_DINAMICO = {
-  nome: "BRASIL DOCUMENTOS",
+  nome: "61.234.511 NEUZA FERNANDES",
   cidade: "BALNEARIO CAMBORIU",
 };
 
