@@ -104,6 +104,26 @@ function montar(row: Record<string, unknown>): AntecedentesPedidoResumo {
 }
 
 async function avisarEquipe(resumo: AntecedentesPedidoResumo, whatsapp: string) {
+  const certidoes = [
+    { nomeParte: resumo.nome, numeroProcesso: "Antecedentes Criminais Federal", cpf: "" },
+  ];
+  try {
+    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+    await sendTemplateEmail("pedido-confirmacao", resumo.email, {
+      idempotencyKey: `pedido-confirmacao-${resumo.protocolo}`,
+      replyTo: EMAIL_CONTATO,
+      templateData: {
+        protocolo: resumo.protocolo,
+        quantidade: 1,
+        valor: formatarBRL(resumo.valorCentavos),
+        certidoes,
+        url: `https://certidaodeobjetoepe.org/pedido/${resumo.protocolo}`,
+      },
+    });
+  } catch (e) {
+    console.error("Falha ao enviar confirmação do pedido de antecedentes", e);
+  }
+
   try {
     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
     await sendTemplateEmail("novo-pedido-admin", EMAIL_CONTATO, {
