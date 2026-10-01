@@ -79,6 +79,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 const LINKS_ADMIN = [
   { to: "/admin", label: "Pedidos", exact: true },
   { to: "/admin/entregas", label: "Entregas", contador: true },
+  { to: "/admin/antecedentes", label: "Antecedentes" },
   { to: "/admin/historico", label: "Histórico" },
   { to: "/admin/comarcas", label: "Comarcas" },
   { to: "/admin/recuperacao", label: "Recuperação" },

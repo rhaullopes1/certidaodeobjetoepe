@@ -41,6 +41,7 @@ import { Route as TribunaisIndexRouteImport } from './routes/tribunais.index'
 import { Route as TribunaisSiglaRouteImport } from './routes/tribunais.$sigla'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
+import { Route as AuthenticatedAdminAntecedentesRouteImport } from './routes/_authenticated/admin.antecedentes'
 import { Route as AuthenticatedAdminComarcasRouteImport } from './routes/_authenticated/admin.comarcas'
 import { Route as AuthenticatedAdminConteudoRouteImport } from './routes/_authenticated/admin.conteudo'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
@@ -225,6 +226,12 @@ const AuthenticatedAdminProtocoloRoute =
     path: '/admin/$protocolo',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminAntecedentesRoute =
+  AuthenticatedAdminAntecedentesRouteImport.update({
+    id: '/admin/antecedentes',
+    path: '/admin/antecedentes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminComarcasRoute =
   AuthenticatedAdminComarcasRouteImport.update({
     id: '/admin/comarcas',
@@ -376,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
   '/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -430,6 +438,7 @@ export interface FileRoutesByTo {
   '/guias': typeof GuiasIndexRoute
   '/tribunais': typeof TribunaisIndexRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
   '/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -486,6 +495,7 @@ export interface FileRoutesById {
   '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
+  '/_authenticated/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/_authenticated/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
   '/_authenticated/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
@@ -542,6 +552,7 @@ export interface FileRouteTypes {
     | '/guias/'
     | '/tribunais/'
     | '/admin/$protocolo'
+    | '/admin/antecedentes'
     | '/admin/comarcas'
     | '/admin/conteudo'
     | '/admin/documentos'
@@ -596,6 +607,7 @@ export interface FileRouteTypes {
     | '/guias'
     | '/tribunais'
     | '/admin/$protocolo'
+    | '/admin/antecedentes'
     | '/admin/comarcas'
     | '/admin/conteudo'
     | '/admin/documentos'
@@ -651,6 +663,7 @@ export interface FileRouteTypes {
     | '/guias/'
     | '/tribunais/'
     | '/_authenticated/admin/$protocolo'
+    | '/_authenticated/admin/antecedentes'
     | '/_authenticated/admin/comarcas'
     | '/_authenticated/admin/conteudo'
     | '/_authenticated/admin/documentos'
@@ -947,6 +960,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProtocoloRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/antecedentes': {
+      id: '/_authenticated/admin/antecedentes'
+      path: '/admin/antecedentes'
+      fullPath: '/admin/antecedentes'
+      preLoaderRoute: typeof AuthenticatedAdminAntecedentesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/comarcas': {
       id: '/_authenticated/admin/comarcas'
       path: '/admin/comarcas'
@@ -1100,6 +1120,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
   AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
+  AuthenticatedAdminAntecedentesRoute: typeof AuthenticatedAdminAntecedentesRoute
   AuthenticatedAdminComarcasRoute: typeof AuthenticatedAdminComarcasRoute
   AuthenticatedAdminConteudoRoute: typeof AuthenticatedAdminConteudoRoute
   AuthenticatedAdminDocumentosRoute: typeof AuthenticatedAdminDocumentosRoute
@@ -1113,6 +1134,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
   AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
+  AuthenticatedAdminAntecedentesRoute: AuthenticatedAdminAntecedentesRoute,
   AuthenticatedAdminComarcasRoute: AuthenticatedAdminComarcasRoute,
   AuthenticatedAdminConteudoRoute: AuthenticatedAdminConteudoRoute,
   AuthenticatedAdminDocumentosRoute: AuthenticatedAdminDocumentosRoute,
