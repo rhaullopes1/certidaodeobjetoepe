@@ -33,6 +33,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'recuperacao-etapa': recuperacaoEtapa,
   'boas-vindas': boasVindas,
   'campanha-semanal': campanhaSemanal,
+  'antecedentes-pronta': antecedentesPronta,
 }
 
 
