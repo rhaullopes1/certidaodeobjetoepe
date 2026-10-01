@@ -61,35 +61,16 @@ function tempoDesde(iso: string | null): string {
 }
 
 function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
-  const link = linkWhatsappCliente({
-    protocolo: pedido.protocolo,
-    nome_parte: pedido.nome_parte,
-    whatsapp: pedido.whatsapp,
-    status: pedido.status,
-  });
-  const numeroOk = normalizarWhatsapp(pedido.whatsapp) !== null;
-  const base = "inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors";
-
-  if (!numeroOk || !link) {
-    return (
-      <span
-        className={`${base} bg-secondary/60 text-muted-foreground/50`}
-        title="Número de WhatsApp não disponível para este pedido"
-      >
-        <MessageCircle className="h-4 w-4" /> WhatsApp indisponível
-      </span>
-    );
-  }
-
   return (
-    <a
-      href={link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`${base} bg-secondary text-foreground hover:bg-secondary/70`}
-    >
-      <MessageCircle className="h-4 w-4" /> WhatsApp
-    </a>
+    <BotaoWhatsAppCliente
+      pedido={{
+        id: pedido.id,
+        protocolo: pedido.protocolo,
+        nome_parte: pedido.nome_parte,
+        whatsapp: pedido.whatsapp,
+        status: pedido.status,
+      }}
+    />
   );
 }
 
