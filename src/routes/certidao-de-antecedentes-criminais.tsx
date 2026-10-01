@@ -301,7 +301,7 @@ function AntecedentesPage() {
               acompanhe pelo protocolo. O valor aparece no resumo antes do pagamento.
             </p>
             <CtaPrincipal className="mt-6" />
-            <AlternativasContato className="mt-5 justify-center" />
+            <AlternativasContato className="mt-5 text-center" />
           </section>
 
           {/* Transparência */}
