@@ -28,7 +28,7 @@ import { escolherUnidade } from "@/lib/localizacao";
 import { resolverCanalSolicitacao } from "@/lib/canal-solicitacao";
 import { OndeSolicitarResumo } from "@/components/admin/onde-solicitar";
 import { formatarBRL, statusPedido } from "@/lib/site";
-import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
+import { BotaoWhatsAppCliente } from "@/components/admin/botao-whatsapp";
 import { AdminHeader, SemPermissao } from "./admin.index";
 
 export const Route = createFileRoute("/_authenticated/admin/entregas")({
