@@ -153,7 +153,7 @@ export async function criarCheckoutCartao(pedido: {
       external_reference: pedido.protocolo,
       payer,
       notification_url: `${BASE_URL}/api/public/webhooks/mercadopago`,
-      statement_descriptor: "CERTIDAO OBJ E PE",
+      statement_descriptor: "BRASIL DOCUMENTOS",
       expires: true,
       expiration_date_to: expiraEm,
       payment_methods: {
