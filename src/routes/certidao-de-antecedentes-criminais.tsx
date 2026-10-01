@@ -161,7 +161,7 @@ export const Route = createFileRoute("/certidao-de-antecedentes-criminais")({
 function CtaPrincipal({ className = "" }: { className?: string }) {
   return (
     <Link
-      to="/solicitar"
+      to="/solicitar-antecedentes"
       className={`inline-flex items-center justify-center rounded-full bg-gold px-7 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:scale-[1.02] ${className}`}
     >
       Solicitar certidão agora

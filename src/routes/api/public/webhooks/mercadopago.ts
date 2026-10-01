@@ -202,6 +202,17 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
           return new Response("erro ao gravar", { status: 500 });
         }
 
+        // Certidão de Antecedentes Criminais: emissão automática logo após a
+        // confirmação real do pagamento. Nunca antes dela.
+        if (situacao.pago) {
+          try {
+            const { processarEmissaoAntecedentes } = await import("@/lib/antecedentes.server");
+            await processarEmissaoAntecedentes(pedido.id);
+          } catch (e) {
+            console.error("Falha ao disparar emissão de antecedentes", e);
+          }
+        }
+
         await registrarEvento(situacao.pago ? "pedido_marcado_pago" : "pedido_marcado_cancelado");
         return new Response("ok");
       },

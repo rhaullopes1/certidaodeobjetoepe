@@ -417,7 +417,7 @@ async function gerarCheckoutCartaoMercadoPago(row: PedidoRow): Promise<PedidoRow
 }
 
 /** Gera as cobranças do pedido: Pix e cartão (Mercado Pago), Stripe como reserva. */
-async function gerarCobranca(entrada: PedidoRow): Promise<PedidoRow> {
+export async function gerarCobranca(entrada: PedidoRow): Promise<PedidoRow> {
   const comPix = await gerarCobrancaMercadoPago(entrada);
   const row = await gerarCheckoutCartaoMercadoPago(comPix);
   const { temStripe, criarCheckout } = await import("./stripe.server");

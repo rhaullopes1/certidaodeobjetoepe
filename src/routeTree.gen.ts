@@ -27,6 +27,7 @@ import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
+import { Route as SolicitarAntecedentesRouteImport } from './routes/solicitar-antecedentes'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -51,6 +52,7 @@ import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$
 import { Route as CertidaoDeObjetoEPeParaIndexRouteImport } from './routes/certidao-de-objeto-e-pe.para.index'
 import { Route as CertidaoDeObjetoEPeParaSlugRouteImport } from './routes/certidao-de-objeto-e-pe.para.$slug'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
+import { Route as ApiPublicCronAntecedentesRouteImport } from './routes/api/public/cron/antecedentes'
 import { Route as ApiPublicCronConteudoRouteImport } from './routes/api/public/cron/conteudo'
 import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
 import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cron/semanal'
@@ -149,6 +151,11 @@ const SobreRoute = SobreRouteImport.update({
 const SolicitarRoute = SolicitarRouteImport.update({
   id: '/solicitar',
   path: '/solicitar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolicitarAntecedentesRoute = SolicitarAntecedentesRouteImport.update({
+  id: '/solicitar-antecedentes',
+  path: '/solicitar-antecedentes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
@@ -282,6 +289,12 @@ const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   path: '/lovable/email/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronAntecedentesRoute =
+  ApiPublicCronAntecedentesRouteImport.update({
+    id: '/api/public/cron/antecedentes',
+    path: '/api/public/cron/antecedentes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronConteudoRoute = ApiPublicCronConteudoRouteImport.update({
   id: '/api/public/cron/conteudo',
   path: '/api/public/cron/conteudo',
@@ -350,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
+  '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -374,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
@@ -402,6 +417,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
+  '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -426,6 +442,7 @@ export interface FileRoutesByTo {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
@@ -456,6 +473,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
+  '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -480,6 +498,7 @@ export interface FileRoutesById {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
+  '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
@@ -510,6 +529,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
+    | '/solicitar-antecedentes'
     | '/termos-de-uso'
     | '/minha-conta'
     | '/blog/$slug'
@@ -534,6 +554,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/admin/'
     | '/certidao-de-objeto-e-pe/para/'
+    | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
@@ -562,6 +583,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
+    | '/solicitar-antecedentes'
     | '/termos-de-uso'
     | '/minha-conta'
     | '/blog/$slug'
@@ -586,6 +608,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/admin'
     | '/certidao-de-objeto-e-pe/para'
+    | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
@@ -615,6 +638,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
+    | '/solicitar-antecedentes'
     | '/termos-de-uso'
     | '/_authenticated/minha-conta'
     | '/blog/$slug'
@@ -639,6 +663,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/_authenticated/admin/'
     | '/certidao-de-objeto-e-pe/para/'
+    | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
@@ -669,6 +694,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   SolicitarRoute: typeof SolicitarRoute
+  SolicitarAntecedentesRoute: typeof SolicitarAntecedentesRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
@@ -683,6 +709,7 @@ export interface RootRouteChildren {
   CertidaoDeObjetoEPeParaSlugRoute: typeof CertidaoDeObjetoEPeParaSlugRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   CertidaoDeObjetoEPeParaIndexRoute: typeof CertidaoDeObjetoEPeParaIndexRoute
+  ApiPublicCronAntecedentesRoute: typeof ApiPublicCronAntecedentesRoute
   ApiPublicCronConteudoRoute: typeof ApiPublicCronConteudoRoute
   ApiPublicCronRecuperacaoRoute: typeof ApiPublicCronRecuperacaoRoute
   ApiPublicCronSemanalRoute: typeof ApiPublicCronSemanalRoute
@@ -820,6 +847,13 @@ declare module '@tanstack/react-router' {
       path: '/solicitar'
       fullPath: '/solicitar'
       preLoaderRoute: typeof SolicitarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solicitar-antecedentes': {
+      id: '/solicitar-antecedentes'
+      path: '/solicitar-antecedentes'
+      fullPath: '/solicitar-antecedentes'
+      preLoaderRoute: typeof SolicitarAntecedentesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/termos-de-uso': {
@@ -990,6 +1024,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/antecedentes': {
+      id: '/api/public/cron/antecedentes'
+      path: '/api/public/cron/antecedentes'
+      fullPath: '/api/public/cron/antecedentes'
+      preLoaderRoute: typeof ApiPublicCronAntecedentesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/conteudo': {
       id: '/api/public/cron/conteudo'
       path: '/api/public/cron/conteudo'
@@ -1104,6 +1145,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   SolicitarRoute: SolicitarRoute,
+  SolicitarAntecedentesRoute: SolicitarAntecedentesRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
   BlogSlugRoute: BlogSlugRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
@@ -1118,6 +1160,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoDeObjetoEPeParaSlugRoute: CertidaoDeObjetoEPeParaSlugRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
   CertidaoDeObjetoEPeParaIndexRoute: CertidaoDeObjetoEPeParaIndexRoute,
+  ApiPublicCronAntecedentesRoute: ApiPublicCronAntecedentesRoute,
   ApiPublicCronConteudoRoute: ApiPublicCronConteudoRoute,
   ApiPublicCronRecuperacaoRoute: ApiPublicCronRecuperacaoRoute,
   ApiPublicCronSemanalRoute: ApiPublicCronSemanalRoute,

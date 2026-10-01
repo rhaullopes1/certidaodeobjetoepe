@@ -668,6 +668,80 @@ export type Database = {
         }
         Relationships: []
       }
+      emissoes_antecedentes: {
+        Row: {
+          certidao_codigo: string | null
+          certidao_numero: string | null
+          created_at: string
+          email_enviado_em: string | null
+          emissao_datahora: string | null
+          emitida_em: string | null
+          erro: string | null
+          id: string
+          mensagem: string | null
+          negativa: boolean | null
+          payload: Json | null
+          pedido_id: string
+          proxima_tentativa_em: string | null
+          site_receipt: string | null
+          status: string
+          tentativas: number
+          updated_at: string
+          validade_data: string | null
+          whatsapp_enviado_em: string | null
+        }
+        Insert: {
+          certidao_codigo?: string | null
+          certidao_numero?: string | null
+          created_at?: string
+          email_enviado_em?: string | null
+          emissao_datahora?: string | null
+          emitida_em?: string | null
+          erro?: string | null
+          id?: string
+          mensagem?: string | null
+          negativa?: boolean | null
+          payload?: Json | null
+          pedido_id: string
+          proxima_tentativa_em?: string | null
+          site_receipt?: string | null
+          status?: string
+          tentativas?: number
+          updated_at?: string
+          validade_data?: string | null
+          whatsapp_enviado_em?: string | null
+        }
+        Update: {
+          certidao_codigo?: string | null
+          certidao_numero?: string | null
+          created_at?: string
+          email_enviado_em?: string | null
+          emissao_datahora?: string | null
+          emitida_em?: string | null
+          erro?: string | null
+          id?: string
+          mensagem?: string | null
+          negativa?: boolean | null
+          payload?: Json | null
+          pedido_id?: string
+          proxima_tentativa_em?: string | null
+          site_receipt?: string | null
+          status?: string
+          tentativas?: number
+          updated_at?: string
+          validade_data?: string | null
+          whatsapp_enviado_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emissoes_antecedentes_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: true
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_locks: {
         Row: {
           created_at: string
@@ -826,6 +900,10 @@ export type Database = {
       pedidos: {
         Row: {
           acesso_token: string
+          ant_nascimento: string | null
+          ant_nome_mae: string | null
+          ant_nome_pai: string | null
+          ant_uf_nascimento: string | null
           certidoes: Json
           checkout_url: string | null
           cidade: string | null
@@ -861,6 +939,7 @@ export type Database = {
           sistema_processual: string | null
           status: string
           stripe_session_id: string | null
+          tipo: string
           tribunal_nome: string | null
           tribunal_sigla: string | null
           uf: string | null
@@ -874,6 +953,10 @@ export type Database = {
         }
         Insert: {
           acesso_token?: string
+          ant_nascimento?: string | null
+          ant_nome_mae?: string | null
+          ant_nome_pai?: string | null
+          ant_uf_nascimento?: string | null
           certidoes?: Json
           checkout_url?: string | null
           cidade?: string | null
@@ -909,6 +992,7 @@ export type Database = {
           sistema_processual?: string | null
           status?: string
           stripe_session_id?: string | null
+          tipo?: string
           tribunal_nome?: string | null
           tribunal_sigla?: string | null
           uf?: string | null
@@ -922,6 +1006,10 @@ export type Database = {
         }
         Update: {
           acesso_token?: string
+          ant_nascimento?: string | null
+          ant_nome_mae?: string | null
+          ant_nome_pai?: string | null
+          ant_uf_nascimento?: string | null
           certidoes?: Json
           checkout_url?: string | null
           cidade?: string | null
@@ -957,6 +1045,7 @@ export type Database = {
           sistema_processual?: string | null
           status?: string
           stripe_session_id?: string | null
+          tipo?: string
           tribunal_nome?: string | null
           tribunal_sigla?: string | null
           uf?: string | null

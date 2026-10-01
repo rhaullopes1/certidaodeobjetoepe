@@ -226,6 +226,16 @@ export async function registrarAndamento(input: {
     autor_id: sessao.user?.id ?? null,
   });
   if (error) throw error;
+
+  // Baixa manual de um pedido de antecedentes também emite a certidão.
+  if (input.status === "pago") {
+    try {
+      const { dispararEmissaoAntecedentes } = await import("./antecedentes.admin.functions");
+      await dispararEmissaoAntecedentes({ data: { pedidoId: input.pedidoId } });
+    } catch (e) {
+      console.error("Falha ao disparar emissão de antecedentes", e);
+    }
+  }
 }
 
 /** Contato de comarca acumulado pela equipe (uso exclusivamente interno). */
