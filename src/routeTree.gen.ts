@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AcompanharRouteImport } from './routes/acompanhar'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CertidaoDeAntecedentesCriminaisRouteImport } from './routes/certidao-de-antecedentes-criminais'
 import { Route as CertidaoObjetoEPeTjpeRouteImport } from './routes/certidao-objeto-e-pe-tjpe'
 import { Route as CertidaoObjetoEPeTjspRouteImport } from './routes/certidao-objeto-e-pe-tjsp'
 import { Route as CertidaoObjetoEPeTrf1RouteImport } from './routes/certidao-objeto-e-pe-trf1'
@@ -79,6 +80,12 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertidaoDeAntecedentesCriminaisRoute =
+  CertidaoDeAntecedentesCriminaisRouteImport.update({
+    id: '/certidao-de-antecedentes-criminais',
+    path: '/certidao-de-antecedentes-criminais',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CertidaoObjetoEPeTjpeRoute = CertidaoObjetoEPeTjpeRouteImport.update({
   id: '/certidao-objeto-e-pe-tjpe',
   path: '/certidao-objeto-e-pe-tjpe',
@@ -329,6 +336,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
+  '/certidao-de-antecedentes-criminais': typeof CertidaoDeAntecedentesCriminaisRoute
   '/certidao-objeto-e-pe-tjpe': typeof CertidaoObjetoEPeTjpeRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
@@ -380,6 +388,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
+  '/certidao-de-antecedentes-criminais': typeof CertidaoDeAntecedentesCriminaisRoute
   '/certidao-objeto-e-pe-tjpe': typeof CertidaoObjetoEPeTjpeRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
@@ -433,6 +442,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/acompanhar': typeof AcompanharRoute
   '/auth': typeof AuthRoute
+  '/certidao-de-antecedentes-criminais': typeof CertidaoDeAntecedentesCriminaisRoute
   '/certidao-objeto-e-pe-tjpe': typeof CertidaoObjetoEPeTjpeRoute
   '/certidao-objeto-e-pe-tjsp': typeof CertidaoObjetoEPeTjspRoute
   '/certidao-objeto-e-pe-trf1': typeof CertidaoObjetoEPeTrf1Route
@@ -486,6 +496,7 @@ export interface FileRouteTypes {
     | '/'
     | '/acompanhar'
     | '/auth'
+    | '/certidao-de-antecedentes-criminais'
     | '/certidao-objeto-e-pe-tjpe'
     | '/certidao-objeto-e-pe-tjsp'
     | '/certidao-objeto-e-pe-trf1'
@@ -537,6 +548,7 @@ export interface FileRouteTypes {
     | '/'
     | '/acompanhar'
     | '/auth'
+    | '/certidao-de-antecedentes-criminais'
     | '/certidao-objeto-e-pe-tjpe'
     | '/certidao-objeto-e-pe-tjsp'
     | '/certidao-objeto-e-pe-trf1'
@@ -589,6 +601,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/acompanhar'
     | '/auth'
+    | '/certidao-de-antecedentes-criminais'
     | '/certidao-objeto-e-pe-tjpe'
     | '/certidao-objeto-e-pe-tjsp'
     | '/certidao-objeto-e-pe-trf1'
@@ -642,6 +655,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AcompanharRoute: typeof AcompanharRoute
   AuthRoute: typeof AuthRoute
+  CertidaoDeAntecedentesCriminaisRoute: typeof CertidaoDeAntecedentesCriminaisRoute
   CertidaoObjetoEPeTjpeRoute: typeof CertidaoObjetoEPeTjpeRoute
   CertidaoObjetoEPeTjspRoute: typeof CertidaoObjetoEPeTjspRoute
   CertidaoObjetoEPeTrf1Route: typeof CertidaoObjetoEPeTrf1Route
@@ -708,6 +722,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certidao-de-antecedentes-criminais': {
+      id: '/certidao-de-antecedentes-criminais'
+      path: '/certidao-de-antecedentes-criminais'
+      fullPath: '/certidao-de-antecedentes-criminais'
+      preLoaderRoute: typeof CertidaoDeAntecedentesCriminaisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/certidao-objeto-e-pe-tjpe': {
@@ -1069,6 +1090,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AcompanharRoute: AcompanharRoute,
   AuthRoute: AuthRoute,
+  CertidaoDeAntecedentesCriminaisRoute: CertidaoDeAntecedentesCriminaisRoute,
   CertidaoObjetoEPeTjpeRoute: CertidaoObjetoEPeTjpeRoute,
   CertidaoObjetoEPeTjspRoute: CertidaoObjetoEPeTjspRoute,
   CertidaoObjetoEPeTrf1Route: CertidaoObjetoEPeTrf1Route,
