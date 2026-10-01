@@ -101,7 +101,7 @@ const FAQ = [
   },
   {
     q: "Posso pedir apenas uma das duas certidões?",
-    a: "Pode. O combo federal + estadual é a opção mais procurada, mas você escolhe no pedido se quer as duas ou apenas uma.",
+    a: "Pode. A Certidão de Antecedentes Criminais Federal é a mais procurada, e você escolhe no pedido se quer somente ela ou também a estadual.",
   },
 ];
 
