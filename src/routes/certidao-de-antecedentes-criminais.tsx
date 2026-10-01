@@ -349,7 +349,8 @@ function AntecedentesPage() {
               Pedido online, processo automatizado e acompanhamento por protocolo do início à
               entrega.
             </p>
-            <CtaPrincipal className="mt-6" />
+            <CtaBloco className="mt-6" />
+
           </section>
         </div>
       </article>
