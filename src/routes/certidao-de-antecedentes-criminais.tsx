@@ -326,7 +326,7 @@ function AntecedentesPage() {
               Comece agora o seu pedido
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-              Preencha os dados, escolha entre o combo federal + estadual ou apenas uma certidão e
+              Preencha os dados, escolha a certidão federal ou também a estadual e acompanhe pelo
               acompanhe pelo protocolo. O valor aparece no resumo antes do pagamento.
             </p>
             <CtaBloco className="mt-6" />
