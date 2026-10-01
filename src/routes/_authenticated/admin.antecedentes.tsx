@@ -230,7 +230,7 @@ function CartaoPedido({ pedido }: { pedido: PedidoAntecedentesAdmin }) {
         </div>
         <div className="flex flex-col items-end gap-1 text-right">
           <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
-            {statusPedido(pedido.status)}
+            {statusPedido(pedido.status).label}
           </span>
           <span className="text-xs text-muted-foreground">
             {formatarBRL(pedido.valor_centavos)}
