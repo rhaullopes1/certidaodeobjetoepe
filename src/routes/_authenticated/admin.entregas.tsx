@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { CheckCircle2, Loader2, MapPin, MessageCircle, PackageCheck } from "lucide-react";
+import { CheckCircle2, Loader2, MapPin, PackageCheck } from "lucide-react";
 import { badgeConfianca, resumoLocalizacao } from "@/lib/localizacao";
 import { useServerFn } from "@tanstack/react-start";
 import { reidentificarLote } from "@/lib/localizacao.functions";

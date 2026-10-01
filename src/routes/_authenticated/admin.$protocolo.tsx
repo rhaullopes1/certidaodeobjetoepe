@@ -27,7 +27,6 @@ import {
   souEquipe,
 } from "@/lib/admin";
 import { FLUXO_STATUS, statusPedido } from "@/lib/site";
-import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
 import { AdminHeader, SemPermissao } from "./admin.index";
 import { LocalizacaoProcesso } from "@/components/admin/localizacao-processo";
 
