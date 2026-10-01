@@ -7,7 +7,6 @@ import {
   Paperclip,
   Trash2,
   Download,
-  MessageCircle,
   Lock,
   Plus,
 } from "lucide-react";
