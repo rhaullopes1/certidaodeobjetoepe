@@ -31,10 +31,10 @@ export const PIX = {
   cidade: "BALNEARIO CAMBORIU",
 };
 
-/** Recebedor exibido pelo banco no Pix dinâmico (Mercado Pago). */
+/** Recebedor exibido pelo banco no Pix dinâmico (Mercado Pago — conta CNPJ). */
 export const PIX_DINAMICO = {
-  nome: "RHAUL LEONARDO LOPES",
-  cidade: "LONDRINA",
+  nome: "BRASIL DOCUMENTOS",
+  cidade: "BALNEARIO CAMBORIU",
 };
 
 export const PHONE_DISPLAY = "0800 000 4604";
