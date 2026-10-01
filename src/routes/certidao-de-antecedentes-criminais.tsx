@@ -5,10 +5,10 @@ import { AlternativasContato } from "@/components/site/alternativas-contato";
 const SITE = "https://certidaodeobjetoepe.org";
 const URL = `${SITE}/certidao-de-antecedentes-criminais`;
 
-const TITULO =
-  "Certidão de Antecedentes Criminais Federal e Estadual | Solicite na Hora";
+const TITULO = "Certidão de Antecedentes Criminais Federal Online | Polícia Federal";
 const DESCRICAO =
-  "Combo de Certidão de Antecedentes Criminais Federal e Estadual em um único pedido online. Processo automatizado, acompanhamento por protocolo e entrega em PDF por e-mail.";
+  "Solicite sua Certidão de Antecedentes Criminais Federal online. Pedido rápido, 100% online e entrega do documento em PDF por WhatsApp e e-mail.";
+
 
 const COMBO = [
   {
@@ -81,7 +81,7 @@ const PASSOS = [
 const FAQ = [
   {
     q: "Qual a diferença entre a certidão estadual e a federal?",
-    a: "A estadual é emitida pelo órgão de segurança pública do estado e considera registros daquele estado. A federal abrange o território nacional e é emitida no âmbito da Justiça Federal e da Polícia Federal. Muitos órgãos e empresas pedem as duas, por isso o combo.",
+    a: "A estadual é emitida pelo órgão de segurança pública do estado e considera registros daquele estado. A federal abrange o território nacional e é emitida no âmbito da Justiça Federal e da Polícia Federal. Muitos órgãos e empresas pedem as duas, por isso você pode solicitar as duas no mesmo pedido.",
   },
   {
     q: "Quanto tempo leva para eu receber?",
@@ -101,7 +101,7 @@ const FAQ = [
   },
   {
     q: "Posso pedir apenas uma das duas certidões?",
-    a: "Pode. O combo federal + estadual é a opção mais procurada, mas você escolhe no pedido se quer as duas ou apenas uma.",
+    a: "Pode. A Certidão de Antecedentes Criminais Federal é a mais procurada, e você escolhe no pedido se quer somente ela ou também a estadual.",
   },
 ];
 
@@ -169,6 +169,38 @@ function CtaPrincipal({ className = "" }: { className?: string }) {
   );
 }
 
+function EmissaoImediata() {
+  return (
+    <span
+      className="inline-flex items-center gap-2 rounded-full border border-live/40 bg-live/10 px-3 py-1.5 text-[11px] font-bold tracking-[0.12em] text-live uppercase"
+      role="status"
+    >
+      <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden>
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-60 [animation-duration:2.4s]" />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-live" />
+      </span>
+      <span className="animate-pulse [animation-duration:3s]">Emissão imediata</span>
+    </span>
+  );
+}
+
+function CtaBloco({ className = "", escuro = false }: { className?: string; escuro?: boolean }) {
+  return (
+    <div className={`flex flex-col items-center gap-3 ${escuro ? "sm:items-start" : ""} ${className}`}>
+      <CtaPrincipal />
+      <p
+        className={`max-w-sm text-center text-xs leading-relaxed ${
+          escuro ? "opacity-80 sm:text-left" : "text-muted-foreground"
+        }`}
+      >
+        Receba sua certidão em PDF diretamente pelo WhatsApp e por e-mail após o pagamento.
+      </p>
+      <EmissaoImediata />
+    </div>
+  );
+}
+
+
 function AntecedentesPage() {
   return (
     <PageShell>
@@ -185,26 +217,21 @@ function AntecedentesPage() {
             </nav>
 
             <p className="mt-6 inline-flex rounded-full border border-gold/50 px-4 py-1.5 text-[11px] font-bold tracking-wide text-gold uppercase">
-              Combo Federal + Estadual
+              Certidão de Antecedentes Criminais Federal
             </p>
 
             <h1 className="mt-5 font-display text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl">
-              Certidão de Antecedentes Criminais Federal e Estadual, pedida na hora
+              Certidão de Antecedentes Criminais Federal Online
             </h1>
 
             <p className="mt-5 text-base leading-relaxed opacity-85">
-              Precisa comprovar antecedentes para uma admissão, posse em concurso, cadastro
-              profissional ou viagem? Faça o pedido online em poucos minutos: o processo é
-              automatizado e você acompanha tudo pelo seu número de protocolo até receber as
-              certidões em PDF.
+              Solicite sua Certidão de Antecedentes Criminais da Polícia Federal de forma rápida,
+              segura e 100% online. O pedido leva poucos minutos e você acompanha tudo pelo seu
+              número de protocolo.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <CtaPrincipal />
-              <span className="text-xs opacity-70">
-                Pedido 100% online • Pix confirmado automaticamente
-              </span>
-            </div>
+            <CtaBloco className="mt-8" escuro />
+
 
             <ul className="mt-9 grid gap-3 text-sm sm:grid-cols-3">
               {["Pedido em minutos", "Processo automatizado", "Documentos oficiais"].map((t) => (
@@ -224,12 +251,14 @@ function AntecedentesPage() {
           {/* Combo */}
           <section>
             <h2 className="font-display text-xl font-bold sm:text-2xl">
-              O que vem no combo de antecedentes criminais
+              Certidão de Antecedentes Criminais Federal
             </h2>
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              A maioria das exigências pede as duas certidões. Em vez de navegar por portais
-              diferentes, você faz um único pedido e recebe tudo no mesmo e-mail.
+              Documento emitido pela Polícia Federal que informa a existência ou não de registros de
+              antecedentes criminais, conforme os dados do sistema oficial usado na emissão. Se você
+              também precisar da certidão estadual, pode pedir as duas no mesmo protocolo.
             </p>
+
 
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
               {COMBO.map((c) => (
@@ -297,10 +326,10 @@ function AntecedentesPage() {
               Comece agora o seu pedido
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-              Preencha os dados, escolha entre o combo federal + estadual ou apenas uma certidão e
+              Preencha os dados, escolha a certidão federal ou também a estadual e acompanhe pelo
               acompanhe pelo protocolo. O valor aparece no resumo antes do pagamento.
             </p>
-            <CtaPrincipal className="mt-6" />
+            <CtaBloco className="mt-6" />
             <AlternativasContato className="mt-5 text-center" />
           </section>
 
@@ -349,7 +378,8 @@ function AntecedentesPage() {
               Pedido online, processo automatizado e acompanhamento por protocolo do início à
               entrega.
             </p>
-            <CtaPrincipal className="mt-6" />
+            <CtaBloco className="mt-6" />
+
           </section>
         </div>
       </article>
