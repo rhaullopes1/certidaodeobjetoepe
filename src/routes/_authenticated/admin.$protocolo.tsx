@@ -28,6 +28,7 @@ import {
 import { FLUXO_STATUS, statusPedido } from "@/lib/site";
 import { AdminHeader, SemPermissao } from "./admin.index";
 import { LocalizacaoProcesso } from "@/components/admin/localizacao-processo";
+import { BotaoWhatsAppCliente } from "@/components/admin/botao-whatsapp";
 
 export const Route = createFileRoute("/_authenticated/admin/$protocolo")({
   component: AdminDetalhe,
