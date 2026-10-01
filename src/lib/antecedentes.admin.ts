@@ -76,7 +76,9 @@ export async function listarPedidosAntecedentes(
 
 /** Dados da emissão (a relação sempre traz no máximo uma linha). */
 export function emissaoDoPedido(p: PedidoAntecedentesAdmin): EmissaoAntecedentes | null {
-  return p.emissoes_antecedentes?.[0] ?? null;
+  const e = p.emissoes_antecedentes;
+  if (!e) return null;
+  return Array.isArray(e) ? (e[0] ?? null) : e;
 }
 
 export const ROTULO_EMISSAO: Record<string, { texto: string; cor: string }> = {
