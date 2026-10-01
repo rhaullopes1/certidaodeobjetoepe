@@ -5,10 +5,10 @@ import { AlternativasContato } from "@/components/site/alternativas-contato";
 const SITE = "https://certidaodeobjetoepe.org";
 const URL = `${SITE}/certidao-de-antecedentes-criminais`;
 
-const TITULO =
-  "Certidão de Antecedentes Criminais Federal e Estadual | Solicite na Hora";
+const TITULO = "Certidão de Antecedentes Criminais Federal Online | Polícia Federal";
 const DESCRICAO =
-  "Combo de Certidão de Antecedentes Criminais Federal e Estadual em um único pedido online. Processo automatizado, acompanhamento por protocolo e entrega em PDF por e-mail.";
+  "Solicite sua Certidão de Antecedentes Criminais Federal online. Pedido rápido, 100% online e entrega do documento em PDF por WhatsApp e e-mail.";
+
 
 const COMBO = [
   {
