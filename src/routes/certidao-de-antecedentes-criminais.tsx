@@ -169,6 +169,38 @@ function CtaPrincipal({ className = "" }: { className?: string }) {
   );
 }
 
+function EmissaoImediata() {
+  return (
+    <span
+      className="inline-flex items-center gap-2 rounded-full border border-live/40 bg-live/10 px-3 py-1.5 text-[11px] font-bold tracking-[0.12em] text-live uppercase"
+      role="status"
+    >
+      <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden>
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-60 [animation-duration:2.4s]" />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-live" />
+      </span>
+      <span className="animate-pulse [animation-duration:3s]">Emissão imediata</span>
+    </span>
+  );
+}
+
+function CtaBloco({ className = "", escuro = false }: { className?: string; escuro?: boolean }) {
+  return (
+    <div className={`flex flex-col items-center gap-3 ${escuro ? "sm:items-start" : ""} ${className}`}>
+      <CtaPrincipal />
+      <p
+        className={`max-w-sm text-center text-xs leading-relaxed ${
+          escuro ? "opacity-80 sm:text-left" : "text-muted-foreground"
+        }`}
+      >
+        Receba sua certidão em PDF diretamente pelo WhatsApp e por e-mail após o pagamento.
+      </p>
+      <EmissaoImediata />
+    </div>
+  );
+}
+
+
 function AntecedentesPage() {
   return (
     <PageShell>
