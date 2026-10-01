@@ -251,12 +251,14 @@ function AntecedentesPage() {
           {/* Combo */}
           <section>
             <h2 className="font-display text-xl font-bold sm:text-2xl">
-              O que vem no combo de antecedentes criminais
+              Certidão de Antecedentes Criminais Federal
             </h2>
             <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-              A maioria das exigências pede as duas certidões. Em vez de navegar por portais
-              diferentes, você faz um único pedido e recebe tudo no mesmo e-mail.
+              Documento emitido pela Polícia Federal que informa a existência ou não de registros de
+              antecedentes criminais, conforme os dados do sistema oficial usado na emissão. Se você
+              também precisar da certidão estadual, pode pedir as duas no mesmo protocolo.
             </p>
+
 
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
               {COMBO.map((c) => (
