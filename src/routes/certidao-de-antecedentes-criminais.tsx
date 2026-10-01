@@ -81,7 +81,7 @@ const PASSOS = [
 const FAQ = [
   {
     q: "Qual a diferença entre a certidão estadual e a federal?",
-    a: "A estadual é emitida pelo órgão de segurança pública do estado e considera registros daquele estado. A federal abrange o território nacional e é emitida no âmbito da Justiça Federal e da Polícia Federal. Muitos órgãos e empresas pedem as duas, por isso o combo.",
+    a: "A estadual é emitida pelo órgão de segurança pública do estado e considera registros daquele estado. A federal abrange o território nacional e é emitida no âmbito da Justiça Federal e da Polícia Federal. Muitos órgãos e empresas pedem as duas, por isso você pode solicitar as duas no mesmo pedido.",
   },
   {
     q: "Quanto tempo leva para eu receber?",
