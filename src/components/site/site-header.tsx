@@ -73,6 +73,12 @@ export function SiteHeader() {
             <Link to="/tribunais" className="transition-colors hover:text-foreground">
               Tribunais
             </Link>
+            <Link
+              to="/certidao-de-antecedentes-criminais"
+              className="transition-colors hover:text-foreground"
+            >
+              Antecedentes
+            </Link>
             <Link to="/acompanhar" className="transition-colors hover:text-foreground">
               Acompanhar
             </Link>
