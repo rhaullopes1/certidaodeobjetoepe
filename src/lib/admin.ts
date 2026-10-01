@@ -617,6 +617,28 @@ export async function abrirAnexo(caminho: string) {
   return data.signedUrl;
 }
 
+/**
+ * Link de download da certidão emitida para enviar ao cliente.
+ * Usa o anexo mais recente do tipo "certidao" e gera um link assinado
+ * válido por 7 dias. Retorna null quando o pedido ainda não tem certidão.
+ */
+export async function linkCertidaoParaCliente(pedidoId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("pedido_anexos")
+    .select("caminho")
+    .eq("pedido_id", pedidoId)
+    .eq("tipo", "certidao")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error || !data) return null;
+
+  const { data: assinado } = await supabase.storage
+    .from(BUCKET_ANEXOS)
+    .createSignedUrl(data.caminho, 60 * 60 * 24 * 7);
+  return assinado?.signedUrl ?? null;
+}
+
 export async function removerAnexo(anexo: { id: string; caminho: string }) {
   await supabase.storage.from(BUCKET_ANEXOS).remove([anexo.caminho]);
   const { error } = await supabase.from("pedido_anexos").delete().eq("id", anexo.id);
