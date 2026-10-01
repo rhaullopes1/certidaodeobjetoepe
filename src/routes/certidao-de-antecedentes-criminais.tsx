@@ -300,7 +300,7 @@ function AntecedentesPage() {
               Preencha os dados, escolha entre o combo federal + estadual ou apenas uma certidão e
               acompanhe pelo protocolo. O valor aparece no resumo antes do pagamento.
             </p>
-            <CtaPrincipal className="mt-6" />
+            <CtaBloco className="mt-6" />
             <AlternativasContato className="mt-5 text-center" />
           </section>
 
