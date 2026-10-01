@@ -7,18 +7,18 @@ function validarPedidoId(input: { pedidoId: string }) {
   return { pedidoId: id };
 }
 
-async function exigirEquipe(context: { supabase: never; userId: string }) {
-  const { data: staff } = await (context.supabase as never as {
-    from: (t: string) => {
-      select: (c: string) => {
-        eq: (c: string, v: string) => { limit: (n: number) => Promise<{ data: unknown[] | null }> };
-      };
+type ContextoEquipe = {
+  supabase: { from: (t: "user_roles") => never };
+  userId: string;
+};
+
+async function exigirEquipe(context: ContextoEquipe) {
+  const consulta = context.supabase.from("user_roles") as unknown as {
+    select: (c: string) => {
+      eq: (c: string, v: string) => { limit: (n: number) => Promise<{ data: unknown[] | null }> };
     };
-  })
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", context.userId)
-    .limit(1);
+  };
+  const { data: staff } = await consulta.select("role").eq("user_id", context.userId).limit(1);
   if (!staff?.length) throw new Error("Acesso restrito à equipe.");
 }
 
