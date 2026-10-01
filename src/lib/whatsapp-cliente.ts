@@ -48,6 +48,19 @@ export function mensagemWhatsapp(p: PedidoContato): string {
   const nome = p.nome_parte?.trim() || "tudo bem";
   const link = linkDoPedido(p.protocolo);
 
+  // Quando a certidão já está anexada ao pedido, a mensagem entrega o
+  // documento com o link direto para download.
+  if (p.linkCertidao) {
+    return (
+      `Olá, ${nome}! A sua Certidão de Objeto e Pé (protocolo ${p.protocolo}) está pronta. ` +
+      `Você pode baixar o documento em PDF neste link: ${p.linkCertidao} ` +
+      `(link válido por 7 dias — recomendamos salvar o arquivo). ` +
+      `Também enviamos uma cópia para o seu e-mail. ` +
+      `Se o nosso atendimento te ajudou, você poderia deixar uma avaliação de 5 estrelas no Google? ` +
+      `Leva menos de 30 segundos: ${LINK_AVALIACAO_GOOGLE} Muito obrigado pela confiança!`
+    );
+  }
+
   switch (p.status) {
     case "aguardando_pagamento":
       return (
