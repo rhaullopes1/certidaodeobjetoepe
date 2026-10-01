@@ -185,26 +185,21 @@ function AntecedentesPage() {
             </nav>
 
             <p className="mt-6 inline-flex rounded-full border border-gold/50 px-4 py-1.5 text-[11px] font-bold tracking-wide text-gold uppercase">
-              Combo Federal + Estadual
+              Certidão de Antecedentes Criminais Federal
             </p>
 
             <h1 className="mt-5 font-display text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl">
-              Certidão de Antecedentes Criminais Federal e Estadual, pedida na hora
+              Certidão de Antecedentes Criminais Federal Online
             </h1>
 
             <p className="mt-5 text-base leading-relaxed opacity-85">
-              Precisa comprovar antecedentes para uma admissão, posse em concurso, cadastro
-              profissional ou viagem? Faça o pedido online em poucos minutos: o processo é
-              automatizado e você acompanha tudo pelo seu número de protocolo até receber as
-              certidões em PDF.
+              Solicite sua Certidão de Antecedentes Criminais da Polícia Federal de forma rápida,
+              segura e 100% online. O pedido leva poucos minutos e você acompanha tudo pelo seu
+              número de protocolo.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <CtaPrincipal />
-              <span className="text-xs opacity-70">
-                Pedido 100% online • Pix confirmado automaticamente
-              </span>
-            </div>
+            <CtaBloco className="mt-8" escuro />
+
 
             <ul className="mt-9 grid gap-3 text-sm sm:grid-cols-3">
               {["Pedido em minutos", "Processo automatizado", "Documentos oficiais"].map((t) => (
