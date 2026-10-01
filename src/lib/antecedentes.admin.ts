@@ -39,7 +39,8 @@ export type PedidoAntecedentesAdmin = {
   ant_nome_pai: string | null;
   ant_uf_nascimento: string | null;
   ant_nascimento: string | null;
-  emissoes_antecedentes: EmissaoAntecedentes[] | null;
+  /** PostgREST devolve objeto quando a relação é 1-para-1 e lista quando não é. */
+  emissoes_antecedentes: EmissaoAntecedentes | EmissaoAntecedentes[] | null;
 };
 
 const COLUNAS =
