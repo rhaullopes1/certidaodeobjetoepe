@@ -7,7 +7,7 @@ const URL = `${SITE}/certidao-de-antecedentes-criminais`;
 
 const TITULO = "Certidão de Antecedentes Criminais Federal Online | Polícia Federal";
 const DESCRICAO =
-  "Solicite sua Certidão de Antecedentes Criminais Federal online. Consulta gratuita, 100% online, com resultado enviado por e-mail em tempo real.";
+  "Solicite sua Certidão de Antecedentes Criminais Federal online. Consulta gratuita, 100% online, com resultado enviado por e-mail automaticamente, assim que estiver disponível.";
 
 
 const COMBO = [
@@ -67,7 +67,7 @@ const PASSOS = [
   {
     n: "2",
     titulo: "Consulta gratuita",
-    texto: "Não há pagamento nem checkout: a consulta é processada automaticamente após o envio.",
+    texto: "Não há cobrança: a consulta é processada automaticamente após o envio e o resultado segue para o seu e-mail.",
   },
   {
     n: "3",
@@ -192,7 +192,7 @@ function CtaBloco({ className = "", escuro = false }: { className?: string; escu
           escuro ? "opacity-80 sm:text-left" : "text-muted-foreground"
         }`}
       >
-        Consulta gratuita de antecedentes criminais federal. Seu resultado será enviado por e-mail em tempo real.
+        Consulta gratuita de antecedentes criminais federal. Seu resultado será enviado por e-mail automaticamente, assim que estiver disponível.
       </p>
       <EmissaoImediata />
     </div>

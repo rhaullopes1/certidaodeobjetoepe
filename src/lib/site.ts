@@ -81,6 +81,11 @@ export const STATUS_PEDIDO: Record<
     descricao: "Pronto! A certidão foi emitida e enviada para o seu e-mail.",
     tom: "pago",
   },
+  gratuito: {
+    label: "Consulta gratuita",
+    descricao: "Consulta gratuita registrada. O resultado é enviado por e-mail automaticamente assim que estiver disponível.",
+    tom: "pago",
+  },
   cancelado: {
     label: "Pedido cancelado",
     descricao: "Este pedido foi cancelado. Fale conosco pelo WhatsApp se precisar retomar.",

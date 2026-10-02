@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, Mail, Send } from "lucide-react";
 
 import { SiteHeader } from "@/components/site/site-header";
-import { PRECO_ANTECEDENTES_CENTAVOS } from "@/lib/site";
 import { soDigitos } from "@/lib/pedidos.schema";
 import { antecedentesSchema, UFS } from "@/lib/antecedentes.schema";
 import { criarPedidoAntecedentes } from "@/lib/antecedentes.functions";
@@ -18,7 +17,7 @@ export const Route = createFileRoute("/solicitar-antecedentes")({
       {
         name: "description",
         content:
-          "Consulta gratuita de antecedentes criminais federal. Preencha seus dados e receba o resultado da Polícia Federal por e-mail em tempo real.",
+          "Consulta gratuita de antecedentes criminais federal. Preencha seus dados e receba o resultado da Polícia Federal por e-mail automaticamente, assim que estiver disponível.",
       },
       {
         property: "og:title",
@@ -27,7 +26,7 @@ export const Route = createFileRoute("/solicitar-antecedentes")({
       {
         property: "og:description",
         content:
-          "Consulta gratuita: emissão pelos sistemas da Polícia Federal e resultado enviado por e-mail em tempo real.",
+          "Consulta gratuita: emissão pelos sistemas da Polícia Federal e resultado enviado por e-mail automaticamente, assim que estiver disponível.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -113,7 +112,7 @@ function SolicitarAntecedentes() {
       ufNascimento,
       email: email.trim().toLowerCase(),
       whatsapp: soDigitos(whatsapp),
-      valorTotalCentavos: PRECO_ANTECEDENTES_CENTAVOS,
+      valorTotalCentavos: 0,
     };
 
     const parsed = antecedentesSchema.safeParse(bruto);
@@ -151,7 +150,7 @@ function SolicitarAntecedentes() {
             <CheckCircle2 className="mx-auto size-10 text-live" aria-hidden />
             <h1 className="mt-3 font-display text-2xl font-extrabold">Consulta registrada</h1>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Seu resultado será enviado por e-mail em tempo real para{" "}
+              Seu resultado será enviado automaticamente por e-mail para{" "}
               <strong className="text-foreground">{enviado.email}</strong>, assim que a Polícia
               Federal disponibilizar a certidão. Confira também a caixa de spam.
             </p>
@@ -175,7 +174,7 @@ function SolicitarAntecedentes() {
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           Preencha os dados exatamente como constam no seu documento de identidade. A consulta é
-          gratuita e o seu resultado será enviado por e-mail em tempo real.
+          gratuita e o seu resultado será enviado por e-mail automaticamente, assim que estiver disponível.
         </p>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-5">
@@ -289,7 +288,7 @@ function SolicitarAntecedentes() {
             </div>
             <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
               <Mail className="mt-0.5 size-4 shrink-0" aria-hidden />
-              Sem pagamento. Seu resultado será enviado por e-mail em tempo real.
+              Sem pagamento. Seu resultado será enviado por e-mail automaticamente, assim que estiver disponível.
             </p>
           </div>
 

@@ -1,8 +1,9 @@
 /**
  * Emissão automática da Certidão de Antecedentes Criminais Federal.
  *
- * Disparada somente depois que o pagamento é confirmado de verdade (webhook do
- * Mercado Pago ou baixa manual no painel). Todo o fluxo é idempotente: a tabela
+ * A consulta é gratuita: o pedido nasce com status `gratuito` (sem cobrança e
+ * sem pago_em) e a emissão é disparada logo após o registro. Pedidos antigos
+ * pagos (`pago`/`emitido`) continuam aceitos para retentativas. Todo o fluxo é idempotente: a tabela
  * `emissoes_antecedentes` tem uma linha única por pedido e cada etapa (emissão,
  * e-mail, WhatsApp) só roda enquanto a marca de conclusão estiver vazia.
  */
@@ -62,7 +63,8 @@ export async function processarEmissaoAntecedentes(
 
   if (!pedido) return { acao: "ignorado", motivo: "pedido_nao_encontrado" };
   if (pedido.tipo !== TIPO_ANTECEDENTES) return { acao: "ignorado", motivo: "outro_tipo" };
-  if (pedido.status !== "pago" && pedido.status !== "emitido") {
+  // `gratuito`: consulta gratuita; `pago`/`emitido`: pedidos pagos antigos.
+  if (!["gratuito", "pago", "emitido"].includes(pedido.status)) {
     return { acao: "ignorado", motivo: "pagamento_nao_confirmado" };
   }
 
@@ -301,7 +303,9 @@ async function enviarEntrega(
     }
   }
 
-  // Com a certidão entregue, o pedido fica como emitido na fila de entregas.
+  // Pedidos pagos antigos passam a emitido. Consultas gratuitas mantêm o status
+  // `gratuito` (fora da fila de entregas e da receita); a conclusão fica em
+  // emissoes_antecedentes.
   await supabaseAdmin
     .from("pedidos")
     .update({ status: "emitido" })
@@ -329,7 +333,7 @@ async function registrarAndamento(
   }
 }
 
-/** Reprocessa pedidos pagos cuja emissão ainda não concluiu (retentativas). */
+/** Reprocessa consultas (gratuitas ou pagas antigas) cuja emissão ainda não concluiu (retentativas). */
 export async function reprocessarEmissoesPendentes(limite = 20) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const agora = new Date().toISOString();
