@@ -494,3 +494,4 @@ export function estadoRota(e: { modalidade: Modalidade; rota: Pick<RotaCertidao,
   if (e.rota.automacao_cpn === "homologada") return "ROTA_HOMOLOGADA";
   return "ROTA_IDENTIFICADA";
 }
+
