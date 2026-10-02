@@ -742,6 +742,21 @@ export type Database = {
           },
         ]
       }
+      fila_mensal_contador: {
+        Row: {
+          mes: string
+          ultimo: number
+        }
+        Insert: {
+          mes: string
+          ultimo?: number
+        }
+        Update: {
+          mes?: string
+          ultimo?: number
+        }
+        Relationships: []
+      }
       job_locks: {
         Row: {
           created_at: string
@@ -913,6 +928,8 @@ export type Database = {
           cpf: string
           created_at: string
           email: string
+          fila_mes: string | null
+          fila_numero: number | null
           finalidade: string | null
           foro: string | null
           id: string
@@ -967,6 +984,8 @@ export type Database = {
           cpf: string
           created_at?: string
           email: string
+          fila_mes?: string | null
+          fila_numero?: number | null
           finalidade?: string | null
           foro?: string | null
           id?: string
@@ -1021,6 +1040,8 @@ export type Database = {
           cpf?: string
           created_at?: string
           email?: string
+          fila_mes?: string | null
+          fila_numero?: number | null
           finalidade?: string | null
           foro?: string | null
           id?: string
