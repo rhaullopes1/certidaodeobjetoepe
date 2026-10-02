@@ -3,15 +3,14 @@
  * Motor de rotas puro e determinístico: escolhe a rota cadastrada (dados) para um processo.
  * Nunca presume que PJe/eproc = emissão automática: só vale o que está cadastrado/verificado.
  */
-import { digitoVerificadorNup, formatarNup } from "./cnj";
-
 export type Modalidade = "AUTOMATICA" | "SEMIAUTOMATICA" | "MANUAL" | "INDISPONIVEL" | "VERIFICAR";
 
+/** Modalidade DECLARADA no cadastro (como o tribunal oferece o serviço) — não indica execução pela CPN. */
 export const MODALIDADES: Record<Modalidade, { rotulo: string; emoji: string; classe: string; descricao: string }> = {
-  AUTOMATICA: { rotulo: "AUTOMÁTICA", emoji: "🟢", classe: "bg-live/15 text-live ring-live/40", descricao: "Emissão automática pelo tribunal (fluxo elegível)." },
-  SEMIAUTOMATICA: { rotulo: "SEMIAUTOMÁTICA", emoji: "🟡", classe: "bg-gold/20 text-foreground ring-gold/50", descricao: "Portal online; exige ação do operador." },
-  MANUAL: { rotulo: "MANUAL", emoji: "🔵", classe: "bg-primary/10 text-primary ring-primary/30", descricao: "Solicitação manual à unidade/tribunal." },
-  INDISPONIVEL: { rotulo: "INDISPONÍVEL", emoji: "🔴", classe: "bg-destructive/10 text-destructive ring-destructive/30", descricao: "Rota indisponível no momento." },
+  AUTOMATICA: { rotulo: "Tribunal: emissão automática", emoji: "", classe: "bg-secondary text-foreground ring-border", descricao: "Segundo o cadastro, o portal do tribunal emite automaticamente no fluxo elegível (não é execução pela CPN)." },
+  SEMIAUTOMATICA: { rotulo: "Tribunal: portal online", emoji: "", classe: "bg-secondary text-foreground ring-border", descricao: "Portal online do tribunal; exige ação do operador." },
+  MANUAL: { rotulo: "Tribunal: solicitação manual", emoji: "", classe: "bg-secondary text-foreground ring-border", descricao: "Solicitação manual à unidade/tribunal." },
+  INDISPONIVEL: { rotulo: "Tribunal: indisponível", emoji: "", classe: "bg-destructive/10 text-destructive ring-destructive/30", descricao: "Serviço indisponível segundo o cadastro." },
   VERIFICAR: { rotulo: "VERIFICAR", emoji: "⚪", classe: "bg-secondary text-muted-foreground ring-border", descricao: "Sem rota cadastrada/verificada para este contexto." },
 };
 
@@ -49,6 +48,7 @@ export interface RotaCertidao {
   automacao_cpn: string;
   prioridade: number;
   ultima_verificacao: string | null;
+  status_verificacao?: string | null;
 }
 
 export interface ContextoProcesso {
@@ -104,8 +104,11 @@ export function escolherRota(rotas: RotaCertidao[], ctx: ContextoProcesso): Rota
     alertas.push("A fonte informa segredo de justiça: fluxo automático não se aplica.");
     if (modalidade === "AUTOMATICA" || modalidade === "SEMIAUTOMATICA") modalidade = "MANUAL";
   }
+  if (melhor.status_verificacao !== "verificada") {
+    alertas.push("Rota encontrada em pesquisa documental, ainda PENDENTE de verificação com evidência oficial — não está validada.");
+  }
   if (melhor.automacao_cpn !== "homologada") {
-    alertas.push("Automação pela CPN não homologada: a emissão é feita no portal do tribunal pelo operador.");
+    alertas.push("Execução ainda não integrada à CPN (automação não homologada): o operador executa no portal oficial.");
   }
   if (!melhor.ultima_verificacao) alertas.push("Rota sem data de verificação.");
   return { modalidade, rota: melhor, alertas };
@@ -119,7 +122,8 @@ export function textoRota(p: { numero: string; tribunal: string | null; unidade:
     `Tribunal: ${p.tribunal ?? "não identificado"}`,
     `Unidade: ${p.unidade ?? "não confirmada pela fonte"}`,
     `Certidão: Objeto e Pé / Narratória`,
-    `Modalidade: ${MODALIDADES[e.modalidade].rotulo}`,
+    `Estado da rota: ${ESTADOS_ROTA[estadoRota(e)].rotulo}`,
+    `Modalidade declarada no cadastro: ${MODALIDADES[e.modalidade].rotulo}`,
   ];
   if (r) {
     linhas.push(`Método: ${r.metodo}`);
@@ -149,19 +153,6 @@ export function textoSolicitacao(p: { numero: string; unidade: string | null; tr
   ].join("\n");
 }
 
-function nupValido(numero: string, ano: string, j: string, tr: string, origem: string) {
-  const dv = digitoVerificadorNup(numero, ano, j, tr, origem);
-  return formatarNup(`${numero}${dv}${ano}${j}${tr}${origem}`);
-}
-
-/** Casos DEMO — números fictícios com dígito válido; nunca consultam fontes reais. */
-export const CASOS_DEMO = [
-  { numero: nupValido("0000001", "2025", "8", "24", "0023"), titulo: "TJSC · eproc", dados: { sistema: "eproc", grau: "G1", orgaoJulgador: "DEMO — Vara Cível", classe: "Procedimento Comum Cível", assuntos: ["DEMO — Indenização"], nivelSigilo: 0 } },
-  { numero: nupValido("0000002", "2025", "8", "26", "0100"), titulo: "TJSP · eproc", dados: { sistema: "eproc", grau: "G1", orgaoJulgador: "DEMO — Vara Criminal", classe: "Ação Penal", assuntos: ["DEMO — Furto"], nivelSigilo: 0 } },
-  { numero: nupValido("0000003", "2024", "4", "03", "6100"), titulo: "TRF3 · PJe", dados: { sistema: "PJe", grau: "G1", orgaoJulgador: "DEMO — Vara Federal", classe: "Execução Fiscal", assuntos: ["DEMO — Tributário"], nivelSigilo: 0 } },
-  { numero: nupValido("0000004", "2024", "8", "11", "0041"), titulo: "TJMT · PJe com sigilo", dados: { sistema: "PJe", grau: "G1", orgaoJulgador: "DEMO — Vara de Família", classe: "Divórcio", assuntos: ["DEMO — Família"], nivelSigilo: 1 } },
-  { numero: nupValido("0000005", "2023", "8", "05", "0001"), titulo: "TJBA · sem rota", dados: { sistema: "PJe", grau: "G1", orgaoJulgador: "DEMO — Vara Cível", classe: "Monitória", assuntos: ["DEMO — Cobrança"], nivelSigilo: 0 } },
-] as const;
 
 /* ---------------- Fase 2: cobertura, verificação, status de consulta ---------------- */
 
@@ -236,12 +227,67 @@ export function prepararMarcacaoRota(p: {
   return { patch, auditoria };
 }
 
-export type StatusConsulta = "localizado" | "nao_localizado" | "tribunal_nao_identificado" | "erro";
+export type StatusConsulta = "confirmado" | "nao_encontrado" | "fonte_indisponivel" | "tribunal_nao_identificado";
 
-/** Status da consulta: só "localizado" com DataJud ok (ou DEMO). Falha do DataJud nunca vira localizado. */
-export function statusConsulta(p: { tribunalIdentificado: boolean; demo: boolean; datajudStatus: string | null }): StatusConsulta {
+/** Status da consulta: só "confirmado" quando a fonte oficial (DataJud) respondeu com o processo. */
+export function statusConsulta(p: { tribunalIdentificado: boolean; datajudStatus: string | null }): StatusConsulta {
   if (!p.tribunalIdentificado) return "tribunal_nao_identificado";
-  if (p.demo || p.datajudStatus === "ok") return "localizado";
-  if (p.datajudStatus === "indisponivel" || p.datajudStatus === "limite_requisicoes") return "erro";
-  return "nao_localizado";
+  if (p.datajudStatus === "ok") return "confirmado";
+  if (p.datajudStatus === "nao_encontrado") return "nao_encontrado";
+  return "fonte_indisponivel";
+}
+
+/** Rótulos do histórico (inclui status gravados por versões anteriores). */
+export const ROTULO_STATUS_CONSULTA: Record<string, string> = {
+  confirmado: "DADO CONFIRMADO",
+  nao_encontrado: "Não encontrado na fonte",
+  fonte_indisponivel: "FONTE INDISPONÍVEL",
+  tribunal_nao_identificado: "Tribunal não identificado",
+  invalido: "Número inválido",
+  localizado: "DADO CONFIRMADO (registro antigo)",
+  nao_localizado: "Não confirmado (registro antigo)",
+  erro: "FONTE INDISPONÍVEL (registro antigo)",
+};
+
+/* ---------------- Estados inequívocos (dado e rota) ---------------- */
+
+export type EstadoDado = "DADO_CONFIRMADO" | "FONTE_INDISPONIVEL" | "NAO_ENCONTRADO" | "NAO_CONSULTADO";
+export const ESTADOS_DADO: Record<EstadoDado, string> = {
+  DADO_CONFIRMADO: "DADO CONFIRMADO — fonte oficial respondeu",
+  FONTE_INDISPONIVEL: "FONTE INDISPONÍVEL — não foi possível confirmar agora",
+  NAO_ENCONTRADO: "NÃO ENCONTRADO — a fonte oficial não retornou este processo",
+  NAO_CONSULTADO: "NÃO CONSULTADO — tribunal sem fonte real disponível",
+};
+export function estadoDado(datajudStatus: string | null): EstadoDado {
+  if (datajudStatus === "ok") return "DADO_CONFIRMADO";
+  if (datajudStatus === "nao_encontrado") return "NAO_ENCONTRADO";
+  if (datajudStatus === null) return "NAO_CONSULTADO";
+  return "FONTE_INDISPONIVEL";
+}
+
+export interface DadosFonte {
+  sistema?: string | null; grau?: string | null; orgaoJulgador?: string | null; classe?: string | null;
+  assuntos?: string[]; movimentos?: { nome: string; dataHora: string | null }[]; nivelSigilo?: number | null; dataAjuizamento?: string | null;
+}
+/** Só repassa campos quando a fonte respondeu "ok". Qualquer outro status = nenhum dado (sem fallback). */
+export function dadosConfirmados(r: { status: string; sistema?: string | null; grau?: string | null; orgaoJulgador?: string | null; classe?: string | null; assuntos?: string[]; ultimosMovimentos?: { nome: string; dataHora: string | null }[]; nivelSigilo?: number | null; dataAjuizamento?: string | null }): DadosFonte {
+  if (r.status !== "ok") return {};
+  return { sistema: r.sistema ?? null, grau: r.grau ?? null, orgaoJulgador: r.orgaoJulgador ?? null, classe: r.classe ?? null, assuntos: r.assuntos ?? [], movimentos: r.ultimosMovimentos ?? [], nivelSigilo: r.nivelSigilo ?? null, dataAjuizamento: r.dataAjuizamento ?? null };
+}
+
+export type EstadoRota = "ROTA_HOMOLOGADA" | "ROTA_IDENTIFICADA" | "MANUAL" | "VERIFICAR";
+export const ESTADOS_ROTA: Record<EstadoRota, { rotulo: string; emoji: string; classe: string; descricao: string }> = {
+  ROTA_HOMOLOGADA: { rotulo: "ROTA HOMOLOGADA", emoji: "🟢", classe: "bg-live/15 text-live ring-live/40", descricao: "A CPN executa esta rota por integração implementada e testada." },
+  ROTA_IDENTIFICADA: { rotulo: "ROTA IDENTIFICADA", emoji: "🟡", classe: "bg-gold/20 text-foreground ring-gold/50", descricao: "Procedimento oficial identificado e verificado — execução ainda não integrada à CPN. O operador executa no portal oficial." },
+  MANUAL: { rotulo: "MANUAL", emoji: "🔵", classe: "bg-primary/10 text-primary ring-primary/30", descricao: "Exige ação do operador junto à unidade/tribunal." },
+  VERIFICAR: { rotulo: "VERIFICAR", emoji: "⚪", classe: "bg-secondary text-muted-foreground ring-border", descricao: "Sem rota validada: nenhuma rota cadastrada ou rota ainda pendente de verificação com evidência oficial." },
+};
+
+/** Estado da rota apresentado ao operador. Homologada exige verificação + integração homologada. */
+export function estadoRota(e: { modalidade: Modalidade; rota: Pick<RotaCertidao, "automacao_cpn" | "status_verificacao"> | null }): EstadoRota {
+  if (!e.rota || e.modalidade === "VERIFICAR" || e.modalidade === "INDISPONIVEL") return "VERIFICAR";
+  if (e.rota.status_verificacao !== "verificada") return "VERIFICAR";
+  if (e.modalidade === "MANUAL") return "MANUAL";
+  if (e.rota.automacao_cpn === "homologada") return "ROTA_HOMOLOGADA";
+  return "ROTA_IDENTIFICADA";
 }
