@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { analisarNup } from "./cnj";
-import { CASOS_DEMO, escolherRota, textoRota, type RotaCertidao } from "./cpn";
+import { escolherRota, textoRota, type RotaCertidao } from "./cpn";
 
 const base: RotaCertidao = {
   id: "r1", sistema: "eproc", grau: null, tipo_certidao: "objeto_e_pe", modalidade: "AUTOMATICA", metodo: "AUTO_EPROC",
@@ -30,9 +29,6 @@ describe("motor de rotas CPN", () => {
     const t = textoRota({ numero: "1", tribunal: "TJSC", unidade: null }, e);
     expect(t).toContain("https://x");
     expect(t).toContain("não homologada");
-  });
-  it("casos DEMO têm dígito verificador válido", () => {
-    for (const c of CASOS_DEMO) expect(analisarNup(c.numero)?.digitoValido).toBe(true);
   });
 });
 
@@ -72,10 +68,10 @@ describe("CPN fase 2", () => {
   });
 
   it("DataJud indisponível → resultado parcial, nunca localizado", () => {
-    expect(statusConsulta({ tribunalIdentificado: true, demo: false, datajudStatus: "indisponivel" })).toBe("erro");
-    expect(statusConsulta({ tribunalIdentificado: true, demo: false, datajudStatus: "nao_configurado" })).toBe("nao_localizado");
-    expect(statusConsulta({ tribunalIdentificado: true, demo: false, datajudStatus: "ok" })).toBe("localizado");
-    expect(statusConsulta({ tribunalIdentificado: false, demo: false, datajudStatus: null })).toBe("tribunal_nao_identificado");
+    expect(statusConsulta({ tribunalIdentificado: true, datajudStatus: "indisponivel" })).toBe("fonte_indisponivel");
+    expect(statusConsulta({ tribunalIdentificado: true, datajudStatus: "nao_configurado" })).toBe("fonte_indisponivel");
+    expect(statusConsulta({ tribunalIdentificado: true, datajudStatus: "ok" })).toBe("confirmado");
+    expect(statusConsulta({ tribunalIdentificado: false, datajudStatus: null })).toBe("tribunal_nao_identificado");
     // sem sistema confirmado, rota automática não é afirmada
     expect(escolherRota([base], { sistema: null, grau: null, nivelSigilo: null }).modalidade).not.toBe("AUTOMATICA");
   });
@@ -97,5 +93,35 @@ describe("CPN fase 2", () => {
     const rev = prepararMarcacaoRota({ ...p, acao: "revisar", evidenciaAtual: null, urlFonte: null });
     expect(rev.patch).not.toHaveProperty("ultima_verificacao");
     expect(rev.auditoria.acao).toBe("revisar_rota");
+  });
+});
+
+import { dadosConfirmados, estadoDado, estadoRota } from "./cpn";
+import * as cpn from "./cpn";
+
+describe("CPN somente dados reais", () => {
+  it("não existe catálogo DEMO exportado para a UI", () => {
+    expect((cpn as Record<string, unknown>)["CASOS_DEMO"]).toBeUndefined();
+  });
+  it("fonte indisponível/não configurada não produz dados (sem fallback)", () => {
+    for (const status of ["indisponivel", "nao_configurado", "limite_requisicoes", "nao_encontrado", "tribunal_nao_suportado"]) {
+      expect(dadosConfirmados({ status, sistema: "eproc", orgaoJulgador: "X", classe: "Y" })).toEqual({});
+      expect(estadoDado(status)).not.toBe("DADO_CONFIRMADO");
+    }
+  });
+  it("só status ok repassa campos; ausência permanece ausência", () => {
+    const d = dadosConfirmados({ status: "ok", sistema: "SAJ" });
+    expect(d.sistema).toBe("SAJ");
+    expect(d.orgaoJulgador).toBeNull();
+    expect(d.assuntos).toEqual([]);
+    expect(estadoDado("ok")).toBe("DADO_CONFIRMADO");
+  });
+  it("rota não homologada nunca aparece como homologada; pendente = VERIFICAR", () => {
+    const ctx = { sistema: "eproc", grau: null, nivelSigilo: 0 };
+    expect(estadoRota(escolherRota([base], ctx))).toBe("VERIFICAR");
+    expect(estadoRota(escolherRota([{ ...base, status_verificacao: "verificada" }], ctx))).toBe("ROTA_IDENTIFICADA");
+    expect(estadoRota(escolherRota([{ ...base, status_verificacao: "pendente", automacao_cpn: "homologada" }], ctx))).toBe("VERIFICAR");
+    expect(estadoRota(escolherRota([{ ...base, status_verificacao: "verificada", automacao_cpn: "homologada" }], ctx))).toBe("ROTA_HOMOLOGADA");
+    expect(estadoRota(escolherRota([], ctx))).toBe("VERIFICAR");
   });
 });

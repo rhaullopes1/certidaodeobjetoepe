@@ -4,7 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { analisarNup } from "./cnj";
 import { decodificarPartes } from "./cnj.functions";
-import { CASOS_DEMO, calcularCobertura, escolherRota, prepararMarcacaoRota, statusConsulta, type AcaoRota, type Modalidade, type RotaCertidao, type StatusOperacao, STATUS_OPERACAO } from "./cpn";
+import { calcularCobertura, dadosConfirmados, escolherRota, prepararMarcacaoRota, statusConsulta, type AcaoRota, type Modalidade, type RotaCertidao, type StatusOperacao, STATUS_OPERACAO } from "./cpn";
 
 type Sb = SupabaseClient<Database>;
 
@@ -58,7 +58,7 @@ export interface ResultadoCpn {
 /** Localiza o processo: CNJ → tabela de tribunais → DataJud (server-side) → motor de rotas. */
 export const localizarProcesso = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: { numero: string; demo?: boolean }) => ({ numero: String(i?.numero ?? "").slice(0, 60), demo: Boolean(i?.demo) }))
+  .inputValidator((i: { numero: string }) => ({ numero: String(i?.numero ?? "").slice(0, 60), demo: false as const }))
   .handler(async ({ data, context }): Promise<ResultadoCpn> => {
     const { supabase, userId } = context;
     await exigirEquipe(supabase, userId);
@@ -76,7 +76,7 @@ export const localizarProcesso = createServerFn({ method: "POST" })
           modalidade: r.processo ? r.modalidade : null,
           route_id: r.rota?.id ?? null,
           demo: r.demo,
-          fonte: r.demo ? "DEMO (dados locais fictícios)" : r.datajud?.status === "ok" ? r.datajud.fonte : "Tabela CNJ",
+          fonte: r.datajud?.status === "ok" ? r.datajud.fonte : "Cadastro CNJ (não confirmado pela fonte)",
           dados_json: JSON.parse(JSON.stringify({ processo: r.processo, datajud: r.datajud, alertas: r.alertas })) as Json,
           operador_id: userId,
         })
@@ -98,20 +98,13 @@ export const localizarProcesso = createServerFn({ method: "POST" })
       .eq("codigo_tr", partes.codigoTribunal)
       .maybeSingle();
 
-    const demoCaso = data.demo ? CASOS_DEMO.find((c) => c.numero === partes.formatado) : undefined;
     let datajud: ResultadoCpn["datajud"] = null;
     let fonteDados: Partial<ProcessoCpn> = {};
-    if (data.demo) {
-      if (!demoCaso) return registrar({ ...vazio, erro: "Este número não é um caso DEMO. Desative o modo DEMO para consulta real." }, "erro");
-      const d = demoCaso.dados;
-      fonteDados = { sistema: d.sistema, grau: d.grau, orgaoJulgador: d.orgaoJulgador, classe: d.classe, assuntos: [...d.assuntos], nivelSigilo: d.nivelSigilo, movimentos: [{ nome: "DEMO — Conclusos para despacho", dataHora: null }] };
-    } else if (trib) {
+    if (trib) {
       const { consultarDatajud } = await import("./datajud.server");
       const r = await consultarDatajud(partes.formatado, trib.sigla, { timeoutMs: 20000 });
       datajud = { status: r.status, fonte: r.fonte, ...(r.erro ? { erro: r.erro.slice(0, 200) } : {}) };
-      if (r.status === "ok") {
-        fonteDados = { sistema: r.sistema, grau: r.grau, orgaoJulgador: r.orgaoJulgador, classe: r.classe, assuntos: r.assuntos, movimentos: r.ultimosMovimentos, nivelSigilo: r.nivelSigilo, dataAjuizamento: r.dataAjuizamento };
-      }
+      fonteDados = dadosConfirmados(r);
     }
 
     const sigilo = fonteDados.nivelSigilo ?? null;
@@ -140,7 +133,7 @@ export const localizarProcesso = createServerFn({ method: "POST" })
       rotas = (rs ?? []) as unknown as RotaCertidao[];
     }
     const escolha = escolherRota(rotas, { sistema: processo.sistema, grau: processo.grau, nivelSigilo: sigilo });
-    const status = statusConsulta({ tribunalIdentificado: Boolean(trib), demo: data.demo, datajudStatus: datajud?.status ?? null });
+    const status = statusConsulta({ tribunalIdentificado: Boolean(trib), datajudStatus: datajud?.status ?? null });
     return registrar({ demo: data.demo, erro: null, datajud, processo, modalidade: escolha.modalidade, rota: escolha.rota, alertas: escolha.alertas }, status);
   });
 
@@ -156,8 +149,8 @@ export const painelCpn = createServerFn({ method: "GET" })
 
     const [{ data: hoje }, { data: ultimas }, { data: pendencias }, { data: rotas }] = await Promise.all([
       supabase.from("cpn_process_queries").select("status, modalidade, demo").gte("consultado_em", inicio.toISOString()).limit(2000),
-      supabase.from("cpn_process_queries").select("id, numero_normalizado, numero_raw, tribunal_sigla, status, modalidade, demo, consultado_em").order("consultado_em", { ascending: false }).limit(15),
-      supabase.from("cpn_operacoes").select("*").not("status", "in", "(entregue)").order("created_at", { ascending: false }).limit(50),
+      supabase.from("cpn_process_queries").select("id, numero_normalizado, numero_raw, tribunal_sigla, status, modalidade, demo, consultado_em").eq("demo", false).order("consultado_em", { ascending: false }).limit(15),
+      supabase.from("cpn_operacoes").select("*").eq("demo", false).not("status", "in", "(entregue)").order("created_at", { ascending: false }).limit(50),
       supabase.from("cpn_certificate_routes").select("id, sistema, modalidade, metodo, url_fonte, ultima_verificacao, automacao_cpn, status_verificacao, cnj_tribunais(sigla)").eq("ativo", true).order("prioridade"),
     ]);
     const todos = hoje ?? [];
@@ -167,12 +160,12 @@ export const painelCpn = createServerFn({ method: "GET" })
       admin,
       stats: {
         consultas: h.length,
-        localizados: conta((x) => x.status === "localizado"),
+        localizados: conta((x) => x.status === "confirmado" || x.status === "localizado"),
         automaticas: conta((x) => x.modalidade === "AUTOMATICA"),
         semiautomaticas: conta((x) => x.modalidade === "SEMIAUTOMATICA"),
         manuais: conta((x) => x.modalidade === "MANUAL"),
-        naoLocalizados: conta((x) => x.status === "nao_localizado" || x.status === "tribunal_nao_identificado"),
-        erros: conta((x) => x.status === "erro" || x.status === "invalido"),
+        naoLocalizados: conta((x) => ["nao_encontrado", "nao_localizado", "tribunal_nao_identificado"].includes(x.status)),
+        erros: conta((x) => ["fonte_indisponivel", "erro", "invalido"].includes(x.status)),
         demo: todos.length - h.length,
       },
       ultimas: ultimas ?? [],
@@ -196,7 +189,7 @@ export const criarOperacao = createServerFn({ method: "POST" })
     await exigirEquipe(supabase, userId);
     const { data: op, error } = await supabase
       .from("cpn_operacoes")
-      .insert({ query_id: data.queryId, route_id: data.routeId, numero_processo: data.numero, tribunal_sigla: data.tribunal, unidade: data.unidade, metodo: data.metodo, url_oficial: data.url, requisitos: data.requisitos, texto_solicitacao: data.texto, observacao: data.observacao, status: data.status, demo: data.demo, operador_id: userId })
+      .insert({ query_id: data.queryId, route_id: data.routeId, numero_processo: data.numero, tribunal_sigla: data.tribunal, unidade: data.unidade, metodo: data.metodo, url_oficial: data.url, requisitos: data.requisitos, texto_solicitacao: data.texto, observacao: data.observacao, status: data.status, demo: false, operador_id: userId })
       .select("id")
       .single();
     if (error || !op) throw new Error("Não foi possível registrar a operação.");
@@ -258,7 +251,7 @@ export const coberturaCpn = createServerFn({ method: "GET" })
     await exigirEquipe(supabase, userId);
     const [{ data: tribs }, { data: rotas }] = await Promise.all([
       supabase.from("cnj_tribunais").select("id, sigla, nome, uf, segmento").order("segmento").order("sigla"),
-      supabase.from("cpn_certificate_routes").select("id, tribunal_id, modalidade, status_verificacao").eq("ativo", true),
+      supabase.from("cpn_certificate_routes").select("id, tribunal_id, modalidade, status_verificacao, automacao_cpn").eq("ativo", true),
     ]);
     return calcularCobertura(tribs ?? [], rotas ?? []);
   });
@@ -308,7 +301,7 @@ export const historicoConsultasCpn = createServerFn({ method: "POST" })
     if (data.status) q = q.eq("status", data.status);
     if (data.de) q = q.gte("consultado_em", `${data.de}T03:00:00Z`);
     if (data.ate) { const f = new Date(`${data.ate}T03:00:00Z`); f.setUTCDate(f.getUTCDate() + 1); q = q.lt("consultado_em", f.toISOString()); }
-    if (data.tipo !== "todos") q = q.eq("demo", data.tipo === "demo");
+    q = q.eq("demo", false);
     const { data: linhas, error } = await q;
     if (error) throw new Error("Não foi possível carregar o histórico.");
     return linhas ?? [];
@@ -338,7 +331,7 @@ export const historicoProcessoCpn = createServerFn({ method: "POST" })
     await exigirEquipe(supabase, userId);
     const [{ data: logs }, { data: ops }] = await Promise.all([
       supabase.from("cpn_audit_logs").select("id, acao, resultado, created_at").eq("numero_processo", data.numero).order("created_at", { ascending: false }).limit(50),
-      supabase.from("cpn_operacoes").select("id, status, observacao, created_at, updated_at, demo").eq("numero_processo", data.numero).order("created_at", { ascending: false }),
+      supabase.from("cpn_operacoes").select("id, status, observacao, created_at, updated_at, demo").eq("numero_processo", data.numero).eq("demo", false).order("created_at", { ascending: false }),
     ]);
     return { logs: logs ?? [], operacoes: ops ?? [] };
   });
