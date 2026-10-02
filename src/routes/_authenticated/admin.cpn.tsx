@@ -19,6 +19,7 @@ import {
   type ResultadoCpn,
 } from "@/lib/cpn.functions";
 import { AdminHeader, SemPermissao } from "./admin.index";
+import { AvisoAssistida, DocumentoOficial, type OpDoc } from "@/components/admin/cpn-documento";
 
 export const Route = createFileRoute("/_authenticated/admin/cpn")({
   component: PaginaCpn,
@@ -246,6 +247,7 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
             <Campo k="Exceções" v={rota.excecoes} />
           </dl>
         ) : null}
+        {rota?.metodo?.startsWith("ASSISTIDA") && <AvisoAssistida requisitos={rota.requisitos} url={rota.url_certidao} />}
         {r.alertas.length > 0 && <ul className="mt-3 space-y-1 text-xs">{r.alertas.map((a) => <li key={a} className="rounded-lg bg-gold/15 px-2 py-1">⚠ {a}</li>)}</ul>}
       </section>
 
@@ -314,7 +316,7 @@ function Ficha({ r, padrao, copiar, fechar }: { r: ResultadoCpn; padrao: string;
   );
 }
 
-type Pend = { id: string; numero_processo: string; tribunal_sigla: string | null; status: string; observacao: string | null; demo: boolean; created_at: string; updated_at: string };
+type Pend = OpDoc & { id: string; numero_processo: string; tribunal_sigla: string | null; status: string; observacao: string | null; demo: boolean; created_at: string; updated_at: string };
 
 function Pendencias({ itens }: { itens: Pend[] }) {
   const qc = useQueryClient();
@@ -330,7 +332,8 @@ function Pendencias({ itens }: { itens: Pend[] }) {
       {itens.map((o) => (
         <li key={o.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
           <span><span className="font-mono">{o.numero_processo}</span> · {o.tribunal_sigla ?? "—"}
-            {o.observacao && <span className="block text-xs text-muted-foreground">{o.observacao}</span>}</span>
+            {o.observacao && <span className="block text-xs text-muted-foreground">{o.observacao}</span>}
+            <DocumentoOficial op={o} /></span>
           <span className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground">{new Date(o.updated_at).toLocaleString("pt-BR")}</span>
             <select value={o.status} onChange={(e) => mut.mutate({ id: o.id, status: e.target.value as StatusOperacao })} className="h-9 rounded-lg border border-input bg-background px-2 text-sm">
