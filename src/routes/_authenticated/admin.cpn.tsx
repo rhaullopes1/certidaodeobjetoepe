@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { CheckCircle2, ClipboardCopy, ExternalLink, FileText, History, Loader2, Search, ShieldAlert } from "lucide-react";
 import { souEquipe } from "@/lib/admin";
 import { analisarNup, formatarNup } from "@/lib/cnj";
-import { CoberturaRotas, FilaVerificacao, HistoricoConsultas, TagDemo } from "@/components/admin/cpn-paineis";
-import { CASOS_DEMO, MODALIDADES, STATUS_OPERACAO, textoRota, textoSolicitacao, type Modalidade, type StatusOperacao } from "@/lib/cpn";
+import { CoberturaRotas, FilaVerificacao, HistoricoConsultas } from "@/components/admin/cpn-paineis";
+import { ESTADOS_DADO, ESTADOS_ROTA, estadoDado, estadoRota, MODALIDADES, STATUS_OPERACAO, textoRota, textoSolicitacao, type Modalidade, type StatusOperacao } from "@/lib/cpn";
 import {
   atualizarOperacao,
   criarOperacao,
@@ -41,7 +41,7 @@ const DATAJUD_MSG: Record<string, string> = {
   nao_encontrado: "Processo não encontrado no DataJud",
   indisponivel: "DataJud indisponível",
   limite_requisicoes: "Limite de requisições do DataJud",
-  ok: "Localizado no DataJud",
+  ok: "DADO CONFIRMADO pelo DataJud",
 };
 
 function Badge({ m }: { m: Modalidade }) {
@@ -76,22 +76,20 @@ function Cpn() {
   const acaoFn = useServerFn(registrarAcaoCpn);
   const painel = useQuery({ queryKey: ["cpn-painel"], queryFn: () => painelFn() });
   const [numero, setNumero] = useState("");
-  const [demo, setDemo] = useState(false);
-  const [aba, setAba] = useState<"ultimas" | "cobertura" | "fila" | "historico" | "pendencias" | "demo">("ultimas");
-  const [verDemo, setVerDemo] = useState(false);
+  const [aba, setAba] = useState<"ultimas" | "cobertura" | "fila" | "historico" | "pendencias">("ultimas");
   const [enviado, setEnviado] = useState<string | null>(null);
 
   const consulta = useMutation({
-    mutationFn: (v: { numero: string; demo: boolean }) => localizarFn({ data: v }),
+    mutationFn: (v: { numero: string }) => localizarFn({ data: v }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["cpn-painel"] }),
     onError: (e) => toast.error(e instanceof Error ? e.message : "Falha na consulta"),
   });
 
-  const buscar = (n = numero, d = demo) => {
+  const buscar = (n = numero) => {
     if (!n.trim()) return;
     setNumero(formatarNup(n));
     setEnviado(n);
-    consulta.mutate({ numero: n, demo: d });
+    consulta.mutate({ numero: n });
   };
 
   const s = painel.data?.stats;
@@ -104,11 +102,11 @@ function Cpn() {
           <p className="text-sm text-muted-foreground">Certidão de Objeto e Pé · ferramenta interna (não emite documento oficial)</p>
         </div>
 
-        <p className="text-xs text-muted-foreground">Indicadores de hoje — somente consultas reais{s?.demo ? ` (${s.demo} consulta(s) DEMO excluída(s))` : ""}</p>
+        <p className="text-xs text-muted-foreground">Indicadores de hoje — consultas reais</p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           {[
-            ["Consultas hoje", s?.consultas], ["Localizados", s?.localizados], ["Automáticas", s?.automaticas],
-            ["Semiautomáticas", s?.semiautomaticas], ["Manuais", s?.manuais], ["Não localizados", s?.naoLocalizados], ["Erros", s?.erros],
+            ["Consultas hoje", s?.consultas], ["Dados confirmados", s?.localizados], ["Automáticas", s?.automaticas],
+            ["Semiautomáticas", s?.semiautomaticas], ["Manuais", s?.manuais], ["Não encontrados", s?.naoLocalizados], ["Fonte indisponível", s?.erros],
           ].map(([k, v]) => (
             <div key={k as string} className="rounded-xl border border-border bg-card px-3 py-2">
               <p className="text-[11px] text-muted-foreground">{k}</p>
@@ -126,17 +124,14 @@ function Cpn() {
               {consulta.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />} Localizar processo
             </button>
           </div>
-          <label className="mt-3 inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={demo} onChange={(e) => setDemo(e.target.checked)} /> Modo DEMO (dados fictícios locais, sem consulta real)
-          </label>
         </form>
 
-        {consulta.isPending && enviado && <IdentificacaoImediata numero={enviado} demo={demo} />}
+        {consulta.isPending && enviado && <IdentificacaoImediata numero={enviado} />}
         {!consulta.isPending && consulta.data && <Resultado r={consulta.data} admin={Boolean(painel.data?.admin)} registrar={(acao, routeId) => acaoFn({ data: { acao, numero: consulta.data?.processo?.numeroFormatado ?? null, routeId } })} />}
 
         <section className={card}>
           <div className="mb-4 flex flex-wrap gap-2">
-            {([["ultimas", "Últimos processos"], ["cobertura", "Cobertura de rotas"], ["fila", "Rotas a verificar"], ["historico", "Histórico"], ["pendencias", "Pendências manuais"], ["demo", "Casos de teste (DEMO)"]] as const).map(([k, l]) => (
+            {([["ultimas", "Últimos processos"], ["cobertura", "Cobertura de rotas"], ["fila", "Rotas a verificar"], ["historico", "Histórico"], ["pendencias", "Pendências manuais"]] as const).map(([k, l]) => (
               <button key={k} type="button" onClick={() => setAba(k)} className={`rounded-full px-3 py-1.5 text-sm font-semibold ${aba === k ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>{l}</button>
             ))}
           </div>
@@ -145,9 +140,8 @@ function Cpn() {
             <ul className="divide-y divide-border text-sm">
               {painel.data?.ultimas.map((u) => (
                 <li key={u.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
-                  <button type="button" className="font-mono hover:underline" onClick={() => buscar(u.numero_normalizado ?? u.numero_raw, u.demo)}>{u.numero_normalizado ?? u.numero_raw}</button>
+                  <button type="button" className="font-mono hover:underline" onClick={() => buscar(u.numero_normalizado ?? u.numero_raw)}>{u.numero_normalizado ?? u.numero_raw}</button>
                   <span className="flex items-center gap-2">
-                    {u.demo && <span className="rounded bg-gold/30 px-1.5 text-[10px] font-bold">DEMO</span>}
                     <span>{u.tribunal_sigla ?? "—"}</span><span className="text-muted-foreground">{u.status}</span>
                     {u.modalidade && <Badge m={u.modalidade as Modalidade} />}
                     <span className="text-xs text-muted-foreground">{new Date(u.consultado_em).toLocaleString("pt-BR")}</span>
@@ -159,23 +153,9 @@ function Cpn() {
           )}
           {aba === "cobertura" && <CoberturaRotas />}
           {aba === "fila" && <FilaVerificacao />}
-          {aba === "historico" && <HistoricoConsultas abrir={(n, d) => { setDemo(d); buscar(n, d); }} />}
+          {aba === "historico" && <HistoricoConsultas abrir={(n) => buscar(n)} />}
           {aba === "pendencias" && (
-            <div className="space-y-2">
-              <label className="inline-flex items-center gap-2 text-sm"><input type="checkbox" checked={verDemo} onChange={(e) => setVerDemo(e.target.checked)} /> Mostrar fichas DEMO (testes)</label>
-              <Pendencias itens={(painel.data?.pendencias ?? []).filter((p) => verDemo || !p.demo)} />
-            </div>
-          )}
-          {aba === "demo" && (
-            <div className="grid gap-2 sm:grid-cols-2">
-              {CASOS_DEMO.map((c) => (
-                <button key={c.numero} type="button" onClick={() => { setDemo(true); buscar(c.numero, true); }} className="rounded-xl border border-dashed border-border p-3 text-left hover:bg-secondary">
-                  <span className="rounded bg-gold/30 px-1.5 text-[10px] font-bold">DEMO</span>
-                  <p className="mt-1 font-mono text-sm">{c.numero}</p>
-                  <p className="text-xs text-muted-foreground">{c.titulo} — fictício, não gera solicitação real</p>
-                </button>
-              ))}
-            </div>
+            <Pendencias itens={painel.data?.pendencias ?? []} />
           )}
         </section>
       </main>
@@ -201,7 +181,9 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   if (r.erro) return <div className={`${card} border-destructive/40 text-destructive`}><ShieldAlert className="mr-2 inline h-5 w-5" />{r.erro}</div>;
   if (!p) return null;
   const sigilo = p.nivelSigilo !== null && p.nivelSigilo > 0;
-  const confirmado = r.demo || r.datajud?.status === "ok";
+  const confirmado = r.datajud?.status === "ok";
+  const eDado = estadoDado(r.datajud?.status ?? null);
+  const eRota = ESTADOS_ROTA[estadoRota({ modalidade: r.modalidade, rota })];
   const copiar = async (texto: string, acao: "copiar_rota" | "copiar_solicitacao") => {
     await navigator.clipboard.writeText(texto);
     toast.success("Copiado");
@@ -212,7 +194,8 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       <section className={card}>
-        <h2 className="mb-2 flex items-center justify-between font-display font-bold">Processo identificado {r.demo && <TagDemo />}</h2>
+        <h2 className="mb-2 flex items-center justify-between font-display font-bold">Processo</h2>
+        <p className={`rounded-lg px-3 py-2 text-xs font-bold ${confirmado ? "bg-live/15 text-live" : "bg-destructive/10 text-destructive"}`}>{ESTADOS_DADO[eDado]}</p>
         <h3 className="mt-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">Identificação pelo número (CNJ + cadastro de tribunais)</h3>
         <dl>
           <Campo k="Número CNJ" v={<span className="font-mono">{p.numeroFormatado}</span>} />
@@ -222,7 +205,7 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
           <Campo k="UF" v={p.uf} />
           <Campo k="Código origem" v={p.codigoOrigem ? `${p.codigoOrigem} (não define vara/comarca)` : null} />
         </dl>
-        <h3 className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">{r.demo ? "Dados DEMO (fictícios, locais)" : "Dados confirmados pelo DataJud"}</h3>
+        <h3 className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Dados confirmados pelo DataJud (origem: {r.datajud?.fonte ?? "—"})</h3>
         {confirmado ? (
           <dl>
             <Campo k="Grau" v={p.grau} />
@@ -235,7 +218,7 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
           </dl>
         ) : (
           <p className="mt-1 rounded-lg bg-secondary px-3 py-2 text-xs text-muted-foreground">
-            {r.datajud ? DATAJUD_MSG[r.datajud.status] ?? r.datajud.status : "Tribunal não identificado no cadastro"}. Nenhum dado de vara, órgão julgador, classe ou situação foi confirmado — a identificação acima é parcial. A rota ao lado vem só do cadastro CPN.
+            {r.datajud ? DATAJUD_MSG[r.datajud.status] ?? r.datajud.status : "Tribunal não identificado no cadastro"}. Não foi possível confirmar: nenhum dado de vara, comarca, órgão julgador, classe, assunto, situação ou sistema é exibido. A rota ao lado vem só do cadastro CPN.
           </p>
         )}
       </section>
@@ -244,12 +227,13 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
         <h2 className="mb-2 font-display font-bold">Rota da certidão</h2>
         <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Fonte: cadastro CPN de rotas</p>
         <p className="mb-2 text-xs text-muted-foreground">Tipo: Certidão de Objeto e Pé / Narratória</p>
-        <Badge m={r.modalidade} />
-        <p className="mt-2 text-xs text-muted-foreground">{MODALIDADES[r.modalidade].descricao}</p>
+        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ring-1 ${eRota.classe}`}>{eRota.emoji} {eRota.rotulo}</span>
+        <p className="mt-2 text-xs text-muted-foreground">{eRota.descricao}</p>
+        {rota && <p className="mt-1 text-xs text-muted-foreground">Modalidade declarada no cadastro: {MODALIDADES[r.modalidade].rotulo} · verificação: {rota.status_verificacao ?? "pendente"}</p>}
         {rota ? (
           <dl className="mt-3">
             <Campo k="Método" v={rota.metodo} />
-            <Campo k="Automação CPN" v={rota.automacao_cpn === "homologada" ? "Homologada" : "Não homologada (operador emite no portal)"} />
+            <Campo k="Automação CPN" v={rota.automacao_cpn === "homologada" ? "Homologada" : "Execução ainda não integrada (operador executa no portal oficial)"} />
             <Campo k="Requisitos" v={rota.requisitos} />
             <Campo k="Exige login" v={simNao(rota.exige_login)} />
             <Campo k="Exige advogado" v={simNao(rota.exige_advogado)} />
@@ -278,7 +262,7 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
         {hist && (
           <ul className="mt-3 max-h-56 space-y-1 overflow-auto text-xs">
             {historico.isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {historico.data?.operacoes.map((o) => <li key={o.id} className="rounded bg-primary/5 px-2 py-1">Ficha: {STATUS_OPERACAO[o.status as StatusOperacao] ?? o.status} · {new Date(o.updated_at).toLocaleString("pt-BR")}{o.demo ? " · DEMO" : ""}</li>)}
+            {historico.data?.operacoes.map((o) => <li key={o.id} className="rounded bg-primary/5 px-2 py-1">Ficha: {STATUS_OPERACAO[o.status as StatusOperacao] ?? o.status} · {new Date(o.updated_at).toLocaleString("pt-BR")}</li>)}
             {historico.data?.logs.map((l) => <li key={l.id} className="px-2">{new Date(l.created_at).toLocaleString("pt-BR")} — {l.acao}{l.resultado ? ` (${l.resultado})` : ""}</li>)}
           </ul>
         )}
@@ -297,13 +281,13 @@ function Ficha({ r, padrao, copiar, fechar }: { r: ResultadoCpn; padrao: string;
   const [obs, setObs] = useState("");
   const [status, setStatus] = useState<StatusOperacao>("aguardando");
   const salvar = useMutation({
-    mutationFn: () => criarFn({ data: { queryId: r.queryId, routeId: r.rota?.id ?? null, numero: p.numeroFormatado, tribunal: p.tribunalSigla, unidade: p.orgaoJulgador, metodo: r.rota?.metodo ?? null, url: r.rota?.url_fonte ?? null, requisitos: r.rota?.requisitos ?? null, texto, observacao: obs || null, status, demo: r.demo } }),
+    mutationFn: () => criarFn({ data: { queryId: r.queryId, routeId: r.rota?.id ?? null, numero: p.numeroFormatado, tribunal: p.tribunalSigla, unidade: p.orgaoJulgador, metodo: r.rota?.metodo ?? null, url: r.rota?.url_fonte ?? null, requisitos: r.rota?.requisitos ?? null, texto, observacao: obs || null, status, demo: false } }),
     onSuccess: () => { toast.success("Ficha registrada"); qc.invalidateQueries({ queryKey: ["cpn-painel"] }); qc.invalidateQueries({ queryKey: ["cpn-hist"] }); fechar(); },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Falha"),
   });
   return (
     <section className={`${card} lg:col-span-3`}>
-      <h2 className="mb-3 font-display font-bold">Ficha operacional {r.demo && <span className="rounded bg-gold/30 px-1.5 text-[10px] font-bold">DEMO</span>}</h2>
+      <h2 className="mb-3 font-display font-bold">Ficha operacional</h2>
       <dl className="grid gap-x-6 sm:grid-cols-2">
         <Campo k="Tribunal" v={p.tribunalSigla} />
         <Campo k="Unidade" v={p.orgaoJulgador ?? "não confirmada pela fonte"} />
@@ -345,7 +329,7 @@ function Pendencias({ itens }: { itens: Pend[] }) {
     <ul className="divide-y divide-border text-sm">
       {itens.map((o) => (
         <li key={o.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
-          <span><span className="font-mono">{o.numero_processo}</span> · {o.tribunal_sigla ?? "—"} {o.demo && <span className="rounded bg-gold/30 px-1.5 text-[10px] font-bold">DEMO</span>}
+          <span><span className="font-mono">{o.numero_processo}</span> · {o.tribunal_sigla ?? "—"}
             {o.observacao && <span className="block text-xs text-muted-foreground">{o.observacao}</span>}</span>
           <span className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground">{new Date(o.updated_at).toLocaleString("pt-BR")}</span>
@@ -360,7 +344,7 @@ function Pendencias({ itens }: { itens: Pend[] }) {
 }
 
 /** Mostrado enquanto o servidor consulta o DataJud: só a estrutura do número, nada inferido. */
-function IdentificacaoImediata({ numero, demo }: { numero: string; demo: boolean }) {
+function IdentificacaoImediata({ numero }: { numero: string }) {
   const pts = analisarNup(numero);
   return (
     <section className={card}>
@@ -376,7 +360,7 @@ function IdentificacaoImediata({ numero, demo }: { numero: string; demo: boolean
       ) : <p className="text-sm text-destructive">Número incompleto: são necessários 20 dígitos.</p>}
       <p className="mt-3 flex items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm">
         <Loader2 className="h-4 w-4 animate-spin" />
-        {demo ? "Carregando caso DEMO…" : "Consultando o DataJud… a resposta pode levar até 20 segundos."}
+        Consultando o DataJud… a resposta pode levar até 20 segundos.
       </p>
     </section>
   );

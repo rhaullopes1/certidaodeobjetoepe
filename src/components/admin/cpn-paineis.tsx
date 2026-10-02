@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ExternalLink, Loader2 } from "lucide-react";
-import { MODALIDADES, STATUS_VERIFICACAO, filtrarCobertura, type AcaoRota, type Modalidade, type StatusVerificacao } from "@/lib/cpn";
+import { ESTADOS_ROTA, MODALIDADES, ROTULO_STATUS_CONSULTA, STATUS_VERIFICACAO, filtrarCobertura, type AcaoRota, type Modalidade, type StatusVerificacao } from "@/lib/cpn";
 import { coberturaCpn, filaVerificacaoCpn, historicoConsultasCpn, marcarRota, type FiltrosHistorico } from "@/lib/cpn.functions";
 
 export function BadgeModalidade({ m }: { m: Modalidade }) {
@@ -11,9 +11,6 @@ export function BadgeModalidade({ m }: { m: Modalidade }) {
   return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold ring-1 ${c.classe}`}>{c.emoji} {c.rotulo}</span>;
 }
 
-export function TagDemo() {
-  return <span className="rounded bg-gold/30 px-1.5 text-[10px] font-bold">DEMO</span>;
-}
 
 const input = "h-10 rounded-xl border border-input bg-background px-3 text-sm";
 const SEGMENTOS: Record<number, string> = { 1: "STF", 2: "CNJ", 3: "STJ", 4: "Federal", 5: "Trabalho", 6: "Eleitoral", 7: "Militar União", 8: "Estadual", 9: "Militar Estadual" };
@@ -31,7 +28,7 @@ export function CoberturaRotas() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-        {[["Tribunais cadastrados", r.total], ["Com rota cadastrada", r.comRota], ["VERIFICAR", r.verificar], ["Automáticas", r.automatica], ["Semiautomáticas", r.semiautomatica], ["Manuais", r.manual]].map(([k, v]) => (
+        {[["Tribunais cadastrados", r.total], ["Com rota cadastrada", r.comRota], ["Rota homologada", r.homologadas], ["Rota identificada", r.identificadas], ["Manual (verificada)", r.manuaisValidadas], ["VERIFICAR", r.semRotaValidada]].map(([k, v]) => (
           <div key={k as string} className="rounded-xl border border-border px-3 py-2"><p className="text-[11px] text-muted-foreground">{k}</p><p className="font-display text-xl font-bold">{v}</p></div>
         ))}
       </div>
@@ -44,7 +41,7 @@ export function CoberturaRotas() {
           <li key={l.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
             <span><span className="font-semibold">{l.sigla}</span> <span className="text-muted-foreground">— {l.nome}{l.uf ? ` · ${l.uf}` : ""} · {SEGMENTOS[l.segmento] ?? l.segmento}</span></span>
             {l.temRota ? (
-              <span className="flex items-center gap-2"><BadgeModalidade m={l.modalidade} /><span className="text-xs text-muted-foreground">{l.totalRotas} rota(s){l.verificada ? " · verificada" : " · verificação pendente"}</span></span>
+              <span className="flex items-center gap-2"><span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ring-1 ${ESTADOS_ROTA[l.estado].classe}`}>{ESTADOS_ROTA[l.estado].emoji} {ESTADOS_ROTA[l.estado].rotulo}</span><span className="text-xs text-muted-foreground">{l.totalRotas} rota(s){l.verificada ? " · verificada" : " · pendente de verificação"}</span></span>
             ) : (
               <span className="text-xs font-semibold text-muted-foreground">⚪ VERIFICAR — rota ainda não homologada/cadastrada</span>
             )}
@@ -95,7 +92,7 @@ export function FilaVerificacao() {
             <div><dt className="inline text-muted-foreground">Evidência: </dt><dd className="inline">{r.fonte_evidencia ?? "—"}</dd></div>
             <div><dt className="inline text-muted-foreground">Última verificação: </dt><dd className="inline">{r.ultima_verificacao ?? "—"}</dd></div>
             <div><dt className="inline text-muted-foreground">Responsável: </dt><dd className="inline">{r.responsavel ?? "—"}</dd></div>
-            <div><dt className="inline text-muted-foreground">Automação CPN: </dt><dd className="inline">{r.automacao_cpn === "homologada" ? "Homologada" : "Não homologada"}</dd></div>
+            <div><dt className="inline text-muted-foreground">Automação CPN: </dt><dd className="inline">{r.automacao_cpn === "homologada" ? "Homologada" : "Execução não integrada"}</dd></div>
             {r.observacao_verificacao && <div className="sm:col-span-2"><dt className="inline text-muted-foreground">Observação: </dt><dd className="inline">{r.observacao_verificacao}</dd></div>}
           </dl>
           <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -110,10 +107,10 @@ export function FilaVerificacao() {
   );
 }
 
-const STATUS_CONSULTA: Record<string, string> = { localizado: "Localizado", nao_localizado: "Não localizado", tribunal_nao_identificado: "Tribunal não identificado", erro: "Erro / DataJud indisponível", invalido: "Número inválido" };
+const STATUS_CONSULTA = ROTULO_STATUS_CONSULTA;
 
 /** Histórico operacional filtrável. */
-export function HistoricoConsultas({ abrir }: { abrir: (numero: string, demo: boolean) => void }) {
+export function HistoricoConsultas({ abrir }: { abrir: (numero: string) => void }) {
   const fn = useServerFn(historicoConsultasCpn);
   const [f, setF] = useState<FiltrosHistorico>({ tipo: "real" });
   const [aplicado, setAplicado] = useState<FiltrosHistorico>({ tipo: "real" });
@@ -135,9 +132,6 @@ export function HistoricoConsultas({ abrir }: { abrir: (numero: string, demo: bo
         <input type="date" className={input} aria-label="De" value={f.de ?? ""} onChange={set("de")} />
         <input type="date" className={input} aria-label="Até" value={f.ate ?? ""} onChange={set("ate")} />
         <div className="flex gap-2">
-          <select className={`${input} flex-1`} aria-label="Tipo" value={f.tipo ?? "real"} onChange={set("tipo")}>
-            <option value="real">Real</option><option value="demo">DEMO</option><option value="todos">Todos</option>
-          </select>
           <button type="submit" className="rounded-xl bg-primary px-3 text-sm font-semibold text-primary-foreground">Filtrar</button>
         </div>
       </form>
@@ -145,9 +139,8 @@ export function HistoricoConsultas({ abrir }: { abrir: (numero: string, demo: bo
         <ul className="divide-y divide-border text-sm">
           {(q.data ?? []).map((u) => (
             <li key={u.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
-              <button type="button" className="font-mono hover:underline" onClick={() => abrir(u.numero_normalizado ?? u.numero_raw, u.demo)}>{u.numero_normalizado ?? u.numero_raw}</button>
+              <button type="button" className="font-mono hover:underline" onClick={() => abrir(u.numero_normalizado ?? u.numero_raw)}>{u.numero_normalizado ?? u.numero_raw}</button>
               <span className="flex flex-wrap items-center gap-2">
-                {u.demo && <TagDemo />}
                 <span>{u.tribunal_sigla ?? "—"}</span>
                 <span className="text-muted-foreground">{STATUS_CONSULTA[u.status] ?? u.status}</span>
                 {u.modalidade && <BadgeModalidade m={u.modalidade as Modalidade} />}
