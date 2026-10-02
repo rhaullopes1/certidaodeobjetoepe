@@ -141,6 +141,13 @@
       "when": 1790929466944,
       "tag": "0019_cpn_documento_oficial",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1790930936979,
+      "tag": "0020_cpn_motor_rotas",
+      "breakpoints": true
     }
   ]
 }

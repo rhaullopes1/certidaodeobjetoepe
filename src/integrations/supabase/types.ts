@@ -619,28 +619,38 @@ export type Database = {
           ativo: boolean
           autenticidade_url: string | null
           automacao_cpn: string
+          canais: Json
           created_at: string
           custo: string | null
           excecoes: string | null
           exige_advogado: boolean | null
+          exige_finalidade: boolean | null
+          exige_identificacao: boolean | null
           exige_login: boolean | null
           exige_pagamento: boolean | null
           exige_peticao: boolean | null
+          exige_procuracao: boolean | null
           fonte_evidencia: string | null
+          fonte_trecho: string | null
+          forma_entrega: string | null
           grau: string | null
           id: string
           metodo: string
           modalidade: string
           observacao_verificacao: string | null
           observacoes: string | null
+          passos: Json
+          perfil: string
           prazo: string | null
           prioridade: number
+          quem_pode: string | null
           requisitos: string | null
           responsavel_id: string | null
           sistema: string | null
           status_verificacao: string
           texto_base_solicitacao: string | null
           tipo_certidao: string
+          tipo_rota: string
           tribunal_id: string
           ultima_verificacao: string | null
           updated_at: string
@@ -652,28 +662,38 @@ export type Database = {
           ativo?: boolean
           autenticidade_url?: string | null
           automacao_cpn?: string
+          canais?: Json
           created_at?: string
           custo?: string | null
           excecoes?: string | null
           exige_advogado?: boolean | null
+          exige_finalidade?: boolean | null
+          exige_identificacao?: boolean | null
           exige_login?: boolean | null
           exige_pagamento?: boolean | null
           exige_peticao?: boolean | null
+          exige_procuracao?: boolean | null
           fonte_evidencia?: string | null
+          fonte_trecho?: string | null
+          forma_entrega?: string | null
           grau?: string | null
           id?: string
           metodo?: string
           modalidade?: string
           observacao_verificacao?: string | null
           observacoes?: string | null
+          passos?: Json
+          perfil?: string
           prazo?: string | null
           prioridade?: number
+          quem_pode?: string | null
           requisitos?: string | null
           responsavel_id?: string | null
           sistema?: string | null
           status_verificacao?: string
           texto_base_solicitacao?: string | null
           tipo_certidao?: string
+          tipo_rota?: string
           tribunal_id: string
           ultima_verificacao?: string | null
           updated_at?: string
@@ -685,28 +705,38 @@ export type Database = {
           ativo?: boolean
           autenticidade_url?: string | null
           automacao_cpn?: string
+          canais?: Json
           created_at?: string
           custo?: string | null
           excecoes?: string | null
           exige_advogado?: boolean | null
+          exige_finalidade?: boolean | null
+          exige_identificacao?: boolean | null
           exige_login?: boolean | null
           exige_pagamento?: boolean | null
           exige_peticao?: boolean | null
+          exige_procuracao?: boolean | null
           fonte_evidencia?: string | null
+          fonte_trecho?: string | null
+          forma_entrega?: string | null
           grau?: string | null
           id?: string
           metodo?: string
           modalidade?: string
           observacao_verificacao?: string | null
           observacoes?: string | null
+          passos?: Json
+          perfil?: string
           prazo?: string | null
           prioridade?: number
+          quem_pode?: string | null
           requisitos?: string | null
           responsavel_id?: string | null
           sistema?: string | null
           status_verificacao?: string
           texto_base_solicitacao?: string | null
           tipo_certidao?: string
+          tipo_rota?: string
           tribunal_id?: string
           ultima_verificacao?: string | null
           updated_at?: string
@@ -726,8 +756,10 @@ export type Database = {
       }
       cpn_operacoes: {
         Row: {
+          canal: string | null
           created_at: string
           demo: boolean
+          destinatario: string | null
           documento_autenticidade_conferida_em: string | null
           documento_autenticidade_conferida_por: string | null
           documento_autenticidade_status: string
@@ -761,8 +793,10 @@ export type Database = {
           url_oficial: string | null
         }
         Insert: {
+          canal?: string | null
           created_at?: string
           demo?: boolean
+          destinatario?: string | null
           documento_autenticidade_conferida_em?: string | null
           documento_autenticidade_conferida_por?: string | null
           documento_autenticidade_status?: string
@@ -796,8 +830,10 @@ export type Database = {
           url_oficial?: string | null
         }
         Update: {
+          canal?: string | null
           created_at?: string
           demo?: boolean
+          destinatario?: string | null
           documento_autenticidade_conferida_em?: string | null
           documento_autenticidade_conferida_por?: string | null
           documento_autenticidade_status?: string
