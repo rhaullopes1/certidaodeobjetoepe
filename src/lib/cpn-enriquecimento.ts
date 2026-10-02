@@ -72,7 +72,7 @@ export function montarEnriquecimento(e: {
   add("Segmento", e.segmento, "tabela_cnj");
   add("Código de origem (OOOO)", e.codigoOrigem, "numero_cnj");
   add("Comarca", e.comarcaCnj?.nome, "tabela_cnj");
-  add("Foro", e.comarcaCnj?.foro, "tabela_cnj");
+  if (e.comarcaCnj?.foro !== e.comarcaCnj?.nome) add("Foro", e.comarcaCnj?.foro, "tabela_cnj");
   add("Órgão julgador", e.vara, "datajud");
 
   const escolha = t
