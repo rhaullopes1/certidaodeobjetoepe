@@ -165,7 +165,6 @@ function Cpn() {
 }
 
 function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; registrar: (a: "abrir_fonte" | "abrir_certidao" | "copiar_rota" | "copiar_solicitacao", routeId: string | null) => void }) {
-  const qc = useQueryClient();
   const historicoFn = useServerFn(historicoProcessoCpn);
   const [ficha, setFicha] = useState(false);
   const [hist, setHist] = useState(false);
