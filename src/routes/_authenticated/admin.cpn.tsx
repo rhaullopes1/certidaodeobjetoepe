@@ -5,14 +5,15 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, ClipboardCopy, ExternalLink, FileText, History, Loader2, Search, ShieldAlert } from "lucide-react";
 import { souEquipe } from "@/lib/admin";
-import { formatarNup } from "@/lib/cnj";
+import { analisarNup, formatarNup } from "@/lib/cnj";
+import { CoberturaRotas, FilaVerificacao, HistoricoConsultas, TagDemo } from "@/components/admin/cpn-paineis";
 import { CASOS_DEMO, MODALIDADES, STATUS_OPERACAO, textoRota, textoSolicitacao, type Modalidade, type StatusOperacao } from "@/lib/cpn";
 import {
   atualizarOperacao,
   criarOperacao,
   historicoProcessoCpn,
   localizarProcesso,
-  marcarRotaVerificada,
+  marcarRota,
   painelCpn,
   registrarAcaoCpn,
   type ResultadoCpn,
@@ -76,7 +77,9 @@ function Cpn() {
   const painel = useQuery({ queryKey: ["cpn-painel"], queryFn: () => painelFn() });
   const [numero, setNumero] = useState("");
   const [demo, setDemo] = useState(false);
-  const [aba, setAba] = useState<"ultimas" | "rotas" | "pendencias" | "demo">("ultimas");
+  const [aba, setAba] = useState<"ultimas" | "cobertura" | "fila" | "historico" | "pendencias" | "demo">("ultimas");
+  const [verDemo, setVerDemo] = useState(false);
+  const [enviado, setEnviado] = useState<string | null>(null);
 
   const consulta = useMutation({
     mutationFn: (v: { numero: string; demo: boolean }) => localizarFn({ data: v }),
@@ -87,6 +90,7 @@ function Cpn() {
   const buscar = (n = numero, d = demo) => {
     if (!n.trim()) return;
     setNumero(formatarNup(n));
+    setEnviado(n);
     consulta.mutate({ numero: n, demo: d });
   };
 
@@ -100,6 +104,7 @@ function Cpn() {
           <p className="text-sm text-muted-foreground">Certidão de Objeto e Pé · ferramenta interna (não emite documento oficial)</p>
         </div>
 
+        <p className="text-xs text-muted-foreground">Indicadores de hoje — somente consultas reais{s?.demo ? ` (${s.demo} consulta(s) DEMO excluída(s))` : ""}</p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           {[
             ["Consultas hoje", s?.consultas], ["Localizados", s?.localizados], ["Automáticas", s?.automaticas],
@@ -126,11 +131,12 @@ function Cpn() {
           </label>
         </form>
 
-        {consulta.data && <Resultado r={consulta.data} admin={Boolean(painel.data?.admin)} registrar={(acao, routeId) => acaoFn({ data: { acao, numero: consulta.data?.processo?.numeroFormatado ?? null, routeId } })} />}
+        {consulta.isPending && enviado && <IdentificacaoImediata numero={enviado} demo={demo} />}
+        {!consulta.isPending && consulta.data && <Resultado r={consulta.data} admin={Boolean(painel.data?.admin)} registrar={(acao, routeId) => acaoFn({ data: { acao, numero: consulta.data?.processo?.numeroFormatado ?? null, routeId } })} />}
 
         <section className={card}>
           <div className="mb-4 flex flex-wrap gap-2">
-            {([["ultimas", "Últimos processos"], ["rotas", "Rotas cadastradas"], ["pendencias", "Pendências manuais"], ["demo", "Casos de teste (DEMO)"]] as const).map(([k, l]) => (
+            {([["ultimas", "Últimos processos"], ["cobertura", "Cobertura de rotas"], ["fila", "Rotas a verificar"], ["historico", "Histórico"], ["pendencias", "Pendências manuais"], ["demo", "Casos de teste (DEMO)"]] as const).map(([k, l]) => (
               <button key={k} type="button" onClick={() => setAba(k)} className={`rounded-full px-3 py-1.5 text-sm font-semibold ${aba === k ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>{l}</button>
             ))}
           </div>
@@ -151,21 +157,15 @@ function Cpn() {
               {painel.data?.ultimas.length === 0 && <li className="py-2 text-muted-foreground">Nenhuma consulta ainda.</li>}
             </ul>
           )}
-          {aba === "rotas" && (
-            <ul className="divide-y divide-border text-sm">
-              {painel.data?.rotas.map((r) => (
-                <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
-                  <span className="font-semibold">{r.tribunal} <span className="font-normal text-muted-foreground">{r.sistema ?? "qualquer sistema"} · {r.metodo}</span></span>
-                  <span className="flex items-center gap-2">
-                    <Badge m={r.modalidade as Modalidade} />
-                    <span className="text-xs text-muted-foreground">verif. {r.ultima_verificacao ?? "—"}</span>
-                    {r.url_fonte && <a href={r.url_fonte} target="_blank" rel="noopener noreferrer" className="text-primary"><ExternalLink className="h-4 w-4" /></a>}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          {aba === "cobertura" && <CoberturaRotas />}
+          {aba === "fila" && <FilaVerificacao />}
+          {aba === "historico" && <HistoricoConsultas abrir={(n, d) => { setDemo(d); buscar(n, d); }} />}
+          {aba === "pendencias" && (
+            <div className="space-y-2">
+              <label className="inline-flex items-center gap-2 text-sm"><input type="checkbox" checked={verDemo} onChange={(e) => setVerDemo(e.target.checked)} /> Mostrar fichas DEMO (testes)</label>
+              <Pendencias itens={(painel.data?.pendencias ?? []).filter((p) => verDemo || !p.demo)} />
+            </div>
           )}
-          {aba === "pendencias" && <Pendencias itens={painel.data?.pendencias ?? []} />}
           {aba === "demo" && (
             <div className="grid gap-2 sm:grid-cols-2">
               {CASOS_DEMO.map((c) => (
@@ -185,7 +185,7 @@ function Cpn() {
 
 function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; registrar: (a: "abrir_fonte" | "abrir_certidao" | "copiar_rota" | "copiar_solicitacao", routeId: string | null) => void }) {
   const qc = useQueryClient();
-  const verificarFn = useServerFn(marcarRotaVerificada);
+  const verificarFn = useServerFn(marcarRota);
   const historicoFn = useServerFn(historicoProcessoCpn);
   const [ficha, setFicha] = useState(false);
   const [hist, setHist] = useState(false);
@@ -193,14 +193,15 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   const rota = r.rota;
   const historico = useQuery({ queryKey: ["cpn-hist", p?.numeroFormatado], queryFn: () => historicoFn({ data: { numero: p!.numeroFormatado } }), enabled: hist && Boolean(p) });
   const verificar = useMutation({
-    mutationFn: () => verificarFn({ data: { routeId: rota!.id } }),
-    onSuccess: () => { toast.success("Rota marcada como verificada hoje"); qc.invalidateQueries({ queryKey: ["cpn-painel"] }); },
+    mutationFn: () => verificarFn({ data: { routeId: rota!.id, acao: "verificada", confirmado: true } }),
+    onSuccess: () => { toast.success("Rota marcada como verificada hoje"); for (const k of ["cpn-painel", "cpn-fila", "cpn-cobertura"]) qc.invalidateQueries({ queryKey: [k] }); },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Falha"),
   });
 
   if (r.erro) return <div className={`${card} border-destructive/40 text-destructive`}><ShieldAlert className="mr-2 inline h-5 w-5" />{r.erro}</div>;
   if (!p) return null;
   const sigilo = p.nivelSigilo !== null && p.nivelSigilo > 0;
+  const confirmado = r.demo || r.datajud?.status === "ok";
   const copiar = async (texto: string, acao: "copiar_rota" | "copiar_solicitacao") => {
     await navigator.clipboard.writeText(texto);
     toast.success("Copiado");
@@ -211,30 +212,37 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       <section className={card}>
-        <h2 className="mb-2 flex items-center justify-between font-display font-bold">Processo identificado {r.demo && <span className="rounded bg-gold/30 px-1.5 text-[10px] font-bold">DEMO</span>}</h2>
-        <p className={`mb-3 rounded-lg px-3 py-2 text-xs ${r.demo ? "bg-gold/15" : r.datajud?.status === "ok" ? "bg-live/10 text-live" : "bg-secondary text-muted-foreground"}`}>
-          {r.demo ? "Dados fictícios locais — não é consulta real." : r.datajud ? DATAJUD_MSG[r.datajud.status] ?? r.datajud.status : "Tribunal não identificado"}
-          {!r.demo && r.datajud?.status !== "ok" && " · dados abaixo vêm só do número CNJ e da tabela oficial."}
-        </p>
+        <h2 className="mb-2 flex items-center justify-between font-display font-bold">Processo identificado {r.demo && <TagDemo />}</h2>
+        <h3 className="mt-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">Identificação pelo número (CNJ + cadastro de tribunais)</h3>
         <dl>
           <Campo k="Número CNJ" v={<span className="font-mono">{p.numeroFormatado}</span>} />
           <Campo k="Validade" v={<span className="text-live">Dígito verificador válido</span>} />
           <Campo k="Segmento" v={p.segmento} />
           <Campo k="Tribunal" v={p.tribunalSigla ? `${p.tribunalSigla} — ${p.tribunalNome ?? ""}` : null} />
           <Campo k="UF" v={p.uf} />
-          <Campo k="Código origem" v={p.codigoOrigem ? `${p.codigoOrigem} (não define a vara)` : null} />
-          <Campo k="Grau" v={p.grau} />
-          <Campo k="Órgão julgador" v={p.orgaoJulgador} />
-          <Campo k="Sistema" v={p.sistema} />
-          <Campo k="Classe" v={p.classe} />
-          <Campo k="Assuntos" v={p.assuntos.length ? p.assuntos.join(", ") : null} />
-          <Campo k="Situação" v={p.movimentos[0] ? `${p.movimentos[0].nome}${p.movimentos[0].dataHora ? ` (${new Date(p.movimentos[0].dataHora).toLocaleDateString("pt-BR")})` : ""}` : null} />
-          {p.nivelSigilo !== null && <Campo k="Segredo de justiça" v={sigilo ? <span className="font-bold text-destructive">Sim (informado pela fonte)</span> : "Não informado como sigiloso"} />}
+          <Campo k="Código origem" v={p.codigoOrigem ? `${p.codigoOrigem} (não define vara/comarca)` : null} />
         </dl>
+        <h3 className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">{r.demo ? "Dados DEMO (fictícios, locais)" : "Dados confirmados pelo DataJud"}</h3>
+        {confirmado ? (
+          <dl>
+            <Campo k="Grau" v={p.grau} />
+            <Campo k="Órgão julgador" v={p.orgaoJulgador} />
+            <Campo k="Sistema" v={p.sistema} />
+            <Campo k="Classe" v={p.classe} />
+            <Campo k="Assuntos" v={p.assuntos.length ? p.assuntos.join(", ") : null} />
+            <Campo k="Situação" v={p.movimentos[0] ? `${p.movimentos[0].nome}${p.movimentos[0].dataHora ? ` (${new Date(p.movimentos[0].dataHora).toLocaleDateString("pt-BR")})` : ""}` : null} />
+            {p.nivelSigilo !== null && <Campo k="Segredo de justiça" v={sigilo ? <span className="font-bold text-destructive">Sim (informado pela fonte)</span> : "Não informado como sigiloso"} />}
+          </dl>
+        ) : (
+          <p className="mt-1 rounded-lg bg-secondary px-3 py-2 text-xs text-muted-foreground">
+            {r.datajud ? DATAJUD_MSG[r.datajud.status] ?? r.datajud.status : "Tribunal não identificado no cadastro"}. Nenhum dado de vara, órgão julgador, classe ou situação foi confirmado — a identificação acima é parcial. A rota ao lado vem só do cadastro CPN.
+          </p>
+        )}
       </section>
 
       <section className={card}>
         <h2 className="mb-2 font-display font-bold">Rota da certidão</h2>
+        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Fonte: cadastro CPN de rotas</p>
         <p className="mb-2 text-xs text-muted-foreground">Tipo: Certidão de Objeto e Pé / Narratória</p>
         <Badge m={r.modalidade} />
         <p className="mt-2 text-xs text-muted-foreground">{MODALIDADES[r.modalidade].descricao}</p>
@@ -264,7 +272,7 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
           <a aria-disabled={!rota?.url_certidao} href={rota?.url_certidao ?? undefined} target="_blank" rel="noopener noreferrer" onClick={() => registrar("abrir_certidao", rota?.id ?? null)} className={`${btn} ${rota?.url_certidao ? "" : "pointer-events-none opacity-50"}`}><ExternalLink className="h-4 w-4" /> Abrir página da certidão</a>
           <button type="button" className={btn} onClick={() => copiar(textoRota(ctx, { modalidade: r.modalidade, rota, alertas: r.alertas }), "copiar_rota")}><ClipboardCopy className="h-4 w-4" /> Copiar rota</button>
           <button type="button" className={btn} onClick={() => setFicha((v) => !v)}><FileText className="h-4 w-4" /> Preparar solicitação / registrar resultado</button>
-          {admin && rota && <button type="button" className={btn} disabled={verificar.isPending} onClick={() => verificar.mutate()}><CheckCircle2 className="h-4 w-4" /> Marcar rota como verificada</button>}
+          {admin && rota && <button type="button" className={btn} disabled={verificar.isPending} onClick={() => { if (window.confirm(`Confirmo que conferi a fonte oficial desta rota (${p.tribunalSigla}) hoje e que a evidência continua válida.`)) verificar.mutate(); }}><CheckCircle2 className="h-4 w-4" /> Marcar rota como verificada</button>}
           <button type="button" className={btn} onClick={() => setHist((v) => !v)}><History className="h-4 w-4" /> Histórico</button>
         </div>
         {hist && (
@@ -348,5 +356,28 @@ function Pendencias({ itens }: { itens: Pend[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/** Mostrado enquanto o servidor consulta o DataJud: só a estrutura do número, nada inferido. */
+function IdentificacaoImediata({ numero, demo }: { numero: string; demo: boolean }) {
+  const pts = analisarNup(numero);
+  return (
+    <section className={card}>
+      <h2 className="mb-2 font-display font-bold">Identificação pelo número</h2>
+      {pts ? (
+        <dl>
+          <Campo k="Número CNJ" v={<span className="font-mono">{pts.formatado}</span>} />
+          <Campo k="Dígito verificador" v={pts.digitoValido ? <span className="text-live">Válido</span> : <span className="text-destructive">Inválido</span>} />
+          <Campo k="Segmento (J)" v={pts.segmento} />
+          <Campo k="Tribunal (TR)" v={pts.codigoTribunal} />
+          <Campo k="Origem (OOOO)" v={`${pts.codigoOrigem} (não define vara/comarca)`} />
+        </dl>
+      ) : <p className="text-sm text-destructive">Número incompleto: são necessários 20 dígitos.</p>}
+      <p className="mt-3 flex items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        {demo ? "Carregando caso DEMO…" : "Consultando o DataJud… a resposta pode levar até 20 segundos."}
+      </p>
+    </section>
   );
 }
