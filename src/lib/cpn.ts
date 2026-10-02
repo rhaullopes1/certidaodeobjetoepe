@@ -157,11 +157,13 @@ export function textoSolicitacao(p: { numero: string; unidade: string | null; tr
 /* ---------------- Fase 2: cobertura, verificação, status de consulta ---------------- */
 
 export interface TribunalBase { id: string; sigla: string; nome: string; uf: string | null; segmento: number }
-export interface RotaCobertura { id: string; tribunal_id: string; modalidade: string; status_verificacao: string }
+export interface RotaCobertura { id: string; tribunal_id: string; modalidade: string; status_verificacao: string; automacao_cpn?: string }
 
 export interface LinhaCobertura extends TribunalBase {
   /** Melhor modalidade cadastrada; VERIFICAR quando não há rota (nunca preenchida artificialmente). */
   modalidade: Modalidade;
+  /** Estado apresentado ao operador: rota pendente nunca aparece como validada. */
+  estado: EstadoRota;
   totalRotas: number;
   temRota: boolean;
   verificada: boolean;
@@ -173,12 +175,17 @@ const ORDEM: Modalidade[] = ["AUTOMATICA", "SEMIAUTOMATICA", "MANUAL", "INDISPON
 export function calcularCobertura(tribunais: TribunalBase[], rotas: RotaCobertura[]) {
   const porTrib = new Map<string, RotaCobertura[]>();
   for (const r of rotas) porTrib.set(r.tribunal_id, [...(porTrib.get(r.tribunal_id) ?? []), r]);
+  const ORDEM_ESTADO: EstadoRota[] = ["ROTA_HOMOLOGADA", "ROTA_IDENTIFICADA", "MANUAL", "VERIFICAR"];
   const linhas: LinhaCobertura[] = tribunais.map((t) => {
     const rs = porTrib.get(t.id) ?? [];
     const mods = rs.map((r) => modalidadeValida(r.modalidade)).sort((a, b) => ORDEM.indexOf(a) - ORDEM.indexOf(b));
-    return { ...t, modalidade: mods[0] ?? "VERIFICAR", totalRotas: rs.length, temRota: rs.length > 0, verificada: rs.some((r) => r.status_verificacao === "verificada") };
+    const estados = rs
+      .map((r) => estadoRota({ modalidade: modalidadeValida(r.modalidade), rota: { automacao_cpn: r.automacao_cpn ?? "nao_homologada", status_verificacao: r.status_verificacao } }))
+      .sort((a, b) => ORDEM_ESTADO.indexOf(a) - ORDEM_ESTADO.indexOf(b));
+    return { ...t, modalidade: mods[0] ?? "VERIFICAR", estado: estados[0] ?? "VERIFICAR", totalRotas: rs.length, temRota: rs.length > 0, verificada: rs.some((r) => r.status_verificacao === "verificada") };
   });
   const conta = (m: Modalidade) => linhas.filter((l) => l.modalidade === m).length;
+  const contaE = (e: EstadoRota) => linhas.filter((l) => l.estado === e).length;
   return {
     linhas,
     resumo: {
@@ -189,6 +196,10 @@ export function calcularCobertura(tribunais: TribunalBase[], rotas: RotaCobertur
       semiautomatica: conta("SEMIAUTOMATICA"),
       manual: conta("MANUAL"),
       indisponivel: conta("INDISPONIVEL"),
+      homologadas: contaE("ROTA_HOMOLOGADA"),
+      identificadas: contaE("ROTA_IDENTIFICADA"),
+      manuaisValidadas: contaE("MANUAL"),
+      semRotaValidada: contaE("VERIFICAR"),
     },
   };
 }
