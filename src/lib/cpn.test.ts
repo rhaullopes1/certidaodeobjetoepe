@@ -33,7 +33,7 @@ describe("motor de rotas CPN", () => {
   });
 });
 
-import { calcularCobertura, filtrarCobertura, prepararMarcacaoRota, statusConsulta } from "./cpn";
+import { calcularCobertura, filtrarCobertura, lacunasRota, prepararHomologacao, prepararManterVerificar, requisitosHomologacao, statusConsulta, type EvidenciaInformada, type RotaHomologavel } from "./cpn";
 
 describe("CPN fase 2", () => {
   const tribs = [
