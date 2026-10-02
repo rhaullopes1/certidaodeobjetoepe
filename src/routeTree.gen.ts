@@ -44,6 +44,7 @@ import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminAntecedentesRouteImport } from './routes/_authenticated/admin.antecedentes'
 import { Route as AuthenticatedAdminComarcasRouteImport } from './routes/_authenticated/admin.comarcas'
 import { Route as AuthenticatedAdminConteudoRouteImport } from './routes/_authenticated/admin.conteudo'
+import { Route as AuthenticatedAdminCpnRouteImport } from './routes/_authenticated/admin.cpn'
 import { Route as AuthenticatedAdminDocumentosRouteImport } from './routes/_authenticated/admin.documentos'
 import { Route as AuthenticatedAdminEmailsRouteImport } from './routes/_authenticated/admin.emails'
 import { Route as AuthenticatedAdminEntregasRouteImport } from './routes/_authenticated/admin.entregas'
@@ -244,6 +245,11 @@ const AuthenticatedAdminConteudoRoute =
     path: '/admin/conteudo',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminCpnRoute = AuthenticatedAdminCpnRouteImport.update({
+  id: '/admin/cpn',
+  path: '/admin/cpn',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminDocumentosRoute =
   AuthenticatedAdminDocumentosRouteImport.update({
     id: '/admin/documentos',
@@ -386,6 +392,7 @@ export interface FileRoutesByFullPath {
   '/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
   '/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
+  '/admin/cpn': typeof AuthenticatedAdminCpnRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/admin/entregas': typeof AuthenticatedAdminEntregasRoute
@@ -441,6 +448,7 @@ export interface FileRoutesByTo {
   '/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
   '/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
+  '/admin/cpn': typeof AuthenticatedAdminCpnRoute
   '/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/admin/entregas': typeof AuthenticatedAdminEntregasRoute
@@ -498,6 +506,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/_authenticated/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
   '/_authenticated/admin/conteudo': typeof AuthenticatedAdminConteudoRoute
+  '/_authenticated/admin/cpn': typeof AuthenticatedAdminCpnRoute
   '/_authenticated/admin/documentos': typeof AuthenticatedAdminDocumentosRoute
   '/_authenticated/admin/emails': typeof AuthenticatedAdminEmailsRoute
   '/_authenticated/admin/entregas': typeof AuthenticatedAdminEntregasRoute
@@ -555,6 +564,7 @@ export interface FileRouteTypes {
     | '/admin/antecedentes'
     | '/admin/comarcas'
     | '/admin/conteudo'
+    | '/admin/cpn'
     | '/admin/documentos'
     | '/admin/emails'
     | '/admin/entregas'
@@ -610,6 +620,7 @@ export interface FileRouteTypes {
     | '/admin/antecedentes'
     | '/admin/comarcas'
     | '/admin/conteudo'
+    | '/admin/cpn'
     | '/admin/documentos'
     | '/admin/emails'
     | '/admin/entregas'
@@ -666,6 +677,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/antecedentes'
     | '/_authenticated/admin/comarcas'
     | '/_authenticated/admin/conteudo'
+    | '/_authenticated/admin/cpn'
     | '/_authenticated/admin/documentos'
     | '/_authenticated/admin/emails'
     | '/_authenticated/admin/entregas'
@@ -981,6 +993,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminConteudoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/cpn': {
+      id: '/_authenticated/admin/cpn'
+      path: '/admin/cpn'
+      fullPath: '/admin/cpn'
+      preLoaderRoute: typeof AuthenticatedAdminCpnRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/documentos': {
       id: '/_authenticated/admin/documentos'
       path: '/admin/documentos'
@@ -1123,6 +1142,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminAntecedentesRoute: typeof AuthenticatedAdminAntecedentesRoute
   AuthenticatedAdminComarcasRoute: typeof AuthenticatedAdminComarcasRoute
   AuthenticatedAdminConteudoRoute: typeof AuthenticatedAdminConteudoRoute
+  AuthenticatedAdminCpnRoute: typeof AuthenticatedAdminCpnRoute
   AuthenticatedAdminDocumentosRoute: typeof AuthenticatedAdminDocumentosRoute
   AuthenticatedAdminEmailsRoute: typeof AuthenticatedAdminEmailsRoute
   AuthenticatedAdminEntregasRoute: typeof AuthenticatedAdminEntregasRoute
@@ -1137,6 +1157,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminAntecedentesRoute: AuthenticatedAdminAntecedentesRoute,
   AuthenticatedAdminComarcasRoute: AuthenticatedAdminComarcasRoute,
   AuthenticatedAdminConteudoRoute: AuthenticatedAdminConteudoRoute,
+  AuthenticatedAdminCpnRoute: AuthenticatedAdminCpnRoute,
   AuthenticatedAdminDocumentosRoute: AuthenticatedAdminDocumentosRoute,
   AuthenticatedAdminEmailsRoute: AuthenticatedAdminEmailsRoute,
   AuthenticatedAdminEntregasRoute: AuthenticatedAdminEntregasRoute,
