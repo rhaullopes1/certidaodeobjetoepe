@@ -28,6 +28,7 @@
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
   --color-live: var(--live);
+  --color-alerta: var(--alerta);
   --animate-rise: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   @keyframes rise {
     from {
@@ -107,6 +108,7 @@
   --gold: oklch(0.78 0.115 85);
   --gold-soft: oklch(0.9 0.06 88);
   --live: oklch(0.6 0.16 150);
+  --alerta: oklch(0.8 0.16 85);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.22 0.045 258);
   --popover: oklch(1 0 0);
@@ -141,6 +143,7 @@
 
 .dark {
   --live: oklch(0.72 0.17 150);
+  --alerta: oklch(0.85 0.16 90);
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
