@@ -188,7 +188,7 @@ export const painelCpn = createServerFn({ method: "GET" })
       },
       ultimas: ultimas ?? [],
       pendencias: pendencias ?? [],
-      rotas: (rotas ?? []).map((r) => ({ ...r, tribunal: (r.cnj_tribunais as { sigla: string } | null)?.sigla ?? "?" })),
+      rotas: (rotas ?? []).map((r) => ({ ...r, lacunas: lacunasRota(r as unknown as RotaHomologavel), tribunal: (r.cnj_tribunais as { sigla: string } | null)?.sigla ?? "?" })),
     };
   });
 
@@ -329,14 +329,14 @@ export const filaVerificacaoCpn = createServerFn({ method: "GET" })
     const admin = await exigirEquipe(supabase, userId);
     const { data } = await supabase
       .from("cpn_certificate_routes")
-      .select("id, sistema, grau, modalidade, metodo, url_fonte, fonte_evidencia, ultima_verificacao, status_verificacao, observacao_verificacao, responsavel_id, automacao_cpn, cnj_tribunais(sigla, nome)")
+      .select(`${COLS_ROTA}, tipo_certidao, prazo, custo, forma_entrega, cnj_tribunais(sigla, nome)`)
       .eq("ativo", true);
-    const ids = [...new Set((data ?? []).map((r) => r.responsavel_id).filter((x): x is string => Boolean(x)))];
+    const ids = [...new Set((data ?? []).flatMap((r) => [r.responsavel_id, r.verificado_por]).filter((x): x is string => Boolean(x)))];
     const { data: perfis } = ids.length ? await supabase.from("profiles").select("id, nome").in("id", ids) : { data: [] };
     const nome = new Map((perfis ?? []).map((p) => [p.id, p.nome]));
     const ordem = { revisar: 0, pendente: 1, verificada: 2 } as Record<string, number>;
     const itens = (data ?? [])
-      .map((r) => ({ ...r, tribunal: (r.cnj_tribunais as { sigla: string } | null)?.sigla ?? "?", responsavel: r.responsavel_id ? nome.get(r.responsavel_id) ?? "Equipe" : null }))
+      .map((r) => ({ ...r, lacunas: lacunasRota(r as unknown as RotaHomologavel), tribunal: (r.cnj_tribunais as { sigla: string } | null)?.sigla ?? "?", responsavel: r.responsavel_id ? nome.get(r.responsavel_id) ?? "Equipe" : null, verificador: r.verificado_por ? nome.get(r.verificado_por) ?? "Equipe" : null }))
       .sort((a, b) => (ordem[a.status_verificacao] ?? 9) - (ordem[b.status_verificacao] ?? 9) || a.tribunal.localeCompare(b.tribunal));
     return { admin, itens };
   });

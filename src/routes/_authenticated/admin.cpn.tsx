@@ -13,7 +13,6 @@ import {
   criarOperacao,
   historicoProcessoCpn,
   localizarProcesso,
-  marcarRota,
   painelCpn,
   registrarAcaoCpn,
   type ResultadoCpn,
@@ -167,7 +166,6 @@ function Cpn() {
 
 function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; registrar: (a: "abrir_fonte" | "abrir_certidao" | "copiar_rota" | "copiar_solicitacao", routeId: string | null) => void }) {
   const qc = useQueryClient();
-  const verificarFn = useServerFn(marcarRota);
   const historicoFn = useServerFn(historicoProcessoCpn);
   const [ficha, setFicha] = useState(false);
   const [hist, setHist] = useState(false);
@@ -180,11 +178,6 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   const alternativas = todas.filter((x) => x.id !== rota?.id);
   const [modoFicha, setModoFicha] = useState<"assistida" | "resultado">("assistida");
   const historico = useQuery({ queryKey: ["cpn-hist", p?.numeroFormatado], queryFn: () => historicoFn({ data: { numero: p!.numeroFormatado } }), enabled: hist && Boolean(p) });
-  const verificar = useMutation({
-    mutationFn: () => verificarFn({ data: { routeId: rota!.id, acao: "verificada", confirmado: true } }),
-    onSuccess: () => { toast.success("Rota marcada como verificada hoje"); for (const k of ["cpn-painel", "cpn-fila", "cpn-cobertura"]) qc.invalidateQueries({ queryKey: [k] }); },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Falha"),
-  });
 
   if (r.erro) return <div className={`${card} border-destructive/40 text-destructive`}><ShieldAlert className="mr-2 inline h-5 w-5" />{r.erro}</div>;
   if (!p) return null;
@@ -246,7 +239,7 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
           <button type="button" className={btn} onClick={() => copiar(textoInstrucoes(ctx, rota), "copiar_rota")}><ClipboardCopy className="h-4 w-4" /> Copiar instruções</button>
           <button type="button" className={btn} onClick={() => { setModoFicha("assistida"); setFicha(true); }}><FileText className="h-4 w-4" /> Iniciar solicitação assistida</button>
           <button type="button" className={btn} onClick={() => { setModoFicha("resultado"); setFicha(true); }}><CheckCircle2 className="h-4 w-4" /> Registrar resultado</button>
-          {admin && rota && <button type="button" className={btn} disabled={verificar.isPending} onClick={() => { if (window.confirm(`Confirmo que conferi a fonte oficial desta rota (${p.tribunalSigla}) hoje e que a evidência continua válida.`)) verificar.mutate(); }}><CheckCircle2 className="h-4 w-4" /> Marcar rota como verificada</button>}
+          {admin && rota && <span className="self-center text-xs text-muted-foreground">Homologação: aba “Rotas a verificar” (exige evidência registrada).</span>}
           <button type="button" className={btn} onClick={() => setHist((v) => !v)}><History className="h-4 w-4" /> Histórico</button>
         </div>
         {hist && (
