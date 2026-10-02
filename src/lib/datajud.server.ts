@@ -27,6 +27,8 @@ export interface DatajudResultado {
   dataAjuizamento: string | null;
   assuntos: string[];
   ultimosMovimentos: { nome: string; dataHora: string | null }[];
+  /** Nível de sigilo informado pela fonte (0 = público). null = não informado. */
+  nivelSigilo: number | null;
   erro?: string;
 }
 
@@ -48,6 +50,7 @@ function vazio(status: DatajudStatus, erro?: string): DatajudResultado {
     dataAjuizamento: null,
     assuntos: [],
     ultimosMovimentos: [],
+    nivelSigilo: null,
     ...(erro ? { erro } : {}),
   };
 }
@@ -140,6 +143,7 @@ export async function consultarDatajud(
       dataAjuizamento: typeof src["dataAjuizamento"] === "string" ? src["dataAjuizamento"] : null,
       assuntos,
       ultimosMovimentos: movimentos,
+      nivelSigilo: typeof src["nivelSigilo"] === "number" ? src["nivelSigilo"] : null,
     };
   } catch (e) {
     return vazio("indisponivel", e instanceof Error ? e.message : String(e));
