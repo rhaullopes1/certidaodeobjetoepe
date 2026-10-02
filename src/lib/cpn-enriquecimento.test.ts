@@ -11,7 +11,7 @@ const T: TribunalEnriq = {
 };
 const SEM_URL: TribunalEnriq = { ...T, consulta_processual_url: null, balcao_virtual_url: null, certidoes_url: null };
 const U = (o: Partial<UnidadeEnriq>): UnidadeEnriq => ({
-  id: "u1", tribunal: "TJSP", comarca: "Campinas", foro: null, codigo_origem_cnj: "0114", vara_cartorio: null, unidade_judiciaria: "Cartório Cível",
+  id: "u1", tribunal: "TJSP", comarca: "Campinas", foro: null, codigo_origem_cnj: "0114", vara_cartorio: null, unidade_judiciaria: "Fórum de Campinas",
   balcao_virtual_url: null, canal_solicitacao_tipo: null, canal_solicitacao_url: null, canal_solicitacao_email: "civel@tjsp.jus.br",
   canal_solicitacao_telefone: "(19) 3000-0000", instrucoes_solicitacao: null, documentos_exigidos: null, taxa_info: null, prazo_info: null,
   fonte_url: "https://www.tjsp.jus.br/x", fonte_tipo: "Site oficial do tribunal", fonte_atualizada_em: "2026-09-28",
