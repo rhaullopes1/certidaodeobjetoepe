@@ -104,7 +104,7 @@ function Cpn() {
           <p className="text-sm text-muted-foreground">Certidão de Objeto e Pé · ferramenta interna (não emite documento oficial)</p>
         </div>
 
-        <p className="-mb-4 text-xs text-muted-foreground">Indicadores de hoje — somente consultas reais{s?.demo ? ` (${s.demo} consulta(s) DEMO excluída(s))` : ""}</p>
+        <p className="text-xs text-muted-foreground">Indicadores de hoje — somente consultas reais{s?.demo ? ` (${s.demo} consulta(s) DEMO excluída(s))` : ""}</p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           {[
             ["Consultas hoje", s?.consultas], ["Localizados", s?.localizados], ["Automáticas", s?.automaticas],
