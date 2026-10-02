@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { FINALIDADES } from "@/lib/pedidos.schema";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X } from "lucide-react";
@@ -380,7 +381,12 @@ function AdminLista() {
                     </tr>
                   </thead>
                   <tbody>
-                    {lista.map((p) => (
+                    {lista.map((p) => {
+                      const rotuloFinalidade =
+                        p.finalidade && p.finalidade in FINALIDADES
+                          ? FINALIDADES[p.finalidade as keyof typeof FINALIDADES]
+                          : "Não informado";
+                      return (
                       <tr key={p.id} className="border-b border-border/50 last:border-0">
                         <td className="px-5 py-4 font-semibold">
                           <div className="flex flex-wrap items-center gap-2">
@@ -391,6 +397,9 @@ function AdminLista() {
                             >
                               {p.protocolo}
                             </Link>
+                            <span className="inline-flex rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
+                              {rotuloFinalidade}
+                            </span>
                             {p.novo && (
                               <span className="inline-flex rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-accent">
                                 Novo
@@ -419,7 +428,8 @@ function AdminLista() {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
