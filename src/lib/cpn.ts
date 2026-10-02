@@ -256,7 +256,8 @@ export function textoSolicitacao(p: { numero: string; unidade: string | null; tr
   return [
     `Ao(À) ${p.unidade ?? `Cartório/Secretaria competente — ${p.tribunal ?? ""}`}`.trim(),
     "",
-    `Solicito, respeitosamente, a expedição de Certidão de Objeto e Pé (Certidão Narratória) referente ao processo nº ${p.numero}.`,
+    `Solicito, respeitosamente, a expedição de Certidão de Objeto e Pé (Certidão Narratória) referente ao processo nº ${p.numero}${rota?.perfil === "terceiro_ou_advogado_nao_cadastrado" ? ", na qualidade de terceiro interessado / advogado não cadastrado no processo" : ""}.`,
+    ...(rota?.perfil === "sigiloso" ? ["", "Ciente de que, por se tratar de processo sob sigilo, a emissão depende de despacho do(a) magistrado(a)."] : []),
     "",
     "Coloco-me à disposição para o recolhimento de eventuais custas e para o envio de documentos complementares.",
     "",

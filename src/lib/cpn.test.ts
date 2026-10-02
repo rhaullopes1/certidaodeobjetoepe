@@ -125,3 +125,59 @@ describe("CPN somente dados reais", () => {
     expect(estadoRota(escolherRota([], ctx))).toBe("VERIFICAR");
   });
 });
+
+import { canaisDaRota, passosDaRota, statusRota, textoInstrucoes, textoSolicitacao, TIPOS_ROTA } from "./cpn";
+import { analisarNup as nup } from "./cnj";
+
+describe("motor de rotas — catálogo e perfis", () => {
+  const ctx = { sistema: "eproc", grau: "G1", nivelSigilo: 0 };
+  const parte = { ...base, id: "p", tipo_rota: "AUTO_EPROC", perfil: "parte_advogado_habilitado", prioridade: 10 };
+  const terceiro = { ...base, id: "t", tipo_rota: "MANUAL_BALCAO_VIRTUAL", modalidade: "MANUAL", perfil: "terceiro_ou_advogado_nao_cadastrado", prioridade: 20 };
+  const sig = { ...base, id: "s", tipo_rota: "MANUAL_BALCAO_VIRTUAL", modalidade: "MANUAL", perfil: "sigiloso", prioridade: 5 };
+
+  it("normaliza CNJ com/sem pontuação e valida DV", () => {
+    expect(nup("1502191-61.2023.8.26.0543")?.formatado).toBe("1502191-61.2023.8.26.0543");
+    expect(nup("15021916120238260543")?.digitoValido).toBe(true);
+    expect(nup("15021916220238260543")?.digitoValido).toBe(false);
+    expect(nup("123")).toBeNull();
+  });
+  it("sem sigilo: rota principal é a de parte; terceiro vira alternativa; sigilosa não é principal", () => {
+    const e = escolherRota([parte, terceiro, sig], ctx);
+    expect(e.rota?.id).toBe("p");
+    expect(e.alternativas?.map((a) => a.id)).toEqual(expect.arrayContaining(["t", "s"]));
+  });
+  it("com sigilo: rota sigilosa é a principal e MANUAL", () => {
+    const e = escolherRota([parte, terceiro, sig], { ...ctx, nivelSigilo: 1 });
+    expect(e.rota?.id).toBe("s");
+    expect(e.modalidade).toBe("MANUAL");
+  });
+  it("sistema com alternativas (SAJ/SG ou eproc 2G) casa com qualquer um", () => {
+    const r = { ...base, sistema: "SAJ/SG ou eproc 2G" };
+    expect(escolherRota([r], { sistema: "SAJ", grau: null, nivelSigilo: 0 }).rota).not.toBeNull();
+    expect(escolherRota([r], { sistema: "PJe", grau: null, nivelSigilo: 0 }).rota).toBeNull();
+  });
+  it("status: pendente = VERIFICAR; verificada mostra a categoria; AUTO_API sem homologação nunca é AUTOMÁTICA", () => {
+    expect(statusRota(parte).categoria).toBe("VERIFICAR");
+    expect(statusRota({ ...parte, status_verificacao: "verificada" }).categoria).toBe("AUTOMATICA");
+    expect(statusRota({ ...terceiro, status_verificacao: "verificada" }).categoria).toBe("MANUAL");
+    expect(statusRota({ ...base, tipo_rota: "AUTO_API", status_verificacao: "verificada" }).categoria).toBe("VERIFICAR");
+    expect(statusRota({ ...base, tipo_rota: "ASSISTIDA_EPROC", status_verificacao: "verificada" }).categoria).toBe("ASSISTIDA");
+    expect(statusRota({ ...base, tipo_rota: "INEXISTENTE" }).declarada).toBe("VERIFICAR");
+    expect(statusRota(null).categoria).toBe("VERIFICAR");
+    expect(Object.keys(TIPOS_ROTA)).toHaveLength(12);
+  });
+  it("ausência de dados: canais/passos inválidos são descartados; sem prazo/custo nada é escrito", () => {
+    const r = { ...base, passos: ["ok", 3, ""], canais: [{ tipo: "email", rotulo: "E-mail da unidade", valor: null }, { lixo: 1 }] };
+    expect(passosDaRota(r)).toEqual(["ok"]);
+    expect(canaisDaRota(r)).toEqual([{ tipo: "email", rotulo: "E-mail da unidade", valor: null }]);
+    const t = textoInstrucoes({ numero: "1", tribunal: "TJSP" }, r);
+    expect(t).not.toContain("Prazo");
+    expect(t).not.toContain("Custo");
+    expect(t).toContain("endereço específico não cadastrado");
+    expect(textoInstrucoes({ numero: "1", tribunal: "TJXX" }, null)).toContain("VERIFICAR");
+  });
+  it("texto de solicitação se adapta ao perfil", () => {
+    expect(textoSolicitacao({ numero: "1", unidade: null, tribunal: "TJSP" }, terceiro)).toContain("terceiro interessado");
+    expect(textoSolicitacao({ numero: "1", unidade: null, tribunal: "TJSP" }, sig)).toContain("despacho");
+  });
+});
