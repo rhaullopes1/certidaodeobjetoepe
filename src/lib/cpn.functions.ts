@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { analisarNup } from "./cnj";
 import { decodificarPartes } from "./cnj.functions";
+import { montarEnriquecimento, type Enriquecimento, type TribunalEnriq, type UnidadeEnriq } from "./cpn-enriquecimento";
 import { calcularCobertura, dadosConfirmados, escolherRota, prepararMarcacaoRota, statusConsulta, type AcaoRota, type Modalidade, type RotaCertidao, type StatusOperacao, STATUS_OPERACAO } from "./cpn";
 
 type Sb = SupabaseClient<Database>;
@@ -54,6 +55,7 @@ export interface ResultadoCpn {
   rota: RotaCertidao | null;
   alertas: string[];
   alternativas?: RotaCertidao[];
+  enriquecimento?: Enriquecimento | null;
 }
 
 /** Localiza o processo: CNJ → tabela de tribunais → DataJud (server-side) → motor de rotas. */
@@ -94,7 +96,7 @@ export const localizarProcesso = createServerFn({ method: "POST" })
     const dec = await decodificarPartes(partes);
     const { data: trib } = await supabase
       .from("cnj_tribunais")
-      .select("id, sigla, nome, uf")
+      .select("id, sigla, nome, uf, consulta_processual_url, consulta_processual_fonte, consulta_processual_verificada_em, balcao_virtual_url, balcao_virtual_fonte, balcao_virtual_verificada_em, certidoes_url, certidoes_tipo, certidoes_email, certidoes_telefone, certidoes_instrucoes, certidoes_fonte, certidoes_verificada_em")
       .eq("segmento", partes.segmento)
       .eq("codigo_tr", partes.codigoTribunal)
       .maybeSingle();
@@ -133,9 +135,24 @@ export const localizarProcesso = createServerFn({ method: "POST" })
       const { data: rs } = await supabase.from("cpn_certificate_routes").select("*").eq("tribunal_id", trib.id).eq("ativo", true);
       rotas = (rs ?? []) as unknown as RotaCertidao[];
     }
+    let enriquecimento: Enriquecimento | null = null;
+    if (trib) {
+      const [{ data: com }, { data: unids }] = await Promise.all([
+        supabase.from("cnj_comarcas").select("nome, cidade, uf, foro, fonte_url, fonte_atualizada_em").eq("tribunal_id", trib.id).eq("codigo_origem", partes.codigoOrigem).maybeSingle(),
+        supabase.from("comarcas_contatos").select("*").eq("tribunal", trib.sigla).eq("ativo", true).limit(2000),
+      ]);
+      enriquecimento = montarEnriquecimento({
+        tribunal: trib as unknown as TribunalEnriq,
+        segmento: dec.segmentoNome,
+        codigoOrigem: partes.codigoOrigem,
+        comarcaCnj: com ?? null,
+        unidades: (unids ?? []) as unknown as UnidadeEnriq[],
+        vara: processo.orgaoJulgador,
+      });
+    }
     const escolha = escolherRota(rotas, { sistema: processo.sistema, grau: processo.grau, nivelSigilo: sigilo });
     const status = statusConsulta({ tribunalIdentificado: Boolean(trib), datajudStatus: datajud?.status ?? null });
-    return registrar({ demo: data.demo, erro: null, datajud, processo, modalidade: escolha.modalidade, rota: escolha.rota, alertas: escolha.alertas, alternativas: escolha.alternativas ?? [] }, status);
+    return registrar({ demo: data.demo, erro: null, datajud, processo, modalidade: escolha.modalidade, rota: escolha.rota, alertas: escolha.alertas, alternativas: escolha.alternativas ?? [], enriquecimento }, status);
   });
 
 /** Dashboard, últimas consultas, pendências manuais e catálogo de rotas. */

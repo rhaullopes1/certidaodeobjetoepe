@@ -1,4 +1,6 @@
-import { ExternalLink } from "lucide-react";
+import { Copy, ExternalLink, Mail, Phone } from "lucide-react";
+import { toast } from "sonner";
+import { ROTULO_ORIGEM, instrucoesEncaminhamento, type Enriquecimento } from "@/lib/cpn-enriquecimento";
 import { CATEGORIAS_ROTA, PERFIS_ROTA, TIPOS_ROTA, canaisDaRota, passosDaRota, statusRota, tipoRotaValido, type RotaCertidao } from "@/lib/cpn";
 import { AvisoAssistida } from "./cpn-documento";
 
@@ -116,6 +118,55 @@ export function PainelRota({ rota, alternativas, tribunal, onEscolher, alertas }
                 <SeloStatusRota rota={a} />
               </button>
             </li>
+          ))}</ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** "Dados enriquecidos da base CPN" + encaminhamento "Solicitar nesta unidade/canal". */
+export function DadosEnriquecidos({ en, sigilo }: { en: Enriquecimento | null | undefined; sigilo: boolean }) {
+  if (!en) return <p className="text-xs text-muted-foreground">Tribunal não identificado — sem dados da base.</p>;
+  const c = en.canal;
+  const instr = instrucoesEncaminhamento(en);
+  const tel = c.telefone?.split("/")[0].replace(/\D/g, "");
+  const copiar = (t: string) => { void navigator.clipboard.writeText(t); toast.success("Copiado"); };
+  const b = "inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-semibold hover:bg-secondary";
+  return (
+    <div className="space-y-3">
+      <dl>
+        {en.campos.map((f) => (
+          <div key={f.rotulo} className="grid grid-cols-[8.5rem_1fr] gap-2 py-0.5 text-sm">
+            <dt className="text-muted-foreground">{f.rotulo}</dt>
+            <dd className="min-w-0 break-words font-medium">{f.valor} <span className="text-[10px] font-normal text-muted-foreground">({ROTULO_ORIGEM[f.origem]})</span></dd>
+          </div>
+        ))}
+        {!en.unidade && <p className="text-xs text-muted-foreground">Unidade judiciária: não identificada na base (não deduzida do código de origem).</p>}
+      </dl>
+      {en.fonteUnidade && (
+        <p className="text-xs text-muted-foreground">Fonte da unidade: {en.fonteUnidade.url ? link(en.fonteUnidade.url, en.fonteUnidade.tipo ?? "fonte") : en.fonteUnidade.tipo ?? "sem fonte registrada"} · última verificação: {en.fonteUnidade.data ?? "—"}</p>
+      )}
+      <div className="rounded-xl border border-border p-2">
+        <h4 className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Solicitar nesta unidade/canal</h4>
+        <p className={`mt-1 text-xs font-semibold ${c.status === "confirmado" ? "text-live" : c.status === "canal_tribunal" ? "text-gold" : "text-destructive"}`}>
+          {c.status === "confirmado" ? "Canal específico da unidade (cadastrado com fonte)" : c.status === "canal_tribunal" ? "Canal geral do tribunal — confirmar se atende esta certidão/unidade" : "Não identificado — verificar"}
+        </p>
+        <ul className="mt-1 space-y-0.5 text-xs">{instr.map((l) => <li key={l}>{l}</li>)}</ul>
+        {sigilo && <p className="mt-1 text-xs text-destructive">Processo sigiloso: não incluir dados de mérito no pedido.</p>}
+        <div className="mt-2 flex flex-wrap gap-2">
+          {c.email && <><a href={`mailto:${c.email}`} className={b}><Mail className="h-3 w-3" /> Abrir e-mail</a><button type="button" className={b} onClick={() => copiar(c.email!)}><Copy className="h-3 w-3" /> Copiar e-mail</button></>}
+          {tel && tel.length >= 8 && <a href={`tel:${tel}`} className={b}><Phone className="h-3 w-3" /> Ligar</a>}
+          {c.balcaoVirtualUrl && <a href={c.balcaoVirtualUrl} target="_blank" rel="noopener noreferrer" className={b}><ExternalLink className="h-3 w-3" /> Balcão Virtual</a>}
+          {c.url && <a href={c.url} target="_blank" rel="noopener noreferrer" className={b}><ExternalLink className="h-3 w-3" /> {c.fallback ? "Canal geral do tribunal" : "Canal da unidade"}</a>}
+          {c.status !== "nao_cadastrado" && <button type="button" className={b} onClick={() => copiar(instr.join("\n"))}><Copy className="h-3 w-3" /> Copiar encaminhamento</button>}
+        </div>
+      </div>
+      {en.canaisGerais.length > 0 && (
+        <div>
+          <h4 className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Canais gerais do tribunal (contexto — não são a rota da Objeto e Pé)</h4>
+          <ul className="mt-1 space-y-1 text-xs">{en.canaisGerais.map((g) => (
+            <li key={g.rotulo}>{link(g.url, g.rotulo)} <span className="text-muted-foreground">· fonte: {g.fonte ?? "não registrada"} · verificado em {g.verificadaEm ?? "—"}</span></li>
           ))}</ul>
         </div>
       )}

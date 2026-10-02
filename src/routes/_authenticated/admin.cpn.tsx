@@ -20,7 +20,7 @@ import {
 } from "@/lib/cpn.functions";
 import { AdminHeader, SemPermissao } from "./admin.index";
 import { DocumentoOficial, type OpDoc } from "@/components/admin/cpn-documento";
-import { PainelRota } from "@/components/admin/cpn-rota";
+import { DadosEnriquecidos, PainelRota } from "@/components/admin/cpn-rota";
 
 export const Route = createFileRoute("/_authenticated/admin/cpn")({
   component: PaginaCpn,
@@ -226,6 +226,8 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
             {r.datajud ? DATAJUD_MSG[r.datajud.status] ?? r.datajud.status : "Tribunal não identificado no cadastro"}. Não foi possível confirmar: nenhum dado de vara, comarca, órgão julgador, classe, assunto, situação ou sistema é exibido. A rota ao lado vem só do cadastro CPN.
           </p>
         )}
+        <h3 className="mt-4 text-xs font-bold uppercase tracking-wide text-muted-foreground">Dados enriquecidos da base CPN</h3>
+        <DadosEnriquecidos en={r.enriquecimento} sigilo={Boolean(sigilo)} />
       </section>
 
       <section className={card}>
