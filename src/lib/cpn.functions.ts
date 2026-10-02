@@ -5,7 +5,7 @@ import type { Database, Json } from "@/integrations/supabase/types";
 import { analisarNup } from "./cnj";
 import { decodificarPartes } from "./cnj.functions";
 import { montarEnriquecimento, type Enriquecimento, type TribunalEnriq, type UnidadeEnriq } from "./cpn-enriquecimento";
-import { calcularCobertura, dadosConfirmados, escolherRota, prepararMarcacaoRota, statusConsulta, type AcaoRota, type Modalidade, type RotaCertidao, type StatusOperacao, STATUS_OPERACAO } from "./cpn";
+import { calcularCobertura, dadosConfirmados, escolherRota, lacunasRota, prepararHomologacao, prepararManterVerificar, statusConsulta, type EvidenciaInformada, type Modalidade, type RotaCertidao, type RotaHomologavel, type StatusOperacao, STATUS_OPERACAO } from "./cpn";
 
 type Sb = SupabaseClient<Database>;
 
@@ -237,30 +237,75 @@ export const atualizarOperacao = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-/** Marca rota como verificada/revisar — exige confirmação explícita; somente admin altera a rota. */
-export const marcarRota = createServerFn({ method: "POST" })
+const COLS_ROTA = "id, tribunal_id, sistema, grau, perfil, tipo_rota, modalidade, metodo, url_fonte, url_certidao, autenticidade_url, fonte_evidencia, fonte_trecho, requisitos, quem_pode, passos, canais, ultima_verificacao, status_verificacao, observacao_verificacao, responsavel_id, verificado_por, automacao_cpn" as const;
+
+const limpar = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) || null : null);
+const validarEvidencia = (i: { routeId: string; confirmado: boolean; urlFonte?: string | null; trecho?: string | null; dataVerificacao?: string | null; observacao?: string | null; revisar?: boolean }) => ({
+  routeId: String(i.routeId),
+  confirmado: i.confirmado === true,
+  revisar: i.revisar === true,
+  evidencia: {
+    urlFonte: limpar(i.urlFonte, 500),
+    trecho: limpar(i.trecho, 4000),
+    dataVerificacao: typeof i.dataVerificacao === "string" && /^\d{4}-\d{2}-\d{2}$/.test(i.dataVerificacao) ? i.dataVerificacao : null,
+    observacao: limpar(i.observacao, 1000),
+  } satisfies EvidenciaInformada,
+});
+
+async function carregarRota(supabase: Sb, id: string) {
+  const { data } = await supabase.from("cpn_certificate_routes").select(COLS_ROTA).eq("id", id).maybeSingle();
+  if (!data) throw new Error("Rota não encontrada.");
+  return data as unknown as RotaHomologavel;
+}
+
+/** Homologa rota — só admin, confirmação explícita e evidência mínima registrada. Não altera automacao_cpn. */
+export const homologarRota = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: { routeId: string; acao: AcaoRota; confirmado: boolean; observacao?: string | null }) => ({
-    routeId: String(i.routeId),
-    acao: (i.acao === "revisar" ? "revisar" : "verificada") as AcaoRota,
-    confirmado: i.confirmado === true,
-    observacao: i.observacao ? String(i.observacao).trim().slice(0, 1000) || null : null,
-  }))
+  .inputValidator(validarEvidencia)
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const admin = await exigirEquipe(supabase, userId);
-    const { data: rota } = await supabase.from("cpn_certificate_routes").select("id, fonte_evidencia, url_fonte").eq("id", data.routeId).maybeSingle();
-    if (!rota) throw new Error("Rota não encontrada.");
-    if (!admin && data.acao === "revisar") {
-      // Operador sem permissão de edição: registra pedido de revisão só na auditoria.
-      await auditar(supabase, userId, "solicitar_revisao_rota", { route_id: data.routeId, resultado: "revisar", detalhes: { observacao: data.observacao } });
-      return { ok: true, somenteAuditoria: true };
-    }
-    const { patch, auditoria } = prepararMarcacaoRota({ ...data, admin, userId, evidenciaAtual: rota.fonte_evidencia, urlFonte: rota.url_fonte, hoje: new Date().toISOString().slice(0, 10) });
+    const rota = await carregarRota(supabase, data.routeId);
+    const { patch, auditoria } = prepararHomologacao(rota, data.evidencia, { confirmado: data.confirmado, admin, userId, hoje: new Date().toISOString().slice(0, 10) });
     const { error } = await supabase.from("cpn_certificate_routes").update(patch).eq("id", data.routeId);
-    if (error) throw new Error("Não foi possível atualizar a rota.");
+    if (error) throw new Error("Não foi possível homologar a rota.");
     await supabase.from("cpn_audit_logs").insert(auditoria as never);
-    return { ok: true, somenteAuditoria: false };
+    return { ok: true };
+  });
+
+/** Mantém a rota em VERIFICAR, registrando a consulta e as lacunas na auditoria. */
+export const manterVerificarRota = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(validarEvidencia)
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const admin = await exigirEquipe(supabase, userId);
+    const rota = await carregarRota(supabase, data.routeId);
+    const { patch, auditoria, faltando } = prepararManterVerificar(rota, data.evidencia, { confirmado: data.confirmado, admin, userId, hoje: new Date().toISOString().slice(0, 10), revisar: data.revisar });
+    if (patch) {
+      const { error } = await supabase.from("cpn_certificate_routes").update(patch).eq("id", data.routeId);
+      if (error) throw new Error("Não foi possível atualizar a rota.");
+    }
+    await supabase.from("cpn_audit_logs").insert(auditoria as never);
+    return { ok: true, somenteAuditoria: !patch, faltando };
+  });
+
+/** Histórico de verificação de uma rota (cpn_audit_logs). */
+export const historicoRotaCpn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: { routeId: string }) => ({ routeId: String(i.routeId) }))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    await exigirEquipe(supabase, userId);
+    const { data: logs } = await supabase.from("cpn_audit_logs")
+      .select("id, acao, resultado, detalhes, operador_id, created_at")
+      .eq("route_id", data.routeId)
+      .in("acao", ["homologar_rota", "manter_verificar_rota", "solicitar_revisao_rota", "verificar_rota", "revisar_rota"])
+      .order("created_at", { ascending: false }).limit(50);
+    const ids = [...new Set((logs ?? []).map((l) => l.operador_id))];
+    const { data: perfis } = ids.length ? await supabase.from("profiles").select("id, nome").in("id", ids) : { data: [] };
+    const nome = new Map((perfis ?? []).map((p) => [p.id, p.nome]));
+    return (logs ?? []).map((l) => ({ ...l, operador: nome.get(l.operador_id) ?? "Equipe" }));
   });
 
 /** Cobertura nacional a partir de cnj_tribunais + rotas reais (sem registros fictícios). */
