@@ -248,8 +248,14 @@ function AdminEntregas() {
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-accent/15 px-2 text-xs font-bold text-accent">
-                            {i + 1}
+                          <span
+                            className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-accent/15 px-2 text-xs font-bold text-accent"
+                            title={p.fila_mes ? `Nº ${p.fila_numero} da fila de ${p.fila_mes.slice(5)}/${p.fila_mes.slice(0, 4)}` : "Sem número de fila"}
+                          >
+                            {p.fila_numero != null ? `#${p.fila_numero}` : "—"}
+                            {p.fila_mes && (
+                              <span className="ml-1 font-medium opacity-70">{p.fila_mes.slice(5)}/{p.fila_mes.slice(2, 4)}</span>
+                            )}
                           </span>
                           <Link
                             to="/admin/$protocolo"
