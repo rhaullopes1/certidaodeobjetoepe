@@ -913,6 +913,7 @@ export type Database = {
           cpf: string
           created_at: string
           email: string
+          finalidade: string | null
           foro: string | null
           id: string
           lembrete_enviado_em: string | null
@@ -966,6 +967,7 @@ export type Database = {
           cpf: string
           created_at?: string
           email: string
+          finalidade?: string | null
           foro?: string | null
           id?: string
           lembrete_enviado_em?: string | null
@@ -1019,6 +1021,7 @@ export type Database = {
           cpf?: string
           created_at?: string
           email?: string
+          finalidade?: string | null
           foro?: string | null
           id?: string
           lembrete_enviado_em?: string | null

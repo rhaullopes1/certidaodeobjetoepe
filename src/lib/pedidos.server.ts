@@ -247,6 +247,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     email,
     whatsapp: soDigitos(data.whatsapp),
     observacoes: data.observacoes ? data.observacoes.trim() : null,
+    finalidade: data.finalidade,
     valor_centavos: valorCentavos,
     uf: decodificado?.uf ?? null,
     cidade: decodificado?.cidade ?? null,

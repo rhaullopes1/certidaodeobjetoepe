@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { QUANTIDADE_MAXIMA, precoCentavos, whatsappLink } from "@/lib/site";
 
-import { cpfValido, soDigitos, pedidoSchema } from "@/lib/pedidos.schema";
+import { cpfValido, soDigitos, pedidoSchema, FINALIDADES, type Finalidade } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
 import { decodificarProcesso, type ProcessoDecodificado } from "@/lib/cnj.functions";
 import { trackBeginCheckout } from "@/lib/analytics";
@@ -271,6 +271,7 @@ function Solicitar() {
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [finalidade, setFinalidade] = useState<Finalidade | "">("");
   const [sessaoEmail, setSessaoEmail] = useState<string | null>(null);
 
   const [mostrarErros, setMostrarErros] = useState(false);
@@ -329,6 +330,7 @@ function Solicitar() {
     if (!cpfValido(cpf)) novosErros['cpf'] = "CPF inválido — confira os dígitos.";
     const wa = soDigitos(whatsapp);
     if (wa.length < 10) novosErros['whatsapp'] = "Informe o WhatsApp com DDD.";
+    if (!finalidade) novosErros['finalidade'] = "Selecione a finalidade da certidão.";
     if (!processos.every(blocoCompleto)) {
       novosErros['processos'] = "Confira o número e o nome da parte em cada processo.";
     }
@@ -354,6 +356,7 @@ function Solicitar() {
       email: email.trim(),
       whatsapp: wa,
       observacoes: "",
+      finalidade,
     };
 
     const parsed = pedidoSchema.safeParse(bruto);
@@ -546,6 +549,34 @@ function Solicitar() {
                 />
               </Campo>
             </div>
+
+            <fieldset className="mt-4">
+              <legend className="text-sm font-semibold">Finalidade da certidão</legend>
+              <div role="radiogroup" className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {(Object.keys(FINALIDADES) as Finalidade[]).map((k) => {
+                  const ativo = finalidade === k;
+                  return (
+                    <button
+                      key={k}
+                      type="button"
+                      role="radio"
+                      aria-checked={ativo}
+                      onClick={() => setFinalidade(k)}
+                      className={`rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${
+                        ativo
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-input bg-background text-foreground hover:border-ring"
+                      }`}
+                    >
+                      {FINALIDADES[k]}
+                    </button>
+                  );
+                })}
+              </div>
+              {mostrarErros && erros['finalidade'] && (
+                <p className="mt-1.5 text-xs font-medium text-destructive">{erros['finalidade']}</p>
+              )}
+            </fieldset>
           </section>
 
           {erroGeral && (
