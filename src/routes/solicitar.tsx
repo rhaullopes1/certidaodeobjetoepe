@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { QUANTIDADE_MAXIMA, precoCentavos, whatsappLink } from "@/lib/site";
 
-import { cpfValido, soDigitos, pedidoSchema } from "@/lib/pedidos.schema";
+import { cpfValido, soDigitos, pedidoSchema, FINALIDADES, type Finalidade } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
 import { decodificarProcesso, type ProcessoDecodificado } from "@/lib/cnj.functions";
 import { trackBeginCheckout } from "@/lib/analytics";
