@@ -24,6 +24,8 @@ export type PedidoAdmin = {
   status: string;
   created_at: string;
   pago_em: string | null;
+  fila_mes: string | null;
+  fila_numero: number | null;
   tribunal_sigla?: string | null;
   tribunal_nome?: string | null;
   segmento_judiciario?: string | null;
@@ -47,7 +49,7 @@ export type PedidoAdmin = {
 };
 
 const COLUNAS =
-  "id, protocolo, numero_processo, nome_parte, quantidade, uf, cidade, cpf, email, whatsapp, observacoes, finalidade, certidoes, valor_centavos, status, created_at, pago_em, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_enriquecido, processo_enriquecido_em, processo_fonte, processo_confianca, processo_dados";
+  "id, protocolo, numero_processo, nome_parte, quantidade, uf, cidade, cpf, email, whatsapp, observacoes, finalidade, certidoes, valor_centavos, status, created_at, pago_em, fila_mes, fila_numero, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_enriquecido, processo_enriquecido_em, processo_fonte, processo_confianca, processo_dados";
 
 export async function souEquipe() {
   const { data } = await supabase.auth.getUser();
