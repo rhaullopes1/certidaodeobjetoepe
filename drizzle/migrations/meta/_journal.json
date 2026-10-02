@@ -120,6 +120,13 @@
       "when": 1790921194879,
       "tag": "0016_fila_renumeracao_global",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1790927165741,
+      "tag": "0017_cpn_operador",
+      "breakpoints": true
     }
   ]
 }

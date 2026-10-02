@@ -578,6 +578,277 @@ export type Database = {
         }
         Relationships: []
       }
+      cpn_audit_logs: {
+        Row: {
+          acao: string
+          created_at: string
+          detalhes: Json
+          id: string
+          numero_processo: string | null
+          operacao_id: string | null
+          operador_id: string
+          resultado: string | null
+          route_id: string | null
+        }
+        Insert: {
+          acao: string
+          created_at?: string
+          detalhes?: Json
+          id?: string
+          numero_processo?: string | null
+          operacao_id?: string | null
+          operador_id?: string
+          resultado?: string | null
+          route_id?: string | null
+        }
+        Update: {
+          acao?: string
+          created_at?: string
+          detalhes?: Json
+          id?: string
+          numero_processo?: string | null
+          operacao_id?: string | null
+          operador_id?: string
+          resultado?: string | null
+          route_id?: string | null
+        }
+        Relationships: []
+      }
+      cpn_certificate_routes: {
+        Row: {
+          ativo: boolean
+          autenticidade_url: string | null
+          automacao_cpn: string
+          created_at: string
+          custo: string | null
+          excecoes: string | null
+          exige_advogado: boolean | null
+          exige_login: boolean | null
+          exige_pagamento: boolean | null
+          exige_peticao: boolean | null
+          fonte_evidencia: string | null
+          grau: string | null
+          id: string
+          metodo: string
+          modalidade: string
+          observacoes: string | null
+          prazo: string | null
+          prioridade: number
+          requisitos: string | null
+          sistema: string | null
+          texto_base_solicitacao: string | null
+          tipo_certidao: string
+          tribunal_id: string
+          ultima_verificacao: string | null
+          updated_at: string
+          url_certidao: string | null
+          url_fonte: string | null
+          verificado_por: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          autenticidade_url?: string | null
+          automacao_cpn?: string
+          created_at?: string
+          custo?: string | null
+          excecoes?: string | null
+          exige_advogado?: boolean | null
+          exige_login?: boolean | null
+          exige_pagamento?: boolean | null
+          exige_peticao?: boolean | null
+          fonte_evidencia?: string | null
+          grau?: string | null
+          id?: string
+          metodo?: string
+          modalidade?: string
+          observacoes?: string | null
+          prazo?: string | null
+          prioridade?: number
+          requisitos?: string | null
+          sistema?: string | null
+          texto_base_solicitacao?: string | null
+          tipo_certidao?: string
+          tribunal_id: string
+          ultima_verificacao?: string | null
+          updated_at?: string
+          url_certidao?: string | null
+          url_fonte?: string | null
+          verificado_por?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          autenticidade_url?: string | null
+          automacao_cpn?: string
+          created_at?: string
+          custo?: string | null
+          excecoes?: string | null
+          exige_advogado?: boolean | null
+          exige_login?: boolean | null
+          exige_pagamento?: boolean | null
+          exige_peticao?: boolean | null
+          fonte_evidencia?: string | null
+          grau?: string | null
+          id?: string
+          metodo?: string
+          modalidade?: string
+          observacoes?: string | null
+          prazo?: string | null
+          prioridade?: number
+          requisitos?: string | null
+          sistema?: string | null
+          texto_base_solicitacao?: string | null
+          tipo_certidao?: string
+          tribunal_id?: string
+          ultima_verificacao?: string | null
+          updated_at?: string
+          url_certidao?: string | null
+          url_fonte?: string | null
+          verificado_por?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cpn_certificate_routes_tribunal_id_fkey"
+            columns: ["tribunal_id"]
+            isOneToOne: false
+            referencedRelation: "cnj_tribunais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cpn_operacoes: {
+        Row: {
+          created_at: string
+          demo: boolean
+          documento_url: string | null
+          id: string
+          metodo: string | null
+          numero_processo: string
+          observacao: string | null
+          operador_id: string
+          query_id: string | null
+          requisitos: string | null
+          route_id: string | null
+          status: string
+          texto_solicitacao: string | null
+          tipo_certidao: string
+          tribunal_sigla: string | null
+          unidade: string | null
+          updated_at: string
+          url_oficial: string | null
+        }
+        Insert: {
+          created_at?: string
+          demo?: boolean
+          documento_url?: string | null
+          id?: string
+          metodo?: string | null
+          numero_processo: string
+          observacao?: string | null
+          operador_id?: string
+          query_id?: string | null
+          requisitos?: string | null
+          route_id?: string | null
+          status?: string
+          texto_solicitacao?: string | null
+          tipo_certidao?: string
+          tribunal_sigla?: string | null
+          unidade?: string | null
+          updated_at?: string
+          url_oficial?: string | null
+        }
+        Update: {
+          created_at?: string
+          demo?: boolean
+          documento_url?: string | null
+          id?: string
+          metodo?: string | null
+          numero_processo?: string
+          observacao?: string | null
+          operador_id?: string
+          query_id?: string | null
+          requisitos?: string | null
+          route_id?: string | null
+          status?: string
+          texto_solicitacao?: string | null
+          tipo_certidao?: string
+          tribunal_sigla?: string | null
+          unidade?: string | null
+          updated_at?: string
+          url_oficial?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cpn_operacoes_query_id_fkey"
+            columns: ["query_id"]
+            isOneToOne: false
+            referencedRelation: "cpn_process_queries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cpn_operacoes_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "cpn_certificate_routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cpn_process_queries: {
+        Row: {
+          cnj_valido: boolean
+          consultado_em: string
+          dados_json: Json
+          demo: boolean
+          fonte: string | null
+          id: string
+          modalidade: string | null
+          numero_normalizado: string | null
+          numero_raw: string
+          operador_id: string
+          route_id: string | null
+          status: string
+          tribunal_sigla: string | null
+        }
+        Insert: {
+          cnj_valido?: boolean
+          consultado_em?: string
+          dados_json?: Json
+          demo?: boolean
+          fonte?: string | null
+          id?: string
+          modalidade?: string | null
+          numero_normalizado?: string | null
+          numero_raw: string
+          operador_id?: string
+          route_id?: string | null
+          status: string
+          tribunal_sigla?: string | null
+        }
+        Update: {
+          cnj_valido?: boolean
+          consultado_em?: string
+          dados_json?: Json
+          demo?: boolean
+          fonte?: string | null
+          id?: string
+          modalidade?: string | null
+          numero_normalizado?: string | null
+          numero_raw?: string
+          operador_id?: string
+          route_id?: string | null
+          status?: string
+          tribunal_sigla?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cpn_process_queries_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "cpn_certificate_routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cron_tokens: {
         Row: {
           created_at: string
