@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X, MessageCircle } from "lucide-react";
+import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   listarEntregasPendentes,
@@ -11,9 +11,17 @@ import {
   type PedidoAdmin,
 } from "@/lib/admin";
 import { ESTADOS, FLUXO_STATUS, statusPedido } from "@/lib/site";
-import { linkWhatsappCliente, normalizarWhatsapp } from "@/lib/whatsapp-cliente";
+import {
+  linkWhatsappAvaliacao,
+  linkWhatsappCliente,
+  normalizarWhatsapp,
+} from "@/lib/whatsapp-cliente";
 
-/** Botão de contato rápido via WhatsApp para um pedido do painel. */
+const BASE_ACAO =
+  "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ring-1 transition-colors";
+const DESABILITADO = `${BASE_ACAO} cursor-not-allowed bg-secondary/60 text-muted-foreground/40 ring-border`;
+
+/** Botão R: contato/recuperação via WhatsApp (lógica de mensagem inalterada). */
 function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
   const link = linkWhatsappCliente({
     protocolo: pedido.protocolo,
@@ -24,25 +32,14 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
   const pendente = pedido.status === "aguardando_pagamento";
   const numeroOk = normalizarWhatsapp(pedido.whatsapp) !== null;
 
-  const base =
-    "inline-flex items-center justify-center rounded-full p-2 transition-colors";
-  const cor = pendente
-    ? "bg-accent/20 text-accent hover:bg-accent/30 ring-1 ring-accent/40"
-    : "bg-secondary text-muted-foreground hover:bg-secondary/70";
-  const classe = numeroOk ? `${base} ${cor}` : `${base} bg-secondary/60 text-muted-foreground/40 cursor-not-allowed`;
-
   const label = pendente
-    ? "Abrir WhatsApp para ajudar a finalizar o pagamento"
-    : "Abrir WhatsApp com mensagem de acompanhamento";
+    ? "Recuperação: abrir WhatsApp para ajudar a finalizar o pagamento"
+    : "Contato: abrir WhatsApp com mensagem de acompanhamento";
 
   if (!numeroOk) {
     return (
-      <span
-        className={classe}
-        title="Número de WhatsApp não disponível para este pedido"
-        aria-label="WhatsApp indisponível"
-      >
-        <MessageCircle className="h-4 w-4 opacity-60" />
+      <span className={DESABILITADO} title="Número de WhatsApp não disponível para este pedido" aria-label="WhatsApp indisponível">
+        R
       </span>
     );
   }
@@ -52,11 +49,36 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
       href={link!}
       target="_blank"
       rel="noopener noreferrer"
-      className={classe}
+      className={`${BASE_ACAO} bg-gold/20 text-foreground ring-gold/60 hover:bg-gold/35`}
       title={label}
       aria-label={label}
     >
-      <MessageCircle className="h-4 w-4" />
+      R
+    </a>
+  );
+}
+
+/** Botão A: pedido voluntário de avaliação no Google via WhatsApp. */
+function BotaoAvaliacao({ pedido }: { pedido: PedidoAdmin }) {
+  const link = linkWhatsappAvaliacao({ nome_parte: pedido.nome_parte, whatsapp: pedido.whatsapp });
+  if (!link) {
+    return (
+      <span className={DESABILITADO} title="Número de WhatsApp não disponível para este pedido" aria-label="Avaliação indisponível">
+        A
+      </span>
+    );
+  }
+  const label = "Abrir WhatsApp para solicitar avaliação no Google";
+  return (
+    <a
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${BASE_ACAO} bg-live/15 text-live ring-live/50 hover:bg-live/25`}
+      title={label}
+      aria-label={label}
+    >
+      A
     </a>
   );
 }

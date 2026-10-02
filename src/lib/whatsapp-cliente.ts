@@ -115,3 +115,23 @@ export function linkWhatsappCliente(p: PedidoContato): string | null {
   if (!numero) return null;
   return `https://wa.me/${numero}?text=${encodeURIComponent(mensagemWhatsapp(p))}`;
 }
+
+/** Mensagem de pedido voluntário de avaliação no Google (sem incentivo). */
+export function mensagemWhatsappAvaliacao(p: { nome_parte: string | null }): string {
+  const nome = p.nome_parte?.trim();
+  const saudacao = nome ? `Olá, ${nome}! 😊` : "Olá! 😊";
+  return (
+    `${saudacao}\n\n` +
+    `Obrigado por confiar na Certidão de Objeto e Pé.\n\n` +
+    `Se você puder compartilhar como foi sua experiência com nosso atendimento, sua avaliação no Google nos ajuda muito e leva menos de 1 minuto. ⭐\n\n` +
+    `Avalie nossa empresa:\n${LINK_AVALIACAO_GOOGLE}\n\n` +
+    `Muito obrigado pela confiança! 🙏`
+  );
+}
+
+/** Link wa.me com a mensagem de avaliação, ou null sem número válido. Envio manual. */
+export function linkWhatsappAvaliacao(p: { nome_parte: string | null; whatsapp: string }): string | null {
+  const numero = normalizarWhatsapp(p.whatsapp);
+  if (!numero) return null;
+  return `https://wa.me/${numero}?text=${encodeURIComponent(mensagemWhatsappAvaliacao(p))}`;
+}
