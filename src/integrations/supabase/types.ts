@@ -631,11 +631,14 @@ export type Database = {
           id: string
           metodo: string
           modalidade: string
+          observacao_verificacao: string | null
           observacoes: string | null
           prazo: string | null
           prioridade: number
           requisitos: string | null
+          responsavel_id: string | null
           sistema: string | null
+          status_verificacao: string
           texto_base_solicitacao: string | null
           tipo_certidao: string
           tribunal_id: string
@@ -661,11 +664,14 @@ export type Database = {
           id?: string
           metodo?: string
           modalidade?: string
+          observacao_verificacao?: string | null
           observacoes?: string | null
           prazo?: string | null
           prioridade?: number
           requisitos?: string | null
+          responsavel_id?: string | null
           sistema?: string | null
+          status_verificacao?: string
           texto_base_solicitacao?: string | null
           tipo_certidao?: string
           tribunal_id: string
@@ -691,11 +697,14 @@ export type Database = {
           id?: string
           metodo?: string
           modalidade?: string
+          observacao_verificacao?: string | null
           observacoes?: string | null
           prazo?: string | null
           prioridade?: number
           requisitos?: string | null
+          responsavel_id?: string | null
           sistema?: string | null
+          status_verificacao?: string
           texto_base_solicitacao?: string | null
           tipo_certidao?: string
           tribunal_id?: string
