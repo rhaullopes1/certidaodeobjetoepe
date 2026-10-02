@@ -1,10 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState, type FormEvent } from "react";
-import { Loader2, ShieldCheck, Send } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, Send } from "lucide-react";
 
 import { SiteHeader } from "@/components/site/site-header";
-import { PRECO_ANTECEDENTES_CENTAVOS, formatarBRL } from "@/lib/site";
+import { PRECO_ANTECEDENTES_CENTAVOS } from "@/lib/site";
 import { soDigitos } from "@/lib/pedidos.schema";
 import { antecedentesSchema, UFS } from "@/lib/antecedentes.schema";
 import { criarPedidoAntecedentes } from "@/lib/antecedentes.functions";
@@ -14,20 +14,20 @@ export const Route = createFileRoute("/solicitar-antecedentes")({
   component: SolicitarAntecedentes,
   head: () => ({
     meta: [
-      { title: "Solicitar Certidão de Antecedentes Criminais Federal | Polícia Federal" },
+      { title: "Consulta gratuita de Antecedentes Criminais Federal | Resultado por e-mail" },
       {
         name: "description",
         content:
-          "Peça online a Certidão de Antecedentes Criminais Federal emitida pela Polícia Federal. Preencha seus dados, pague e receba o PDF por e-mail e WhatsApp.",
+          "Consulta gratuita de antecedentes criminais federal. Preencha seus dados e receba o resultado da Polícia Federal por e-mail em tempo real.",
       },
       {
         property: "og:title",
-        content: "Solicitar Certidão de Antecedentes Criminais Federal",
+        content: "Consulta gratuita de Antecedentes Criminais Federal",
       },
       {
         property: "og:description",
         content:
-          "Pedido online em poucos minutos: emissão pelos sistemas da Polícia Federal e envio do PDF por e-mail e WhatsApp após a confirmação do pagamento.",
+          "Consulta gratuita: emissão pelos sistemas da Polícia Federal e resultado enviado por e-mail em tempo real.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -84,7 +84,7 @@ const mascararTelefone = (v: string) => {
 };
 
 function SolicitarAntecedentes() {
-  const navigate = useNavigate();
+  const [enviado, setEnviado] = useState<{ protocolo: string; email: string } | null>(null);
   const enviar = useServerFn(criarPedidoAntecedentes);
 
   const [nome, setNome] = useState("");
@@ -133,12 +133,33 @@ function SolicitarAntecedentes() {
     trackBeginCheckout();
     try {
       const pedido = await enviar({ data: parsed.data });
-      navigate({ to: "/pedido/$protocolo", params: { protocolo: pedido.protocolo } });
+      setEnviado({ protocolo: pedido.protocolo, email: pedido.email });
+      setEnviando(false);
     } catch (error) {
       console.error(error);
       setErroGeral("Não foi possível registrar seu pedido agora. Tente novamente em instantes.");
       setEnviando(false);
     }
+  }
+
+  if (enviado) {
+    return (
+      <div className="min-h-dvh bg-secondary/40">
+        <SiteHeader />
+        <main className="mx-auto w-full max-w-2xl px-5 py-12 sm:px-8">
+          <div className="rounded-2xl border border-border bg-card p-6 text-center sm:p-8">
+            <CheckCircle2 className="mx-auto size-10 text-live" aria-hidden />
+            <h1 className="mt-3 font-display text-2xl font-extrabold">Consulta registrada</h1>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Seu resultado será enviado por e-mail em tempo real para{" "}
+              <strong className="text-foreground">{enviado.email}</strong>, assim que a Polícia
+              Federal disponibilizar a certidão. Confira também a caixa de spam.
+            </p>
+            <p className="mt-4 text-xs text-muted-foreground">Protocolo: {enviado.protocolo}</p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
@@ -150,12 +171,11 @@ function SolicitarAntecedentes() {
           Polícia Federal · SINIC
         </p>
         <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
-          Certidão de Antecedentes Criminais Federal
+          Consulta gratuita de antecedentes criminais federal
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Preencha os dados exatamente como constam no seu documento de identidade. Após a
-          confirmação do pagamento, a certidão é emitida nos sistemas da Polícia Federal e enviada
-          em PDF para o seu e-mail e WhatsApp.
+          Preencha os dados exatamente como constam no seu documento de identidade. A consulta é
+          gratuita e o seu resultado será enviado por e-mail em tempo real.
         </p>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-5">
@@ -234,7 +254,7 @@ function SolicitarAntecedentes() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-            <h2 className="font-display text-lg font-bold">Para onde enviamos a certidão</h2>
+            <h2 className="font-display text-lg font-bold">Para onde enviamos o resultado</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <Campo label="E-mail" erro={erros["email"]}>
                 <input
@@ -265,14 +285,11 @@ function SolicitarAntecedentes() {
               <span className="text-muted-foreground">
                 Certidão de Antecedentes Criminais Federal
               </span>
-              <span className="font-display text-xl font-extrabold">
-                {formatarBRL(PRECO_ANTECEDENTES_CENTAVOS)}
-              </span>
+              <span className="font-display text-xl font-extrabold">Gratuita</span>
             </div>
             <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="mt-0.5 size-4 shrink-0" aria-hidden />
-              Pagamento por Pix ou cartão. A emissão começa automaticamente assim que o pagamento
-              é confirmado.
+              <Mail className="mt-0.5 size-4 shrink-0" aria-hidden />
+              Sem pagamento. Seu resultado será enviado por e-mail em tempo real.
             </p>
           </div>
 
@@ -292,7 +309,7 @@ function SolicitarAntecedentes() {
             ) : (
               <Send className="size-4" aria-hidden />
             )}
-            {enviando ? "Registrando seu pedido..." : "Solicitar certidão agora"}
+            {enviando ? "Registrando sua consulta..." : "Fazer consulta gratuita"}
           </button>
 
           <p className="text-center text-xs text-muted-foreground">

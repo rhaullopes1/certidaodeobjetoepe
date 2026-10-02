@@ -7,7 +7,7 @@ const URL = `${SITE}/certidao-de-antecedentes-criminais`;
 
 const TITULO = "Certidão de Antecedentes Criminais Federal Online | Polícia Federal";
 const DESCRICAO =
-  "Solicite sua Certidão de Antecedentes Criminais Federal online. Pedido rápido, 100% online e entrega do documento em PDF por WhatsApp e e-mail.";
+  "Solicite sua Certidão de Antecedentes Criminais Federal online. Consulta gratuita, 100% online, com resultado enviado por e-mail em tempo real.";
 
 
 const COMBO = [
@@ -44,7 +44,7 @@ const DIFERENCIAIS = [
   {
     titulo: "Processo automatizado",
     texto:
-      "Assim que o pagamento é confirmado, o pedido entra automaticamente na fila de emissão e você recebe um número de protocolo para acompanhar.",
+      "Assim que você envia os dados, a consulta é processada automaticamente e o resultado segue para o seu e-mail.",
   },
   {
     titulo: "Documentos oficiais e verificáveis",
@@ -66,9 +66,8 @@ const PASSOS = [
   },
   {
     n: "2",
-    titulo: "Pague com Pix ou cartão",
-    texto:
-      "O valor aparece no resumo antes do pagamento, com desconto progressivo quando você pede mais de uma certidão. O Pix é confirmado automaticamente.",
+    titulo: "Consulta gratuita",
+    texto: "Não há pagamento nem checkout: a consulta é processada automaticamente após o envio.",
   },
   {
     n: "3",
@@ -85,7 +84,7 @@ const FAQ = [
   },
   {
     q: "Quanto tempo leva para eu receber?",
-    a: "O pedido é registrado na hora e segue para emissão logo após a confirmação do pagamento. O tempo de emissão depende do órgão emissor de cada certidão; você acompanha cada etapa pelo protocolo.",
+    a: "O pedido é registrado na hora e segue para emissão automaticamente, sem pagamento. O tempo de emissão depende do órgão emissor de cada certidão; você acompanha cada etapa pelo protocolo.",
   },
   {
     q: "A certidão serve para empresa, concurso e processo seletivo?",
@@ -164,7 +163,7 @@ function CtaPrincipal({ className = "" }: { className?: string }) {
       to="/solicitar-antecedentes"
       className={`inline-flex items-center justify-center rounded-full bg-gold px-7 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:scale-[1.02] ${className}`}
     >
-      Solicitar certidão agora
+      Fazer consulta gratuita
     </Link>
   );
 }
@@ -193,7 +192,7 @@ function CtaBloco({ className = "", escuro = false }: { className?: string; escu
           escuro ? "opacity-80 sm:text-left" : "text-muted-foreground"
         }`}
       >
-        Receba sua certidão em PDF diretamente pelo WhatsApp e por e-mail após o pagamento.
+        Consulta gratuita de antecedentes criminais federal. Seu resultado será enviado por e-mail em tempo real.
       </p>
       <EmissaoImediata />
     </div>
@@ -327,7 +326,7 @@ function AntecedentesPage() {
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
               Preencha os dados, escolha a certidão federal ou também a estadual e acompanhe pelo
-              acompanhe pelo protocolo. O valor aparece no resumo antes do pagamento.
+              acompanhe pelo protocolo. A consulta é gratuita e o resultado chega por e-mail.
             </p>
             <CtaBloco className="mt-6" />
             <AlternativasContato className="mt-5 text-center" />
