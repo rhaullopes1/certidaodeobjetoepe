@@ -45,7 +45,7 @@ export async function criarPedidoAntecedentesNoBanco(
     .eq("tipo", TIPO_ANTECEDENTES)
     .eq("cpf", cpf)
     .eq("email", email)
-    .in("status", ["pago", "emitido"])
+    .eq("status", "gratuito")
     .gte("created_at", desde)
     .order("created_at", { ascending: false })
     .limit(1)
@@ -64,9 +64,9 @@ export async function criarPedidoAntecedentesNoBanco(
     email,
     whatsapp,
     valor_centavos: valorCentavos,
-    // Consulta gratuita: entra direto como liberada para emissão, sem cobrança.
-    // pago_em fica vazio de propósito (não houve pagamento).
-    status: "pago",
+    // Consulta gratuita: status próprio, fora da fila de entregas, da fila
+    // numerada e da receita. pago_em fica vazio (não houve pagamento).
+    status: "gratuito",
     uf: data.ufNascimento,
     ant_nascimento: data.nascimento,
     ant_nome_mae: data.nomeMae ? data.nomeMae.trim() : null,

@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, Mail, Send } from "lucide-react";
 
 import { SiteHeader } from "@/components/site/site-header";
-import { PRECO_ANTECEDENTES_CENTAVOS } from "@/lib/site";
 import { soDigitos } from "@/lib/pedidos.schema";
 import { antecedentesSchema, UFS } from "@/lib/antecedentes.schema";
 import { criarPedidoAntecedentes } from "@/lib/antecedentes.functions";
@@ -113,7 +112,7 @@ function SolicitarAntecedentes() {
       ufNascimento,
       email: email.trim().toLowerCase(),
       whatsapp: soDigitos(whatsapp),
-      valorTotalCentavos: PRECO_ANTECEDENTES_CENTAVOS,
+      valorTotalCentavos: 0,
     };
 
     const parsed = antecedentesSchema.safeParse(bruto);
