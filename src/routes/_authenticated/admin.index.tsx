@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { FINALIDADES } from "@/lib/pedidos.schema";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X } from "lucide-react";
