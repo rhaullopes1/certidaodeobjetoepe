@@ -7,7 +7,7 @@ import { CheckCircle2, ClipboardCopy, ExternalLink, FileText, History, Loader2, 
 import { souEquipe } from "@/lib/admin";
 import { analisarNup, formatarNup } from "@/lib/cnj";
 import { CoberturaRotas, FilaVerificacao, HistoricoConsultas } from "@/components/admin/cpn-paineis";
-import { ESTADOS_DADO, estadoDado, STATUS_OPERACAO, canaisDaRota, passosDaRota, textoInstrucoes, textoSolicitacao, type RotaCertidao, type Modalidade, type StatusOperacao } from "@/lib/cpn";
+import { ESTADOS_DADO, MODALIDADES, estadoDado, STATUS_OPERACAO, canaisDaRota, passosDaRota, textoInstrucoes, textoSolicitacao, type RotaCertidao, type Modalidade, type StatusOperacao } from "@/lib/cpn";
 import {
   atualizarOperacao,
   criarOperacao,
@@ -189,7 +189,6 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   const sigilo = p.nivelSigilo !== null && p.nivelSigilo > 0;
   const confirmado = r.datajud?.status === "ok";
   const eDado = estadoDado(r.datajud?.status ?? null);
-  const eRota = ESTADOS_ROTA[estadoRota({ modalidade: r.modalidade, rota })];
   const copiar = async (texto: string, acao: "copiar_rota" | "copiar_solicitacao") => {
     await navigator.clipboard.writeText(texto);
     toast.success("Copiado");

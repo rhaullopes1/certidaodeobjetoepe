@@ -3,6 +3,8 @@
  * Motor de rotas puro e determinístico: escolhe a rota cadastrada (dados) para um processo.
  * Nunca presume que PJe/eproc = emissão automática: só vale o que está cadastrado/verificado.
  */
+import type { Json } from "@/integrations/supabase/types";
+
 export type Modalidade = "AUTOMATICA" | "SEMIAUTOMATICA" | "MANUAL" | "INDISPONIVEL" | "VERIFICAR";
 
 /** Modalidade DECLARADA no cadastro (como o tribunal oferece o serviço) — não indica execução pela CPN. */
@@ -56,8 +58,8 @@ export interface RotaCertidao {
   tipo_rota?: string | null;
   perfil?: string | null;
   quem_pode?: string | null;
-  passos?: unknown;
-  canais?: unknown;
+  passos?: Json | null;
+  canais?: Json | null;
   exige_procuracao?: boolean | null;
   exige_identificacao?: boolean | null;
   exige_finalidade?: boolean | null;
