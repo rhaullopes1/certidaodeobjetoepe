@@ -728,6 +728,21 @@ export type Database = {
         Row: {
           created_at: string
           demo: boolean
+          documento_autenticidade_conferida_em: string | null
+          documento_autenticidade_conferida_por: string | null
+          documento_autenticidade_status: string
+          documento_caminho: string | null
+          documento_codigo_seguranca: string | null
+          documento_nome: string | null
+          documento_numero_certidao: string | null
+          documento_origem: string | null
+          documento_processo_confere: boolean | null
+          documento_processo_extraido: string | null
+          documento_recebido_em: string | null
+          documento_recebido_por: string | null
+          documento_sha256: string | null
+          documento_tamanho: number | null
+          documento_texto_extraido: boolean | null
           documento_url: string | null
           id: string
           metodo: string | null
@@ -748,6 +763,21 @@ export type Database = {
         Insert: {
           created_at?: string
           demo?: boolean
+          documento_autenticidade_conferida_em?: string | null
+          documento_autenticidade_conferida_por?: string | null
+          documento_autenticidade_status?: string
+          documento_caminho?: string | null
+          documento_codigo_seguranca?: string | null
+          documento_nome?: string | null
+          documento_numero_certidao?: string | null
+          documento_origem?: string | null
+          documento_processo_confere?: boolean | null
+          documento_processo_extraido?: string | null
+          documento_recebido_em?: string | null
+          documento_recebido_por?: string | null
+          documento_sha256?: string | null
+          documento_tamanho?: number | null
+          documento_texto_extraido?: boolean | null
           documento_url?: string | null
           id?: string
           metodo?: string | null
@@ -768,6 +798,21 @@ export type Database = {
         Update: {
           created_at?: string
           demo?: boolean
+          documento_autenticidade_conferida_em?: string | null
+          documento_autenticidade_conferida_por?: string | null
+          documento_autenticidade_status?: string
+          documento_caminho?: string | null
+          documento_codigo_seguranca?: string | null
+          documento_nome?: string | null
+          documento_numero_certidao?: string | null
+          documento_origem?: string | null
+          documento_processo_confere?: boolean | null
+          documento_processo_extraido?: string | null
+          documento_recebido_em?: string | null
+          documento_recebido_por?: string | null
+          documento_sha256?: string | null
+          documento_tamanho?: number | null
+          documento_texto_extraido?: boolean | null
           documento_url?: string | null
           id?: string
           metodo?: string | null

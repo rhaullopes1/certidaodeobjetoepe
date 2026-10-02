@@ -134,6 +134,13 @@
       "when": 1790927724514,
       "tag": "0018_cpn_verificacao_rotas",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1790929466944,
+      "tag": "0019_cpn_documento_oficial",
+      "breakpoints": true
     }
   ]
 }
