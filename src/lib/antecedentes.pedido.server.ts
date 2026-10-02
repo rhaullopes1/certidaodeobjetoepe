@@ -1,7 +1,7 @@
-import { PRECO_ANTECEDENTES_CENTAVOS, formatarBRL, EMAIL_CONTATO } from "./site";
+import { PRECO_ANTECEDENTES_CENTAVOS, EMAIL_CONTATO } from "./site";
 import { soDigitos } from "./pedidos.schema";
-import { gerarCobranca, usuarioOpcionalDaRequisicao } from "./pedidos.server";
-import { TIPO_ANTECEDENTES } from "./antecedentes.server";
+import { usuarioOpcionalDaRequisicao } from "./pedidos.server";
+import { TIPO_ANTECEDENTES, processarEmissaoAntecedentes } from "./antecedentes.server";
 import type { AntecedentesPedidoInput } from "./antecedentes.schema";
 import type { AntecedentesPedidoResumo } from "./antecedentes.functions";
 
@@ -45,13 +45,13 @@ export async function criarPedidoAntecedentesNoBanco(
     .eq("tipo", TIPO_ANTECEDENTES)
     .eq("cpf", cpf)
     .eq("email", email)
-    .eq("status", "aguardando_pagamento")
+    .in("status", ["pago", "emitido"])
     .gte("created_at", desde)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
-  if (existente) return montar(await gerarCobranca(existente as never));
+  if (existente) return montar(existente as never);
 
   const registro = {
     protocolo: novoProtocolo(),
@@ -64,6 +64,9 @@ export async function criarPedidoAntecedentesNoBanco(
     email,
     whatsapp,
     valor_centavos: valorCentavos,
+    // Consulta gratuita: entra direto como liberada para emissão, sem cobrança.
+    // pago_em fica vazio de propósito (não houve pagamento).
+    status: "pago",
     uf: data.ufNascimento,
     ant_nascimento: data.nascimento,
     ant_nome_mae: data.nomeMae ? data.nomeMae.trim() : null,
@@ -83,8 +86,15 @@ export async function criarPedidoAntecedentesNoBanco(
     throw new Error("Não foi possível registrar seu pedido. Tente novamente.");
   }
 
-  const resumo = montar(await gerarCobranca(row as never));
+  const resumo = montar(row as never);
   await avisarEquipe(resumo, whatsapp);
+  // Emissão imediata; o e-mail com o PDF sai assim que a certidão é emitida.
+  // Se o órgão estiver indisponível, a rotina agendada tenta novamente.
+  try {
+    await processarEmissaoAntecedentes(String((row as { id: string }).id));
+  } catch (e) {
+    console.error("Falha na emissão imediata de antecedentes", e);
+  }
   return resumo;
 }
 
@@ -104,26 +114,6 @@ function montar(row: Record<string, unknown>): AntecedentesPedidoResumo {
 }
 
 async function avisarEquipe(resumo: AntecedentesPedidoResumo, whatsapp: string) {
-  const certidoes = [
-    { nomeParte: resumo.nome, numeroProcesso: "Antecedentes Criminais Federal", cpf: "" },
-  ];
-  try {
-    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
-    await sendTemplateEmail("pedido-confirmacao", resumo.email, {
-      idempotencyKey: `pedido-confirmacao-${resumo.protocolo}`,
-      replyTo: EMAIL_CONTATO,
-      templateData: {
-        protocolo: resumo.protocolo,
-        quantidade: 1,
-        valor: formatarBRL(resumo.valorCentavos),
-        certidoes,
-        url: `https://certidaodeobjetoepe.org/pedido/${resumo.protocolo}`,
-      },
-    });
-  } catch (e) {
-    console.error("Falha ao enviar confirmação do pedido de antecedentes", e);
-  }
-
   try {
     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
     await sendTemplateEmail("novo-pedido-admin", EMAIL_CONTATO, {
@@ -131,7 +121,7 @@ async function avisarEquipe(resumo: AntecedentesPedidoResumo, whatsapp: string) 
       templateData: {
         protocolo: resumo.protocolo,
         quantidade: 1,
-        valor: formatarBRL(resumo.valorCentavos),
+        valor: "Gratuita",
         email: resumo.email,
         whatsapp,
         certidoes: [{ nomeParte: resumo.nome, numeroProcesso: "Antecedentes Criminais Federal" }],

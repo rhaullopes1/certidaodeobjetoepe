@@ -15,7 +15,8 @@ export const TABELA_PRECOS: Record<number, number> = {
 export const QUANTIDADE_MAXIMA = 3;
 
 /** Certidão de Antecedentes Criminais Federal (Polícia Federal), por certidão. */
-export const PRECO_ANTECEDENTES_CENTAVOS = 1970;
+/** Consulta de Antecedentes Criminais Federal é gratuita: sem cobrança nem checkout. */
+export const PRECO_ANTECEDENTES_CENTAVOS = 0;
 
 export const precoCentavos = (quantidade: number) =>
   TABELA_PRECOS[Math.min(Math.max(Math.trunc(quantidade) || 1, 1), QUANTIDADE_MAXIMA)]!;
