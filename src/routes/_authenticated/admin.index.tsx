@@ -413,7 +413,10 @@ function AdminLista() {
                           {new Date(p.created_at).toLocaleString("pt-BR")}
                         </td>
                         <td className="px-5 py-4 text-right">
-                          <BotaoWhatsApp pedido={p} />
+                          <div className="inline-flex items-center gap-2">
+                            <BotaoWhatsApp pedido={p} />
+                            <BotaoAvaliacao pedido={p} />
+                          </div>
                         </td>
                       </tr>
                     ))}
