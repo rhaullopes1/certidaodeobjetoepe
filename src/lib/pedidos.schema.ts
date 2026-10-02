@@ -51,6 +51,18 @@ export const nomeParteField = z
   .max(120, "Nome muito longo")
   .refine(nomeCompletoValido, "Informe o nome completo (nome e sobrenome, sem números)");
 
+export const FINALIDADES = {
+  caminhoneiro_motorista: "Caminhoneiro / motorista",
+  motorista_app: "Motorista de app",
+  transacao_imobiliaria: "Transação imobiliária",
+  outro: "Outro",
+} as const;
+export type Finalidade = keyof typeof FINALIDADES;
+export const finalidadeField = z.enum(
+  ["caminhoneiro_motorista", "motorista_app", "transacao_imobiliaria", "outro"],
+  { errorMap: () => ({ message: "Selecione a finalidade da certidão" }) },
+);
+
 export const cpfField = z.string().trim().refine(cpfValido, "CPF inválido");
 
 export const certidaoSchema = z.object({
@@ -85,6 +97,7 @@ export const pedidoSchema = z
       .trim()
       .refine((v) => soDigitos(v).length >= 10 && soDigitos(v).length <= 13, "WhatsApp inválido"),
     observacoes: z.string().trim().max(1000).optional().or(z.literal("")),
+    finalidade: finalidadeField,
   })
   .superRefine((valor, ctx) => {
     const esperado = precoCentavos(valor.quantidade);

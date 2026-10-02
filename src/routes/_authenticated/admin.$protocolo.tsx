@@ -1,3 +1,4 @@
+import { FINALIDADES } from "@/lib/pedidos.schema";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -290,6 +291,10 @@ function AdminDetalhe() {
                 <div className="mt-4">
                   <Linha label="Processo" valor={pedido.data.numero_processo} />
                   <Linha label="Parte envolvida" valor={pedido.data.nome_parte ?? "—"} />
+                  <Linha
+                    label="Finalidade"
+                    valor={FINALIDADES[pedido.data.finalidade as keyof typeof FINALIDADES] ?? "—"}
+                  />
                   <Linha label="Certidões" valor={String(pedido.data.quantidade ?? 1)} />
                   <Linha label="CPF" valor={pedido.data.cpf} />
                   <Linha label="E-mail" valor={pedido.data.email} />
