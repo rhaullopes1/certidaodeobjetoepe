@@ -72,6 +72,18 @@ export interface ContextoProcesso {
   grau: string | null;
   /** nivelSigilo da fonte; > 0 = segredo de justiça. null = não informado. */
   nivelSigilo: number | null;
+  /** Perfil de quem pede; null = não informado (o motor não supõe). */
+  perfil?: PerfilSolicitante | null;
+}
+export type PerfilSolicitante = "parte_advogado_habilitado" | "terceiro_ou_advogado_nao_cadastrado";
+export type Aplicabilidade = "sim" | "nao" | "indeterminado";
+export interface AvaliacaoRota {
+  rotaId: string;
+  aplicavel: Aplicabilidade;
+  motivos: string[];
+  /** Dados ou evidências que faltam para decidir/validar. */
+  faltando: string[];
+  evidenciaCompleta: boolean;
 }
 
 export interface RotaEscolhida {
@@ -80,6 +92,8 @@ export interface RotaEscolhida {
   alertas: string[];
   /** Outras rotas compatíveis (ex.: terceiros, sigilo, 2º grau). */
   alternativas?: RotaCertidao[];
+  /** Por que cada rota se aplica ou não, e o que falta para decidir. */
+  avaliacoes?: AvaliacaoRota[];
 }
 
 /* ---------------- Tipos de rota e status (motor de rotas) ---------------- */
@@ -149,60 +163,122 @@ function modalidadeValida(m: string): Modalidade {
   return (m in MODALIDADES ? m : "VERIFICAR") as Modalidade;
 }
 
+/** Sistema canônico: compara por família (eproc, pje, saj, projudi...), nunca por substring solta. */
+export function canonSistema(v: string | null | undefined): string | null {
+  const n = norm(v);
+  if (!n) return null;
+  if (n.includes("eproc")) return "eproc";
+  if (n.includes("pje")) return "pje";
+  if (n === "saj" || n.startsWith("esaj") || n.startsWith("saj")) return "saj";
+  if (n.includes("projudi")) return "projudi";
+  return n;
+}
 function sistemaCompativel(rotaSistema: string, ctxSistema: string) {
-  const c = norm(ctxSistema);
-  return rotaSistema.split(/\s+ou\s+|\//i).map(norm).filter(Boolean).some((s) => c.includes(s) || s.includes(c));
+  const c = canonSistema(ctxSistema);
+  return rotaSistema.split(/\s+ou\s+|\//i).map(canonSistema).some((s) => s !== null && s === c);
+}
+/** Grau canônico: G1, G2, JE (juizado), TR (turma recursal), SUP (tribunais superiores) ou o próprio valor. */
+export function canonGrau(v: string | null | undefined): string | null {
+  const n = norm(v);
+  if (!n) return null;
+  if (n === "g1" || n === "1" || n.startsWith("primeiro") || n === "1grau") return "G1";
+  if (n === "g2" || n === "2" || n.startsWith("segundo") || n === "2grau") return "G2";
+  if (n === "je") return "JE";
+  if (n === "tr") return "TR";
+  if (n === "sup") return "SUP";
+  return n.toUpperCase();
+}
+function grauDaRota(r: RotaCertidao): string | null {
+  return canonGrau(r.grau) ?? (/\b2G\b/i.test(r.sistema ?? "") ? null : null);
 }
 
-/** Escolhe a rota ativa mais específica. Sem rota compatível → VERIFICAR. */
+/** Avalia uma rota contra o contexto, sem supor dado ausente. */
+export function avaliarRota(r: RotaCertidao, ctx: ContextoProcesso, existeRotaSigilosa: boolean): AvaliacaoRota {
+  const motivos: string[] = [];
+  const faltando: string[] = [];
+  let nao = false;
+  let ind = false;
+  const sigilo = ctx.nivelSigilo === null ? null : ctx.nivelSigilo > 0;
+  if (r.sistema) {
+    if (!ctx.sistema) { ind = true; faltando.push(`sistema processual confirmado pela fonte (rota exige ${r.sistema})`); }
+    else if (sistemaCompativel(r.sistema, ctx.sistema)) motivos.push(`sistema ${ctx.sistema} compatível com ${r.sistema}`);
+    else { nao = true; motivos.push(`sistema ${ctx.sistema} incompatível com ${r.sistema}`); }
+  } else motivos.push("rota não restrita a sistema");
+  const g = grauDaRota(r);
+  const cg = canonGrau(ctx.grau);
+  if (g) {
+    if (!cg) { ind = true; faltando.push(`grau do processo confirmado pela fonte (rota é ${g})`); }
+    else if (g === cg) motivos.push(`grau ${cg} compatível`);
+    else if ((cg === "JE" || cg === "TR") && g === "G1") { ind = true; faltando.push(`evidência oficial de que a rota ${g} atende processos ${cg === "JE" ? "do Juizado Especial" : "de Turma Recursal"}`); }
+    else { nao = true; motivos.push(`grau ${cg} incompatível com ${g}`); }
+  }
+  const perfil = r.perfil ?? "qualquer";
+  if (perfil === "sigiloso") {
+    if (sigilo === true) motivos.push("processo sigiloso informado pela fonte");
+    else if (sigilo === false) { nao = true; motivos.push("fonte não informa sigilo"); }
+    else { ind = true; faltando.push("nível de sigilo informado pela fonte"); }
+  } else {
+    if (sigilo === true && existeRotaSigilosa) { nao = true; motivos.push("processo sigiloso: aplica-se a rota específica de sigilo"); }
+    if (sigilo === null && existeRotaSigilosa) faltando.push("nível de sigilo (há rota específica para processo sigiloso)");
+    if (perfil !== "qualquer") {
+      if (!ctx.perfil) { ind = true; faltando.push(`perfil do solicitante (rota é para: ${PERFIS_ROTA[perfil] ?? perfil})`); }
+      else if (ctx.perfil === perfil) motivos.push(`perfil ${PERFIS_ROTA[perfil]} confere`);
+      else { nao = true; motivos.push(`perfil informado não confere (rota é para: ${PERFIS_ROTA[perfil] ?? perfil})`); }
+    }
+  }
+  const evidenciaCompleta = !!r.url_fonte && !!r.fonte_trecho;
+  if (!r.url_fonte) faltando.push("URL da fonte oficial da rota");
+  if (!r.fonte_trecho) faltando.push("trecho da fonte oficial que comprova a rota");
+  if (r.status_verificacao !== "verificada") faltando.push("verificação por administrador");
+  return { rotaId: r.id, aplicavel: nao ? "nao" : ind ? "indeterminado" : "sim", motivos, faltando, evidenciaCompleta };
+}
+
+/**
+ * Escolhe a rota principal. Só devolve modalidade diferente de VERIFICAR quando a rota é
+ * aplicável sem dado faltando, tem evidência completa e foi verificada por administrador.
+ */
 export function escolherRota(rotas: RotaCertidao[], ctx: ContextoProcesso): RotaEscolhida {
   const alertas: string[] = [];
   const sigilo = ctx.nivelSigilo !== null && ctx.nivelSigilo > 0;
-  const compat = rotas
-    .map((r) => {
-      let score = 0;
-      if (r.sistema) {
-        if (!ctx.sistema) score += 1;
-        else if (sistemaCompativel(r.sistema, ctx.sistema)) score += 3;
-        else return null;
-      } else score += 2;
-      if (r.grau) {
-        if (!ctx.grau) score += 0;
-        else if (norm(r.grau) === norm(ctx.grau)) score += 2;
-        else return null;
-      }
-      if (r.perfil === "sigiloso") score += sigilo ? 10 : -100;
-      return { r, score };
-    })
-    .filter((x): x is { r: RotaCertidao; score: number } => x !== null)
-    .sort((a, b) => b.score - a.score || a.r.prioridade - b.r.prioridade);
-  const candidatas = compat.filter((x) => x.score > -50);
-
-  const melhor = candidatas[0]?.r ?? null;
-  const alternativas = compat.map((x) => x.r).filter((r) => r !== melhor);
+  const existeSig = rotas.some((r) => r.perfil === "sigiloso");
+  const av = new Map(rotas.map((r) => [r.id, avaliarRota(r, ctx, existeSig)]));
+  const pontos = (r: RotaCertidao) => {
+    const a = av.get(r.id)!;
+    let p = a.aplicavel === "sim" ? 100 : 0;
+    if (r.sistema && ctx.sistema) p += 3; else if (!r.sistema) p += 2; else p += 1;
+    if (r.grau && ctx.grau) p += 2;
+    if (r.perfil === "sigiloso") p += sigilo ? 10 : -5;
+    if (a.evidenciaCompleta) p += 1;
+    return p;
+  };
+  const candidatas = rotas.filter((r) => av.get(r.id)!.aplicavel !== "nao")
+    .sort((a, b) => pontos(b) - pontos(a) || a.prioridade - b.prioridade);
+  const melhor = candidatas[0] ?? null;
+  const ordem = (r: RotaCertidao) => ({ sim: 0, indeterminado: 1, nao: 2 })[av.get(r.id)!.aplicavel];
+  const alternativas = rotas.filter((r) => r !== melhor).sort((a, b) => ordem(a) - ordem(b) || a.prioridade - b.prioridade);
+  const avaliacoes = [...(melhor ? [melhor] : []), ...alternativas].map((r) => av.get(r.id)!);
   if (!melhor) {
-    return { modalidade: "VERIFICAR", rota: null, alertas: ["Nenhuma rota cadastrada para este tribunal/sistema. Verificar na fonte oficial."], alternativas };
+    const msg = rotas.length
+      ? "Nenhuma rota cadastrada se aplica a este processo (veja os motivos de cada uma). Verificar na fonte oficial."
+      : "Nenhuma rota cadastrada para este tribunal/sistema. Verificar na fonte oficial.";
+    return { modalidade: "VERIFICAR", rota: null, alertas: [msg], alternativas, avaliacoes };
   }
+  const a = av.get(melhor.id)!;
   let modalidade = modalidadeValida(melhor.modalidade);
-  if (melhor.sistema && !ctx.sistema) {
-    alertas.push(`Rota cadastrada para ${melhor.sistema}; o sistema do processo não foi confirmado pela fonte.`);
-    if (modalidade === "AUTOMATICA") modalidade = "VERIFICAR";
-  }
-  if (melhor.grau && !ctx.grau) {
-    alertas.push(`Rota cadastrada para o grau ${melhor.grau}; o grau do processo não foi confirmado pela fonte — confira as outras rotas.`);
-  }
+  if (melhor.sistema && !ctx.sistema) alertas.push(`Rota cadastrada para ${melhor.sistema}; o sistema do processo não foi confirmado pela fonte.`);
+  if (melhor.grau && !ctx.grau) alertas.push(`Rota cadastrada para o grau ${melhor.grau}; o grau do processo não foi confirmado pela fonte — confira as outras rotas.`);
+  const empate = candidatas.filter((r) => r !== melhor && av.get(r.id)!.aplicavel === a.aplicavel && r.perfil !== melhor.perfil && r.perfil !== "sigiloso");
+  if (!ctx.perfil && empate.length) alertas.push(`Perfil do solicitante não informado: a escolha entre "${PERFIS_ROTA[melhor.perfil ?? "qualquer"]}" e "${empate.map((r) => PERFIS_ROTA[r.perfil ?? "qualquer"]).join('", "')}" depende dele.`);
   if (sigilo) {
     alertas.push("A fonte informa segredo de justiça: fluxo automático não se aplica.");
     if (modalidade === "AUTOMATICA" || modalidade === "SEMIAUTOMATICA") modalidade = "MANUAL";
-  }
-  if (melhor.status_verificacao !== "verificada") {
-    alertas.push("Rota encontrada em pesquisa documental, ainda PENDENTE de verificação com evidência oficial — não está validada.");
-  }
-  if (melhor.automacao_cpn !== "homologada") {
-    alertas.push("Execução ainda não integrada à CPN (automação não homologada): o operador executa no portal oficial.");
-  }
+  } else if (ctx.nivelSigilo === null && existeSig) alertas.push("Nível de sigilo não informado pela fonte: confirmar antes de usar a rota.");
+  if (melhor.status_verificacao !== "verificada") alertas.push("Rota encontrada em pesquisa documental, ainda PENDENTE de verificação com evidência oficial — não está validada.");
+  if (!a.evidenciaCompleta) alertas.push(`Evidência insuficiente: falta ${[!melhor.url_fonte && "URL da fonte oficial", !melhor.fonte_trecho && "trecho da fonte"].filter(Boolean).join(" e ")}.`);
+  if (melhor.automacao_cpn !== "homologada") alertas.push("Execução ainda não integrada à CPN (automação não homologada): o operador executa no portal oficial.");
   if (!melhor.ultima_verificacao) alertas.push("Rota sem data de verificação.");
-  return { modalidade, rota: melhor, alertas, alternativas };
+  if (a.aplicavel !== "sim" || !a.evidenciaCompleta || melhor.status_verificacao !== "verificada") modalidade = "VERIFICAR";
+  return { modalidade, rota: melhor, alertas, alternativas, avaliacoes };
 }
 
 /** Instruções copiáveis da rota (somente dados cadastrados). */
