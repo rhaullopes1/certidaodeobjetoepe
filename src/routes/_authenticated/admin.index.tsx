@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X, MessageCircle } from "lucide-react";
+import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   listarEntregasPendentes,
