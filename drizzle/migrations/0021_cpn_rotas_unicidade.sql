@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS cpn_routes_unica_idx ON public.cpn_certificate_routes (tribunal_id, (coalesce(sistema, '')), (coalesce(grau, '')), perfil, tipo_rota, tipo_certidao);
