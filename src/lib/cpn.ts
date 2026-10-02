@@ -249,6 +249,7 @@ export function escolherRota(rotas: RotaCertidao[], ctx: ContextoProcesso): Rota
     if (r.grau && ctx.grau) p += 2;
     if (r.perfil === "sigiloso") p += sigilo ? 10 : -5;
     if (a.evidenciaCompleta) p += 1;
+    p -= a.faltando.length * 2; // menos suposições primeiro
     return p;
   };
   const candidatas = rotas.filter((r) => av.get(r.id)!.aplicavel !== "nao")
