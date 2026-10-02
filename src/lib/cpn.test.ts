@@ -181,3 +181,38 @@ describe("motor de rotas — catálogo e perfis", () => {
     expect(textoSolicitacao({ numero: "1", unidade: null, tribunal: "TJSP" }, sig)).toContain("despacho");
   });
 });
+
+describe("catálogo TJBA / TJPR", () => {
+  const r = (o: Partial<RotaCertidao>): RotaCertidao => ({ ...base, sistema: null, automacao_cpn: "nao_homologada", status_verificacao: "pendente", ultima_verificacao: null, ...o });
+  const tjba = [
+    r({ id: "ba-p", grau: "G1", tipo_rota: "MANUAL_EMAIL", modalidade: "MANUAL", perfil: "parte_advogado_habilitado", prioridade: 10, canais: [{ tipo: "email", rotulo: "E-mail da unidade judicial", valor: null }] }),
+    r({ id: "ba-t", grau: "G1", tipo_rota: "MANUAL_EMAIL", modalidade: "MANUAL", perfil: "terceiro_ou_advogado_nao_cadastrado", prioridade: 20 }),
+    r({ id: "ba-s", grau: "G1", tipo_rota: "MANUAL_EMAIL", modalidade: "MANUAL", perfil: "sigiloso", prioridade: 5 }),
+  ];
+  const tjpr = [
+    r({ id: "pr-2", grau: "G2", tipo_rota: "MANUAL_FORMULARIO", modalidade: "MANUAL", perfil: "qualquer", prioridade: 10 }),
+    r({ id: "pr-1", grau: "G1", tipo_rota: "VERIFICAR", modalidade: "VERIFICAR", perfil: "qualquer", prioridade: 50 }),
+  ];
+  it("TJBA: rota de parte é selecionável; terceiro e sigiloso como alternativas; sigilo escolhe a sigilosa", () => {
+    const e = escolherRota(tjba, { sistema: "PJe", grau: "G1", nivelSigilo: 0 });
+    expect(e.rota?.id).toBe("ba-p");
+    expect(e.alternativas?.map((a) => a.id)).toEqual(expect.arrayContaining(["ba-t", "ba-s"]));
+    expect(escolherRota(tjba, { sistema: "PJe", grau: "G1", nivelSigilo: 1 }).rota?.id).toBe("ba-s");
+  });
+  it("TJBA: e-mail da unidade sem endereço permanece vazio (não inventado)", () => {
+    expect(canaisDaRota(tjba[0])[0].valor).toBeNull();
+  });
+  it("TJPR: grau escolhe a rota certa; grau desconhecido gera alerta", () => {
+    expect(escolherRota(tjpr, { sistema: null, grau: "G2", nivelSigilo: 0 }).rota?.id).toBe("pr-2");
+    expect(escolherRota(tjpr, { sistema: null, grau: "G1", nivelSigilo: 0 }).rota?.id).toBe("pr-1");
+    expect(escolherRota(tjpr, { sistema: null, grau: null, nivelSigilo: 0 }).alertas.join()).toContain("grau do processo não foi confirmado");
+  });
+  it("todas as rotas novas ficam VERIFICAR enquanto pendentes; nenhuma vira automática", () => {
+    for (const x of [...tjba, ...tjpr]) {
+      expect(statusRota(x).categoria).toBe("VERIFICAR");
+      expect(statusRota(x).declarada).not.toBe("AUTOMATICA");
+    }
+    expect(statusRota({ ...tjba[0], status_verificacao: "verificada" }).categoria).toBe("MANUAL");
+    expect(statusRota({ ...tjpr[1], status_verificacao: "verificada" }).categoria).toBe("VERIFICAR");
+  });
+});

@@ -188,6 +188,9 @@ export function escolherRota(rotas: RotaCertidao[], ctx: ContextoProcesso): Rota
     alertas.push(`Rota cadastrada para ${melhor.sistema}; o sistema do processo não foi confirmado pela fonte.`);
     if (modalidade === "AUTOMATICA") modalidade = "VERIFICAR";
   }
+  if (melhor.grau && !ctx.grau) {
+    alertas.push(`Rota cadastrada para o grau ${melhor.grau}; o grau do processo não foi confirmado pela fonte — confira as outras rotas.`);
+  }
   if (sigilo) {
     alertas.push("A fonte informa segredo de justiça: fluxo automático não se aplica.");
     if (modalidade === "AUTOMATICA" || modalidade === "SEMIAUTOMATICA") modalidade = "MANUAL";
