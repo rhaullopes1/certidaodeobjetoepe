@@ -162,3 +162,86 @@ export const CASOS_DEMO = [
   { numero: nupValido("0000004", "2024", "8", "11", "0041"), titulo: "TJMT · PJe com sigilo", dados: { sistema: "PJe", grau: "G1", orgaoJulgador: "DEMO — Vara de Família", classe: "Divórcio", assuntos: ["DEMO — Família"], nivelSigilo: 1 } },
   { numero: nupValido("0000005", "2023", "8", "05", "0001"), titulo: "TJBA · sem rota", dados: { sistema: "PJe", grau: "G1", orgaoJulgador: "DEMO — Vara Cível", classe: "Monitória", assuntos: ["DEMO — Cobrança"], nivelSigilo: 0 } },
 ] as const;
+
+/* ---------------- Fase 2: cobertura, verificação, status de consulta ---------------- */
+
+export interface TribunalBase { id: string; sigla: string; nome: string; uf: string | null; segmento: number }
+export interface RotaCobertura { id: string; tribunal_id: string; modalidade: string; status_verificacao: string }
+
+export interface LinhaCobertura extends TribunalBase {
+  /** Melhor modalidade cadastrada; VERIFICAR quando não há rota (nunca preenchida artificialmente). */
+  modalidade: Modalidade;
+  totalRotas: number;
+  temRota: boolean;
+  verificada: boolean;
+}
+
+const ORDEM: Modalidade[] = ["AUTOMATICA", "SEMIAUTOMATICA", "MANUAL", "INDISPONIVEL", "VERIFICAR"];
+
+/** Cobertura nacional a partir do cadastro real: tribunal sem rota = VERIFICAR, sem criar registros. */
+export function calcularCobertura(tribunais: TribunalBase[], rotas: RotaCobertura[]) {
+  const porTrib = new Map<string, RotaCobertura[]>();
+  for (const r of rotas) porTrib.set(r.tribunal_id, [...(porTrib.get(r.tribunal_id) ?? []), r]);
+  const linhas: LinhaCobertura[] = tribunais.map((t) => {
+    const rs = porTrib.get(t.id) ?? [];
+    const mods = rs.map((r) => modalidadeValida(r.modalidade)).sort((a, b) => ORDEM.indexOf(a) - ORDEM.indexOf(b));
+    return { ...t, modalidade: mods[0] ?? "VERIFICAR", totalRotas: rs.length, temRota: rs.length > 0, verificada: rs.some((r) => r.status_verificacao === "verificada") };
+  });
+  const conta = (m: Modalidade) => linhas.filter((l) => l.modalidade === m).length;
+  return {
+    linhas,
+    resumo: {
+      total: linhas.length,
+      comRota: linhas.filter((l) => l.temRota).length,
+      verificar: conta("VERIFICAR"),
+      automatica: conta("AUTOMATICA"),
+      semiautomatica: conta("SEMIAUTOMATICA"),
+      manual: conta("MANUAL"),
+      indisponivel: conta("INDISPONIVEL"),
+    },
+  };
+}
+
+export function filtrarCobertura(linhas: LinhaCobertura[], termo: string) {
+  const t = termo.trim().toLowerCase();
+  if (!t) return linhas;
+  return linhas.filter((l) => [l.sigla, l.nome, l.uf ?? ""].some((v) => v.toLowerCase().includes(t)));
+}
+
+export const STATUS_VERIFICACAO = { pendente: "Pendente", verificada: "Verificada", revisar: "Revisar" } as const;
+export type StatusVerificacao = keyof typeof STATUS_VERIFICACAO;
+export type AcaoRota = "verificada" | "revisar";
+
+/** Valida a marcação e monta o patch + registro de auditoria (com evidência preservada). */
+export function prepararMarcacaoRota(p: {
+  acao: AcaoRota; confirmado: boolean; admin: boolean; userId: string; routeId: string;
+  observacao: string | null; evidenciaAtual: string | null; urlFonte: string | null; hoje: string;
+}) {
+  if (!p.confirmado) throw new Error("Confirmação explícita obrigatória.");
+  if (!p.admin) throw new Error("Somente administradores podem alterar o status de verificação da rota.");
+  if (p.acao === "verificada" && !p.evidenciaAtual && !p.urlFonte) throw new Error("Rota sem evidência/fonte oficial não pode ser marcada como verificada.");
+  const patch = {
+    status_verificacao: p.acao as StatusVerificacao,
+    observacao_verificacao: p.observacao,
+    responsavel_id: p.userId,
+    ...(p.acao === "verificada" ? { ultima_verificacao: p.hoje, verificado_por: p.userId } : {}),
+  };
+  const auditoria = {
+    operador_id: p.userId,
+    acao: p.acao === "verificada" ? "verificar_rota" : "revisar_rota",
+    route_id: p.routeId,
+    resultado: p.acao,
+    detalhes: { observacao: p.observacao, evidencia: p.evidenciaAtual, url_fonte: p.urlFonte, data: p.hoje, confirmado: true },
+  };
+  return { patch, auditoria };
+}
+
+export type StatusConsulta = "localizado" | "nao_localizado" | "tribunal_nao_identificado" | "erro";
+
+/** Status da consulta: só "localizado" com DataJud ok (ou DEMO). Falha do DataJud nunca vira localizado. */
+export function statusConsulta(p: { tribunalIdentificado: boolean; demo: boolean; datajudStatus: string | null }): StatusConsulta {
+  if (!p.tribunalIdentificado) return "tribunal_nao_identificado";
+  if (p.demo || p.datajudStatus === "ok") return "localizado";
+  if (p.datajudStatus === "indisponivel" || p.datajudStatus === "limite_requisicoes") return "erro";
+  return "nao_localizado";
+}
