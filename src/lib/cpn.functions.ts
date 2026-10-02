@@ -4,7 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { analisarNup } from "./cnj";
 import { decodificarPartes } from "./cnj.functions";
-import { CASOS_DEMO, escolherRota, type Modalidade, type RotaCertidao, type StatusOperacao, STATUS_OPERACAO } from "./cpn";
+import { CASOS_DEMO, calcularCobertura, escolherRota, prepararMarcacaoRota, statusConsulta, type AcaoRota, type Modalidade, type RotaCertidao, type StatusOperacao, STATUS_OPERACAO } from "./cpn";
 
 type Sb = SupabaseClient<Database>;
 
@@ -140,8 +140,7 @@ export const localizarProcesso = createServerFn({ method: "POST" })
       rotas = (rs ?? []) as unknown as RotaCertidao[];
     }
     const escolha = escolherRota(rotas, { sistema: processo.sistema, grau: processo.grau, nivelSigilo: sigilo });
-    const localizado = data.demo || datajud?.status === "ok";
-    const status = !trib ? "tribunal_nao_identificado" : localizado ? "localizado" : datajud?.status === "indisponivel" || datajud?.status === "limite_requisicoes" ? "erro" : "nao_localizado";
+    const status = statusConsulta({ tribunalIdentificado: Boolean(trib), demo: data.demo, datajudStatus: datajud?.status ?? null });
     return registrar({ demo: data.demo, erro: null, datajud, processo, modalidade: escolha.modalidade, rota: escolha.rota, alertas: escolha.alertas }, status);
   });
 
@@ -156,12 +155,13 @@ export const painelCpn = createServerFn({ method: "GET" })
     if (inicio.getTime() > Date.now()) inicio.setUTCDate(inicio.getUTCDate() - 1);
 
     const [{ data: hoje }, { data: ultimas }, { data: pendencias }, { data: rotas }] = await Promise.all([
-      supabase.from("cpn_process_queries").select("status, modalidade").gte("consultado_em", inicio.toISOString()).limit(2000),
+      supabase.from("cpn_process_queries").select("status, modalidade, demo").gte("consultado_em", inicio.toISOString()).limit(2000),
       supabase.from("cpn_process_queries").select("id, numero_normalizado, numero_raw, tribunal_sigla, status, modalidade, demo, consultado_em").order("consultado_em", { ascending: false }).limit(15),
       supabase.from("cpn_operacoes").select("*").not("status", "in", "(entregue)").order("created_at", { ascending: false }).limit(50),
-      supabase.from("cpn_certificate_routes").select("id, sistema, modalidade, metodo, url_fonte, ultima_verificacao, automacao_cpn, cnj_tribunais(sigla)").eq("ativo", true).order("prioridade"),
+      supabase.from("cpn_certificate_routes").select("id, sistema, modalidade, metodo, url_fonte, ultima_verificacao, automacao_cpn, status_verificacao, cnj_tribunais(sigla)").eq("ativo", true).order("prioridade"),
     ]);
-    const h = hoje ?? [];
+    const todos = hoje ?? [];
+    const h = todos.filter((x) => !x.demo);
     const conta = (f: (x: (typeof h)[number]) => boolean) => h.filter(f).length;
     return {
       admin,
@@ -173,6 +173,7 @@ export const painelCpn = createServerFn({ method: "GET" })
         manuais: conta((x) => x.modalidade === "MANUAL"),
         naoLocalizados: conta((x) => x.status === "nao_localizado" || x.status === "tribunal_nao_identificado"),
         erros: conta((x) => x.status === "erro" || x.status === "invalido"),
+        demo: todos.length - h.length,
       },
       ultimas: ultimas ?? [],
       pendencias: pendencias ?? [],
@@ -223,19 +224,94 @@ export const atualizarOperacao = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-/** Marca rota como verificada hoje (somente admin — RLS também exige). */
-export const marcarRotaVerificada = createServerFn({ method: "POST" })
+/** Marca rota como verificada/revisar — exige confirmação explícita; somente admin altera a rota. */
+export const marcarRota = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: { routeId: string }) => ({ routeId: String(i.routeId) }))
+  .inputValidator((i: { routeId: string; acao: AcaoRota; confirmado: boolean; observacao?: string | null }) => ({
+    routeId: String(i.routeId),
+    acao: (i.acao === "revisar" ? "revisar" : "verificada") as AcaoRota,
+    confirmado: i.confirmado === true,
+    observacao: i.observacao ? String(i.observacao).trim().slice(0, 1000) || null : null,
+  }))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const admin = await exigirEquipe(supabase, userId);
-    if (!admin) throw new Error("Somente administradores podem verificar rotas.");
-    const hoje = new Date().toISOString().slice(0, 10);
-    const { error } = await supabase.from("cpn_certificate_routes").update({ ultima_verificacao: hoje, verificado_por: userId }).eq("id", data.routeId);
-    if (error) throw new Error("Não foi possível marcar a rota.");
-    await auditar(supabase, userId, "verificar_rota", { route_id: data.routeId, resultado: hoje });
-    return { ok: true, data: hoje };
+    const { data: rota } = await supabase.from("cpn_certificate_routes").select("id, fonte_evidencia, url_fonte").eq("id", data.routeId).maybeSingle();
+    if (!rota) throw new Error("Rota não encontrada.");
+    if (!admin && data.acao === "revisar") {
+      // Operador sem permissão de edição: registra pedido de revisão só na auditoria.
+      await auditar(supabase, userId, "solicitar_revisao_rota", { route_id: data.routeId, resultado: "revisar", detalhes: { observacao: data.observacao } });
+      return { ok: true, somenteAuditoria: true };
+    }
+    const { patch, auditoria } = prepararMarcacaoRota({ ...data, admin, userId, evidenciaAtual: rota.fonte_evidencia, urlFonte: rota.url_fonte, hoje: new Date().toISOString().slice(0, 10) });
+    const { error } = await supabase.from("cpn_certificate_routes").update(patch).eq("id", data.routeId);
+    if (error) throw new Error("Não foi possível atualizar a rota.");
+    await supabase.from("cpn_audit_logs").insert(auditoria as never);
+    return { ok: true, somenteAuditoria: false };
+  });
+
+/** Cobertura nacional a partir de cnj_tribunais + rotas reais (sem registros fictícios). */
+export const coberturaCpn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    await exigirEquipe(supabase, userId);
+    const [{ data: tribs }, { data: rotas }] = await Promise.all([
+      supabase.from("cnj_tribunais").select("id, sigla, nome, uf, segmento").order("segmento").order("sigla"),
+      supabase.from("cpn_certificate_routes").select("id, tribunal_id, modalidade, status_verificacao").eq("ativo", true),
+    ]);
+    return calcularCobertura(tribs ?? [], rotas ?? []);
+  });
+
+/** Fila de rotas a verificar (todas as rotas ativas, pendentes/revisar primeiro). */
+export const filaVerificacaoCpn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const admin = await exigirEquipe(supabase, userId);
+    const { data } = await supabase
+      .from("cpn_certificate_routes")
+      .select("id, sistema, grau, modalidade, metodo, url_fonte, fonte_evidencia, ultima_verificacao, status_verificacao, observacao_verificacao, responsavel_id, automacao_cpn, cnj_tribunais(sigla, nome)")
+      .eq("ativo", true);
+    const ids = [...new Set((data ?? []).map((r) => r.responsavel_id).filter((x): x is string => Boolean(x)))];
+    const { data: perfis } = ids.length ? await supabase.from("profiles").select("id, nome").in("id", ids) : { data: [] };
+    const nome = new Map((perfis ?? []).map((p) => [p.id, p.nome]));
+    const ordem = { revisar: 0, pendente: 1, verificada: 2 } as Record<string, number>;
+    const itens = (data ?? [])
+      .map((r) => ({ ...r, tribunal: (r.cnj_tribunais as { sigla: string } | null)?.sigla ?? "?", responsavel: r.responsavel_id ? nome.get(r.responsavel_id) ?? "Equipe" : null }))
+      .sort((a, b) => (ordem[a.status_verificacao] ?? 9) - (ordem[b.status_verificacao] ?? 9) || a.tribunal.localeCompare(b.tribunal));
+    return { admin, itens };
+  });
+
+export interface FiltrosHistorico { numero?: string; tribunal?: string; modalidade?: string; status?: string; de?: string; ate?: string; tipo?: "todos" | "real" | "demo" }
+
+/** Histórico de consultas com filtros (somente campos operacionais, sem dados pessoais). */
+export const historicoConsultasCpn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: FiltrosHistorico) => ({
+    numero: (i?.numero ?? "").replace(/[^\d.-]/g, "").slice(0, 30),
+    tribunal: (i?.tribunal ?? "").replace(/[^A-Za-z0-9-]/g, "").slice(0, 10).toUpperCase(),
+    modalidade: (i?.modalidade ?? "").replace(/[^A-Z]/g, "").slice(0, 20),
+    status: (i?.status ?? "").replace(/[^a-z_]/g, "").slice(0, 30),
+    de: /^\d{4}-\d{2}-\d{2}$/.test(i?.de ?? "") ? i.de! : "",
+    ate: /^\d{4}-\d{2}-\d{2}$/.test(i?.ate ?? "") ? i.ate! : "",
+    tipo: (i?.tipo === "demo" || i?.tipo === "todos" ? i.tipo : "real") as "todos" | "real" | "demo",
+  }))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    await exigirEquipe(supabase, userId);
+    let q = supabase.from("cpn_process_queries").select("id, numero_normalizado, numero_raw, tribunal_sigla, status, modalidade, demo, fonte, consultado_em").order("consultado_em", { ascending: false }).limit(200);
+    const digitos = data.numero.replace(/\D/g, "");
+    if (digitos) q = q.ilike("numero_normalizado", `%${data.numero}%`);
+    if (data.tribunal) q = q.eq("tribunal_sigla", data.tribunal);
+    if (data.modalidade) q = q.eq("modalidade", data.modalidade);
+    if (data.status) q = q.eq("status", data.status);
+    if (data.de) q = q.gte("consultado_em", `${data.de}T03:00:00Z`);
+    if (data.ate) { const f = new Date(`${data.ate}T03:00:00Z`); f.setUTCDate(f.getUTCDate() + 1); q = q.lt("consultado_em", f.toISOString()); }
+    if (data.tipo !== "todos") q = q.eq("demo", data.tipo === "demo");
+    const { data: linhas, error } = await q;
+    if (error) throw new Error("Não foi possível carregar o histórico.");
+    return linhas ?? [];
   });
 
 /** Registra ações simples do operador (abrir fonte, copiar rota). */
