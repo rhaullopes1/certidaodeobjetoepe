@@ -335,3 +335,89 @@ export const historicoProcessoCpn = createServerFn({ method: "POST" })
     ]);
     return { logs: logs ?? [], operacoes: ops ?? [] };
   });
+
+/** Recebe o PDF oficial real (enviado pelo operador), valida, armazena sem alterar e registra auditoria. */
+export const receberDocumentoOficial = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: { operacaoId: string; nome: string; base64: string; origem: string }) => ({
+    operacaoId: String(i.operacaoId),
+    nome: String(i.nome ?? "certidao.pdf").replace(/[^\w.\- ]/g, "_").slice(0, 120),
+    base64: String(i.base64 ?? ""),
+    origem: String(i.origem ?? "").trim().slice(0, 300),
+  }))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    await exigirEquipe(supabase, userId);
+    const { ehPdf, extrairDadosNarratoria, sha256Hex } = await import("./cpn-documento");
+    if (!data.origem) throw new Error("Informe a origem do documento (ex.: eproc TJSP — botão Certidão Narratória).");
+    const bytes = Uint8Array.from(Buffer.from(data.base64, "base64"));
+    if (bytes.length === 0 || bytes.length > 15 * 1024 * 1024) throw new Error("Arquivo vazio ou maior que 15 MB.");
+    if (!ehPdf(bytes)) throw new Error("O arquivo não é um PDF válido.");
+    const { data: op } = await supabase.from("cpn_operacoes").select("id, numero_processo, route_id, tribunal_sigla, metodo, documento_caminho").eq("id", data.operacaoId).maybeSingle();
+    if (!op) throw new Error("Ficha não encontrada.");
+    if (op.documento_caminho) throw new Error("Esta ficha já tem documento oficial registrado.");
+    let texto = "";
+    try {
+      const { extractText, getDocumentProxy } = await import("unpdf");
+      const pdf = await getDocumentProxy(bytes.slice());
+      texto = (await extractText(pdf, { mergePages: true })).text;
+    } catch { texto = ""; }
+    const dados = extrairDadosNarratoria(texto, op.numero_processo);
+    const hash = await sha256Hex(bytes);
+    const caminho = `${op.id}/${hash}.pdf`;
+    const { error: upErr } = await supabase.storage.from("cpn-documentos").upload(caminho, bytes, { contentType: "application/pdf", upsert: false });
+    if (upErr) throw new Error("Não foi possível armazenar o PDF.");
+    const agora = new Date().toISOString();
+    await supabase.from("cpn_operacoes").update({
+      documento_caminho: caminho, documento_nome: data.nome, documento_sha256: hash, documento_tamanho: bytes.length,
+      documento_recebido_em: agora, documento_recebido_por: userId, documento_origem: data.origem,
+      documento_texto_extraido: dados.textoExtraido, documento_processo_extraido: dados.processos[0] ?? null,
+      documento_processo_confere: dados.processoConfere, documento_numero_certidao: dados.numeroCertidao,
+      documento_codigo_seguranca: dados.codigoSeguranca, status: "recebido",
+    }).eq("id", op.id);
+    await auditar(supabase, userId, "receber_documento_oficial", { numero: op.numero_processo, route_id: op.route_id, operacao_id: op.id, resultado: "recebido",
+      detalhes: { tribunal: op.tribunal_sigla, metodo: op.metodo, origem: data.origem, sha256: hash, tamanho: bytes.length, recebido_em: agora, extracao: { ...dados } } as unknown as Json });
+    return { sha256: hash, ...dados };
+  });
+
+/** Registra a conferência de autenticidade feita pelo operador na consulta pública oficial. */
+export const conferirAutenticidade = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: { operacaoId: string; resultado: "conferido_valido" | "conferido_invalido"; numeroCertidao: string; codigoSeguranca: string; observacao?: string | null; confirmado: boolean }) => ({
+    operacaoId: String(i.operacaoId),
+    resultado: (i.resultado === "conferido_invalido" ? "conferido_invalido" : "conferido_valido") as "conferido_valido" | "conferido_invalido",
+    numeroCertidao: String(i.numeroCertidao ?? "").trim().slice(0, 60),
+    codigoSeguranca: String(i.codigoSeguranca ?? "").trim().slice(0, 80),
+    observacao: i.observacao ? String(i.observacao).slice(0, 1000) : null,
+    confirmado: i.confirmado === true,
+  }))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    await exigirEquipe(supabase, userId);
+    if (!data.confirmado) throw new Error("Confirmação explícita obrigatória.");
+    if (!data.numeroCertidao || !data.codigoSeguranca) throw new Error("Informe o número da certidão e o código de segurança que constam no PDF.");
+    const { data: op } = await supabase.from("cpn_operacoes").select("id, numero_processo, route_id, documento_caminho").eq("id", data.operacaoId).maybeSingle();
+    if (!op?.documento_caminho) throw new Error("Anexe o PDF oficial antes de conferir a autenticidade.");
+    const agora = new Date().toISOString();
+    await supabase.from("cpn_operacoes").update({
+      documento_numero_certidao: data.numeroCertidao, documento_codigo_seguranca: data.codigoSeguranca,
+      documento_autenticidade_status: data.resultado, documento_autenticidade_conferida_em: agora, documento_autenticidade_conferida_por: userId,
+    }).eq("id", op.id);
+    await auditar(supabase, userId, "conferir_autenticidade", { numero: op.numero_processo, route_id: op.route_id, operacao_id: op.id, resultado: data.resultado,
+      detalhes: { numero_certidao: data.numeroCertidao, codigo_seguranca: data.codigoSeguranca, observacao: data.observacao, conferido_em: agora, meio: "consulta pública oficial (operador)" } });
+    return { ok: true };
+  });
+
+/** Link temporário para abrir o PDF oficial armazenado. */
+export const linkDocumentoOficial = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: { operacaoId: string }) => ({ operacaoId: String(i.operacaoId) }))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    await exigirEquipe(supabase, userId);
+    const { data: op } = await supabase.from("cpn_operacoes").select("documento_caminho").eq("id", data.operacaoId).maybeSingle();
+    if (!op?.documento_caminho) throw new Error("Sem documento.");
+    const { data: s } = await supabase.storage.from("cpn-documentos").createSignedUrl(op.documento_caminho, 300);
+    if (!s?.signedUrl) throw new Error("Não foi possível abrir o documento.");
+    return { url: s.signedUrl };
+  });
