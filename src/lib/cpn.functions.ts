@@ -107,7 +107,7 @@ export const localizarProcesso = createServerFn({ method: "POST" })
       fonteDados = { sistema: d.sistema, grau: d.grau, orgaoJulgador: d.orgaoJulgador, classe: d.classe, assuntos: [...d.assuntos], nivelSigilo: d.nivelSigilo, movimentos: [{ nome: "DEMO — Conclusos para despacho", dataHora: null }] };
     } else if (trib) {
       const { consultarDatajud } = await import("./datajud.server");
-      const r = await consultarDatajud(partes.formatado, trib.sigla);
+      const r = await consultarDatajud(partes.formatado, trib.sigla, { timeoutMs: 20000 });
       datajud = { status: r.status, fonte: r.fonte, ...(r.erro ? { erro: r.erro.slice(0, 200) } : {}) };
       if (r.status === "ok") {
         fonteDados = { sistema: r.sistema, grau: r.grau, orgaoJulgador: r.orgaoJulgador, classe: r.classe, assuntos: r.assuntos, movimentos: r.ultimosMovimentos, nivelSigilo: r.nivelSigilo, dataAjuizamento: r.dataAjuizamento };
