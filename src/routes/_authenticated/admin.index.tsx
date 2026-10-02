@@ -109,6 +109,7 @@ const LINKS_ADMIN = [
   { to: "/admin/emails", label: "E-mails" },
   { to: "/admin/documentos", label: "Documentos" },
   { to: "/admin/conteudo", label: "Conteúdo" },
+  { to: "/admin/cpn", label: "CPN" },
 ] satisfies { to: string; label: string; exact?: boolean; contador?: boolean }[];
 
 
