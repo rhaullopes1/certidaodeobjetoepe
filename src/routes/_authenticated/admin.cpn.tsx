@@ -7,7 +7,7 @@ import { CheckCircle2, ClipboardCopy, ExternalLink, FileText, History, Loader2, 
 import { souEquipe } from "@/lib/admin";
 import { analisarNup, formatarNup } from "@/lib/cnj";
 import { CoberturaRotas, FilaVerificacao, HistoricoConsultas } from "@/components/admin/cpn-paineis";
-import { ESTADOS_DADO, ESTADOS_ROTA, estadoDado, estadoRota, MODALIDADES, STATUS_OPERACAO, textoRota, textoSolicitacao, type Modalidade, type StatusOperacao } from "@/lib/cpn";
+import { ESTADOS_DADO, MODALIDADES, estadoDado, STATUS_OPERACAO, canaisDaRota, passosDaRota, textoInstrucoes, textoSolicitacao, type RotaCertidao, type Modalidade, type StatusOperacao } from "@/lib/cpn";
 import {
   atualizarOperacao,
   criarOperacao,
@@ -19,7 +19,8 @@ import {
   type ResultadoCpn,
 } from "@/lib/cpn.functions";
 import { AdminHeader, SemPermissao } from "./admin.index";
-import { AvisoAssistida, DocumentoOficial, type OpDoc } from "@/components/admin/cpn-documento";
+import { DocumentoOficial, type OpDoc } from "@/components/admin/cpn-documento";
+import { PainelRota } from "@/components/admin/cpn-rota";
 
 export const Route = createFileRoute("/_authenticated/admin/cpn")({
   component: PaginaCpn,
@@ -171,7 +172,11 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   const [ficha, setFicha] = useState(false);
   const [hist, setHist] = useState(false);
   const p = r.processo;
-  const rota = r.rota;
+  const todas = [...(r.rota ? [r.rota] : []), ...(r.alternativas ?? [])];
+  const [selId, setSelId] = useState<string | null>(r.rota?.id ?? null);
+  const rota = todas.find((x) => x.id === selId) ?? r.rota;
+  const alternativas = todas.filter((x) => x.id !== rota?.id);
+  const [modoFicha, setModoFicha] = useState<"assistida" | "resultado">("assistida");
   const historico = useQuery({ queryKey: ["cpn-hist", p?.numeroFormatado], queryFn: () => historicoFn({ data: { numero: p!.numeroFormatado } }), enabled: hist && Boolean(p) });
   const verificar = useMutation({
     mutationFn: () => verificarFn({ data: { routeId: rota!.id, acao: "verificada", confirmado: true } }),
@@ -184,7 +189,6 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   const sigilo = p.nivelSigilo !== null && p.nivelSigilo > 0;
   const confirmado = r.datajud?.status === "ok";
   const eDado = estadoDado(r.datajud?.status ?? null);
-  const eRota = ESTADOS_ROTA[estadoRota({ modalidade: r.modalidade, rota })];
   const copiar = async (texto: string, acao: "copiar_rota" | "copiar_solicitacao") => {
     await navigator.clipboard.writeText(texto);
     toast.success("Copiado");
@@ -225,39 +229,19 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
       </section>
 
       <section className={card}>
-        <h2 className="mb-2 font-display font-bold">Rota da certidão</h2>
-        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Fonte: cadastro CPN de rotas</p>
-        <p className="mb-2 text-xs text-muted-foreground">Tipo: Certidão de Objeto e Pé / Narratória</p>
-        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ring-1 ${eRota.classe}`}>{eRota.emoji} {eRota.rotulo}</span>
-        <p className="mt-2 text-xs text-muted-foreground">{eRota.descricao}</p>
-        {rota && <p className="mt-1 text-xs text-muted-foreground">Modalidade declarada no cadastro: {MODALIDADES[r.modalidade].rotulo} · verificação: {rota.status_verificacao ?? "pendente"}</p>}
-        {rota ? (
-          <dl className="mt-3">
-            <Campo k="Método" v={rota.metodo} />
-            <Campo k="Automação CPN" v={rota.automacao_cpn === "homologada" ? "Homologada" : "Execução ainda não integrada (operador executa no portal oficial)"} />
-            <Campo k="Requisitos" v={rota.requisitos} />
-            <Campo k="Exige login" v={simNao(rota.exige_login)} />
-            <Campo k="Exige advogado" v={simNao(rota.exige_advogado)} />
-            <Campo k="Custo" v={rota.custo} />
-            <Campo k="Prazo" v={rota.prazo} />
-            <Campo k="Fonte oficial" v={rota.url_fonte ? <a className="text-primary underline" href={rota.url_fonte} target="_blank" rel="noopener noreferrer">{rota.fonte_evidencia ?? "abrir"}</a> : rota.fonte_evidencia} />
-            <Campo k="Autenticidade" v={rota.autenticidade_url} />
-            <Campo k="Última verificação" v={rota.ultima_verificacao} />
-            <Campo k="Observações" v={rota.observacoes} />
-            <Campo k="Exceções" v={rota.excecoes} />
-          </dl>
-        ) : null}
-        {rota?.metodo?.startsWith("ASSISTIDA") && <AvisoAssistida requisitos={rota.requisitos} url={rota.url_certidao} />}
-        {r.alertas.length > 0 && <ul className="mt-3 space-y-1 text-xs">{r.alertas.map((a) => <li key={a} className="rounded-lg bg-gold/15 px-2 py-1">⚠ {a}</li>)}</ul>}
+        <h2 className="mb-2 font-display font-bold">Painel da rota de solicitação</h2>
+        <PainelRota rota={rota} alternativas={alternativas} tribunal={p.tribunalSigla} alertas={rota?.id === r.rota?.id ? r.alertas : []} onEscolher={setSelId} />
       </section>
 
       <section className={card}>
         <h2 className="mb-3 font-display font-bold">Ações do operador</h2>
+        <p className="mb-2 text-xs text-muted-foreground">A CPN não envia nada nem acessa portais: o operador executa pelo canal oficial.</p>
         <div className="flex flex-col gap-2">
-          <a aria-disabled={!rota?.url_fonte} href={rota?.url_fonte ?? undefined} target="_blank" rel="noopener noreferrer" onClick={() => registrar("abrir_fonte", rota?.id ?? null)} className={`${btn} ${rota?.url_fonte ? "" : "pointer-events-none opacity-50"}`}><ExternalLink className="h-4 w-4" /> Abrir fonte oficial</a>
-          <a aria-disabled={!rota?.url_certidao} href={rota?.url_certidao ?? undefined} target="_blank" rel="noopener noreferrer" onClick={() => registrar("abrir_certidao", rota?.id ?? null)} className={`${btn} ${rota?.url_certidao ? "" : "pointer-events-none opacity-50"}`}><ExternalLink className="h-4 w-4" /> Abrir página da certidão</a>
-          <button type="button" className={btn} onClick={() => copiar(textoRota(ctx, { modalidade: r.modalidade, rota, alertas: r.alertas }), "copiar_rota")}><ClipboardCopy className="h-4 w-4" /> Copiar rota</button>
-          <button type="button" className={btn} onClick={() => setFicha((v) => !v)}><FileText className="h-4 w-4" /> Preparar solicitação / registrar resultado</button>
+          <a aria-disabled={!rota?.url_fonte} href={rota?.url_fonte ?? undefined} target="_blank" rel="noopener noreferrer" onClick={() => registrar("abrir_fonte", rota?.id ?? null)} className={`${btn} ${rota?.url_fonte ? "" : "pointer-events-none opacity-50"}`}><ExternalLink className="h-4 w-4" /> Abrir evidência oficial</a>
+          <a aria-disabled={!rota?.url_certidao} href={rota?.url_certidao ?? undefined} target="_blank" rel="noopener noreferrer" onClick={() => registrar("abrir_certidao", rota?.id ?? null)} className={`${btn} ${rota?.url_certidao ? "" : "pointer-events-none opacity-50"}`}><ExternalLink className="h-4 w-4" /> Abrir rota oficial</a>
+          <button type="button" className={btn} onClick={() => copiar(textoInstrucoes(ctx, rota), "copiar_rota")}><ClipboardCopy className="h-4 w-4" /> Copiar instruções</button>
+          <button type="button" className={btn} onClick={() => { setModoFicha("assistida"); setFicha(true); }}><FileText className="h-4 w-4" /> Iniciar solicitação assistida</button>
+          <button type="button" className={btn} onClick={() => { setModoFicha("resultado"); setFicha(true); }}><CheckCircle2 className="h-4 w-4" /> Registrar resultado</button>
           {admin && rota && <button type="button" className={btn} disabled={verificar.isPending} onClick={() => { if (window.confirm(`Confirmo que conferi a fonte oficial desta rota (${p.tribunalSigla}) hoje e que a evidência continua válida.`)) verificar.mutate(); }}><CheckCircle2 className="h-4 w-4" /> Marcar rota como verificada</button>}
           <button type="button" className={btn} onClick={() => setHist((v) => !v)}><History className="h-4 w-4" /> Histórico</button>
         </div>
@@ -270,35 +254,60 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
         )}
       </section>
 
-      {ficha && <Ficha r={r} copiar={(t) => copiar(t, "copiar_solicitacao")} padrao={textoSolicitacao(ctx, rota)} fechar={() => setFicha(false)} />}
+      {ficha && <Ficha key={`${rota?.id}-${modoFicha}`} r={r} rota={rota} modo={modoFicha} copiar={(t) => copiar(t, "copiar_solicitacao")} padrao={textoSolicitacao(ctx, rota)} fechar={() => setFicha(false)} />}
     </div>
   );
 }
 
-function Ficha({ r, padrao, copiar, fechar }: { r: ResultadoCpn; padrao: string; copiar: (t: string) => void; fechar: () => void }) {
+function Ficha({ r, rota, modo, padrao, copiar, fechar }: { r: ResultadoCpn; rota: RotaCertidao | null; modo: "assistida" | "resultado"; padrao: string; copiar: (t: string) => void; fechar: () => void }) {
+  const canais = canaisDaRota(rota);
+  const passos = passosDaRota(rota);
+  const [canal, setCanal] = useState(canais[0]?.rotulo ?? "");
+  const [destinatario, setDestinatario] = useState(canais[0]?.valor ?? "");
   const qc = useQueryClient();
   const criarFn = useServerFn(criarOperacao);
   const p = r.processo!;
   const [texto, setTexto] = useState(padrao);
   const [obs, setObs] = useState("");
-  const [status, setStatus] = useState<StatusOperacao>("aguardando");
+  const [status, setStatus] = useState<StatusOperacao>(modo === "assistida" ? "preparado" : "solicitado");
   const salvar = useMutation({
-    mutationFn: () => criarFn({ data: { queryId: r.queryId, routeId: r.rota?.id ?? null, numero: p.numeroFormatado, tribunal: p.tribunalSigla, unidade: p.orgaoJulgador, metodo: r.rota?.metodo ?? null, url: r.rota?.url_fonte ?? null, requisitos: r.rota?.requisitos ?? null, texto, observacao: obs || null, status, demo: false } }),
+    mutationFn: () => criarFn({ data: { queryId: r.queryId, routeId: rota?.id ?? null, numero: p.numeroFormatado, tribunal: p.tribunalSigla, unidade: p.orgaoJulgador, metodo: rota?.tipo_rota ?? rota?.metodo ?? null, url: rota?.url_certidao ?? rota?.url_fonte ?? null, requisitos: rota?.requisitos ?? null, texto, observacao: obs || null, status, canal: canal || null, destinatario: destinatario || null, demo: false } }),
     onSuccess: () => { toast.success("Ficha registrada"); qc.invalidateQueries({ queryKey: ["cpn-painel"] }); qc.invalidateQueries({ queryKey: ["cpn-hist"] }); fechar(); },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Falha"),
   });
   return (
     <section className={`${card} lg:col-span-3`}>
-      <h2 className="mb-3 font-display font-bold">Ficha operacional</h2>
+      <h2 className="mb-3 font-display font-bold">{modo === "assistida" ? "Solicitação assistida" : "Registrar resultado"}</h2>
+      {modo === "assistida" && (
+        <div className="mb-3 rounded-xl bg-secondary/60 p-3 text-sm">
+          <p className="font-semibold">Checklist</p>
+          <ul className="mt-1 space-y-0.5">
+            {["Conferir que o perfil do solicitante corresponde à rota", ...passos, "Registrar data, canal e status nesta ficha", "Ao receber o PDF, anexá-lo em Pendências para validar"].map((x) => <li key={x}>☐ {x}</li>)}
+          </ul>
+        </div>
+      )}
       <dl className="grid gap-x-6 sm:grid-cols-2">
         <Campo k="Tribunal" v={p.tribunalSigla} />
         <Campo k="Unidade" v={p.orgaoJulgador ?? "não confirmada pela fonte"} />
         <Campo k="Processo" v={p.numeroFormatado} />
         <Campo k="Tipo" v="Certidão de Objeto e Pé / Narratória" />
-        <Campo k="Método" v={r.rota?.metodo} />
-        <Campo k="URL oficial" v={r.rota?.url_fonte} />
-        <Campo k="Requisitos" v={r.rota?.requisitos} />
+        <Campo k="Rota" v={rota?.tipo_rota ?? rota?.metodo} />
+        <Campo k="URL oficial" v={rota?.url_certidao ?? rota?.url_fonte} />
+        <Campo k="Requisitos" v={rota?.requisitos} />
       </dl>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <label className="text-sm font-semibold">Canal oficial
+          <select value={canal} onChange={(e) => { setCanal(e.target.value); setDestinatario(canais.find((c) => c.rotulo === e.target.value)?.valor ?? ""); }} className="mt-1 h-10 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal">
+            <option value="">— não informado —</option>
+            {canais.map((c) => <option key={c.rotulo} value={c.rotulo}>{c.rotulo}</option>)}
+          </select>
+        </label>
+        <label className="text-sm font-semibold">Destinatário (endereço oficial publicado)
+          <input value={destinatario} onChange={(e) => setDestinatario(e.target.value)} placeholder="ex.: e-mail oficial da unidade" className="mt-1 h-10 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal" />
+        </label>
+      </div>
+      {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(destinatario) && <a className={`${btn} mt-2`} href={`mailto:${destinatario}?subject=${encodeURIComponent(`Certidão de Objeto e Pé — ${p.numeroFormatado}`)}&body=${encodeURIComponent(texto)}`}>Abrir e-mail oficial</a>}
+      {/^https:\/\//.test(destinatario) && <a className={`${btn} mt-2`} href={destinatario} target="_blank" rel="noopener noreferrer">Abrir canal oficial</a>}
       <label className="mt-3 block text-sm font-semibold">Texto-base de solicitação (revise antes de enviar — a CPN não envia nada)</label>
       <textarea value={texto} onChange={(e) => setTexto(e.target.value)} rows={7} className="mt-1 w-full rounded-xl border border-input bg-background p-3 text-sm" />
       <label className="mt-3 block text-sm font-semibold">Observações</label>
@@ -309,7 +318,7 @@ function Ficha({ r, padrao, copiar, fechar }: { r: ResultadoCpn; padrao: string;
         </select>
         <button type="button" className={btn} onClick={() => copiar(texto)}><ClipboardCopy className="h-4 w-4" /> Copiar texto</button>
         <button type="button" disabled={salvar.isPending} onClick={() => salvar.mutate()} className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60">
-          {salvar.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Registrar ficha
+          {salvar.isPending && <Loader2 className="h-4 w-4 animate-spin" />} {modo === "assistida" ? "Registrar solicitação" : "Registrar resultado"}
         </button>
       </div>
     </section>
