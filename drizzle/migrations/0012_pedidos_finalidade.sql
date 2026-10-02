@@ -1,0 +1,2 @@
+ALTER TABLE public.pedidos ADD COLUMN IF NOT EXISTS finalidade text NULL;
+ALTER TABLE public.pedidos ADD CONSTRAINT pedidos_finalidade_check CHECK (finalidade IS NULL OR finalidade IN ('caminhoneiro_motorista','motorista_app','transacao_imobiliaria','outro'));
