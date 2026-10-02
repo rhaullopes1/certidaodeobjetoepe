@@ -5,15 +5,16 @@ const base: RotaCertidao = {
   id: "r1", sistema: "eproc", grau: null, tipo_certidao: "objeto_e_pe", modalidade: "AUTOMATICA", metodo: "AUTO_EPROC",
   url_fonte: "https://x", url_certidao: null, exige_login: true, exige_advogado: true, exige_peticao: null, exige_pagamento: null,
   custo: null, prazo: null, autenticidade_url: null, requisitos: null, observacoes: null, excecoes: null,
-  texto_base_solicitacao: null, fonte_evidencia: null, automacao_cpn: "nao_homologada", prioridade: 10, ultima_verificacao: "2026-10-02",
+  texto_base_solicitacao: null, fonte_evidencia: null, fonte_trecho: "trecho oficial", automacao_cpn: "nao_homologada", prioridade: 10, ultima_verificacao: "2026-10-02",
 };
 
 describe("motor de rotas CPN", () => {
   it("sem rotas → VERIFICAR", () => {
     expect(escolherRota([], { sistema: "PJe", grau: null, nivelSigilo: 0 }).modalidade).toBe("VERIFICAR");
   });
-  it("sistema compatível mantém modalidade cadastrada", () => {
-    expect(escolherRota([base], { sistema: "Eproc", grau: "G1", nivelSigilo: 0 }).modalidade).toBe("AUTOMATICA");
+  it("sistema compatível mantém modalidade cadastrada só se verificada com evidência", () => {
+    expect(escolherRota([{ ...base, status_verificacao: "verificada" }], { sistema: "Eproc", grau: "G1", nivelSigilo: 0 }).modalidade).toBe("AUTOMATICA");
+    expect(escolherRota([base], { sistema: "Eproc", grau: "G1", nivelSigilo: 0 }).modalidade).toBe("VERIFICAR");
   });
   it("sistema divergente não usa a rota", () => {
     expect(escolherRota([base], { sistema: "PJe", grau: null, nivelSigilo: 0 }).rota).toBeNull();
@@ -22,7 +23,7 @@ describe("motor de rotas CPN", () => {
     expect(escolherRota([base], { sistema: null, grau: null, nivelSigilo: null }).modalidade).toBe("VERIFICAR");
   });
   it("segredo de justiça força MANUAL", () => {
-    expect(escolherRota([base], { sistema: "eproc", grau: null, nivelSigilo: 2 }).modalidade).toBe("MANUAL");
+    expect(escolherRota([{ ...base, status_verificacao: "verificada" }], { sistema: "eproc", grau: null, nivelSigilo: 2 }).modalidade).toBe("MANUAL");
   });
   it("texto da rota inclui fonte e alerta de não homologação", () => {
     const e = escolherRota([base], { sistema: "eproc", grau: null, nivelSigilo: 0 });
@@ -149,7 +150,8 @@ describe("motor de rotas — catálogo e perfis", () => {
   it("com sigilo: rota sigilosa é a principal e MANUAL", () => {
     const e = escolherRota([parte, terceiro, sig], { ...ctx, nivelSigilo: 1 });
     expect(e.rota?.id).toBe("s");
-    expect(e.modalidade).toBe("MANUAL");
+    expect(e.modalidade).toBe("VERIFICAR"); // pendente de verificação
+    expect(escolherRota([parte, terceiro, { ...sig, status_verificacao: "verificada" }], { ...ctx, nivelSigilo: 1 }).modalidade).toBe("MANUAL");
   });
   it("sistema com alternativas (SAJ/SG ou eproc 2G) casa com qualquer um", () => {
     const r = { ...base, sistema: "SAJ/SG ou eproc 2G" };
@@ -214,5 +216,66 @@ describe("catálogo TJBA / TJPR", () => {
     }
     expect(statusRota({ ...tjba[0], status_verificacao: "verificada" }).categoria).toBe("MANUAL");
     expect(statusRota({ ...tjpr[1], status_verificacao: "verificada" }).categoria).toBe("VERIFICAR");
+  });
+});
+
+import { avaliarRota, canonGrau, canonSistema } from "./cpn";
+
+describe("matching explicável e incompatibilidades", () => {
+  const v = (o: Partial<RotaCertidao>): RotaCertidao => ({ ...base, status_verificacao: "verificada", ...o });
+  it("normaliza sistema por família, sem substring solta", () => {
+    expect(canonSistema("e-SAJ")).toBe("saj");
+    expect(canonSistema("PJe 2G")).toBe("pje");
+    expect(canonSistema("eproc 2G")).toBe("eproc");
+    expect(escolherRota([v({ sistema: "SAJ/SG ou eproc 2G" })], { sistema: "SG", grau: null, nivelSigilo: 0 }).rota).not.toBeNull();
+    expect(escolherRota([v({ sistema: "SG" })], { sistema: "SGX", grau: null, nivelSigilo: 0 }).rota).toBeNull();
+  });
+  it("normaliza grau", () => {
+    expect(canonGrau("1")).toBe("G1");
+    expect(canonGrau("G2")).toBe("G2");
+    expect(canonGrau("JE")).toBe("JE");
+  });
+  it("rota G1 diante de Juizado Especial é indeterminada (falta evidência), não aplicável nem descartada", () => {
+    const a = avaliarRota(v({ sistema: null, grau: "G1" }), { sistema: null, grau: "JE", nivelSigilo: 0 }, false);
+    expect(a.aplicavel).toBe("indeterminado");
+    expect(a.faltando.join()).toContain("Juizado Especial");
+    expect(escolherRota([v({ sistema: null, grau: "G1" })], { sistema: null, grau: "JE", nivelSigilo: 0 }).modalidade).toBe("VERIFICAR");
+  });
+  it("sistema incompatível → não aplicável com motivo", () => {
+    const a = avaliarRota(v({ sistema: "eproc" }), { sistema: "SAJ", grau: "G1", nivelSigilo: 0 }, false);
+    expect(a.aplicavel).toBe("nao");
+    expect(a.motivos.join()).toContain("incompatível");
+  });
+  it("perfil não informado → indeterminado e alerta de decisão; perfil informado decide", () => {
+    const p = v({ id: "p", perfil: "parte_advogado_habilitado", prioridade: 10 });
+    const t = v({ id: "t", perfil: "terceiro_ou_advogado_nao_cadastrado", modalidade: "MANUAL", prioridade: 20 });
+    const ctx = { sistema: "eproc", grau: "G1", nivelSigilo: 0 };
+    const e = escolherRota([p, t], ctx);
+    expect(e.modalidade).toBe("VERIFICAR");
+    expect(e.alertas.join()).toContain("Perfil do solicitante não informado");
+    expect(e.avaliacoes?.find((a) => a.rotaId === "p")?.faltando.join()).toContain("perfil do solicitante");
+    const t2 = escolherRota([p, t], { ...ctx, perfil: "terceiro_ou_advogado_nao_cadastrado" });
+    expect(t2.rota?.id).toBe("t");
+    expect(t2.modalidade).toBe("MANUAL");
+    expect(t2.avaliacoes?.find((a) => a.rotaId === "p")?.aplicavel).toBe("nao");
+  });
+  it("sigilo desconhecido com rota sigilosa no catálogo → sigilosa indeterminada e alerta", () => {
+    const s = v({ id: "s", perfil: "sigiloso", modalidade: "MANUAL" });
+    const e = escolherRota([v({ id: "q" }), s], { sistema: "eproc", grau: null, nivelSigilo: null });
+    expect(e.avaliacoes?.find((a) => a.rotaId === "s")?.aplicavel).toBe("indeterminado");
+    expect(e.alertas.join()).toContain("Nível de sigilo não informado");
+  });
+  it("rota sem evidência (sem URL/trecho) nunca sai de VERIFICAR, mesmo verificada", () => {
+    const e = escolherRota([v({ url_fonte: null, fonte_trecho: null })], { sistema: "eproc", grau: null, nivelSigilo: 0 });
+    expect(e.modalidade).toBe("VERIFICAR");
+    expect(e.alertas.join()).toContain("Evidência insuficiente");
+  });
+  it("pendente com tudo compatível continua VERIFICAR", () => {
+    expect(escolherRota([base], { sistema: "eproc", grau: null, nivelSigilo: 0 }).modalidade).toBe("VERIFICAR");
+  });
+  it("nenhuma aplicável → rota nula, VERIFICAR, com avaliações explicando", () => {
+    const e = escolherRota([v({ sistema: "PJe" })], { sistema: "eproc", grau: null, nivelSigilo: 0 });
+    expect(e.rota).toBeNull();
+    expect(e.avaliacoes?.[0].aplicavel).toBe("nao");
   });
 });
