@@ -1,0 +1,82 @@
+-- Catálogo CPN: rotas TJBA (1º grau) e TJPR (1º e 2º grau) com fonte oficial.
+-- Idempotente: só insere se não existir rota igual (tribunal + sistema + grau + perfil + tipo_rota + tipo_certidao).
+-- Todas pendentes de verificação, sem data de verificação e sem integração CPN.
+insert into public.cpn_certificate_routes (tribunal_id, sistema, grau, tipo_certidao, modalidade, metodo, tipo_rota, perfil, quem_pode, passos, canais, url_fonte, url_certidao, autenticidade_url, exige_login, exige_advogado, exige_peticao, exige_pagamento, exige_identificacao, exige_finalidade, exige_procuracao, requisitos, custo, prazo, forma_entrega, observacoes, excecoes, fonte_evidencia, fonte_trecho, automacao_cpn, prioridade, ultima_verificacao, status_verificacao, ativo)
+select t.id, v.sistema, v.grau, 'objeto_e_pe', v.modalidade, v.tipo_rota, v.tipo_rota, v.perfil, v.quem_pode, v.passos::jsonb, v.canais::jsonb, v.url_fonte, v.url_certidao, null, v.login, v.adv, v.pet, v.pag, v.ident, null, null, v.req, v.custo, null, v.entrega, v.obs, v.exc, v.ev, v.trecho, 'nao_homologada', v.prio, null, 'pendente', true
+from public.cnj_tribunais t
+join (values
+ ('TJBA', null, 'G1', 'MANUAL', 'MANUAL_EMAIL', 'parte_advogado_habilitado',
+  'Partes ou procuradores habilitados no processo.',
+  '["Identificar a vara/unidade judicial onde o processo tramita","Direcionar o pedido ao cartório/Diretor(a) de Secretaria da vara, por escrito (e-mail, petição nos autos ou requerimento pessoal)","Informar nome completo, CPF, endereço físico e eletrônico, telefone e o número do processo","Anexar comprovante de pagamento do DAJE, salvo isenção","Acompanhar a resposta: a certidão é lançada nos autos e entregue impressa ou por e-mail"]',
+  '[{"tipo":"email","rotulo":"E-mail da unidade judicial/cartório onde tramita o processo","valor":null},{"tipo":"peticao","rotulo":"Petição nos autos","valor":null},{"tipo":"presencial","rotulo":"Requerimento pessoal na unidade","valor":null}]',
+  'https://www7.tjba.jus.br/secao/lerPublicacao.wsp?tmp.mostrarDiv=sim&tmp.id=31461&tmp.secao=28', 'https://www.tjba.jus.br/portal/certidoes-do-primeiro-grau/',
+  false, false, false, true, true,
+  'Identificação e qualificação completas do requerente; número do processo; comprovante do DAJE (exceto isenção).',
+  'Pode haver DAJE/custas conforme hipótese e tabela oficial (COFIS: https://www.tjba.jus.br/portal/cofis-custas-de-certidoes/). Valor não cadastrado.',
+  'Lançada nos autos; entregue impressa ou por e-mail, à escolha do interessado; download nos autos.',
+  'Emitida pelo(a) Diretor(a) de Secretaria da vara, sem despacho judicial quando o processo não é sigiloso e o pedido é da parte/procurador habilitado. O Setor de Certidões (SEDEC) atende certidões gerais e NÃO é o canal de emissão da Objeto e Pé.',
+  'Segredo de justiça ou pedido de terceiro: ver rotas específicas (autorização prévia do magistrado).',
+  'TJBA — Provimento Conjunto CGJ/CCI-05/2023 e página oficial "Certidões do Primeiro Grau"',
+  'Art. 3º A certidão será emitida independentemente de despacho judicial quando o processo não tramitar sob segredo de justiça e o pedido for formulado pelas partes ou procuradores habilitados.',
+  10),
+ ('TJBA', null, 'G1', 'MANUAL', 'MANUAL_EMAIL', 'terceiro_ou_advogado_nao_cadastrado',
+  'Qualquer pessoa identificada e qualificada; pedido de terceiro depende de autorização prévia do magistrado.',
+  '["Identificar a vara/unidade judicial onde o processo tramita","Direcionar o pedido por escrito ao cartório da vara (e-mail, petição ou requerimento pessoal)","Informar nome completo, CPF, endereço físico e eletrônico, telefone e o número do processo","Anexar comprovante do DAJE, salvo isenção","Aguardar a autorização prévia do(a) magistrado(a) e a emissão"]',
+  '[{"tipo":"email","rotulo":"E-mail da unidade judicial/cartório onde tramita o processo","valor":null},{"tipo":"presencial","rotulo":"Requerimento pessoal na unidade","valor":null}]',
+  'https://www7.tjba.jus.br/secao/lerPublicacao.wsp?tmp.mostrarDiv=sim&tmp.id=31461&tmp.secao=28', 'https://www.tjba.jus.br/portal/certidoes-do-primeiro-grau/',
+  false, false, false, true, true,
+  'Identificação e qualificação completas; número do processo; comprovante do DAJE (exceto isenção); autorização prévia do magistrado.',
+  'Pode haver DAJE/custas conforme hipótese e tabela oficial. Valor não cadastrado.',
+  'Lançada nos autos; entregue impressa ou por e-mail.',
+  'Endereço de e-mail da unidade: usar somente o publicado oficialmente pela própria unidade. SEDEC não emite Objeto e Pé.',
+  null,
+  'TJBA — Provimento Conjunto CGJ/CCI-05/2023, art. 3º, parágrafo único, e art. 4º',
+  'Se o processo tramitar em segredo de justiça ou o pedido for formulado por terceira pessoa, a emissão da certidão sujeita-se à autorização prévia do(a) magistrado(a).',
+  20),
+ ('TJBA', null, 'G1', 'MANUAL', 'MANUAL_EMAIL', 'sigiloso',
+  'Somente partes e procuradores; terceiro juridicamente interessado só obtém certidão do dispositivo da sentença (e de inventário/partilha de divórcio ou separação), com autorização judicial prévia.',
+  '["Confirmar que o processo tramita em segredo de justiça","Pedido à unidade judicial por parte ou procurador (ou terceiro juridicamente interessado nas hipóteses restritas)","Aguardar a autorização prévia do(a) magistrado(a)","Não registrar na CPN informações sigilosas do processo"]',
+  '[{"tipo":"email","rotulo":"E-mail da unidade judicial/cartório onde tramita o processo","valor":null}]',
+  'https://www7.tjba.jus.br/secao/lerPublicacao.wsp?tmp.mostrarDiv=sim&tmp.id=31461&tmp.secao=28', 'https://www.tjba.jus.br/portal/certidoes-do-primeiro-grau/',
+  false, null, false, true, true,
+  'Autorização prévia do magistrado; identificação completa; comprovante do DAJE (exceto isenção).',
+  'Pode haver DAJE/custas conforme hipótese e tabela oficial. Valor não cadastrado.',
+  'Lançada nos autos; entregue impressa ou por e-mail.',
+  'Informações sigilosas são ressalvadas na certidão.',
+  null,
+  'TJBA — Provimento Conjunto CGJ/CCI-05/2023, arts. 3º e 4º, parágrafo único',
+  'Em caso de segredo de justiça, o acesso somente será autorizado às partes e aos seus procuradores, e, em caso de terceiro juridicamente interessado, apenas será disponibilizada certidão do dispositivo da sentença [...] mediante prévia autorização judicial.',
+  5),
+ ('TJPR', null, 'G2', 'MANUAL', 'MANUAL_FORMULARIO', 'qualquer',
+  'Requerente identificado (nome, CPF, e-mail, telefone); o formulário pergunta se é parte ou advogado nos autos.',
+  '["Acessar o formulário oficial Certidões Explicativas de Autos","Selecionar Certidão do 2º Grau — Explicativa de Autos Judiciais","Confirmar que o processo tramita no 2º grau (a certidão cobre só o trâmite em 2º grau)","Preencher requerente, CPF, e-mail e telefone","Informar o processo e o objeto da certificação com precisão","Pagar as custas antecipadamente quando devidas e anexar o comprovante em PDF","Enviar e guardar o recibo","Acompanhar a entrega pelo e-mail informado"]',
+  '[{"tipo":"formulario","rotulo":"Formulário Certidões Explicativas de Autos (TJPR)","valor":"https://portal.tjpr.jus.br/portletforms/publico/frm.do?idFormulario=6203"}]',
+  'https://portal.tjpr.jus.br/portletforms/publico/frm.do?idFormulario=6203', 'https://portal.tjpr.jus.br/portletforms/publico/frm.do?idFormulario=6203',
+  false, false, false, true, true,
+  'Identificação do requerente; processo e objeto informados com precisão; comprovante de pagamento antecipado quando devido.',
+  'Pagamento antecipado quando devido; valor não cadastrado.',
+  'Certidão e comunicações enviadas ao e-mail informado; recibo gerado ao enviar o formulário.',
+  'Prazo de 5 dias úteis citado em recibo/Decreto Judiciário 422/2025 não foi confirmado na página pública (a página de recibo exige login) — prazo não cadastrado.',
+  'Processos em 1º grau: contatar a unidade respectiva (ver rota TJPR 1º grau).',
+  'TJPR — Formulário oficial "Certidões Explicativas de Autos" (idFormulario=6203)',
+  'O processo do qual se deseja a certidão deverá ter trâmite em 2º Grau de Jurisdição. [...] As custas para gerar certidões devem ser pagas antecipadamente. [...] é gerado um recibo que comprova que o procedimento foi completado.',
+  10),
+ ('TJPR', null, 'G1', 'VERIFICAR', 'VERIFICAR', 'qualquer',
+  'Não informado na fonte.',
+  '["Identificar a unidade judicial competente na comarca","Contatar a unidade respectiva pelos canais oficiais publicados por ela","Registrar na CPN o canal usado e a resposta"]',
+  '[{"tipo":"unidade","rotulo":"Unidade judicial competente","valor":null}]',
+  'https://portal.tjpr.jus.br/portletforms/publico/frm.do?idFormulario=6203', null,
+  null, null, null, null, null,
+  null, null, null,
+  'A fonte só orienta contatar a unidade; não especifica canal (e-mail, Balcão Virtual etc.), custo ou prazo — por isso o tipo de rota fica VERIFICAR.',
+  null,
+  'TJPR — Formulário oficial "Certidões Explicativas de Autos" (orientação sobre 1º grau)',
+  'Se deseja certidão explicativa de processos em 1º Grau, deve entrar em contato com a unidade respectiva nas Comarcas do Estado.',
+  50)
+) as v(sigla, sistema, grau, modalidade, tipo_rota, perfil, quem_pode, passos, canais, url_fonte, url_certidao, login, adv, pet, pag, ident, req, custo, entrega, obs, exc, ev, trecho, prio)
+  on t.sigla = v.sigla
+where not exists (
+  select 1 from public.cpn_certificate_routes r
+  where r.tribunal_id = t.id and coalesce(r.sistema, '') = coalesce(v.sistema, '') and coalesce(r.grau, '') = coalesce(v.grau, '')
+    and r.perfil = v.perfil and r.tipo_rota = v.tipo_rota and r.tipo_certidao = 'objeto_e_pe'
+);
