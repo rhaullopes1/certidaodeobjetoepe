@@ -67,7 +67,7 @@ const PASSOS = [
   {
     n: "2",
     titulo: "Consulta gratuita",
-    texto: "Não há pagamento nem checkout: a consulta é processada automaticamente após o envio.",
+    texto: "Não há cobrança: a consulta é processada automaticamente após o envio e o resultado segue para o seu e-mail.",
   },
   {
     n: "3",
