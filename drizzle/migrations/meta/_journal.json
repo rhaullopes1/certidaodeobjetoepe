@@ -99,6 +99,13 @@
       "when": 1790920582527,
       "tag": "0013_pedidos_numero_fila_mensal",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1790920621831,
+      "tag": "0014_fila_mensal_somente_pagos",
+      "breakpoints": true
     }
   ]
 }
