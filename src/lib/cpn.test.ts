@@ -33,7 +33,7 @@ describe("motor de rotas CPN", () => {
   });
 });
 
-import { calcularCobertura, filtrarCobertura, prepararMarcacaoRota, statusConsulta } from "./cpn";
+import { calcularCobertura, filtrarCobertura, lacunasRota, prepararHomologacao, prepararManterVerificar, requisitosHomologacao, statusConsulta, type EvidenciaInformada, type RotaHomologavel } from "./cpn";
 
 describe("CPN fase 2", () => {
   const tribs = [
@@ -83,17 +83,54 @@ describe("CPN fase 2", () => {
     expect(escolherRota([base], ctx).alertas.join()).toContain("não homologada");
   });
 
-  it("marcação de rota exige confirmação, admin e evidência; gera auditoria", () => {
-    const p = { acao: "verificada" as const, confirmado: true, admin: true, userId: "u1", routeId: "r1", observacao: "ok", evidenciaAtual: "Portaria X", urlFonte: "https://x", hoje: "2026-10-02" };
-    const { patch, auditoria } = prepararMarcacaoRota(p);
-    expect(patch).toMatchObject({ status_verificacao: "verificada", ultima_verificacao: "2026-10-02", verificado_por: "u1", responsavel_id: "u1" });
-    expect(auditoria).toMatchObject({ acao: "verificar_rota", route_id: "r1", operador_id: "u1", detalhes: { evidencia: "Portaria X", confirmado: true } });
-    expect(() => prepararMarcacaoRota({ ...p, confirmado: false })).toThrow();
-    expect(() => prepararMarcacaoRota({ ...p, admin: false })).toThrow();
-    expect(() => prepararMarcacaoRota({ ...p, evidenciaAtual: null, urlFonte: null })).toThrow();
-    const rev = prepararMarcacaoRota({ ...p, acao: "revisar", evidenciaAtual: null, urlFonte: null });
-    expect(rev.patch).not.toHaveProperty("ultima_verificacao");
-    expect(rev.auditoria.acao).toBe("revisar_rota");
+});
+
+describe("Homologação controlada de rotas", () => {
+  const rota: RotaHomologavel = {
+    id: "r1", tribunal_id: "t1", sistema: "eproc", grau: "1º grau", perfil: "qualquer", tipo_rota: "MANUAL_EMAIL",
+    url_fonte: null, url_certidao: null, autenticidade_url: null, fonte_evidencia: null, fonte_trecho: null,
+    requisitos: "Petição", quem_pode: null, passos: ["a"], canais: ["Unidade"], status_verificacao: "pendente", automacao_cpn: "nao_homologada",
+  };
+  const ev: EvidenciaInformada = { urlFonte: "https://www.tribunal.jus.br/certidoes", trecho: "A certidão de objeto e pé é emitida pela secretaria da vara.", dataVerificacao: "2026-10-02", observacao: null };
+  const base = { confirmado: true, admin: true, userId: "u1", hoje: "2026-10-02" };
+
+  it("bloqueia homologação sem evidência", () => {
+    const vazio = { urlFonte: null, trecho: null, dataVerificacao: null, observacao: null };
+    expect(requisitosHomologacao(rota, vazio, base.hoje).length).toBeGreaterThanOrEqual(3);
+    expect(() => prepararHomologacao(rota, vazio, base)).toThrow(/Homologação bloqueada/);
+    expect(() => prepararHomologacao(rota, { ...ev, trecho: "curto" }, base)).toThrow(/trecho/);
+    expect(() => prepararHomologacao(rota, { ...ev, urlFonte: "http://x" }, base)).toThrow(/URL/);
+    expect(() => prepararHomologacao(rota, { ...ev, dataVerificacao: "2026-12-01" }, base)).toThrow(/futura/);
+    expect(() => prepararHomologacao({ ...rota, tipo_rota: "VERIFICAR" }, ev, base)).toThrow(/tipo de rota/);
+    expect(() => prepararHomologacao({ ...rota, passos: [] }, ev, base)).toThrow(/passo/);
+    expect(() => prepararHomologacao(rota, ev, { ...base, admin: false })).toThrow(/administradores/);
+    expect(() => prepararHomologacao(rota, ev, { ...base, confirmado: false })).toThrow(/Confirmação/);
+  });
+
+  it("permite homologação com evidência mínima, sem tocar automação", () => {
+    const { patch, auditoria } = prepararHomologacao(rota, ev, base);
+    expect(patch).toMatchObject({ status_verificacao: "verificada", url_fonte: ev.urlFonte, fonte_trecho: ev.trecho, ultima_verificacao: "2026-10-02", verificado_por: "u1", responsavel_id: "u1" });
+    expect(patch).not.toHaveProperty("automacao_cpn");
+    expect(patch).not.toHaveProperty("modalidade");
+    expect(patch).not.toHaveProperty("tipo_rota");
+    expect(auditoria).toMatchObject({ acao: "homologar_rota", route_id: "r1", operador_id: "u1", resultado: "verificada", detalhes: { status_anterior: "pendente", automacao_cpn: "nao_homologada", confirmado: true } });
+  });
+
+  it("manter VERIFICAR nunca marca verificada e rebaixa rota já homologada", () => {
+    const m = prepararManterVerificar(rota, { ...ev, trecho: null }, base);
+    expect(m.patch?.status_verificacao).toBe("pendente");
+    expect(m.faltando.join()).toContain("trecho");
+    const m2 = prepararManterVerificar({ ...rota, status_verificacao: "verificada" }, ev, base);
+    expect(m2.patch?.status_verificacao).toBe("revisar");
+  });
+
+  it("registra auditoria em todas as ações; operador só audita", () => {
+    const m = prepararManterVerificar(rota, ev, { ...base, admin: false });
+    expect(m.patch).toBeNull();
+    expect(m.auditoria).toMatchObject({ acao: "solicitar_revisao_rota", route_id: "r1", operador_id: "u1" });
+    const a = prepararManterVerificar(rota, ev, base).auditoria;
+    expect(a).toMatchObject({ acao: "manter_verificar_rota", detalhes: { url_fonte_consultada: ev.urlFonte, data_verificacao: "2026-10-02" } });
+    expect(lacunasRota(rota)).toEqual(expect.arrayContaining(["URL da fonte oficial cadastrada", "trecho da fonte oficial cadastrado"]));
   });
 });
 

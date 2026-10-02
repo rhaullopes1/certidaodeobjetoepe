@@ -406,28 +406,90 @@ export const STATUS_VERIFICACAO = { pendente: "Pendente", verificada: "Verificad
 export type StatusVerificacao = keyof typeof STATUS_VERIFICACAO;
 export type AcaoRota = "verificada" | "revisar";
 
-/** Valida a marcação e monta o patch + registro de auditoria (com evidência preservada). */
-export function prepararMarcacaoRota(p: {
-  acao: AcaoRota; confirmado: boolean; admin: boolean; userId: string; routeId: string;
-  observacao: string | null; evidenciaAtual: string | null; urlFonte: string | null; hoje: string;
-}) {
+/** Campos da rota relevantes para homologação (todos vêm do cadastro real). */
+export interface RotaHomologavel {
+  id: string; tribunal_id: string | null; sistema: string | null; grau: string | null; perfil: string | null;
+  tipo_rota: string | null; url_fonte: string | null; url_certidao: string | null; autenticidade_url: string | null;
+  fonte_evidencia: string | null; fonte_trecho: string | null; requisitos: string | null; quem_pode: string | null;
+  passos: unknown; canais: unknown; status_verificacao: string; automacao_cpn: string;
+}
+
+/** Evidência registrada pelo administrador nesta verificação (nunca preenchida automaticamente). */
+export interface EvidenciaInformada { urlFonte: string | null; trecho: string | null; dataVerificacao: string | null; observacao: string | null }
+
+export const TRECHO_MINIMO = 30;
+const urlOk = (u: string | null | undefined) => !!u && /^https:\/\/[^\s/]+\.[^\s]+$/i.test(u.trim());
+const listaNaoVazia = (v: unknown) => Array.isArray(v) && v.length > 0;
+
+/** Lacunas que existem no cadastro da rota (independe da verificação de hoje). */
+export function lacunasRota(r: RotaHomologavel): string[] {
+  const f: string[] = [];
+  if (!r.tribunal_id) f.push("tribunal");
+  if (!r.tipo_rota || r.tipo_rota === "VERIFICAR") f.push("tipo de rota definido (hoje: VERIFICAR)");
+  if (r.tipo_rota === "INDISPONIVEL") f.push("rota indisponível não pode ser homologada");
+  if (!r.perfil) f.push("perfil do solicitante");
+  if (!r.grau) f.push("grau (não especificado no cadastro)");
+  if (!listaNaoVazia(r.passos)) f.push("passo a passo");
+  if (!listaNaoVazia(r.canais) && !r.url_certidao) f.push("canal ou URL oficial de solicitação");
+  if (!r.requisitos && !r.quem_pode) f.push("requisitos / quem pode pedir");
+  if (!urlOk(r.url_fonte)) f.push("URL da fonte oficial cadastrada");
+  if (!r.fonte_trecho || r.fonte_trecho.trim().length < TRECHO_MINIMO) f.push("trecho da fonte oficial cadastrado");
+  return f;
+}
+
+/** Requisitos mínimos para homologar: cadastro completo + evidência registrada hoje pelo administrador. */
+export function requisitosHomologacao(r: RotaHomologavel, ev: EvidenciaInformada, hoje: string): string[] {
+  const f = lacunasRota({ ...r, url_fonte: ev.urlFonte?.trim() || r.url_fonte, fonte_trecho: ev.trecho?.trim() || r.fonte_trecho })
+    .filter((x) => !x.startsWith("URL da fonte") && !x.startsWith("trecho da fonte"));
+  if (!urlOk(ev.urlFonte)) f.push("URL oficial consultada nesta verificação (https)");
+  if (!ev.trecho || ev.trecho.trim().length < TRECHO_MINIMO) f.push(`trecho copiado da fonte oficial (mín. ${TRECHO_MINIMO} caracteres)`);
+  if (!ev.dataVerificacao || !/^\d{4}-\d{2}-\d{2}$/.test(ev.dataVerificacao)) f.push("data da verificação");
+  else if (ev.dataVerificacao > hoje) f.push("data da verificação não pode ser futura");
+  return f;
+}
+
+interface BaseAcao { confirmado: boolean; admin: boolean; userId: string; hoje: string }
+
+/** Homologa (status_verificacao='verificada'). Bloqueia sem evidência. Nunca toca automacao_cpn/modalidade/tipo_rota. */
+export function prepararHomologacao(r: RotaHomologavel, ev: EvidenciaInformada, p: BaseAcao) {
   if (!p.confirmado) throw new Error("Confirmação explícita obrigatória.");
-  if (!p.admin) throw new Error("Somente administradores podem alterar o status de verificação da rota.");
-  if (p.acao === "verificada" && !p.evidenciaAtual && !p.urlFonte) throw new Error("Rota sem evidência/fonte oficial não pode ser marcada como verificada.");
+  if (!p.admin) throw new Error("Somente administradores podem homologar rotas.");
+  const faltando = requisitosHomologacao(r, ev, p.hoje);
+  if (faltando.length) throw new Error(`Homologação bloqueada. Falta: ${faltando.join("; ")}.`);
   const patch = {
-    status_verificacao: p.acao as StatusVerificacao,
-    observacao_verificacao: p.observacao,
+    status_verificacao: "verificada" as StatusVerificacao,
+    url_fonte: ev.urlFonte!.trim(),
+    fonte_trecho: ev.trecho!.trim(),
+    ultima_verificacao: ev.dataVerificacao!,
+    verificado_por: p.userId,
     responsavel_id: p.userId,
-    ...(p.acao === "verificada" ? { ultima_verificacao: p.hoje, verificado_por: p.userId } : {}),
+    observacao_verificacao: ev.observacao,
   };
   const auditoria = {
-    operador_id: p.userId,
-    acao: p.acao === "verificada" ? "verificar_rota" : "revisar_rota",
-    route_id: p.routeId,
-    resultado: p.acao,
-    detalhes: { observacao: p.observacao, evidencia: p.evidenciaAtual, url_fonte: p.urlFonte, data: p.hoje, confirmado: true },
+    operador_id: p.userId, acao: "homologar_rota", route_id: r.id, resultado: "verificada",
+    detalhes: {
+      url_fonte_consultada: patch.url_fonte, trecho: patch.fonte_trecho, data_verificacao: patch.ultima_verificacao,
+      observacao: ev.observacao, status_anterior: r.status_verificacao, url_fonte_anterior: r.url_fonte,
+      trecho_anterior: r.fonte_trecho, automacao_cpn: r.automacao_cpn, registrado_em: p.hoje, confirmado: true,
+    },
   };
   return { patch, auditoria };
+}
+
+/** Mantém VERIFICAR: registra o que foi consultado e o que falta; nunca marca como verificada. */
+export function prepararManterVerificar(r: RotaHomologavel, ev: EvidenciaInformada, p: BaseAcao & { revisar?: boolean }) {
+  if (!p.confirmado) throw new Error("Confirmação explícita obrigatória.");
+  const faltando = requisitosHomologacao(r, ev, p.hoje);
+  const novoStatus: StatusVerificacao = p.revisar ? "revisar" : r.status_verificacao === "verificada" ? "revisar" : (r.status_verificacao as StatusVerificacao);
+  const patch = p.admin ? { status_verificacao: novoStatus, observacao_verificacao: ev.observacao, responsavel_id: p.userId } : null;
+  const auditoria = {
+    operador_id: p.userId, acao: p.admin ? "manter_verificar_rota" : "solicitar_revisao_rota", route_id: r.id, resultado: novoStatus,
+    detalhes: {
+      url_fonte_consultada: ev.urlFonte?.trim() || null, trecho: ev.trecho?.trim() || null, data_verificacao: ev.dataVerificacao,
+      observacao: ev.observacao, faltando, status_anterior: r.status_verificacao, registrado_em: p.hoje, confirmado: true,
+    },
+  };
+  return { patch, auditoria, faltando };
 }
 
 export type StatusConsulta = "confirmado" | "nao_encontrado" | "fonte_indisponivel" | "tribunal_nao_identificado";
