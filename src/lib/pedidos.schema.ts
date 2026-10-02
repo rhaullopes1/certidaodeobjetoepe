@@ -52,10 +52,10 @@ export const nomeParteField = z
   .refine(nomeCompletoValido, "Informe o nome completo (nome e sobrenome, sem números)");
 
 export const FINALIDADES = {
-  caminhoneiro_motorista: "Caminhoneiro / motorista",
+  caminhoneiro_motorista: "Caminhoneiro",
   motorista_app: "Motorista de app",
   transacao_imobiliaria: "Transação imobiliária",
-  outro: "Outro",
+  outro: "Outros",
 } as const;
 export type Finalidade = keyof typeof FINALIDADES;
 export const finalidadeField = z.enum(
