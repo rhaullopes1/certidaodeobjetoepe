@@ -53,6 +53,7 @@ export interface ResultadoCpn {
   modalidade: Modalidade;
   rota: RotaCertidao | null;
   alertas: string[];
+  alternativas?: RotaCertidao[];
 }
 
 /** Localiza o processo: CNJ → tabela de tribunais → DataJud (server-side) → motor de rotas. */
@@ -134,7 +135,7 @@ export const localizarProcesso = createServerFn({ method: "POST" })
     }
     const escolha = escolherRota(rotas, { sistema: processo.sistema, grau: processo.grau, nivelSigilo: sigilo });
     const status = statusConsulta({ tribunalIdentificado: Boolean(trib), datajudStatus: datajud?.status ?? null });
-    return registrar({ demo: data.demo, erro: null, datajud, processo, modalidade: escolha.modalidade, rota: escolha.rota, alertas: escolha.alertas }, status);
+    return registrar({ demo: data.demo, erro: null, datajud, processo, modalidade: escolha.modalidade, rota: escolha.rota, alertas: escolha.alertas, alternativas: escolha.alternativas ?? [] }, status);
   });
 
 /** Dashboard, últimas consultas, pendências manuais e catálogo de rotas. */
@@ -177,7 +178,9 @@ export const painelCpn = createServerFn({ method: "GET" })
 /** Cria ficha operacional (fluxo manual / registro de resultado). Não envia nada externamente. */
 export const criarOperacao = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: { queryId: string | null; routeId: string | null; numero: string; tribunal: string | null; unidade: string | null; metodo: string | null; url: string | null; requisitos: string | null; texto: string | null; observacao: string | null; status: StatusOperacao; demo: boolean }) => ({
+  .inputValidator((i: { queryId: string | null; routeId: string | null; numero: string; tribunal: string | null; unidade: string | null; metodo: string | null; url: string | null; requisitos: string | null; texto: string | null; observacao: string | null; status: StatusOperacao; canal?: string | null; destinatario?: string | null; demo: boolean }) => ({
+    canal: i.canal ? String(i.canal).slice(0, 200) : null,
+    destinatario: i.destinatario ? String(i.destinatario).slice(0, 300) : null,
     ...i,
     status: (i.status in STATUS_OPERACAO ? i.status : "aguardando") as StatusOperacao,
     numero: String(i.numero).slice(0, 40),
@@ -189,11 +192,11 @@ export const criarOperacao = createServerFn({ method: "POST" })
     await exigirEquipe(supabase, userId);
     const { data: op, error } = await supabase
       .from("cpn_operacoes")
-      .insert({ query_id: data.queryId, route_id: data.routeId, numero_processo: data.numero, tribunal_sigla: data.tribunal, unidade: data.unidade, metodo: data.metodo, url_oficial: data.url, requisitos: data.requisitos, texto_solicitacao: data.texto, observacao: data.observacao, status: data.status, demo: false, operador_id: userId })
+      .insert({ query_id: data.queryId, route_id: data.routeId, numero_processo: data.numero, tribunal_sigla: data.tribunal, unidade: data.unidade, metodo: data.metodo, url_oficial: data.url, requisitos: data.requisitos, texto_solicitacao: data.texto, observacao: data.observacao, status: data.status, canal: data.canal, destinatario: data.destinatario, demo: false, operador_id: userId })
       .select("id")
       .single();
     if (error || !op) throw new Error("Não foi possível registrar a operação.");
-    await auditar(supabase, userId, "criar_operacao", { numero: data.numero, route_id: data.routeId, operacao_id: op.id, resultado: data.status });
+    await auditar(supabase, userId, "criar_operacao", { numero: data.numero, route_id: data.routeId, operacao_id: op.id, resultado: data.status, detalhes: { canal: data.canal, destinatario: data.destinatario, metodo: data.metodo, tribunal: data.tribunal } });
     return { id: op.id };
   });
 
