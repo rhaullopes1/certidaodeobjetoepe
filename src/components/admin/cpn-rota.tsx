@@ -1,7 +1,7 @@
 import { Copy, ExternalLink, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { ROTULO_ORIGEM, instrucoesEncaminhamento, type Enriquecimento } from "@/lib/cpn-enriquecimento";
-import { CATEGORIAS_ROTA, PERFIS_ROTA, TIPOS_ROTA, canaisDaRota, passosDaRota, statusRota, tipoRotaValido, type RotaCertidao } from "@/lib/cpn";
+import { CATEGORIAS_ROTA, PERFIS_ROTA, TIPOS_ROTA, canaisDaRota, passosDaRota, statusRota, tipoRotaValido, type AvaliacaoRota, type PerfilSolicitante, type RotaCertidao } from "@/lib/cpn";
 import { AvisoAssistida } from "./cpn-documento";
 
 const simNao = (b: boolean | null | undefined) => (b === null || b === undefined ? null : b ? "Sim" : "Não");
@@ -33,9 +33,17 @@ export function SeloStatusRota({ rota }: { rota: RotaCertidao | null }) {
 const link = (url: string, texto?: string) => <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary underline"><ExternalLink className="h-3 w-3" />{texto ?? url}</a>;
 
 /** Painel da Rota de Solicitação: só dados cadastrados com fonte; ausência = "não informado na fonte". */
-export function PainelRota({ rota, alternativas, tribunal, onEscolher, alertas }: {
+const APLIC: Record<string, { t: string; c: string }> = {
+  sim: { t: "Aplicável", c: "bg-live/15 text-live" },
+  indeterminado: { t: "Indeterminada — falta dado", c: "bg-gold/15 text-foreground" },
+  nao: { t: "Não aplicável", c: "bg-destructive/10 text-destructive" },
+};
+
+export function PainelRota({ rota, alternativas, tribunal, onEscolher, alertas, avaliacoes = [], perfil = null, onPerfil }: {
   rota: RotaCertidao | null; alternativas: RotaCertidao[]; tribunal: string | null; alertas: string[]; onEscolher: (id: string) => void;
+  avaliacoes?: AvaliacaoRota[]; perfil?: PerfilSolicitante | null; onPerfil?: (p: PerfilSolicitante | null) => void;
 }) {
+  const avDe = (id: string | undefined) => avaliacoes.find((a) => a.rotaId === id);
   const st = statusRota(rota);
   const tipo = TIPOS_ROTA[tipoRotaValido(rota?.tipo_rota)];
   const passos = passosDaRota(rota);
@@ -43,6 +51,17 @@ export function PainelRota({ rota, alternativas, tribunal, onEscolher, alertas }
   return (
     <div className="space-y-2">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Fonte: catálogo CPN de rotas (cada rota com evidência oficial)</p>
+      {onPerfil && (
+        <label className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="font-semibold">Perfil do solicitante:</span>
+          <select aria-label="Perfil do solicitante" value={perfil ?? ""} onChange={(e) => onPerfil((e.target.value || null) as PerfilSolicitante | null)} className="h-8 rounded-lg border border-input bg-background px-2 text-xs">
+            <option value="">Não informado</option>
+            <option value="parte_advogado_habilitado">{PERFIS_ROTA.parte_advogado_habilitado}</option>
+            <option value="terceiro_ou_advogado_nao_cadastrado">{PERFIS_ROTA.terceiro_ou_advogado_nao_cadastrado}</option>
+          </select>
+        </label>
+      )}
+      {rota && avDe(rota.id) && <Aval a={avDe(rota.id)!} />}
       <Secao n={3} t="Tipo de certidão"><p className="text-sm">Certidão de Objeto e Pé / Narratória</p></Secao>
       <Secao n={4} t="Status da rota">
         <SeloStatusRota rota={rota} />
@@ -117,6 +136,7 @@ export function PainelRota({ rota, alternativas, tribunal, onEscolher, alertas }
                 <span>{TIPOS_ROTA[tipoRotaValido(a.tipo_rota)].rotulo} · {PERFIS_ROTA[a.perfil ?? "qualquer"] ?? a.perfil}{a.sistema ? ` · ${a.sistema}` : ""}{a.grau ? ` · ${a.grau}` : ""}</span>
                 <SeloStatusRota rota={a} />
               </button>
+              {avDe(a.id) && <Aval a={avDe(a.id)!} />}
             </li>
           ))}</ul>
         </div>
@@ -170,6 +190,17 @@ export function DadosEnriquecidos({ en, sigilo }: { en: Enriquecimento | null | 
           ))}</ul>
         </div>
       )}
+    </div>
+  );
+}
+
+function Aval({ a }: { a: AvaliacaoRota }) {
+  const s = APLIC[a.aplicavel];
+  return (
+    <div className="mt-1 rounded-lg border border-border px-2 py-1 text-[11px]">
+      <span className={`rounded-full px-2 py-0.5 font-bold ${s.c}`}>{s.t}</span>
+      {a.motivos.length > 0 && <span className="ml-1 text-muted-foreground">{a.motivos.join(" · ")}</span>}
+      {a.faltando.length > 0 && <p className="mt-0.5 text-destructive">Falta: {a.faltando.join(" · ")}</p>}
     </div>
   );
 }

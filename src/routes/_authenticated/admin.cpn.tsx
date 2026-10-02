@@ -7,7 +7,7 @@ import { CheckCircle2, ClipboardCopy, ExternalLink, FileText, History, Loader2, 
 import { souEquipe } from "@/lib/admin";
 import { analisarNup, formatarNup } from "@/lib/cnj";
 import { CoberturaRotas, FilaVerificacao, HistoricoConsultas } from "@/components/admin/cpn-paineis";
-import { ESTADOS_DADO, MODALIDADES, estadoDado, STATUS_OPERACAO, canaisDaRota, passosDaRota, textoInstrucoes, textoSolicitacao, type RotaCertidao, type Modalidade, type StatusOperacao } from "@/lib/cpn";
+import { ESTADOS_DADO, MODALIDADES, estadoDado, STATUS_OPERACAO, canaisDaRota, passosDaRota, textoInstrucoes, textoSolicitacao, type RotaCertidao, type Modalidade, type StatusOperacao, escolherRota, type PerfilSolicitante } from "@/lib/cpn";
 import {
   atualizarOperacao,
   criarOperacao,
@@ -173,8 +173,10 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
   const [hist, setHist] = useState(false);
   const p = r.processo;
   const todas = [...(r.rota ? [r.rota] : []), ...(r.alternativas ?? [])];
-  const [selId, setSelId] = useState<string | null>(r.rota?.id ?? null);
-  const rota = todas.find((x) => x.id === selId) ?? r.rota;
+  const [perfil, setPerfil] = useState<PerfilSolicitante | null>(null);
+  const motor = escolherRota(todas, { sistema: r.processo?.sistema ?? null, grau: r.processo?.grau ?? null, nivelSigilo: r.processo?.nivelSigilo ?? null, perfil });
+  const [selId, setSelId] = useState<string | null>(null);
+  const rota = todas.find((x) => x.id === selId) ?? motor.rota;
   const alternativas = todas.filter((x) => x.id !== rota?.id);
   const [modoFicha, setModoFicha] = useState<"assistida" | "resultado">("assistida");
   const historico = useQuery({ queryKey: ["cpn-hist", p?.numeroFormatado], queryFn: () => historicoFn({ data: { numero: p!.numeroFormatado } }), enabled: hist && Boolean(p) });
@@ -232,7 +234,7 @@ function Resultado({ r, admin, registrar }: { r: ResultadoCpn; admin: boolean; r
 
       <section className={card}>
         <h2 className="mb-2 font-display font-bold">Painel da rota de solicitação</h2>
-        <PainelRota rota={rota} alternativas={alternativas} tribunal={p.tribunalSigla} alertas={rota?.id === r.rota?.id ? r.alertas : []} onEscolher={setSelId} />
+        <PainelRota rota={rota} alternativas={alternativas} tribunal={p.tribunalSigla} alertas={rota?.id === motor.rota?.id ? motor.alertas : []} onEscolher={setSelId} avaliacoes={motor.avaliacoes ?? []} perfil={perfil} onPerfil={(v) => { setPerfil(v); setSelId(null); }} />
       </section>
 
       <section className={card}>

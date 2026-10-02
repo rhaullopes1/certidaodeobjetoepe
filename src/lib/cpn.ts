@@ -189,7 +189,7 @@ export function canonGrau(v: string | null | undefined): string | null {
   return n.toUpperCase();
 }
 function grauDaRota(r: RotaCertidao): string | null {
-  return canonGrau(r.grau) ?? (/\b2G\b/i.test(r.sistema ?? "") ? null : null);
+  return canonGrau(r.grau);
 }
 
 /** Avalia uma rota contra o contexto, sem supor dado ausente. */
