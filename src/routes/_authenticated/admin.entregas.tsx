@@ -30,6 +30,7 @@ import { OndeSolicitarResumo } from "@/components/admin/onde-solicitar";
 import { formatarBRL, statusPedido } from "@/lib/site";
 import { BotaoWhatsAppCliente } from "@/components/admin/botao-whatsapp";
 import { AdminHeader, SemPermissao } from "./admin.index";
+import { LuzesUrgencia } from "@/components/admin/luzes-urgencia";
 
 export const Route = createFileRoute("/_authenticated/admin/entregas")({
   component: AdminEntregas,
