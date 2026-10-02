@@ -15,14 +15,18 @@ export const MODALIDADES: Record<Modalidade, { rotulo: string; emoji: string; cl
 };
 
 export const STATUS_OPERACAO = {
+  preparado: "Preparado",
   aguardando: "Aguardando",
   solicitado: "Solicitado",
   em_analise: "Em análise",
   recebido: "Recebido",
   entregue: "Entregue",
   sem_resposta: "Sem resposta",
+  encerrado: "Encerrado",
 } as const;
 export type StatusOperacao = keyof typeof STATUS_OPERACAO;
+
+export interface CanalRota { tipo: string; rotulo: string; valor: string | null }
 
 export interface RotaCertidao {
   id: string;
@@ -49,6 +53,16 @@ export interface RotaCertidao {
   prioridade: number;
   ultima_verificacao: string | null;
   status_verificacao?: string | null;
+  tipo_rota?: string | null;
+  perfil?: string | null;
+  quem_pode?: string | null;
+  passos?: unknown;
+  canais?: unknown;
+  exige_procuracao?: boolean | null;
+  exige_identificacao?: boolean | null;
+  exige_finalidade?: boolean | null;
+  forma_entrega?: string | null;
+  fonte_trecho?: string | null;
 }
 
 export interface ContextoProcesso {
@@ -62,7 +76,70 @@ export interface RotaEscolhida {
   modalidade: Modalidade;
   rota: RotaCertidao | null;
   alertas: string[];
+  /** Outras rotas compatíveis (ex.: terceiros, sigilo, 2º grau). */
+  alternativas?: RotaCertidao[];
 }
+
+/* ---------------- Tipos de rota e status (motor de rotas) ---------------- */
+
+export type TipoRota =
+  | "AUTO_API" | "AUTO_PORTAL" | "AUTO_EPROC" | "AUTO_PJE" | "ASSISTIDA_EPROC" | "ASSISTIDA_PJE"
+  | "MANUAL_BALCAO_VIRTUAL" | "MANUAL_EMAIL" | "MANUAL_FORMULARIO" | "MANUAL_PRESENCIAL" | "VERIFICAR" | "INDISPONIVEL";
+export type CategoriaRota = "AUTOMATICA" | "ASSISTIDA" | "MANUAL" | "VERIFICAR" | "INDISPONIVEL";
+
+/** Natureza deixa explícito QUEM executa: tribunal, operador assistido pela CPN, unidade, ou integração CPN. */
+export const TIPOS_ROTA: Record<TipoRota, { categoria: CategoriaRota; rotulo: string; natureza: string }> = {
+  AUTO_API: { categoria: "AUTOMATICA", rotulo: "Integração automática CPN (API)", natureza: "Integração automática da CPN — só vale se homologada." },
+  AUTO_PORTAL: { categoria: "AUTOMATICA", rotulo: "Emissão automática no portal do tribunal", natureza: "Emissão automática pelo próprio tribunal (portal)." },
+  AUTO_EPROC: { categoria: "AUTOMATICA", rotulo: "Emissão automática no eproc", natureza: "Emissão automática pelo próprio tribunal no eproc, por quem tem perfil habilitado." },
+  AUTO_PJE: { categoria: "AUTOMATICA", rotulo: "Emissão automática no PJe", natureza: "Emissão automática pelo próprio tribunal no PJe, por quem tem perfil habilitado." },
+  ASSISTIDA_EPROC: { categoria: "ASSISTIDA", rotulo: "Solicitação assistida — eproc", natureza: "Operador executa no eproc com acesso autorizado; a CPN orienta e registra." },
+  ASSISTIDA_PJE: { categoria: "ASSISTIDA", rotulo: "Solicitação assistida — PJe", natureza: "Operador executa no PJe com acesso autorizado; a CPN orienta e registra." },
+  MANUAL_BALCAO_VIRTUAL: { categoria: "MANUAL", rotulo: "Pedido à unidade — Balcão Virtual", natureza: "Solicitação manual à unidade judicial." },
+  MANUAL_EMAIL: { categoria: "MANUAL", rotulo: "Pedido à unidade — e-mail institucional", natureza: "Solicitação manual à unidade judicial." },
+  MANUAL_FORMULARIO: { categoria: "MANUAL", rotulo: "Formulário oficial", natureza: "Solicitação manual por formulário oficial do tribunal." },
+  MANUAL_PRESENCIAL: { categoria: "MANUAL", rotulo: "Pedido presencial", natureza: "Solicitação presencial na unidade." },
+  VERIFICAR: { categoria: "VERIFICAR", rotulo: "Verificar", natureza: "Procedimento ainda não classificado." },
+  INDISPONIVEL: { categoria: "INDISPONIVEL", rotulo: "Indisponível", natureza: "Serviço indisponível segundo a fonte." },
+};
+
+export const CATEGORIAS_ROTA: Record<CategoriaRota, { rotulo: string; emoji: string; classe: string }> = {
+  AUTOMATICA: { rotulo: "AUTOMÁTICA", emoji: "🟢", classe: "bg-live/15 text-live ring-live/40" },
+  ASSISTIDA: { rotulo: "ASSISTIDA", emoji: "🟡", classe: "bg-gold/20 text-foreground ring-gold/50" },
+  MANUAL: { rotulo: "MANUAL", emoji: "🔵", classe: "bg-primary/10 text-primary ring-primary/30" },
+  VERIFICAR: { rotulo: "VERIFICAR", emoji: "⚪", classe: "bg-secondary text-muted-foreground ring-border" },
+  INDISPONIVEL: { rotulo: "INDISPONÍVEL", emoji: "🔴", classe: "bg-destructive/10 text-destructive ring-destructive/30" },
+};
+
+export const PERFIS_ROTA: Record<string, string> = {
+  qualquer: "Qualquer interessado",
+  parte_advogado_habilitado: "Parte/advogado cadastrado no processo",
+  terceiro_ou_advogado_nao_cadastrado: "Terceiro ou advogado fora do processo",
+  sigiloso: "Processo sigiloso",
+};
+
+export function tipoRotaValido(t: string | null | undefined): TipoRota {
+  return (t && t in TIPOS_ROTA ? t : "VERIFICAR") as TipoRota;
+}
+
+/**
+ * Status exibido: enquanto a rota não for verificada com evidência oficial, é VERIFICAR.
+ * AUTO_API só é AUTOMÁTICA se a integração CPN estiver homologada.
+ */
+export function statusRota(rota: Pick<RotaCertidao, "tipo_rota" | "status_verificacao" | "automacao_cpn"> | null) {
+  if (!rota) return { categoria: "VERIFICAR" as CategoriaRota, declarada: "VERIFICAR" as CategoriaRota, verificada: false };
+  const tipo = tipoRotaValido(rota.tipo_rota);
+  let declarada = TIPOS_ROTA[tipo].categoria;
+  if (tipo === "AUTO_API" && rota.automacao_cpn !== "homologada") declarada = "VERIFICAR";
+  const verificada = rota.status_verificacao === "verificada";
+  return { categoria: verificada ? declarada : ("VERIFICAR" as CategoriaRota), declarada, verificada };
+}
+
+const lista = <T,>(v: unknown, ok: (x: unknown) => x is T): T[] => (Array.isArray(v) ? v.filter(ok) : []);
+export const passosDaRota = (r: RotaCertidao | null) => lista(r?.passos, (x): x is string => typeof x === "string" && x.trim().length > 0);
+export const canaisDaRota = (r: RotaCertidao | null) =>
+  lista(r?.canais, (x): x is CanalRota => typeof x === "object" && x !== null && typeof (x as CanalRota).rotulo === "string" && typeof (x as CanalRota).tipo === "string")
+    .map((c) => ({ tipo: c.tipo, rotulo: c.rotulo, valor: typeof c.valor === "string" && c.valor.trim() ? c.valor : null }));
 
 const norm = (v: string | null | undefined) => (v ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -70,15 +147,21 @@ function modalidadeValida(m: string): Modalidade {
   return (m in MODALIDADES ? m : "VERIFICAR") as Modalidade;
 }
 
+function sistemaCompativel(rotaSistema: string, ctxSistema: string) {
+  const c = norm(ctxSistema);
+  return rotaSistema.split(/\s+ou\s+|\//i).map(norm).filter(Boolean).some((s) => c.includes(s) || s.includes(c));
+}
+
 /** Escolhe a rota ativa mais específica. Sem rota compatível → VERIFICAR. */
 export function escolherRota(rotas: RotaCertidao[], ctx: ContextoProcesso): RotaEscolhida {
   const alertas: string[] = [];
-  const candidatas = rotas
+  const sigilo = ctx.nivelSigilo !== null && ctx.nivelSigilo > 0;
+  const compat = rotas
     .map((r) => {
       let score = 0;
       if (r.sistema) {
         if (!ctx.sistema) score += 1;
-        else if (norm(ctx.sistema).includes(norm(r.sistema))) score += 3;
+        else if (sistemaCompativel(r.sistema, ctx.sistema)) score += 3;
         else return null;
       } else score += 2;
       if (r.grau) {
@@ -86,21 +169,24 @@ export function escolherRota(rotas: RotaCertidao[], ctx: ContextoProcesso): Rota
         else if (norm(r.grau) === norm(ctx.grau)) score += 2;
         else return null;
       }
+      if (r.perfil === "sigiloso") score += sigilo ? 10 : -100;
       return { r, score };
     })
     .filter((x): x is { r: RotaCertidao; score: number } => x !== null)
     .sort((a, b) => b.score - a.score || a.r.prioridade - b.r.prioridade);
+  const candidatas = compat.filter((x) => x.score > -50);
 
   const melhor = candidatas[0]?.r ?? null;
+  const alternativas = compat.map((x) => x.r).filter((r) => r !== melhor);
   if (!melhor) {
-    return { modalidade: "VERIFICAR", rota: null, alertas: ["Nenhuma rota cadastrada para este tribunal/sistema. Verificar na fonte oficial."] };
+    return { modalidade: "VERIFICAR", rota: null, alertas: ["Nenhuma rota cadastrada para este tribunal/sistema. Verificar na fonte oficial."], alternativas };
   }
   let modalidade = modalidadeValida(melhor.modalidade);
   if (melhor.sistema && !ctx.sistema) {
     alertas.push(`Rota cadastrada para ${melhor.sistema}; o sistema do processo não foi confirmado pela fonte.`);
     if (modalidade === "AUTOMATICA") modalidade = "VERIFICAR";
   }
-  if (ctx.nivelSigilo !== null && ctx.nivelSigilo > 0) {
+  if (sigilo) {
     alertas.push("A fonte informa segredo de justiça: fluxo automático não se aplica.");
     if (modalidade === "AUTOMATICA" || modalidade === "SEMIAUTOMATICA") modalidade = "MANUAL";
   }
@@ -111,7 +197,30 @@ export function escolherRota(rotas: RotaCertidao[], ctx: ContextoProcesso): Rota
     alertas.push("Execução ainda não integrada à CPN (automação não homologada): o operador executa no portal oficial.");
   }
   if (!melhor.ultima_verificacao) alertas.push("Rota sem data de verificação.");
-  return { modalidade, rota: melhor, alertas };
+  return { modalidade, rota: melhor, alertas, alternativas };
+}
+
+/** Instruções copiáveis da rota (somente dados cadastrados). */
+export function textoInstrucoes(p: { numero: string; tribunal: string | null }, rota: RotaCertidao | null) {
+  if (!rota) return `Processo: ${p.numero}\nTribunal: ${p.tribunal ?? "não identificado"}\nRota: VERIFICAR — nenhuma rota cadastrada.`;
+  const st = statusRota(rota);
+  const linhas = [
+    `Processo: ${p.numero}`,
+    `Tribunal: ${p.tribunal ?? "não identificado"}${rota.sistema ? ` · ${rota.sistema}` : ""}${rota.grau ? ` · ${rota.grau}` : ""}`,
+    `Certidão: Objeto e Pé / Narratória`,
+    `Rota: ${TIPOS_ROTA[tipoRotaValido(rota.tipo_rota)].rotulo} — status ${CATEGORIAS_ROTA[st.categoria].rotulo}${st.verificada ? "" : " (pendente de verificação)"}`,
+  ];
+  if (rota.quem_pode) linhas.push(`Quem pode solicitar: ${rota.quem_pode}`);
+  const passos = passosDaRota(rota);
+  if (passos.length) linhas.push("Passo a passo:", ...passos.map((s, i) => `${i + 1}. ${s}`));
+  if (rota.requisitos) linhas.push(`Requisitos: ${rota.requisitos}`);
+  for (const c of canaisDaRota(rota)) linhas.push(`Canal: ${c.rotulo}${c.valor ? ` — ${c.valor}` : " (endereço específico não cadastrado)"}`);
+  if (rota.prazo) linhas.push(`Prazo (fonte oficial): ${rota.prazo}`);
+  if (rota.custo) linhas.push(`Custo (fonte oficial): ${rota.custo}`);
+  if (rota.forma_entrega) linhas.push(`Entrega: ${rota.forma_entrega}`);
+  if (rota.autenticidade_url) linhas.push(`Autenticidade: ${rota.autenticidade_url}`);
+  if (rota.url_fonte) linhas.push(`Fonte oficial: ${rota.url_fonte}`);
+  return linhas.join("\n");
 }
 
 /** Texto copiável com a rota/instruções. */
