@@ -38,6 +38,7 @@ export const ETAPAS_OPERACAO = [
 export type EtapaOperacao = (typeof ETAPAS_OPERACAO)[number]["valor"];
 
 export function rotuloEtapa(v: string | null | undefined) {
+  if (v === "validado") return "Validado pela administração";
   return ETAPAS_OPERACAO.find((e) => e.valor === v)?.rotulo ?? v ?? "—";
 }
 
