@@ -93,7 +93,7 @@ function Pagina() {
                     {ativa && (
                       <div className="flex flex-col gap-1.5">
                         {a.status_operacao === "concluido" && (
-                          <button onClick={() => acao.mutate({ tipo: "validar", id: a.id })} className="rounded-md bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground">Validar conclusão</button>
+                          <button onClick={() => acao.mutate({ tipo: "validar", id: a.id })} className="rounded-md bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground">Validar/Autorizar baixa</button>
                         )}
                         <div className="flex gap-1">
                           <select value={destino[a.id] ?? ""} onChange={(e) => setDestino({ ...destino, [a.id]: e.target.value })} className="rounded-md border border-input bg-background px-1 py-1 text-xs">

@@ -65,7 +65,7 @@ export const detalheOperacao = createServerFn({ method: "POST" })
 export const atualizarEtapaOperacao = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
-    z.object({ id: z.string().uuid(), status: z.enum(etapas), observacao: z.string().max(2000).optional() }).parse(d),
+    z.object({ id: z.string().uuid(), status: z.enum(["em_andamento", "concluido"]), observacao: z.string().max(2000).optional() }).parse(d),
   )
   .handler(async ({ context, data }) => {
     await exigirOperador(context);
@@ -76,6 +76,15 @@ export const atualizarEtapaOperacao = createServerFn({ method: "POST" })
     });
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+export const meuHistoricoOperacao = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await exigirOperador(context);
+    const { data, error } = await context.supabase.rpc("operador_meu_historico");
+    if (error) throw new Error(error.message);
+    return data ?? [];
   });
 
 /* ---------------- ADMINISTRAÇÃO ---------------- */

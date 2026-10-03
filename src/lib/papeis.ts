@@ -27,11 +27,11 @@ export async function meusPapeis(): Promise<string[]> {
 }
 
 export const ETAPAS_OPERACAO = [
-  { valor: "atribuido", rotulo: "Atribuído" },
+  { valor: "atribuido", rotulo: "Recebido" },
   { valor: "em_andamento", rotulo: "Em andamento" },
   { valor: "aguardando_tribunal", rotulo: "Aguardando tribunal" },
   { valor: "documento_recebido", rotulo: "Documento recebido" },
-  { valor: "concluido", rotulo: "Concluído" },
+  { valor: "concluido", rotulo: "Concluído / Aguardando validação" },
   { valor: "devolvido", rotulo: "Devolvido" },
 ] as const;
 
@@ -58,3 +58,13 @@ export function podeEnviarParaOperacao(
     !atribuicoes.some(atribuicaoAtiva)
   );
 }
+
+/** Etapas que o próprio operador pode marcar (só avança; validação é da administração). */
+export function proximasEtapasOperador(atual: string): { valor: "em_andamento" | "concluido"; rotulo: string }[] {
+  if (atual === "atribuido") return [{ valor: "em_andamento", rotulo: "Em andamento" }, { valor: "concluido", rotulo: "Concluído / Aguardando validação" }];
+  if (atual === "concluido" || atual === "devolvido") return [];
+  return [{ valor: "concluido", rotulo: "Concluído / Aguardando validação" }];
+}
+
+/** Remuneração do operador por operação validada (centavos). Nunca expor preço do cliente. */
+export const REMUNERACAO_OPERADOR_CENTAVOS = 8000;

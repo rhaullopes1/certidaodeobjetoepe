@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { meusPapeis, ehOperador, ehAdministrativo } from "@/lib/papeis";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -7,6 +8,11 @@ import { meusPedidos, type PedidoDoCliente } from "@/lib/pedidos.functions";
 import { formatarBRL, statusPedido } from "@/lib/site";
 
 export const Route = createFileRoute("/_authenticated/minha-conta")({
+  // Operador fica isolado no Painel Operacional.
+  beforeLoad: async () => {
+    const p = await meusPapeis();
+    if (ehOperador(p) && !ehAdministrativo(p)) throw redirect({ to: "/operacao" });
+  },
   component: MinhaConta,
   head: () => ({
     meta: [
