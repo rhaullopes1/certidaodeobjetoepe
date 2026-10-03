@@ -1,3 +1,4 @@
+import { EnviarParaOperacao } from "@/components/admin/operacao-admin";
 import { FINALIDADES } from "@/lib/pedidos.schema";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -284,6 +285,8 @@ function AdminDetalhe() {
             )}
 
             <LocalizacaoProcesso pedido={pedido.data} />
+
+            <EnviarParaOperacao pedidoId={pedido.data.id} status={pedido.data.status} />
 
             <div className="mt-8 grid gap-6 lg:grid-cols-2">
               <section className="card-premium p-6">

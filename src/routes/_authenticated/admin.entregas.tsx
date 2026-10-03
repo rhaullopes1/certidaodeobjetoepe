@@ -1,3 +1,4 @@
+import { SeloOperacao, useAtribuicoesAtivas } from "@/components/admin/operacao-admin";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -78,6 +79,7 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
 function AdminEntregas() {
   const queryClient = useQueryClient();
   const permissao = useQuery({ queryKey: ["equipe"], queryFn: souEquipe });
+  const operacaoAtivas = useAtribuicoesAtivas();
   const [erro, setErro] = useState<string | null>(null);
 
   const entregas = useQuery({
@@ -263,6 +265,7 @@ function AdminEntregas() {
                           >
                             {p.protocolo}
                           </Link>
+                          <SeloOperacao etapa={operacaoAtivas.data?.get(p.id)} />
                           <span className="inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
                             {statusPedido(p.status).label}
                           </span>
