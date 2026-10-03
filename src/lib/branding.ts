@@ -7,6 +7,13 @@
  */
 export type ModoBranding = "comercial" | "operacional";
 
+/**
+ * Host do portal usado quando VITE_OPERATOR_PORTAL_HOST não está definido (ou está vazio).
+ * Evita que o modo neutro se perca se o arquivo de ambiente for regenerado pela plataforma.
+ * Quando a variável estiver definida, ela é a única fonte (permite trocar ou ampliar a lista).
+ */
+export const HOST_OPERACIONAL_PADRAO = "operacao.flydox.net";
+
 export type Branding = {
   modo: ModoBranding;
   /** Nome exibido no cabeçalho do painel do operador. */
@@ -48,7 +55,8 @@ export function resolverBranding(
   configHostOperacional: string | null | undefined = import.meta.env.VITE_OPERATOR_PORTAL_HOST,
 ): Branding {
   const h = normalizarHost(host);
-  if (h && hostsOperacionais(configHostOperacional).includes(h)) return BRANDING_OPERACIONAL;
+  const cfg = configHostOperacional?.trim() ? configHostOperacional : HOST_OPERACIONAL_PADRAO;
+  if (h && hostsOperacionais(cfg).includes(h)) return BRANDING_OPERACIONAL;
   return BRANDING_COMERCIAL;
 }
 
