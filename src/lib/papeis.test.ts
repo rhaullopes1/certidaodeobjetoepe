@@ -97,7 +97,7 @@ describe("PDF obrigatório na conclusão do operador", () => {
     expect(validarPdfOperador({ name: "x.exe", type: "application/pdf" }, 0)).toMatch(/PDF/);
   });
   it("validação administrativa continua exigindo apenas concluído pelo operador", () => {
-    expect(proximasEtapasOperador("concluido")).toEqual([]);
-    expect(proximasEtapasOperador("em_andamento").map((e) => e.valor)).toEqual(["concluido"]);
+    expect(prox("concluido")).toEqual([]);
+    expect(prox("em_andamento").map((e) => e.valor)).toEqual(["concluido"]);
   });
 });
