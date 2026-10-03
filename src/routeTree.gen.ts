@@ -29,7 +29,9 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as SolicitarAntecedentesRouteImport } from './routes/solicitar-antecedentes'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
+import { Route as AuthenticatedOperacaoRouteImport } from './routes/_authenticated/operacao'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CertidaoDeObjetoEPeIndexRouteImport } from './routes/certidao-de-objeto-e-pe.index'
@@ -50,6 +52,8 @@ import { Route as AuthenticatedAdminEmailsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminEntregasRouteImport } from './routes/_authenticated/admin.entregas'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
 import { Route as AuthenticatedAdminRecuperacaoRouteImport } from './routes/_authenticated/admin.recuperacao'
+import { Route as AuthenticatedOperacaoIndexRouteImport } from './routes/_authenticated/operacao.index'
+import { Route as AuthenticatedOperacaoIdRouteImport } from './routes/_authenticated/operacao.$id'
 import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$slug'
 import { Route as CertidaoDeObjetoEPeParaIndexRouteImport } from './routes/certidao-de-objeto-e-pe.para.index'
 import { Route as CertidaoDeObjetoEPeParaSlugRouteImport } from './routes/certidao-de-objeto-e-pe.para.$slug'
@@ -165,9 +169,19 @@ const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
   path: '/termos-de-uso',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMinhaContaRoute = AuthenticatedMinhaContaRouteImport.update({
   id: '/minha-conta',
   path: '/minha-conta',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOperacaoRoute = AuthenticatedOperacaoRouteImport.update({
+  id: '/operacao',
+  path: '/operacao',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -217,69 +231,80 @@ const TribunaisSiglaRoute = TribunaisSiglaRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
 const AuthenticatedAdminProtocoloRoute =
   AuthenticatedAdminProtocoloRouteImport.update({
-    id: '/admin/$protocolo',
-    path: '/admin/$protocolo',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/$protocolo',
+    path: '/$protocolo',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminAntecedentesRoute =
   AuthenticatedAdminAntecedentesRouteImport.update({
-    id: '/admin/antecedentes',
-    path: '/admin/antecedentes',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/antecedentes',
+    path: '/antecedentes',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminComarcasRoute =
   AuthenticatedAdminComarcasRouteImport.update({
-    id: '/admin/comarcas',
-    path: '/admin/comarcas',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/comarcas',
+    path: '/comarcas',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminConteudoRoute =
   AuthenticatedAdminConteudoRouteImport.update({
-    id: '/admin/conteudo',
-    path: '/admin/conteudo',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/conteudo',
+    path: '/conteudo',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminCpnRoute = AuthenticatedAdminCpnRouteImport.update({
-  id: '/admin/cpn',
-  path: '/admin/cpn',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  id: '/cpn',
+  path: '/cpn',
+  getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
 const AuthenticatedAdminDocumentosRoute =
   AuthenticatedAdminDocumentosRouteImport.update({
-    id: '/admin/documentos',
-    path: '/admin/documentos',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/documentos',
+    path: '/documentos',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminEmailsRoute =
   AuthenticatedAdminEmailsRouteImport.update({
-    id: '/admin/emails',
-    path: '/admin/emails',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/emails',
+    path: '/emails',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminEntregasRoute =
   AuthenticatedAdminEntregasRouteImport.update({
-    id: '/admin/entregas',
-    path: '/admin/entregas',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/entregas',
+    path: '/entregas',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminHistoricoRoute =
   AuthenticatedAdminHistoricoRouteImport.update({
-    id: '/admin/historico',
-    path: '/admin/historico',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/historico',
+    path: '/historico',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminRecuperacaoRoute =
   AuthenticatedAdminRecuperacaoRouteImport.update({
-    id: '/admin/recuperacao',
-    path: '/admin/recuperacao',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/recuperacao',
+    path: '/recuperacao',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedOperacaoIndexRoute =
+  AuthenticatedOperacaoIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedOperacaoRoute,
+  } as any)
+const AuthenticatedOperacaoIdRoute = AuthenticatedOperacaoIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedOperacaoRoute,
+} as any)
 const BlogCategoriaSlugRoute = BlogCategoriaSlugRouteImport.update({
   id: '/blog/categoria/$slug',
   path: '/blog/categoria/$slug',
@@ -378,7 +403,9 @@ export interface FileRoutesByFullPath {
   '/solicitar': typeof SolicitarRoute
   '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/operacao': typeof AuthenticatedOperacaoRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/guias/$slug': typeof GuiasSlugRoute
@@ -398,10 +425,12 @@ export interface FileRoutesByFullPath {
   '/admin/entregas': typeof AuthenticatedAdminEntregasRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
+  '/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/operacao/': typeof AuthenticatedOperacaoIndexRoute
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
@@ -454,10 +483,12 @@ export interface FileRoutesByTo {
   '/admin/entregas': typeof AuthenticatedAdminEntregasRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
+  '/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/operacao': typeof AuthenticatedOperacaoIndexRoute
   '/certidao-de-objeto-e-pe/para': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
@@ -492,7 +523,9 @@ export interface FileRoutesById {
   '/solicitar': typeof SolicitarRoute
   '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/_authenticated/operacao': typeof AuthenticatedOperacaoRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
   '/guias/$slug': typeof GuiasSlugRoute
@@ -512,10 +545,12 @@ export interface FileRoutesById {
   '/_authenticated/admin/entregas': typeof AuthenticatedAdminEntregasRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/_authenticated/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
+  '/_authenticated/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/operacao/': typeof AuthenticatedOperacaoIndexRoute
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
@@ -550,7 +585,9 @@ export interface FileRouteTypes {
     | '/solicitar'
     | '/solicitar-antecedentes'
     | '/termos-de-uso'
+    | '/admin'
     | '/minha-conta'
+    | '/operacao'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/guias/$slug'
@@ -570,10 +607,12 @@ export interface FileRouteTypes {
     | '/admin/entregas'
     | '/admin/historico'
     | '/admin/recuperacao'
+    | '/operacao/$id'
     | '/blog/categoria/$slug'
     | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
     | '/admin/'
+    | '/operacao/'
     | '/certidao-de-objeto-e-pe/para/'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
@@ -626,10 +665,12 @@ export interface FileRouteTypes {
     | '/admin/entregas'
     | '/admin/historico'
     | '/admin/recuperacao'
+    | '/operacao/$id'
     | '/blog/categoria/$slug'
     | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
     | '/admin'
+    | '/operacao'
     | '/certidao-de-objeto-e-pe/para'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
@@ -663,7 +704,9 @@ export interface FileRouteTypes {
     | '/solicitar'
     | '/solicitar-antecedentes'
     | '/termos-de-uso'
+    | '/_authenticated/admin'
     | '/_authenticated/minha-conta'
+    | '/_authenticated/operacao'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
     | '/guias/$slug'
@@ -683,10 +726,12 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/entregas'
     | '/_authenticated/admin/historico'
     | '/_authenticated/admin/recuperacao'
+    | '/_authenticated/operacao/$id'
     | '/blog/categoria/$slug'
     | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
     | '/_authenticated/admin/'
+    | '/_authenticated/operacao/'
     | '/certidao-de-objeto-e-pe/para/'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
@@ -888,11 +933,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosDeUsoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/minha-conta': {
       id: '/_authenticated/minha-conta'
       path: '/minha-conta'
       fullPath: '/minha-conta'
       preLoaderRoute: typeof AuthenticatedMinhaContaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/operacao': {
+      id: '/_authenticated/operacao'
+      path: '/operacao'
+      fullPath: '/operacao'
+      preLoaderRoute: typeof AuthenticatedOperacaoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/blog/': {
@@ -960,80 +1019,94 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/$protocolo': {
       id: '/_authenticated/admin/$protocolo'
-      path: '/admin/$protocolo'
+      path: '/$protocolo'
       fullPath: '/admin/$protocolo'
       preLoaderRoute: typeof AuthenticatedAdminProtocoloRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/antecedentes': {
       id: '/_authenticated/admin/antecedentes'
-      path: '/admin/antecedentes'
+      path: '/antecedentes'
       fullPath: '/admin/antecedentes'
       preLoaderRoute: typeof AuthenticatedAdminAntecedentesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/comarcas': {
       id: '/_authenticated/admin/comarcas'
-      path: '/admin/comarcas'
+      path: '/comarcas'
       fullPath: '/admin/comarcas'
       preLoaderRoute: typeof AuthenticatedAdminComarcasRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/conteudo': {
       id: '/_authenticated/admin/conteudo'
-      path: '/admin/conteudo'
+      path: '/conteudo'
       fullPath: '/admin/conteudo'
       preLoaderRoute: typeof AuthenticatedAdminConteudoRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/cpn': {
       id: '/_authenticated/admin/cpn'
-      path: '/admin/cpn'
+      path: '/cpn'
       fullPath: '/admin/cpn'
       preLoaderRoute: typeof AuthenticatedAdminCpnRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/documentos': {
       id: '/_authenticated/admin/documentos'
-      path: '/admin/documentos'
+      path: '/documentos'
       fullPath: '/admin/documentos'
       preLoaderRoute: typeof AuthenticatedAdminDocumentosRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/emails': {
       id: '/_authenticated/admin/emails'
-      path: '/admin/emails'
+      path: '/emails'
       fullPath: '/admin/emails'
       preLoaderRoute: typeof AuthenticatedAdminEmailsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/entregas': {
       id: '/_authenticated/admin/entregas'
-      path: '/admin/entregas'
+      path: '/entregas'
       fullPath: '/admin/entregas'
       preLoaderRoute: typeof AuthenticatedAdminEntregasRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/historico': {
       id: '/_authenticated/admin/historico'
-      path: '/admin/historico'
+      path: '/historico'
       fullPath: '/admin/historico'
       preLoaderRoute: typeof AuthenticatedAdminHistoricoRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/recuperacao': {
       id: '/_authenticated/admin/recuperacao'
-      path: '/admin/recuperacao'
+      path: '/recuperacao'
       fullPath: '/admin/recuperacao'
       preLoaderRoute: typeof AuthenticatedAdminRecuperacaoRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/operacao/': {
+      id: '/_authenticated/operacao/'
+      path: '/'
+      fullPath: '/operacao/'
+      preLoaderRoute: typeof AuthenticatedOperacaoIndexRouteImport
+      parentRoute: typeof AuthenticatedOperacaoRoute
+    }
+    '/_authenticated/operacao/$id': {
+      id: '/_authenticated/operacao/$id'
+      path: '/$id'
+      fullPath: '/operacao/$id'
+      preLoaderRoute: typeof AuthenticatedOperacaoIdRouteImport
+      parentRoute: typeof AuthenticatedOperacaoRoute
     }
     '/blog/categoria/$slug': {
       id: '/blog/categoria/$slug'
@@ -1136,8 +1209,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
+interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminProtocoloRoute: typeof AuthenticatedAdminProtocoloRoute
   AuthenticatedAdminAntecedentesRoute: typeof AuthenticatedAdminAntecedentesRoute
   AuthenticatedAdminComarcasRoute: typeof AuthenticatedAdminComarcasRoute
@@ -1151,8 +1223,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminProtocoloRoute: AuthenticatedAdminProtocoloRoute,
   AuthenticatedAdminAntecedentesRoute: AuthenticatedAdminAntecedentesRoute,
   AuthenticatedAdminComarcasRoute: AuthenticatedAdminComarcasRoute,
@@ -1164,6 +1235,36 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminHistoricoRoute: AuthenticatedAdminHistoricoRoute,
   AuthenticatedAdminRecuperacaoRoute: AuthenticatedAdminRecuperacaoRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedOperacaoRouteChildren {
+  AuthenticatedOperacaoIdRoute: typeof AuthenticatedOperacaoIdRoute
+  AuthenticatedOperacaoIndexRoute: typeof AuthenticatedOperacaoIndexRoute
+}
+
+const AuthenticatedOperacaoRouteChildren: AuthenticatedOperacaoRouteChildren = {
+  AuthenticatedOperacaoIdRoute: AuthenticatedOperacaoIdRoute,
+  AuthenticatedOperacaoIndexRoute: AuthenticatedOperacaoIndexRoute,
+}
+
+const AuthenticatedOperacaoRouteWithChildren =
+  AuthenticatedOperacaoRoute._addFileChildren(
+    AuthenticatedOperacaoRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
+  AuthenticatedOperacaoRoute: typeof AuthenticatedOperacaoRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
+  AuthenticatedOperacaoRoute: AuthenticatedOperacaoRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
