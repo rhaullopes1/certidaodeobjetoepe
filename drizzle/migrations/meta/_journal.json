@@ -183,6 +183,13 @@
       "when": 1791039382848,
       "tag": "0025_operador_isolamento_historico",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1791039549246,
+      "tag": "0026_operador_etapa_sequencial",
+      "breakpoints": true
     }
   ]
 }
