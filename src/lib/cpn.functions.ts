@@ -10,7 +10,7 @@ import { calcularCobertura, dadosConfirmados, escolherRota, lacunasRota, prepara
 type Sb = SupabaseClient<Database>;
 
 async function exigirEquipe(supabase: Sb, userId: string) {
-  const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+  const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId).in("role", ["admin", "equipe"]);
   if (!data || data.length === 0) throw new Error("Acesso restrito à equipe.");
   return data.some((p) => p.role === "admin");
 }

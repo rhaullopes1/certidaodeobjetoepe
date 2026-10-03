@@ -10,7 +10,7 @@ const COLS =
   "id, protocolo, numero_processo, tribunal_sigla, tribunal_nome, segmento_judiciario, uf_processo, cidade_processo, comarca_processo, foro, codigo_origem_cnj, vara, unidade_judiciaria, sistema_processual, processo_fonte, processo_confianca, processo_dados";
 
 async function exigirEquipe(supabase: SupabaseClient<Database>, userId: string) {
-  const { data: papeis } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+  const { data: papeis } = await supabase.from("user_roles").select("role").eq("user_id", userId).in("role", ["admin", "equipe"]);
   if (!papeis || papeis.length === 0) throw new Error("Acesso restrito à equipe.");
 }
 

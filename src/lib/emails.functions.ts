@@ -6,7 +6,8 @@ async function exigirEquipe(context: { supabase: any; userId: string }) {
   const { data, error } = await context.supabase
     .from("user_roles")
     .select("role")
-    .eq("user_id", context.userId);
+    .eq("user_id", context.userId)
+    .in("role", ["admin", "equipe"]);
   if (error || !data?.length) throw new Error("Acesso restrito à equipe.");
 }
 
