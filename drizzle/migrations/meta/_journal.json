@@ -190,6 +190,13 @@
       "when": 1791039549246,
       "tag": "0026_operador_etapa_sequencial",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1791042816356,
+      "tag": "0027_operador_pdf_obrigatorio",
+      "breakpoints": true
     }
   ]
 }
