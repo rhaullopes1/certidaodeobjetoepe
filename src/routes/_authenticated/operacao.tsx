@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Scale } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { meusPapeis, ehAdministrativo, ehOperador } from "@/lib/papeis";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/_authenticated/operacao")({
   ssr: false,
@@ -52,6 +53,7 @@ function Layout() {
       </header>
       <main className="mx-auto max-w-3xl px-4 py-5">
         <Outlet />
+        <Toaster richColors position="top-center" />
       </main>
     </div>
   );
