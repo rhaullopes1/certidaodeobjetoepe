@@ -77,7 +77,7 @@ function Detalhe() {
           <Campo rotulo="Unidade" valor={p.unidade_judiciaria} />
           <Campo rotulo="Sistema" valor={p.sistema_processual} />
           <Campo rotulo="Observações do cliente" valor={p.observacoes} />
-          <Campo rotulo="Orientação da administração" valor={p.observacao_admin} />
+          <Campo rotulo="Orientação para você" valor={p.observacao_operador} />
           <Campo rotulo="Atribuído em" valor={new Date(p.atribuido_em).toLocaleString("pt-BR")} />
         </dl>
         {certidoes.length > 1 && (
