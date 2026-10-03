@@ -9,7 +9,7 @@ import { atribuicaoAtiva, podeEnviarParaOperacao, rotuloEtapa } from "@/lib/pape
 /** Atribuições ativas (pedido_id → etapa), lidas com RLS de equipe. */
 export function useAtribuicoesAtivas() {
   return useQuery({
-    queryKey: ["operacao-ativas"],
+    queryKey: ["operacao-ativas", "etapas"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("operador_pedidos")
@@ -25,7 +25,7 @@ export function useAtribuicoesAtivas() {
 /** Mapa pedido_id → atribuição ainda não validada (inclui devolvidas), para o visual das listas. */
 export function useAtribuicoesOperacao() {
   return useQuery({
-    queryKey: ["operacao-ativas"],
+    queryKey: ["operacao-ativas", "detalhe"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("operador_pedidos")
@@ -41,7 +41,7 @@ export function useAtribuicoesOperacao() {
 export function useOperadoresMap() {
   const opsFn = useServerFn(listarOperadores);
   return useQuery({
-    queryKey: ["operadores"],
+    queryKey: ["operadores", "mapa"],
     queryFn: async () => {
       const ops = await opsFn();
       return new Map(ops.map((o) => [o.id, o.nome || o.email]));
@@ -63,7 +63,7 @@ export function BotaoEnviarOperacao({ pedidoId }: { pedidoId: string }) {
   const qc = useQueryClient();
   const opsFn = useServerFn(listarOperadores);
   const atribuirFn = useServerFn(atribuirOperacao);
-  const ops = useQuery({ queryKey: ["operadores"], queryFn: () => opsFn() });
+  const ops = useQuery({ queryKey: ["operadores", "lista"], queryFn: () => opsFn() });
   const [aberto, setAberto] = useState(false);
   const [operador, setOperador] = useState("");
   const enviar = useMutation({
@@ -121,7 +121,7 @@ export function EnviarParaOperacao({ pedidoId, status }: { pedidoId: string; sta
   const opsFn = useServerFn(listarOperadores);
   const atribuirFn = useServerFn(atribuirOperacao);
   const atribs = useQuery({ queryKey: ["operacao-pedido", pedidoId], queryFn: () => listarFn({ data: { pedidoId } }) });
-  const ops = useQuery({ queryKey: ["operadores"], queryFn: () => opsFn() });
+  const ops = useQuery({ queryKey: ["operadores", "lista"], queryFn: () => opsFn() });
   const [operador, setOperador] = useState("");
   const [obs, setObs] = useState("");
   const enviar = useMutation({
