@@ -10,6 +10,11 @@ export type PedidoContato = {
   status: string;
   /** Link de download da certidão emitida, quando já anexada ao pedido. */
   linkCertidao?: string | null;
+  /**
+   * Link direto de pagamento/continuação (ex.: checkout do gateway).
+   * Usado apenas quando o pedido está aguardando pagamento.
+   */
+  linkPagamento?: string | null;
 };
 
 /**
@@ -66,7 +71,7 @@ export function mensagemWhatsapp(p: PedidoContato): string {
       return (
         `Olá, ${nome}! Tudo bem? Recebemos sua solicitação de Certidão de Objeto e Pé, ` +
         `protocolo ${p.protocolo}. Verificamos que o pagamento ainda não foi concluído. ` +
-        `Posso te ajudar a finalizar seu pedido? Você pode conferir o resumo e o Pix neste link: ${link}`
+        `Posso te ajudar a finalizar seu pedido? Você pode conferir o resumo e o Pix neste link: ${p.linkPagamento || link}`
       );
     case "pago":
       return (
