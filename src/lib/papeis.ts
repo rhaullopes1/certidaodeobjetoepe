@@ -61,7 +61,7 @@ export function podeEnviarParaOperacao(
 
 /** Etapas que o próprio operador pode marcar (só avança; validação é da administração). */
 export function proximasEtapasOperador(atual: string): { valor: "em_andamento" | "concluido"; rotulo: string }[] {
-  if (atual === "atribuido") return [{ valor: "em_andamento", rotulo: "Em andamento" }, { valor: "concluido", rotulo: "Concluído / Aguardando validação" }];
+  if (atual === "atribuido") return [{ valor: "em_andamento", rotulo: "Em andamento" }];
   if (atual === "concluido" || atual === "devolvido") return [];
   return [{ valor: "concluido", rotulo: "Concluído / Aguardando validação" }];
 }
