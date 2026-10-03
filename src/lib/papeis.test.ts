@@ -77,3 +77,27 @@ describe("visual da operação", () => {
     }
   });
 });
+
+import { validarPdfOperador, podeConcluirComPdfs, MAX_PDFS_OPERADOR } from "./papeis";
+
+describe("PDF obrigatório na conclusão do operador", () => {
+  const pdf = { name: "certidao.pdf", type: "application/pdf" };
+  it("não conclui com 0 PDFs", () => expect(podeConcluirComPdfs(0)).toBe(false));
+  it("conclui com 1 PDF", () => expect(podeConcluirComPdfs(1)).toBe(true));
+  it("aceita até 3 PDFs", () => {
+    expect(validarPdfOperador(pdf, 0)).toBeNull();
+    expect(validarPdfOperador(pdf, 2)).toBeNull();
+    expect(podeConcluirComPdfs(3)).toBe(true);
+    expect(MAX_PDFS_OPERADOR).toBe(3);
+  });
+  it("rejeita o 4º PDF", () => expect(validarPdfOperador(pdf, 3)).toMatch(/Limite/));
+  it("rejeita arquivo que não é PDF", () => {
+    expect(validarPdfOperador({ name: "foto.jpg", type: "image/jpeg" }, 0)).toMatch(/PDF/);
+    expect(validarPdfOperador({ name: "x.pdf", type: "image/png" }, 0)).toMatch(/PDF/);
+    expect(validarPdfOperador({ name: "x.exe", type: "application/pdf" }, 0)).toMatch(/PDF/);
+  });
+  it("validação administrativa continua exigindo apenas concluído pelo operador", () => {
+    expect(prox("concluido")).toEqual([]);
+    expect(prox("em_andamento").map((e) => e.valor)).toEqual(["concluido"]);
+  });
+});

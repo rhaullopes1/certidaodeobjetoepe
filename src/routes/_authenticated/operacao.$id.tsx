@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { ArrowLeft, FileText, Loader2, Upload } from "lucide-react";
+import { ArrowLeft, CheckCircle2, FileText, Loader2, Trash2, Upload } from "lucide-react";
+import { toast } from "sonner";
 import { atualizarEtapaOperacao, detalheOperacao } from "@/lib/operacao.functions";
-import { proximasEtapasOperador, rotuloEtapa } from "@/lib/papeis";
-import { abrirAnexo, enviarAnexo } from "@/lib/admin";
+import { MAX_PDFS_OPERADOR, podeConcluirComPdfs, rotuloEtapa, validarPdfOperador } from "@/lib/papeis";
+import { abrirAnexo, enviarAnexo, removerAnexo } from "@/lib/admin";
 
 export const Route = createFileRoute("/_authenticated/operacao/$id")({
   component: Detalhe,
@@ -27,29 +28,48 @@ function Detalhe() {
   const fn = useServerFn(detalheOperacao);
   const etapaFn = useServerFn(atualizarEtapaOperacao);
   const q = useQuery({ queryKey: ["operacao", "detalhe", id], queryFn: () => fn({ data: { id } }) });
-  const [etapa, setEtapa] = useState("");
   const [obs, setObs] = useState("");
-  const [tipo, setTipo] = useState("certidao");
-  const [arquivo, setArquivo] = useState<File | null>(null);
+  const [inputKey, setInputKey] = useState(0);
 
-  const recarregar = () => {
-    qc.invalidateQueries({ queryKey: ["operacao"] });
-  };
+  const recarregar = () => qc.invalidateQueries({ queryKey: ["operacao"] });
   const mudar = useMutation({
-    mutationFn: () => etapaFn({ data: { id, status: etapa as "em_andamento" | "concluido", observacao: obs || undefined } }),
-    onSuccess: () => { setObs(""); setEtapa(""); recarregar(); },
+    mutationFn: (status: "em_andamento" | "concluido") =>
+      etapaFn({ data: { id, status, observacao: obs || undefined } }),
+    onSuccess: (_r, status) => {
+      setObs("");
+      toast.success(status === "concluido" ? "Pedido concluído. Aguardando validação da administração." : "Operação iniciada.");
+      recarregar();
+    },
+    onError: (e) => toast.error((e as Error).message),
   });
   const enviar = useMutation({
-    mutationFn: async () => {
-      if (!arquivo || !q.data) throw new Error("Escolha um arquivo.");
-      await enviarAnexo({ pedidoId: q.data.pedido.pedido_id, protocolo: q.data.pedido.protocolo, tipo, arquivo });
+    mutationFn: async (arquivos: File[]) => {
+      if (!q.data) return;
+      let qtd = q.data.meusPdfs.length;
+      for (const arquivo of arquivos) {
+        const erro = validarPdfOperador(arquivo, qtd);
+        if (erro) throw new Error(`${arquivo.name}: ${erro}`);
+        await enviarAnexo({ pedidoId: q.data.pedido.pedido_id, protocolo: q.data.pedido.protocolo, tipo: "certidao", arquivo });
+        qtd++;
+      }
     },
-    onSuccess: () => { setArquivo(null); recarregar(); },
+    onSuccess: () => toast.success("PDF anexado."),
+    onError: (e) => toast.error((e as Error).message),
+    onSettled: () => { setInputKey((k) => k + 1); recarregar(); },
+  });
+  const remover = useMutation({
+    mutationFn: (a: { id: string; caminho: string }) => removerAnexo(a),
+    onSuccess: () => toast.success("PDF removido."),
+    onError: (e) => toast.error((e as Error).message),
+    onSettled: recarregar,
   });
 
   if (q.isPending) return <Loader2 className="h-5 w-5 animate-spin" />;
   if (q.error) return <p className="text-sm text-destructive">{(q.error as Error).message}</p>;
-  const { pedido: p, historico, anexos } = q.data;
+  const { pedido: p, historico, anexos, meusPdfs } = q.data;
+  const ocupado = mudar.isPending || enviar.isPending || remover.isPending;
+  const podeConcluir = podeConcluirComPdfs(meusPdfs.length);
+  const vagas = MAX_PDFS_OPERADOR - meusPdfs.length;
   const travado = p.status_operacao === "concluido";
   const certidoes = Array.isArray(p.certidoes) ? (p.certidoes as { numeroProcesso?: string; nomeParte?: string }[]) : [];
 
@@ -92,26 +112,61 @@ function Detalhe() {
       <div className="rounded-xl border border-border bg-background p-4">
         <h2 className="font-bold">Etapa da operação</h2>
         {travado ? (
-          <p className="mt-2 text-sm text-muted-foreground">Concluída — aguardando validação da administração.</p>
-        ) : (
+          <p className="mt-2 flex items-center gap-1 text-sm text-muted-foreground"><CheckCircle2 className="h-4 w-4" /> Concluída — aguardando validação da administração.</p>
+        ) : p.status_operacao === "atribuido" ? (
           <div className="mt-2 space-y-2">
-            <select value={etapa} onChange={(e) => setEtapa(e.target.value)} className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm">
-              <option value="">Escolha a nova etapa…</option>
-              {proximasEtapasOperador(p.status_operacao).map((e) => (
-                <option key={e.valor} value={e.valor}>{e.rotulo}</option>
-              ))}
-            </select>
-            <textarea value={obs} onChange={(e) => setObs(e.target.value)} placeholder="Observação (opcional)" rows={2} className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" />
-            <button disabled={!etapa || mudar.isPending} onClick={() => mudar.mutate()} className="w-full rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50">
-              {mudar.isPending ? "Salvando…" : "Atualizar etapa"}
+            <p className="text-sm text-muted-foreground">Inicie a operação para poder anexar a certidão e concluir o pedido.</p>
+            <button disabled={ocupado} onClick={() => mudar.mutate("em_andamento")} className="w-full rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50">
+              {mudar.isPending ? "Salvando…" : "Iniciar operação (Em andamento)"}
             </button>
-            {mudar.error && <p className="text-sm text-destructive">{(mudar.error as Error).message}</p>}
+          </div>
+        ) : p.status_operacao === "devolvido" ? (
+          <p className="mt-2 text-sm text-muted-foreground">Operação recolhida pela administração.</p>
+        ) : (
+          <div className="mt-3 space-y-3">
+            <section className="rounded-lg border border-primary/30 bg-primary/5 p-3">
+              <h3 className="font-semibold">Anexar certidão</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Anexe o PDF da certidão emitida antes de concluir. Mínimo 1 e máximo {MAX_PDFS_OPERADOR} PDFs (quando a certidão tiver mais de uma parte).
+              </p>
+              <ul className="mt-2 space-y-1.5">
+                {meusPdfs.length === 0 && <li className="text-sm text-muted-foreground">Nenhum PDF anexado ainda.</li>}
+                {meusPdfs.map((a) => (
+                  <li key={a.id} className="flex items-center justify-between gap-2 rounded-md border border-border bg-background px-2 py-1.5">
+                    <button onClick={async () => window.open(await abrirAnexo(a.caminho), "_blank", "noopener")} className="flex min-w-0 items-center gap-1 text-left text-sm text-primary underline">
+                      <FileText className="h-4 w-4 shrink-0" /> <span className="truncate">{a.nome_arquivo}</span>
+                    </button>
+                    <button disabled={ocupado} onClick={() => remover.mutate({ id: a.id, caminho: a.caminho })} aria-label={`Remover ${a.nome_arquivo}`} className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs text-destructive disabled:opacity-50">
+                      <Trash2 className="h-3.5 w-3.5" /> Remover
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs font-medium">{meusPdfs.length} de {MAX_PDFS_OPERADOR} PDFs anexados</p>
+              {vagas > 0 && (
+                <label className={`mt-2 inline-flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-input bg-background px-3 py-2.5 text-sm font-semibold ${ocupado ? "pointer-events-none opacity-50" : ""}`}>
+                  {enviar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {enviar.isPending ? "Enviando PDF…" : "Escolher PDF"}
+                  <input key={inputKey} type="file" accept="application/pdf,.pdf" multiple className="sr-only" disabled={ocupado}
+                    onChange={(e) => {
+                      const arquivos = Array.from(e.target.files ?? []);
+                      if (arquivos.length > vagas) { toast.error(`Você pode anexar no máximo mais ${vagas} PDF(s).`); setInputKey((k) => k + 1); return; }
+                      if (arquivos.length) enviar.mutate(arquivos);
+                    }} />
+                </label>
+              )}
+            </section>
+            <textarea value={obs} onChange={(e) => setObs(e.target.value)} placeholder="Observação (opcional)" rows={2} className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" />
+            {!podeConcluir && <p className="text-sm font-medium text-destructive">Anexe pelo menos 1 PDF da certidão para concluir.</p>}
+            <button disabled={!podeConcluir || ocupado} onClick={() => mudar.mutate("concluido")} className="w-full rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50">
+              {mudar.isPending ? "Concluindo…" : "Concluir pedido"}
+            </button>
           </div>
         )}
       </div>
 
       <div className="rounded-xl border border-border bg-background p-4">
-        <h2 className="font-bold">Documentos</h2>
+        <h2 className="font-bold">Documentos do pedido</h2>
         <ul className="mt-2 space-y-1">
           {anexos.length === 0 && <li className="text-sm text-muted-foreground">Nenhum documento.</li>}
           {anexos.map((a) => (
@@ -122,19 +177,6 @@ function Detalhe() {
             </li>
           ))}
         </ul>
-        {!travado && (
-          <div className="mt-3 space-y-2">
-            <select value={tipo} onChange={(e) => setTipo(e.target.value)} className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm">
-              <option value="certidao">Certidão</option>
-              <option value="documento">Documento</option>
-            </select>
-            <input type="file" accept="application/pdf,image/*" onChange={(e) => setArquivo(e.target.files?.[0] ?? null)} className="w-full text-sm" />
-            <button disabled={!arquivo || enviar.isPending} onClick={() => enviar.mutate()} className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-input px-3 py-2.5 text-sm font-semibold disabled:opacity-50">
-              <Upload className="h-4 w-4" /> {enviar.isPending ? "Enviando…" : "Enviar arquivo"}
-            </button>
-            {enviar.error && <p className="text-sm text-destructive">{(enviar.error as Error).message}</p>}
-          </div>
-        )}
       </div>
 
       <div className="rounded-xl border border-border bg-background p-4">
