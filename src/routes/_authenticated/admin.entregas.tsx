@@ -307,6 +307,10 @@ function AdminEntregas() {
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
+                        {!operacaoAtivas.data?.has(p.id) &&
+                          (STATUS_ENVIAVEIS_OPERACAO as readonly string[]).includes(p.status) && (
+                            <BotaoEnviarOperacao pedidoId={p.id} />
+                          )}
                         <BotaoWhatsApp pedido={p} />
                         <button
                           type="button"
