@@ -118,22 +118,33 @@ function AuthPage() {
   return (
     <main className="grid min-h-dvh place-items-center bg-secondary/40 px-5 py-12">
       <div className="w-full max-w-md">
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Voltar ao site
-        </Link>
+        {branding.linksComerciais && (
+          <Link
+            to="/"
+            className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Voltar ao site
+          </Link>
+        )}
 
         <div className="card-premium p-7 sm:p-9">
           <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
             <Scale className="h-5 w-5" strokeWidth={1.8} />
           </span>
-          <h1 className="mt-5 font-display text-2xl font-bold">Painel do usuário</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Acesse sua conta ou crie uma conta para acompanhar seus pedidos, ver o status e pagar
-            pedidos pendentes.
-          </p>
+          {portal ? (
+            <>
+              <h1 className="mt-5 font-display text-2xl font-bold">{branding.nomePainelOperador}</h1>
+              <p className="mt-2 text-sm text-muted-foreground">Acesso restrito. Entre com a conta de operador.</p>
+            </>
+          ) : (
+            <>
+              <h1 className="mt-5 font-display text-2xl font-bold">Painel do usuário</h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Acesse sua conta ou crie uma conta para acompanhar seus pedidos, ver o status e pagar
+                pedidos pendentes.
+              </p>
+            </>
+          )}
 
           <form onSubmit={enviar} className="mt-7 space-y-4">
             <button
