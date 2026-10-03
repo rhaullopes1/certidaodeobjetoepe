@@ -1838,7 +1838,6 @@ export type Database = {
           iniciado_em: string
           nome_parte: string
           numero_processo: string
-          observacao_admin: string
           observacao_operador: string
           observacoes: string
           pedido_id: string

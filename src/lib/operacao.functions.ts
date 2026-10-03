@@ -104,7 +104,7 @@ export const atribuirOperacao = createServerFn({ method: "POST" })
       pedido_id: data.pedidoId,
       operador_id: data.operadorId,
       atribuido_por: context.userId,
-      observacao_admin: data.observacao?.trim() || null,
+      observacao_operador: data.observacao?.trim() || null,
     });
     if (error) {
       if (error.code === "23505") throw new Error("Este pedido já está em operação.");
@@ -201,13 +201,13 @@ export const validarOperacaoAdmin = createServerFn({ method: "POST" })
     const agora = new Date().toISOString();
     const { data: a, error } = await context.supabase
       .from("operador_pedidos")
-      .update({ status_operacao: "concluido", concluido_em: agora, validado_em: agora, validado_por: context.userId })
+      .update({ validado_em: agora, validado_por: context.userId })
       .eq("id", data.id)
       .is("validado_em", null)
-      .neq("status_operacao", "devolvido")
+      .eq("status_operacao", "concluido")
       .select("pedido_id")
       .maybeSingle();
-    if (error || !a) throw new Error(error?.message ?? "Atribuição não encontrada.");
+    if (error || !a) throw new Error(error?.message ?? "Só é possível validar uma atribuição concluída pelo operador.");
     await auditar(context, a.pedido_id, "validado", "Conclusão validada pela administração");
     return { ok: true };
   });
