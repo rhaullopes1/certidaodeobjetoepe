@@ -1801,6 +1801,19 @@ export type Database = {
           status: string
         }[]
       }
+      operador_meu_historico: {
+        Args: never
+        Returns: {
+          atribuicao_id: string
+          atribuido_em: string
+          concluido_em: string
+          nome_parte: string
+          numero_processo: string
+          protocolo: string
+          tribunal_sigla: string
+          validado_em: string
+        }[]
+      }
       operador_minha_fila: {
         Args: never
         Returns: {
