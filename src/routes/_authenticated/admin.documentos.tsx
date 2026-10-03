@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Download, Loader2 } from "lucide-react";
 import { abrirAnexo, documentosGerais, souEquipe } from "@/lib/admin";
+import { abrirEmNovaAba } from "@/lib/abrir-em-nova-aba";
 import { AdminHeader, SemPermissao } from "./admin.index";
 
 export const Route = createFileRoute("/_authenticated/admin/documentos")({
@@ -28,8 +29,11 @@ function Documentos() {
   });
 
   async function baixar(caminho: string) {
-    const url = await abrirAnexo(caminho);
-    window.open(url, "_blank", "noopener,noreferrer");
+    try {
+      await abrirEmNovaAba(() => abrirAnexo(caminho));
+    } catch (e) {
+      alert((e as Error).message || "Não foi possível abrir o arquivo.");
+    }
   }
 
   return (

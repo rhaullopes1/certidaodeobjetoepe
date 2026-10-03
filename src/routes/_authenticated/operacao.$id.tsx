@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { atualizarEtapaOperacao, detalheOperacao } from "@/lib/operacao.functions";
 import { MAX_PDFS_OPERADOR, podeConcluirComPdfs, rotuloEtapa, validarPdfOperador } from "@/lib/papeis";
 import { abrirAnexo, enviarAnexo, removerAnexo } from "@/lib/admin";
+import { abrirEmNovaAba as abrirAba } from "@/lib/abrir-em-nova-aba";
 
 export const Route = createFileRoute("/_authenticated/operacao/$id")({
   component: Detalhe,
@@ -196,14 +197,10 @@ function Detalhe() {
   );
 }
 
-/** Abre a aba no próprio clique (evita bloqueio de pop-up) e depois aponta para o link assinado. */
 async function abrirEmNovaAba(caminho: string) {
-  const aba = window.open("", "_blank");
   try {
-    const url = await abrirAnexo(caminho);
-    if (aba) { aba.opener = null; aba.location.href = url; } else window.location.href = url;
+    await abrirAba(() => abrirAnexo(caminho));
   } catch (e) {
-    aba?.close();
     toast.error((e as Error).message || "Não foi possível abrir o arquivo.");
   }
 }
