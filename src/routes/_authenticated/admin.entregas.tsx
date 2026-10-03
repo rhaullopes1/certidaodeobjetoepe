@@ -289,7 +289,12 @@ function AdminEntregas() {
                           >
                             {p.fila_numero != null ? `#${p.fila_numero}` : "—"}
                           </span>
-                          <LuzesUrgencia pagoEm={p.pago_em} />
+                          {/* Indicador de dias: pílula com fundo local garante leitura
+                              sobre cards de qualquer estado (normal, azul, âmbar, vermelho). */}
+                          <LuzesUrgencia
+                            pagoEm={p.pago_em}
+                            className="rounded-full bg-background/85 px-2 py-1 ring-1 ring-border"
+                          />
                           <Link
                             to="/admin/$protocolo"
                             params={{ protocolo: p.protocolo }}
