@@ -31,6 +31,63 @@ export function SeloOperacao({ etapa }: { etapa?: string }) {
   );
 }
 
+/** Versão compacta para listas (ex.: Entregas): botão que abre a escolha do operador em linha. */
+export function BotaoEnviarOperacao({ pedidoId }: { pedidoId: string }) {
+  const qc = useQueryClient();
+  const opsFn = useServerFn(listarOperadores);
+  const atribuirFn = useServerFn(atribuirOperacao);
+  const ops = useQuery({ queryKey: ["operadores"], queryFn: () => opsFn() });
+  const [aberto, setAberto] = useState(false);
+  const [operador, setOperador] = useState("");
+  const enviar = useMutation({
+    mutationFn: () => atribuirFn({ data: { pedidoId, operadorId: operador } }),
+    onSuccess: () => {
+      setAberto(false);
+      setOperador("");
+      qc.invalidateQueries({ queryKey: ["operacao-ativas"] });
+    },
+  });
+
+  if (!aberto) {
+    return (
+      <button
+        type="button"
+        onClick={() => setAberto(true)}
+        className="inline-flex items-center justify-center gap-2 rounded-full border border-primary bg-primary/10 px-5 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/15"
+      >
+        <Send className="h-4 w-4" /> Enviar para operação
+      </button>
+    );
+  }
+
+  return (
+    <span className="inline-flex flex-wrap items-center gap-2">
+      <select
+        value={operador}
+        onChange={(e) => setOperador(e.target.value)}
+        className="rounded-full border border-input bg-background px-3 py-2 text-sm"
+      >
+        <option value="">Operador…</option>
+        {(ops.data ?? []).map((o) => (
+          <option key={o.id} value={o.id}>{o.nome || o.email}</option>
+        ))}
+      </select>
+      <button
+        type="button"
+        disabled={!operador || enviar.isPending}
+        onClick={() => enviar.mutate()}
+        className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+      >
+        {enviar.isPending ? "Enviando…" : "Confirmar envio"}
+      </button>
+      <button type="button" onClick={() => setAberto(false)} className="text-xs font-semibold text-muted-foreground hover:underline">
+        Cancelar
+      </button>
+      {enviar.error && <span className="text-xs text-destructive">{(enviar.error as Error).message}</span>}
+    </span>
+  );
+}
+
 export function EnviarParaOperacao({ pedidoId, status }: { pedidoId: string; status: string }) {
   const qc = useQueryClient();
   const listarFn = useServerFn(atribuicoesDoPedido);
