@@ -29,7 +29,7 @@ export function useAtribuicoesOperacao() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("operador_pedidos")
-        .select("pedido_id, status_operacao, operador_id, atribuido_em")
+        .select("pedido_id, status_operacao, validado_em, operador_id, atribuido_em")
         .is("validado_em", null);
       if (error) throw error;
       return new Map((data ?? []).map((a) => [a.pedido_id, a]));
