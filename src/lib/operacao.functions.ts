@@ -61,7 +61,7 @@ export const detalheOperacao = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false });
     const lista = anexos ?? [];
     const meusPdfs = lista.filter(
-      (a) => a.autor_id === context.userId && a.tipo === "certidao" && a.created_at >= pedido.atribuido_em,
+      (a) => a.autor_id === context.userId && a.tipo === "certidao" && new Date(a.created_at) >= new Date(pedido.atribuido_em),
     );
     return { pedido, historico: hist.data ?? [], anexos: lista, meusPdfs };
   });
