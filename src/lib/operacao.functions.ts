@@ -56,10 +56,14 @@ export const detalheOperacao = createServerFn({ method: "POST" })
     if (!pedido) throw new Error("Atribuição não encontrada.");
     const { data: anexos } = await context.supabase
       .from("pedido_anexos")
-      .select("id, tipo, nome_arquivo, caminho, tamanho_bytes, created_at")
+      .select("id, tipo, nome_arquivo, caminho, tamanho_bytes, created_at, autor_id")
       .eq("pedido_id", pedido.pedido_id)
       .order("created_at", { ascending: false });
-    return { pedido, historico: hist.data ?? [], anexos: anexos ?? [] };
+    const lista = anexos ?? [];
+    const meusPdfs = lista.filter(
+      (a) => a.autor_id === context.userId && a.tipo === "certidao" && a.created_at >= pedido.atribuido_em,
+    );
+    return { pedido, historico: hist.data ?? [], anexos: lista, meusPdfs };
   });
 
 export const atualizarEtapaOperacao = createServerFn({ method: "POST" })

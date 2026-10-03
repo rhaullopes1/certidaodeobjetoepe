@@ -104,3 +104,20 @@ export function proximasEtapasOperador(atual: string): { valor: "em_andamento" |
 
 /** Remuneração do operador por operação validada (centavos). Nunca expor preço do cliente. */
 export const REMUNERACAO_OPERADOR_CENTAVOS = 8000;
+
+/** PDFs da certidão exigidos na conclusão pelo operador. */
+export const MIN_PDFS_OPERADOR = 1;
+export const MAX_PDFS_OPERADOR = 3;
+
+export function validarPdfOperador(
+  arquivo: { name: string; type: string },
+  jaEnviados: number,
+): string | null {
+  if (jaEnviados >= MAX_PDFS_OPERADOR) return `Limite de ${MAX_PDFS_OPERADOR} PDFs por operação atingido.`;
+  if (arquivo.type !== "application/pdf" || !/\.pdf$/i.test(arquivo.name)) return "Apenas arquivos PDF são aceitos.";
+  return null;
+}
+
+export function podeConcluirComPdfs(qtd: number): boolean {
+  return qtd >= MIN_PDFS_OPERADOR && qtd <= MAX_PDFS_OPERADOR;
+}
