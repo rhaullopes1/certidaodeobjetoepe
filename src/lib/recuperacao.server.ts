@@ -317,8 +317,9 @@ export async function listarRecuperacao() {
     .order("data_criacao", { ascending: false })
     .limit(300);
 
-  const linhas = ((data ?? []) as AbandonedOrderRow[]).map((r) => ({
+  const base = ((data ?? []) as AbandonedOrderRow[]).map((r) => ({
     id: r.id,
+    pedidoId: r.pedido_id,
     protocolo: r.protocolo,
     clienteNome: r.cliente_nome,
     clienteEmail: r.cliente_email,
@@ -332,6 +333,23 @@ export async function listarRecuperacao() {
     recuperadoEm: r.recuperado_em,
     ultimoErro: r.ultimo_erro,
   }));
+
+  // Enriquece as linhas com o WhatsApp e o link de checkout do pedido,
+  // apenas o necessário para o botão de recuperação manual.
+  const { data: pedidos } = await db
+    .from("pedidos")
+    .select("id, whatsapp, checkout_url")
+    .in("id", base.map((l) => l.pedidoId));
+  const pedidoPorId = new Map((pedidos ?? []).map((p) => [p.id, p]));
+
+  const linhas = base.map((l) => {
+    const p = pedidoPorId.get(l.pedidoId);
+    return {
+      ...l,
+      whatsapp: p?.whatsapp ?? null,
+      linkPagamento: p?.checkout_url || l.linkPagamento,
+    };
+  });
 
   const emAndamento = linhas.filter((l) =>
     ["pendente", "etapa_1_enviada", "etapa_2_enviada", "etapa_3_enviada"].includes(l.status),
