@@ -133,7 +133,7 @@ function Detalhe() {
                 {meusPdfs.length === 0 && <li className="text-sm text-muted-foreground">Nenhum PDF anexado ainda.</li>}
                 {meusPdfs.map((a) => (
                   <li key={a.id} className="flex items-center justify-between gap-2 rounded-md border border-border bg-background px-2 py-1.5">
-                    <button onClick={async () => window.open(await abrirAnexo(a.caminho), "_blank", "noopener")} className="flex min-w-0 items-center gap-1 text-left text-sm text-primary underline">
+                    <button onClick={() => abrirEmNovaAba(a.caminho)} className="flex min-w-0 items-center gap-1 text-left text-sm text-primary underline">
                       <FileText className="h-4 w-4 shrink-0" /> <span className="truncate">{a.nome_arquivo}</span>
                     </button>
                     <button disabled={ocupado} onClick={() => remover.mutate({ id: a.id, caminho: a.caminho })} aria-label={`Remover ${a.nome_arquivo}`} className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs text-destructive disabled:opacity-50">
@@ -171,7 +171,7 @@ function Detalhe() {
           {anexos.length === 0 && <li className="text-sm text-muted-foreground">Nenhum documento.</li>}
           {anexos.map((a) => (
             <li key={a.id}>
-              <button onClick={async () => window.open(await abrirAnexo(a.caminho), "_blank", "noopener")} className="flex items-center gap-1 text-left text-sm text-primary underline">
+              <button onClick={() => abrirEmNovaAba(a.caminho)} className="flex items-center gap-1 text-left text-sm text-primary underline">
                 <FileText className="h-4 w-4 shrink-0" /> {a.nome_arquivo} <span className="text-muted-foreground">({a.tipo})</span>
               </button>
             </li>
@@ -194,4 +194,16 @@ function Detalhe() {
       </div>
     </div>
   );
+}
+
+/** Abre a aba no próprio clique (evita bloqueio de pop-up) e depois aponta para o link assinado. */
+async function abrirEmNovaAba(caminho: string) {
+  const aba = window.open("", "_blank");
+  try {
+    const url = await abrirAnexo(caminho);
+    if (aba) { aba.opener = null; aba.location.href = url; } else window.location.href = url;
+  } catch (e) {
+    aba?.close();
+    toast.error((e as Error).message || "Não foi possível abrir o arquivo.");
+  }
 }
