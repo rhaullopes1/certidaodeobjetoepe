@@ -29,7 +29,7 @@ describe("papéis", () => {
 import { proximasEtapasOperador as prox, REMUNERACAO_OPERADOR_CENTAVOS } from "./papeis";
 describe("fluxo do operador", () => {
   it("só avança e nunca valida", () => {
-    expect(prox("atribuido").map((e) => e.valor)).toEqual(["em_andamento", "concluido"]);
+    expect(prox("atribuido").map((e) => e.valor)).toEqual(["em_andamento"]);
     expect(prox("em_andamento").map((e) => e.valor)).toEqual(["concluido"]);
     expect(prox("concluido")).toEqual([]);
     expect(REMUNERACAO_OPERADOR_CENTAVOS).toBe(8000);
