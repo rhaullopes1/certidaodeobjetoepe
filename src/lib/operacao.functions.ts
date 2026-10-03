@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { ehAdministrativo, ehOperador, ETAPAS_OPERACAO } from "./papeis";
+import { CHECKLIST_MANUAL, ehAdministrativo, ehOperador, ETAPAS_OPERACAO, MOTIVOS_PENDENCIA } from "./papeis";
 
 type Ctx = { supabase: SupabaseClient<Database>; userId: string };
 
@@ -22,16 +22,20 @@ export async function exigirOperador(ctx: Ctx) {
 const etapas = ETAPAS_OPERACAO.map((e) => e.valor) as [string, ...string[]];
 const idAtrib = z.object({ id: z.string().uuid() });
 
-async function auditar(ctx: Ctx, pedidoId: string, status: string, observacao: string | null) {
+async function auditar(ctx: Ctx, pedidoId: string, status: string, observacao: string | null, observacaoInterna?: string | null) {
   await ctx.supabase.from("pedido_andamentos").insert({
     pedido_id: pedidoId,
     status: `operacao_${status}`,
     observacao,
+    observacao_interna: observacaoInterna ?? null,
     autor_id: ctx.userId,
   });
 }
 
-/* ---------------- OPERADOR ---------------- */
+/* ---------------- OPERADOR ----------------
+ * Toda leitura do operador passa por RPCs SECURITY DEFINER com projeção explícita.
+ * Nunca selecionar tabelas diretamente aqui: nada financeiro/administrativo pode sair.
+ */
 
 export const minhaFilaOperacao = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -47,29 +51,29 @@ export const detalheOperacao = createServerFn({ method: "POST" })
   .inputValidator((d) => idAtrib.parse(d))
   .handler(async ({ context, data }) => {
     await exigirOperador(context);
-    const [det, hist] = await Promise.all([
+    const [det, hist, anx] = await Promise.all([
       context.supabase.rpc("operador_pedido_detalhe", { p_atribuicao: data.id }),
       context.supabase.rpc("operador_historico", { p_atribuicao: data.id }),
+      context.supabase.rpc("operador_anexos", { p_atribuicao: data.id }),
     ]);
     if (det.error) throw new Error(det.error.message);
     const pedido = det.data?.[0];
     if (!pedido) throw new Error("Atribuição não encontrada.");
-    const { data: anexos } = await context.supabase
-      .from("pedido_anexos")
-      .select("id, tipo, nome_arquivo, caminho, tamanho_bytes, created_at, autor_id")
-      .eq("pedido_id", pedido.pedido_id)
-      .order("created_at", { ascending: false });
-    const lista = anexos ?? [];
-    const meusPdfs = lista.filter(
-      (a) => a.autor_id === context.userId && a.tipo === "certidao" && new Date(a.created_at) >= new Date(pedido.atribuido_em),
-    );
-    return { pedido, historico: hist.data ?? [], anexos: lista, meusPdfs };
+    const anexos = anx.data ?? [];
+    const meusPdfs = anexos.filter((a) => a.meu);
+    return { pedido, historico: hist.data ?? [], anexos, meusPdfs };
   });
 
 export const atualizarEtapaOperacao = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
-    z.object({ id: z.string().uuid(), status: z.enum(["em_andamento", "concluido"]), observacao: z.string().max(2000).optional() }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        status: z.enum(["em_andamento", "aguardando_tribunal", "documento_recebido", "concluido"]),
+        observacao: z.string().max(2000).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ context, data }) => {
     await exigirOperador(context);
@@ -78,6 +82,61 @@ export const atualizarEtapaOperacao = createServerFn({ method: "POST" })
       p_status: data.status,
       p_observacao: data.observacao ?? undefined,
     });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+const motivos = MOTIVOS_PENDENCIA.map((m) => m.valor) as [string, ...string[]];
+export const registrarPendenciaOperacao = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) =>
+    z.object({ id: z.string().uuid(), motivo: z.enum(motivos), observacao: z.string().max(2000).optional() }).parse(d),
+  )
+  .handler(async ({ context, data }) => {
+    await exigirOperador(context);
+    const { error } = await context.supabase.rpc("operador_registrar_pendencia", {
+      p_atribuicao: data.id,
+      p_motivo: data.motivo,
+      p_observacao: data.observacao ?? undefined,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const resolverPendenciaOperacao = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ id: z.string().uuid(), observacao: z.string().max(2000).optional() }).parse(d))
+  .handler(async ({ context, data }) => {
+    await exigirOperador(context);
+    const { error } = await context.supabase.rpc("operador_resolver_pendencia", {
+      p_atribuicao: data.id,
+      p_observacao: data.observacao ?? undefined,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+const itensChecklist = CHECKLIST_MANUAL.map((c) => c.chave) as [string, ...string[]];
+export const marcarChecklistOperacao = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ id: z.string().uuid(), item: z.enum(itensChecklist), marcado: z.boolean() }).parse(d))
+  .handler(async ({ context, data }) => {
+    await exigirOperador(context);
+    const { error } = await context.supabase.rpc("operador_salvar_checklist", {
+      p_atribuicao: data.id,
+      p_item: data.item,
+      p_marcado: data.marcado,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const salvarNotaOperacao = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ id: z.string().uuid(), nota: z.string().max(4000) }).parse(d))
+  .handler(async ({ context, data }) => {
+    await exigirOperador(context);
+    const { error } = await context.supabase.rpc("operador_salvar_nota", { p_atribuicao: data.id, p_nota: data.nota });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
