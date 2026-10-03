@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { atribuicaoAtiva, destinoPosLogin, ehAdministrativo, ehOperador, podeEnviarParaOperacao } from "./papeis";
+import {
+  atribuicaoAtiva,
+  CLASSE_CARD_OPERACAO,
+  CLASSE_SELO_OPERACAO,
+  destinoPosLogin,
+  ehAdministrativo,
+  ehOperador,
+  podeEnviarParaOperacao,
+  visualOperacao,
+} from "./papeis";
 
 describe("papéis", () => {
   it("operador não passa como equipe", () => {

@@ -59,6 +59,42 @@ export function podeEnviarParaOperacao(
   );
 }
 
+/** Visual da operação nas listagens: estado de cada atribuição ainda não validada. */
+export type EstadoVisualOperacao = "em_operacao" | "aguardando_validacao" | "devolvida";
+
+export const CLASSE_CARD_OPERACAO: Record<EstadoVisualOperacao, string> = {
+  em_operacao: "card-operacao-ativa",
+  aguardando_validacao: "card-operacao-aguardando",
+  devolvida: "card-operacao-devolvida",
+};
+
+export const CLASSE_SELO_OPERACAO: Record<EstadoVisualOperacao, string> = {
+  em_operacao: "bg-primary text-primary-foreground",
+  aguardando_validacao: "bg-gold text-navy",
+  devolvida: "bg-destructive/10 text-destructive border border-destructive/25",
+};
+
+export type VisualOperacao = {
+  estado: EstadoVisualOperacao;
+  etiqueta: string;
+  etapa: string;
+};
+
+/** Mapeia uma atribuição (status + validação) para o estado visual do card; null = card normal. */
+export function visualOperacao(
+  a: { status_operacao: string; validado_em: string | null } | undefined | null,
+): VisualOperacao | null {
+  if (!a || a.validado_em) return null;
+  const etapa = rotuloEtapa(a.status_operacao);
+  if (a.status_operacao === "devolvido") {
+    return { estado: "devolvida", etiqueta: "Devolvida pela operação", etapa };
+  }
+  if (a.status_operacao === "concluido") {
+    return { estado: "aguardando_validacao", etiqueta: "Aguardando validação", etapa };
+  }
+  return { estado: "em_operacao", etiqueta: "Em operação", etapa };
+}
+
 /** Etapas que o próprio operador pode marcar (só avança; validação é da administração). */
 export function proximasEtapasOperador(atual: string): { valor: "em_andamento" | "concluido"; rotulo: string }[] {
   if (atual === "atribuido") return [{ valor: "em_andamento", rotulo: "Em andamento" }];
