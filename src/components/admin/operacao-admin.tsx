@@ -22,6 +22,33 @@ export function useAtribuicoesAtivas() {
   });
 }
 
+/** Mapa pedido_id → atribuição ainda não validada (inclui devolvidas), para o visual das listas. */
+export function useAtribuicoesOperacao() {
+  return useQuery({
+    queryKey: ["operacao-ativas"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("operador_pedidos")
+        .select("pedido_id, status_operacao, validado_em, operador_id, atribuido_em")
+        .is("validado_em", null);
+      if (error) throw error;
+      return new Map((data ?? []).map((a) => [a.pedido_id, a]));
+    },
+  });
+}
+
+/** Mapa operador_id → nome exibível, reaproveitando a mesma lista de operadores. */
+export function useOperadoresMap() {
+  const opsFn = useServerFn(listarOperadores);
+  return useQuery({
+    queryKey: ["operadores"],
+    queryFn: async () => {
+      const ops = await opsFn();
+      return new Map(ops.map((o) => [o.id, o.nome || o.email]));
+    },
+  });
+}
+
 export function SeloOperacao({ etapa }: { etapa?: string }) {
   if (!etapa) return null;
   return (

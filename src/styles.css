@@ -234,3 +234,30 @@
   width: 3rem;
   background: linear-gradient(90deg, var(--gold), transparent);
 }
+
+/* Estados visuais de operação na listagem de Entregas (sobre o card-premium). */
+@utility card-operacao-ativa {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--color-border));
+  background: color-mix(in oklab, var(--primary) 6%, var(--color-card));
+  box-shadow: 0 18px 40px -28px color-mix(in oklab, var(--primary) 35%, transparent);
+  &:hover {
+    border-color: color-mix(in oklab, var(--primary) 45%, var(--color-border));
+  }
+}
+
+@utility card-operacao-aguardando {
+  border-color: color-mix(in oklab, var(--gold) 60%, var(--color-border));
+  background: color-mix(in oklab, var(--gold) 14%, var(--color-card));
+  box-shadow: 0 18px 40px -28px color-mix(in oklab, var(--gold) 45%, transparent);
+  &:hover {
+    border-color: color-mix(in oklab, var(--gold) 60%, var(--color-border));
+  }
+}
+
+@utility card-operacao-devolvida {
+  border-color: color-mix(in oklab, var(--destructive) 35%, var(--color-border));
+  background: color-mix(in oklab, var(--destructive) 5%, var(--color-card));
+  &:hover {
+    border-color: color-mix(in oklab, var(--destructive) 35%, var(--color-border));
+  }
+}
