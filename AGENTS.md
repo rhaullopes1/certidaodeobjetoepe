@@ -12,3 +12,5 @@
 ## Rules
 - Process location is deterministic only (CNJ parser → cnj_* tables → DataJud adapter → team-registered units in comarcas_contatos); never use AI or infer the vara from the OOOO code — accuracy and traceable sources matter more than completeness.
 - CPN (/admin/cpn) routes certificates from data in cpn_certificate_routes (linked to cnj_tribunais; one row per tribunal × system × grau × requester profile, with tipo_rota, steps, channels and an official source excerpt); displayed status stays VERIFICAR until an admin verifies it — never hardcode routes in UI or infer automatic issuance from the system name, because the catalog must only grow from verifiable official evidence.
+
+- Back-office access = roles admin/equipe only (private.is_staff, src/lib/papeis.ts); operador_certidao reaches only /operacao and reads orders solely through security-definer RPCs scoped to its operador_pedidos assignments — keeps the operator isolated at the database level.
