@@ -1,5 +1,15 @@
-import { BotaoEnviarOperacao, SeloOperacao, useAtribuicoesAtivas } from "@/components/admin/operacao-admin";
-import { STATUS_ENVIAVEIS_OPERACAO } from "@/lib/papeis";
+import {
+  BotaoEnviarOperacao,
+  SeloOperacao,
+  useAtribuicoesOperacao,
+  useOperadoresMap,
+} from "@/components/admin/operacao-admin";
+import {
+  CLASSE_CARD_OPERACAO,
+  CLASSE_SELO_OPERACAO,
+  STATUS_ENVIAVEIS_OPERACAO,
+  visualOperacao,
+} from "@/lib/papeis";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -80,8 +90,18 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
 function AdminEntregas() {
   const queryClient = useQueryClient();
   const permissao = useQuery({ queryKey: ["equipe"], queryFn: souEquipe });
-  const operacaoAtivas = useAtribuicoesAtivas();
+  const operacaoAtrib = useAtribuicoesOperacao();
+  const operadores = useOperadoresMap();
   const [erro, setErro] = useState<string | null>(null);
+  const visDe = (pedido: { id: string }) => visualOperacao(operacaoAtrib.data?.get(pedido.id));
+  const nomeOperadorDe = (pedido: { id: string }) => {
+    const a = operacaoAtrib.data?.get(pedido.id);
+    return a ? operadores.data?.get(a.operador_id) : undefined;
+  };
+  const podeEnviarOperacao = (p: { id: string; status: string }) => {
+    const a = operacaoAtrib.data?.get(p.id);
+    return (!a || a.status_operacao === "devolvido") && (STATUS_ENVIAVEIS_OPERACAO as readonly string[]).includes(p.status);
+  };
 
   const entregas = useQuery({
     queryKey: ["admin-entregas"],
@@ -248,7 +268,18 @@ function AdminEntregas() {
             {total > 0 && (
               <ul className="mt-8 grid gap-4">
                 {lista.map((p, i) => (
-                  <li key={p.id} className="card-premium p-5 sm:p-6">
+                  <li
+                    key={p.id}
+                    className={`${visDe(p) ? CLASSE_CARD_OPERACAO[visDe(p)!.estado] : "card-premium"} p-5 sm:p-6`}
+                  >
+                    {visDe(p) && (
+                      <p
+                        className={`mb-4 inline-flex max-w-full flex-wrap items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${CLASSE_SELO_OPERACAO[visDe(p)!.estado]}`}
+                      >
+                        {visDe(p)!.etiqueta} · {visDe(p)!.etapa}
+                        {nomeOperadorDe(p) ? ` · ${nomeOperadorDe(p)}` : ""}
+                      </p>
+                    )}
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
@@ -266,7 +297,7 @@ function AdminEntregas() {
                           >
                             {p.protocolo}
                           </Link>
-                          <SeloOperacao etapa={operacaoAtivas.data?.get(p.id)} />
+                          <SeloOperacao etapa={operacaoAtrib.data?.get(p.id)?.status_operacao} />
                           <span className="inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
                             {statusPedido(p.status).label}
                           </span>
@@ -307,10 +338,7 @@ function AdminEntregas() {
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
-                        {!operacaoAtivas.data?.has(p.id) &&
-                          (STATUS_ENVIAVEIS_OPERACAO as readonly string[]).includes(p.status) && (
-                            <BotaoEnviarOperacao pedidoId={p.id} />
-                          )}
+                        {podeEnviarOperacao(p) && <BotaoEnviarOperacao pedidoId={p.id} />}
                         <BotaoWhatsApp pedido={p} />
                         <button
                           type="button"
