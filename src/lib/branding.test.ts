@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   BRANDING_COMERCIAL,
   BRANDING_OPERACIONAL,
+  HOST_OPERACIONAL_PADRAO,
   normalizarHost,
   resolverBranding,
   rotaPermitidaNoPortal,
@@ -46,5 +47,35 @@ describe("branding por host", () => {
     for (const p of ["/", "/solicitar", "/admin", "/minha-conta", "/operacaox", "/pedido/X"]) {
       expect(rotaPermitidaNoPortal(p)).toBe(false);
     }
+  });
+});
+
+const HOST_OFICIAL = "operacao.flydox.net";
+
+describe("portal oficial do operador (operacao.flydox.net)", () => {
+  it("subdomínio oficial ativa o modo neutro", () => {
+    expect(resolverBranding(HOST_OFICIAL, HOST_OFICIAL)).toBe(BRANDING_OPERACIONAL);
+    expect(resolverBranding("https://operacao.flydox.net/operacao", HOST_OFICIAL)).toBe(BRANDING_OPERACIONAL);
+    expect(resolverBranding("Operacao.FlyDox.net:443", HOST_OFICIAL).nomePainelOperador).toBe("Portal Operacional");
+  });
+
+  it("domínio raiz flydox.net fica comercial (reservado ao futuro projeto FlyDocs)", () => {
+    expect(resolverBranding("flydox.net", HOST_OFICIAL)).toBe(BRANDING_COMERCIAL);
+    expect(resolverBranding("www.flydox.net", HOST_OFICIAL)).toBe(BRANDING_COMERCIAL);
+    expect(resolverBranding("flydox.net", "").sufixoTitulo).toContain("Certidão de Objeto e Pé");
+  });
+
+  it("padrão embutido é o subdomínio oficial e vale sem variável definida", () => {
+    expect(HOST_OPERACIONAL_PADRAO).toBe(HOST_OFICIAL);
+    expect(resolverBranding(HOST_OFICIAL, undefined)).toBe(BRANDING_OPERACIONAL);
+    expect(resolverBranding(HOST_OFICIAL, "   ")).toBe(BRANDING_OPERACIONAL);
+    expect(resolverBranding("certidaodeobjetoepe.org", undefined)).toBe(BRANDING_COMERCIAL);
+  });
+
+  it("modo neutro do host oficial não expõe marca, preço, checkout, gateway ou ads", () => {
+    const b = resolverBranding(HOST_OFICIAL, HOST_OFICIAL);
+    expect(JSON.stringify(b)).not.toMatch(/Certid[aã]o de Objeto|R\$|checkout|mercado|flydox/i);
+    expect(b.scriptsComerciais).toBe(false);
+    expect(b.linksComerciais).toBe(false);
   });
 });
