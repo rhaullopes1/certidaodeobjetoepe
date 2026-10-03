@@ -261,7 +261,8 @@ export const devolverOperacaoAdmin = createServerFn({ method: "POST" })
       .select("pedido_id")
       .maybeSingle();
     if (error || !a) throw new Error(error?.message ?? "Atribuição não encontrada.");
-    await auditar(context, a.pedido_id, "devolvido", data.observacao?.trim() || "Recolhido pela administração");
+    // O texto da administração fica só em observacao_interna (nunca chega ao operador).
+    await auditar(context, a.pedido_id, "devolvido", "Recolhido pela administração", data.observacao?.trim() || null);
     return { ok: true };
   });
 
