@@ -169,6 +169,13 @@
       "when": 1791036678475,
       "tag": "0023_operador_pedidos",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791037509103,
+      "tag": "0024_operador_seguranca_revisao",
+      "breakpoints": true
     }
   ]
 }
