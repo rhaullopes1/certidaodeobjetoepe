@@ -1181,6 +1181,68 @@ export type Database = {
         }
         Relationships: []
       }
+      operador_pedidos: {
+        Row: {
+          atribuido_em: string
+          atribuido_por: string | null
+          concluido_em: string | null
+          created_at: string
+          devolvido_em: string | null
+          id: string
+          iniciado_em: string | null
+          observacao_admin: string | null
+          observacao_operador: string | null
+          operador_id: string
+          pedido_id: string
+          status_operacao: string
+          updated_at: string
+          validado_em: string | null
+          validado_por: string | null
+        }
+        Insert: {
+          atribuido_em?: string
+          atribuido_por?: string | null
+          concluido_em?: string | null
+          created_at?: string
+          devolvido_em?: string | null
+          id?: string
+          iniciado_em?: string | null
+          observacao_admin?: string | null
+          observacao_operador?: string | null
+          operador_id: string
+          pedido_id: string
+          status_operacao?: string
+          updated_at?: string
+          validado_em?: string | null
+          validado_por?: string | null
+        }
+        Update: {
+          atribuido_em?: string
+          atribuido_por?: string | null
+          concluido_em?: string | null
+          created_at?: string
+          devolvido_em?: string | null
+          id?: string
+          iniciado_em?: string | null
+          observacao_admin?: string | null
+          observacao_operador?: string | null
+          operador_id?: string
+          pedido_id?: string
+          status_operacao?: string
+          updated_at?: string
+          validado_em?: string | null
+          validado_por?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operador_pedidos_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pedido_andamentos: {
         Row: {
           autor_id: string | null
@@ -1718,7 +1780,79 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      listar_operadores_certidao: {
+        Args: never
+        Returns: {
+          email: string
+          id: string
+          nome: string
+        }[]
+      }
+      operador_atualizar_etapa: {
+        Args: { p_atribuicao: string; p_observacao?: string; p_status: string }
+        Returns: undefined
+      }
+      operador_historico: {
+        Args: { p_atribuicao: string }
+        Returns: {
+          created_at: string
+          id: string
+          observacao: string
+          status: string
+        }[]
+      }
+      operador_minha_fila: {
+        Args: never
+        Returns: {
+          atribuicao_id: string
+          atribuido_em: string
+          cidade_processo: string
+          comarca_processo: string
+          concluido_em: string
+          finalidade: string
+          foro: string
+          iniciado_em: string
+          nome_parte: string
+          numero_processo: string
+          pedido_id: string
+          protocolo: string
+          quantidade: number
+          status_operacao: string
+          tribunal_sigla: string
+          uf_processo: string
+          vara: string
+        }[]
+      }
+      operador_pedido_detalhe: {
+        Args: { p_atribuicao: string }
+        Returns: {
+          atribuicao_id: string
+          atribuido_em: string
+          certidoes: Json
+          cidade_processo: string
+          comarca_processo: string
+          concluido_em: string
+          cpf: string
+          finalidade: string
+          foro: string
+          iniciado_em: string
+          nome_parte: string
+          numero_processo: string
+          observacao_admin: string
+          observacao_operador: string
+          observacoes: string
+          pedido_id: string
+          protocolo: string
+          quantidade: number
+          sistema_processual: string
+          status_operacao: string
+          tribunal_nome: string
+          tribunal_sigla: string
+          uf_processo: string
+          unidade_judiciaria: string
+          vara: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "equipe" | "operador_certidao"

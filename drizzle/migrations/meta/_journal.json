@@ -162,6 +162,13 @@
       "when": 1791036624292,
       "tag": "0022_app_role_operador_certidao",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1791036678475,
+      "tag": "0023_operador_pedidos",
+      "breakpoints": true
     }
   ]
 }
