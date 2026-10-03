@@ -5,6 +5,7 @@ import { FileText, LayoutDashboard, LogIn, LogOut, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { carregarPerfil, iniciais } from "@/lib/perfil";
 import { souEquipe } from "@/lib/admin";
+import { meusPapeis, ehOperador, ehAdministrativo } from "@/lib/papeis";
 import { useServerFn } from "@tanstack/react-start";
 import { dispararBoasVindas } from "@/lib/emails.functions";
 
@@ -15,8 +16,13 @@ export function UserMenu() {
   const caixa = useRef<HTMLDivElement>(null);
 
   const perfil = useQuery({ queryKey: ["perfil"], queryFn: carregarPerfil });
+  const operador = useQuery({
+    queryKey: ["sou-operador", perfil.data?.id],
+    queryFn: async () => { const p = await meusPapeis(); return ehOperador(p) && !ehAdministrativo(p); },
+    enabled: Boolean(perfil.data),
+  });
   const equipe = useQuery({
-    queryKey: ["sou-equipe"],
+    queryKey: ["sou-equipe", perfil.data?.id],
     queryFn: souEquipe,
     enabled: Boolean(perfil.data),
   });
@@ -99,6 +105,11 @@ export function UserMenu() {
               login via {p.provider ?? "e-mail"}
             </p>
           </div>
+          {operador.data ? (
+            <Link to="/operacao" onClick={() => setAberto(false)} className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-secondary">
+              <LayoutDashboard className="h-4 w-4" /> Painel Operacional
+            </Link>
+          ) : (
           <Link
             to="/minha-conta"
             onClick={() => setAberto(false)}
@@ -106,7 +117,8 @@ export function UserMenu() {
           >
             <FileText className="h-4 w-4" /> Meus pedidos
           </Link>
-          {equipe.data && (
+          )}
+          {equipe.data && !operador.data && (
             <>
               <Link
                 to="/admin"

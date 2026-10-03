@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { ArrowLeft, FileText, Loader2, Upload } from "lucide-react";
 import { atualizarEtapaOperacao, detalheOperacao } from "@/lib/operacao.functions";
-import { ETAPAS_OPERACAO, rotuloEtapa } from "@/lib/papeis";
+import { proximasEtapasOperador, rotuloEtapa } from "@/lib/papeis";
 import { abrirAnexo, enviarAnexo } from "@/lib/admin";
 
 export const Route = createFileRoute("/_authenticated/operacao/$id")({
@@ -36,7 +36,7 @@ function Detalhe() {
     qc.invalidateQueries({ queryKey: ["operacao"] });
   };
   const mudar = useMutation({
-    mutationFn: () => etapaFn({ data: { id, status: etapa, observacao: obs || undefined } }),
+    mutationFn: () => etapaFn({ data: { id, status: etapa as "em_andamento" | "concluido", observacao: obs || undefined } }),
     onSuccess: () => { setObs(""); setEtapa(""); recarregar(); },
   });
   const enviar = useMutation({
@@ -97,7 +97,7 @@ function Detalhe() {
           <div className="mt-2 space-y-2">
             <select value={etapa} onChange={(e) => setEtapa(e.target.value)} className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm">
               <option value="">Escolha a nova etapa…</option>
-              {ETAPAS_OPERACAO.filter((e) => e.valor !== p.status_operacao).map((e) => (
+              {proximasEtapasOperador(p.status_operacao).map((e) => (
                 <option key={e.valor} value={e.valor}>{e.rotulo}</option>
               ))}
             </select>

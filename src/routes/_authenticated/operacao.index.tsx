@@ -24,7 +24,7 @@ function Fila() {
           <p className="text-xs text-muted-foreground">{lista.length - abertas} concluída(s) aguardando validação</p>
         )}
       </div>
-      <h1 className="text-lg font-bold">Minhas certidões</h1>
+      <h1 className="text-lg font-bold">Minhas operações</h1>
       {q.isPending && <Loader2 className="h-5 w-5 animate-spin" />}
       {q.error && <p className="text-sm text-destructive">{(q.error as Error).message}</p>}
       {!q.isPending && lista.length === 0 && (

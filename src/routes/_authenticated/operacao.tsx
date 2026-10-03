@@ -41,9 +41,13 @@ function Layout() {
           <Link to="/operacao" className="flex items-center gap-2 font-bold">
             <Scale className="h-5 w-5 text-primary" /> Painel Operacional
           </Link>
+          <nav className="flex items-center gap-4 text-sm">
+          <Link to="/operacao" activeOptions={{ exact: true }} activeProps={{ className: "font-semibold text-foreground" }} className="text-muted-foreground">Minhas operações</Link>
+          <Link to="/operacao/historico" activeProps={{ className: "font-semibold text-foreground" }} className="text-muted-foreground">Histórico</Link>
           <button onClick={sair} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
             <LogOut className="h-4 w-4" /> Sair
           </button>
+          </nav>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-5">
