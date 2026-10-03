@@ -2,31 +2,46 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2, Scale, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { destinoPosLogin, meusPapeis } from "@/lib/papeis";
+import { destinoPosLogin, ehAdministrativo, ehOperador, meusPapeis } from "@/lib/papeis";
 import { lovable } from "@/integrations/lovable/index";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
   component: AuthPage,
-  head: () => ({
-    meta: [
-      { title: "Minha conta | Certidão de Objeto e Pé" },
-      {
-        name: "description",
-        content:
-          "Acesse sua conta ou crie uma conta para acompanhar seus pedidos de certidão e pagar pedidos pendentes.",
-      },
-      { property: "og:title", content: "Minha conta | Certidão de Objeto e Pé" },
-      { property: "og:description", content: "Área do cliente para acompanhar pedidos." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
+  head: ({ match }) =>
+    match.context?.branding?.modo === "operacional"
+      ? {
+          meta: [
+            { title: "Acesso | Portal Operacional" },
+            { name: "description", content: "Acesso restrito ao portal operacional." },
+            { property: "og:title", content: "Acesso | Portal Operacional" },
+            { property: "og:description", content: "Acesso restrito ao portal operacional." },
+            { property: "og:type", content: "website" },
+            { name: "twitter:card", content: "summary" },
+            { name: "robots", content: "noindex, nofollow" },
+          ],
+        }
+      : {
+          meta: [
+            { title: "Minha conta | Certidão de Objeto e Pé" },
+            {
+              name: "description",
+              content:
+                "Acesse sua conta ou crie uma conta para acompanhar seus pedidos de certidão e pagar pedidos pendentes.",
+            },
+            { property: "og:title", content: "Minha conta | Certidão de Objeto e Pé" },
+            { property: "og:description", content: "Área do cliente para acompanhar pedidos." },
+            { property: "og:type", content: "website" },
+            { name: "twitter:card", content: "summary" },
+            { name: "robots", content: "noindex" },
+          ],
+        },
 });
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { branding } = Route.useRouteContext();
+  const portal = branding.modo === "operacional";
   const [modo, setModo] = useState<"entrar" | "criar">("entrar");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -34,7 +49,13 @@ function AuthPage() {
   const [erro, setErro] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [carregandoGoogle, setCarregandoGoogle] = useState(false);
-  const irParaDestino = () => meusPapeis().then((p) => navigate({ to: destinoPosLogin(p), replace: true }));
+  const irParaDestino = () =>
+    meusPapeis().then(async (p) => {
+      if (!portal) return navigate({ to: destinoPosLogin(p), replace: true });
+      if (ehOperador(p) && !ehAdministrativo(p)) return navigate({ to: "/operacao", replace: true });
+      await supabase.auth.signOut();
+      setErro("Acesso exclusivo para operadores.");
+    });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
