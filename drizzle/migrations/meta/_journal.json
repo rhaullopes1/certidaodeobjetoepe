@@ -197,6 +197,13 @@
       "when": 1791042816356,
       "tag": "0027_operador_pdf_obrigatorio",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1791050797780,
+      "tag": "0028_operador_cockpit_isolamento",
+      "breakpoints": true
     }
   ]
 }
