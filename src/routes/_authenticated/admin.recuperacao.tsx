@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Loader2, Mail, CheckCircle2, XCircle, Send, RefreshCw } from "lucide-react";
 import { AdminHeader, SemPermissao } from "./admin.index";
 import { souEquipe } from "@/lib/admin";
+import { BotaoWhatsAppRecuperacao } from "@/components/admin/botao-whatsapp-recuperacao";
 import {
   painelRecuperacao,
   reenviarRecuperacao,
@@ -253,6 +254,9 @@ function RecuperacaoPage() {
                           <td className="px-4 py-3 text-white/70">{dataBr(l.ultimoEnvio)}</td>
                           <td className="px-4 py-3">
                             <div className="flex flex-wrap gap-2">
+                              {["pendente", "etapa_1_enviada", "etapa_2_enviada", "etapa_3_enviada"].includes(
+                                l.status,
+                              ) && <BotaoWhatsAppRecuperacao linha={l} />}
                               <button
                                 disabled={acao.isPending}
                                 onClick={() => acao.mutate({ tipo: "reenviar", id: l.id })}
