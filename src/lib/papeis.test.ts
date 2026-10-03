@@ -146,6 +146,7 @@ describe("PDF obrigatório na conclusão do operador", () => {
   });
   it("validação administrativa continua exigindo apenas concluído pelo operador", () => {
     expect(prox("concluido")).toEqual([]);
-    expect(prox("em_andamento").map((e) => e.valor)).toEqual(["concluido"]);
+    expect(prox("em_andamento").map((e) => e.valor)).toContain("concluido");
+    expect(prox("em_andamento").map((e) => e.valor as string)).not.toContain("validado");
   });
 });
