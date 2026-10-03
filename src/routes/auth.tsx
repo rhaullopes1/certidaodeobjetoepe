@@ -227,18 +227,20 @@ function AuthPage() {
             </button>
           </form>
 
-          <button
-            onClick={() => {
-              setModo(modo === "entrar" ? "criar" : "entrar");
-              setErro(null);
-              setAviso(null);
-            }}
-            className="mt-5 w-full text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            {modo === "entrar"
-              ? "Ainda não tem conta? Criar conta"
-              : "Já tenho conta — entrar"}
-          </button>
+          {branding.linksComerciais && (
+            <button
+              onClick={() => {
+                setModo(modo === "entrar" ? "criar" : "entrar");
+                setErro(null);
+                setAviso(null);
+              }}
+              className="mt-5 w-full text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {modo === "entrar"
+                ? "Ainda não tem conta? Criar conta"
+                : "Já tenho conta — entrar"}
+            </button>
+          )}
         </div>
       </div>
     </main>
