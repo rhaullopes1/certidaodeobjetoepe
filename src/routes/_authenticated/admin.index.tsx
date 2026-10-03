@@ -1,3 +1,4 @@
+import { SeloOperacao, useAtribuicoesAtivas } from "@/components/admin/operacao-admin";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { FINALIDADES } from "@/lib/pedidos.schema";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -102,6 +103,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 const LINKS_ADMIN = [
   { to: "/admin", label: "Pedidos", exact: true },
   { to: "/admin/entregas", label: "Entregas", contador: true },
+  { to: "/admin/operacao", label: "Operação" },
   { to: "/admin/antecedentes", label: "Antecedentes" },
   { to: "/admin/historico", label: "Histórico" },
   { to: "/admin/comarcas", label: "Comarcas" },
@@ -246,6 +248,7 @@ function AdminLista() {
   const [somenteNovos, setSomenteNovos] = useState(false);
 
   const permissao = useQuery({ queryKey: ["equipe"], queryFn: souEquipe });
+  const operacaoAtivas = useAtribuicoesAtivas();
   const pedidos = useQuery({
     queryKey: ["admin-pedidos", aplicados],
     queryFn: () => listarPedidos(aplicados),
@@ -398,6 +401,7 @@ function AdminLista() {
                             >
                               {p.protocolo}
                             </Link>
+                          <SeloOperacao etapa={operacaoAtivas.data?.get(p.id)} />
                             <span className="inline-flex rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
                               {rotuloFinalidade}
                             </span>

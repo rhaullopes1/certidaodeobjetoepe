@@ -54,7 +54,7 @@ const COLUNAS =
 export async function souEquipe() {
   const { data } = await supabase.auth.getUser();
   if (!data.user) return false;
-  const { data: papeis } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
+  const { data: papeis } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id).in("role", ["admin", "equipe"]);
   return (papeis ?? []).length > 0;
 }
 

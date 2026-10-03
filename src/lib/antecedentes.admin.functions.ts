@@ -15,10 +15,16 @@ type ContextoEquipe = {
 async function exigirEquipe(context: ContextoEquipe) {
   const consulta = context.supabase.from("user_roles") as unknown as {
     select: (c: string) => {
-      eq: (c: string, v: string) => { limit: (n: number) => Promise<{ data: unknown[] | null }> };
+      eq: (c: string, v: string) => {
+        in: (c: string, v: string[]) => { limit: (n: number) => Promise<{ data: unknown[] | null }> };
+      };
     };
   };
-  const { data: staff } = await consulta.select("role").eq("user_id", context.userId).limit(1);
+  const { data: staff } = await consulta
+    .select("role")
+    .eq("user_id", context.userId)
+    .in("role", ["admin", "equipe"])
+    .limit(1);
   if (!staff?.length) throw new Error("Acesso restrito à equipe.");
 }
 

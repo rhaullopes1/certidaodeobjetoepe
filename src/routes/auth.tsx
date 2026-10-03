@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2, Scale, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { destinoPosLogin, meusPapeis } from "@/lib/papeis";
 import { lovable } from "@/integrations/lovable/index";
 
 export const Route = createFileRoute("/auth")({
@@ -33,10 +34,11 @@ function AuthPage() {
   const [erro, setErro] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [carregandoGoogle, setCarregandoGoogle] = useState(false);
+  const irParaDestino = () => meusPapeis().then((p) => navigate({ to: destinoPosLogin(p), replace: true }));
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/minha-conta", replace: true });
+      if (data.session) irParaDestino();
     });
   }, [navigate]);
 
@@ -57,7 +59,7 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: "/minha-conta", replace: true });
+      irParaDestino();
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Não foi possível entrar com o Google.");
     } finally {
@@ -74,7 +76,7 @@ function AuthPage() {
       if (modo === "entrar") {
         const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
         if (error) throw error;
-        navigate({ to: "/minha-conta", replace: true });
+        irParaDestino();
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -82,7 +84,7 @@ function AuthPage() {
           options: { emailRedirectTo: window.location.origin + "/minha-conta" },
         });
         if (error) throw error;
-        if (data.session) navigate({ to: "/minha-conta", replace: true });
+        if (data.session) irParaDestino();
         else setAviso("Conta criada. Confirme o e-mail para acessar sua conta.");
       }
     } catch (err) {
