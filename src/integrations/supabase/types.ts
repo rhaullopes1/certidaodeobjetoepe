@@ -1185,15 +1185,20 @@ export type Database = {
         Row: {
           atribuido_em: string
           atribuido_por: string | null
+          checklist: Json
           concluido_em: string | null
           created_at: string
           devolvido_em: string | null
           id: string
           iniciado_em: string | null
+          nota_operador: string | null
           observacao_admin: string | null
           observacao_operador: string | null
           operador_id: string
           pedido_id: string
+          pendencia_em: string | null
+          pendencia_motivo: string | null
+          pendencia_observacao: string | null
           status_operacao: string
           updated_at: string
           validado_em: string | null
@@ -1202,15 +1207,20 @@ export type Database = {
         Insert: {
           atribuido_em?: string
           atribuido_por?: string | null
+          checklist?: Json
           concluido_em?: string | null
           created_at?: string
           devolvido_em?: string | null
           id?: string
           iniciado_em?: string | null
+          nota_operador?: string | null
           observacao_admin?: string | null
           observacao_operador?: string | null
           operador_id: string
           pedido_id: string
+          pendencia_em?: string | null
+          pendencia_motivo?: string | null
+          pendencia_observacao?: string | null
           status_operacao?: string
           updated_at?: string
           validado_em?: string | null
@@ -1219,15 +1229,20 @@ export type Database = {
         Update: {
           atribuido_em?: string
           atribuido_por?: string | null
+          checklist?: Json
           concluido_em?: string | null
           created_at?: string
           devolvido_em?: string | null
           id?: string
           iniciado_em?: string | null
+          nota_operador?: string | null
           observacao_admin?: string | null
           observacao_operador?: string | null
           operador_id?: string
           pedido_id?: string
+          pendencia_em?: string | null
+          pendencia_motivo?: string | null
+          pendencia_observacao?: string | null
           status_operacao?: string
           updated_at?: string
           validado_em?: string | null
@@ -1788,6 +1803,17 @@ export type Database = {
           nome: string
         }[]
       }
+      operador_anexos: {
+        Args: { p_atribuicao: string }
+        Returns: {
+          caminho: string
+          created_at: string
+          id: string
+          meu: boolean
+          nome_arquivo: string
+          tamanho_bytes: number
+        }[]
+      }
       operador_atualizar_etapa: {
         Args: { p_atribuicao: string; p_observacao?: string; p_status: string }
         Returns: undefined
@@ -1806,10 +1832,14 @@ export type Database = {
         Returns: {
           atribuicao_id: string
           atribuido_em: string
+          comarca_processo: string
           concluido_em: string
+          devolvido_em: string
+          iniciado_em: string
           nome_parte: string
           numero_processo: string
           protocolo: string
+          situacao: string
           tribunal_sigla: string
           validado_em: string
         }[]
@@ -1827,7 +1857,10 @@ export type Database = {
           iniciado_em: string
           nome_parte: string
           numero_processo: string
+          pdfs: number
           pedido_id: string
+          pendencia_em: string
+          pendencia_motivo: string
           protocolo: string
           quantidade: number
           status_operacao: string
@@ -1842,6 +1875,7 @@ export type Database = {
           atribuicao_id: string
           atribuido_em: string
           certidoes: Json
+          checklist: Json
           cidade_processo: string
           comarca_processo: string
           concluido_em: string
@@ -1850,10 +1884,14 @@ export type Database = {
           foro: string
           iniciado_em: string
           nome_parte: string
+          nota_operador: string
           numero_processo: string
           observacao_operador: string
           observacoes: string
           pedido_id: string
+          pendencia_em: string
+          pendencia_motivo: string
+          pendencia_observacao: string
           protocolo: string
           quantidade: number
           sistema_processual: string
@@ -1864,6 +1902,22 @@ export type Database = {
           unidade_judiciaria: string
           vara: string
         }[]
+      }
+      operador_registrar_pendencia: {
+        Args: { p_atribuicao: string; p_motivo: string; p_observacao?: string }
+        Returns: undefined
+      }
+      operador_resolver_pendencia: {
+        Args: { p_atribuicao: string; p_observacao?: string }
+        Returns: undefined
+      }
+      operador_salvar_checklist: {
+        Args: { p_atribuicao: string; p_item: string; p_marcado: boolean }
+        Returns: undefined
+      }
+      operador_salvar_nota: {
+        Args: { p_atribuicao: string; p_nota: string }
+        Returns: undefined
       }
     }
     Enums: {

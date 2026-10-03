@@ -10,7 +10,7 @@ import {
   reatribuirOperacao,
   validarOperacaoAdmin,
 } from "@/lib/operacao.functions";
-import { atribuicaoAtiva, rotuloEtapa } from "@/lib/papeis";
+import { atribuicaoAtiva, rotuloEtapa, rotuloPendencia } from "@/lib/papeis";
 
 export const Route = createFileRoute("/_authenticated/admin/operacao")({
   head: () => ({
@@ -86,7 +86,7 @@ function Pagina() {
                     <p className="text-xs text-muted-foreground">{a.pedidos?.numero_processo}</p>
                   </td>
                   <td className="p-3">{a.operador_nome}</td>
-                  <td className="p-3">{a.validado_em ? "Validado" : rotuloEtapa(a.status_operacao)}{a.status_operacao === "concluido" && !a.validado_em && <p className="text-xs font-semibold text-accent">Aguardando validação</p>}</td>
+                  <td className="p-3">{a.validado_em ? "Validado" : rotuloEtapa(a.status_operacao)}{a.status_operacao === "concluido" && !a.validado_em && <p className="text-xs font-semibold text-accent">Aguardando validação</p>}{a.pendencia_motivo && ativa && <p className="text-xs font-semibold text-destructive">Pendência: {rotuloPendencia(a.pendencia_motivo)}{a.pendencia_observacao ? ` — ${a.pendencia_observacao}` : ""}</p>}</td>
                   <td className="p-3">{tempoDesde(a.atribuido_em)}</td>
                   <td className="p-3 text-xs">{a.ultimo_andamento ? `${rotuloEtapa(a.ultimo_andamento.status.replace(/^operacao_/, ""))} — ${new Date(a.ultimo_andamento.created_at).toLocaleString("pt-BR")}` : "—"}</td>
                   <td className="p-3">
