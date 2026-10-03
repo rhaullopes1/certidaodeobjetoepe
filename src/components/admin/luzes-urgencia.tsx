@@ -15,7 +15,14 @@ const CLASSE: Record<CorLuz, { on: string; off: string }> = {
   vermelha: { on: "bg-destructive shadow-[0_0_6px_var(--destructive)]", off: "bg-destructive/20" },
 };
 
-export function LuzesUrgencia({ pagoEm }: { pagoEm: string | null }) {
+export function LuzesUrgencia({
+  pagoEm,
+  className,
+}: {
+  pagoEm: string | null;
+  /** Classe extra (ex.: pílula com fundo local) para garantir contraste em cards coloridos. */
+  className?: string;
+}) {
   const [agora, setAgora] = useState(() => Date.now());
   useEffect(() => {
     const t = setInterval(() => setAgora(Date.now()), 60_000);
@@ -25,7 +32,12 @@ export function LuzesUrgencia({ pagoEm }: { pagoEm: string | null }) {
   const n = luzesAcesas(pagoEm, agora);
   const rotulo = `${(n - 1) * 24}h+ — ${n}ª luz acesa`;
   return (
-    <span role="img" aria-label={rotulo} title={rotulo} className="inline-flex items-center gap-1">
+    <span
+      role="img"
+      aria-label={rotulo}
+      title={rotulo}
+      className={`inline-flex items-center gap-1${className ? ` ${className}` : ""}`}
+    >
       {CORES.map((c, i) => (
         <span key={i} className={`h-2 w-2 rounded-full ${i < n ? CLASSE[c].on : CLASSE[c].off}`} />
       ))}
