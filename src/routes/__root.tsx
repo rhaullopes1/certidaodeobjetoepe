@@ -7,12 +7,15 @@ import {
   useRouterState,
   HeadContent,
   Scripts,
+  redirect,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { PWA } from "@/components/site/pwa";
+import { resolverBranding, rotaPermitidaNoPortal } from "@/lib/branding";
+import { hostAtual } from "@/lib/host-atual";
 
 function NotFoundComponent() {
   return (
@@ -193,12 +196,8 @@ function headComercial() {
         }),
       },
     ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+  };
+}
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -232,14 +231,14 @@ function Analytics() {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
+  const { queryClient, branding } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <Analytics />
-      <PWA />
+      {branding.scriptsComerciais && <Analytics />}
+      {branding.scriptsComerciais && <PWA />}
     </QueryClientProvider>
   );
 }
