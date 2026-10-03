@@ -7,12 +7,15 @@ import {
   useRouterState,
   HeadContent,
   Scripts,
+  redirect,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { PWA } from "@/components/site/pwa";
+import { resolverBranding, rotaPermitidaNoPortal } from "@/lib/branding";
+import { hostAtual } from "@/lib/host-atual";
 
 function NotFoundComponent() {
   return (
@@ -74,8 +77,39 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
   );
 }
 
+const headOperacional = () => ({
+  meta: [
+    { charSet: "utf-8" },
+    { name: "viewport", content: "width=device-width, initial-scale=1" },
+    { title: "Portal Operacional" },
+    { name: "description", content: "Área restrita de operação." },
+    { property: "og:title", content: "Portal Operacional" },
+    { property: "og:description", content: "Área restrita de operação." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex, nofollow" },
+    { name: "theme-color", content: "#0b1b33" },
+  ],
+  links: [{ rel: "stylesheet", href: appCss }],
+});
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  beforeLoad: ({ location }) => {
+    const branding = resolverBranding(hostAtual());
+    if (branding.modo === "operacional" && !rotaPermitidaNoPortal(location.pathname)) {
+      throw redirect({ to: "/operacao" });
+    }
+    return { branding };
+  },
+  head: ({ match }) => (match.context?.branding?.modo === "operacional" ? headOperacional() : headComercial()),
+  shellComponent: RootShell,
+  component: RootComponent,
+  notFoundComponent: NotFoundComponent,
+  errorComponent: ErrorComponent,
+});
+
+function headComercial() {
+  return {
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -162,12 +196,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         }),
       },
     ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+  };
+}
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -201,14 +231,14 @@ function Analytics() {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
+  const { queryClient, branding } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <Analytics />
-      <PWA />
+      {branding.scriptsComerciais && <Analytics />}
+      {branding.scriptsComerciais && <PWA />}
     </QueryClientProvider>
   );
 }

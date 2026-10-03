@@ -3,19 +3,22 @@ import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Scale } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { meusPapeis, ehAdministrativo, ehOperador } from "@/lib/papeis";
+import { BRANDING_COMERCIAL } from "@/lib/branding";
 import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/_authenticated/operacao")({
   ssr: false,
-  beforeLoad: async () => {
+  beforeLoad: async ({ context }) => {
     const papeis = await meusPapeis();
     if (ehOperador(papeis) && !ehAdministrativo(papeis)) return;
+    // Portal white-label: quem não é operador não navega para áreas comerciais/admin por aqui.
+    if (context.branding.modo === "operacional") throw redirect({ to: "/auth" });
     if (ehAdministrativo(papeis)) throw redirect({ to: "/admin/operacao" });
     throw redirect({ to: "/minha-conta" });
   },
-  head: () => ({
+  head: ({ match }) => ({
     meta: [
-      { title: "Painel Operacional | Certidão de Objeto e Pé" },
+      { title: `Painel Operacional${match.context?.branding?.sufixoTitulo ?? BRANDING_COMERCIAL.sufixoTitulo}` },
       { name: "description", content: "Área restrita do operador de certidões." },
       { property: "og:title", content: "Painel Operacional" },
       { property: "og:description", content: "Área restrita do operador de certidões." },
@@ -29,6 +32,7 @@ export const Route = createFileRoute("/_authenticated/operacao")({
 
 function Layout() {
   const qc = useQueryClient();
+  const { branding } = Route.useRouteContext();
   async function sair() {
     await qc.cancelQueries();
     qc.clear();
@@ -40,7 +44,7 @@ function Layout() {
       <header className="sticky top-0 z-10 border-b border-border bg-background">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <Link to="/operacao" className="flex items-center gap-2 font-bold">
-            <Scale className="h-5 w-5 text-primary" /> Painel Operacional
+            <Scale className="h-5 w-5 text-primary" /> {branding.nomePainelOperador}
           </Link>
           <nav className="flex items-center gap-4 text-sm">
           <Link to="/operacao" activeOptions={{ exact: true }} activeProps={{ className: "font-semibold text-foreground" }} className="text-muted-foreground">Minhas operações</Link>
