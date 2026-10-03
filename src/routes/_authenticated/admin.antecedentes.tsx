@@ -26,6 +26,7 @@ import {
   reenviarEmailAntecedentes,
 } from "@/lib/antecedentes.admin.functions";
 import { enviarAnexo, listarAnexos, abrirAnexo, souEquipe } from "@/lib/admin";
+import { abrirEmNovaAba } from "@/lib/abrir-em-nova-aba";
 import { formatarBRL, statusPedido } from "@/lib/site";
 import { BotaoWhatsAppCliente } from "@/components/admin/botao-whatsapp";
 import { AdminHeader, SemPermissao } from "./admin.index";
@@ -204,8 +205,8 @@ function CartaoPedido({ pedido }: { pedido: PedidoAntecedentesAdmin }) {
   async function abrirAnexado() {
     if (!certidaoAnexada) return;
     try {
-      const url = await abrirAnexo(certidaoAnexada.caminho);
-      window.open(url, "_blank", "noopener,noreferrer");
+      const caminho = certidaoAnexada.caminho;
+      await abrirEmNovaAba(() => abrirAnexo(caminho));
     } catch {
       setAviso("Não foi possível abrir o documento.");
     }

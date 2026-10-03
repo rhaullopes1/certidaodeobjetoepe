@@ -12,6 +12,7 @@ import {
   Lock,
   Plus,
 } from "lucide-react";
+import { abrirEmNovaAba } from "@/lib/abrir-em-nova-aba";
 import {
   abrirAnexo,
   buscarPedidoAdmin,
@@ -606,8 +607,7 @@ function AdminDetalhe() {
                       <button
                         onClick={async () => {
                           try {
-                            const url = await abrirAnexo(a.caminho);
-                            window.open(url, "_blank", "noopener,noreferrer");
+                            await abrirEmNovaAba(() => abrirAnexo(a.caminho));
                           } catch {
                             setErro("Não foi possível abrir o arquivo.");
                           }
