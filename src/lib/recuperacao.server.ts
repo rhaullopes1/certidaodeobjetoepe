@@ -317,7 +317,7 @@ export async function listarRecuperacao() {
     .order("data_criacao", { ascending: false })
     .limit(300);
 
-  const base = ((data ?? []) as AbandonedOrderRow[]).map((r) => ({
+  const linhasBase = ((data ?? []) as AbandonedOrderRow[]).map((r) => ({
     id: r.id,
     pedidoId: r.pedido_id,
     protocolo: r.protocolo,
@@ -339,10 +339,10 @@ export async function listarRecuperacao() {
   const { data: pedidos } = await db
     .from("pedidos")
     .select("id, whatsapp, checkout_url")
-    .in("id", base.map((l) => l.pedidoId));
+    .in("id", linhasBase.map((l) => l.pedidoId));
   const pedidoPorId = new Map((pedidos ?? []).map((p) => [p.id, p]));
 
-  const linhas = base.map((l) => {
+  const linhas = linhasBase.map((l) => {
     const p = pedidoPorId.get(l.pedidoId);
     return {
       ...l,
