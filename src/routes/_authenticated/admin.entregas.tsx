@@ -1,4 +1,5 @@
-import { SeloOperacao, useAtribuicoesAtivas } from "@/components/admin/operacao-admin";
+import { BotaoEnviarOperacao, SeloOperacao, useAtribuicoesAtivas } from "@/components/admin/operacao-admin";
+import { STATUS_ENVIAVEIS_OPERACAO } from "@/lib/papeis";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -306,6 +307,10 @@ function AdminEntregas() {
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
+                        {!operacaoAtivas.data?.has(p.id) &&
+                          (STATUS_ENVIAVEIS_OPERACAO as readonly string[]).includes(p.status) && (
+                            <BotaoEnviarOperacao pedidoId={p.id} />
+                          )}
                         <BotaoWhatsApp pedido={p} />
                         <button
                           type="button"
