@@ -12,12 +12,9 @@ import {
   Lock,
   Plus,
 } from "lucide-react";
-import {
-  abrirAnexo,
-  // eslint-disable-next-line
-} from "@/lib/admin";
 import { abrirEmNovaAba } from "@/lib/abrir-em-nova-aba";
 import {
+  abrirAnexo,
   buscarPedidoAdmin,
   ehNovo,
   enviarAnexo,
