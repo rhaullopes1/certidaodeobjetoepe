@@ -609,7 +609,11 @@ export async function enviarAnexo(input: {
     content_type: input.arquivo.type || null,
     autor_id: sessao.user?.id ?? null,
   });
-  if (error) throw error;
+  if (error) {
+    // Registro rejeitado (limite, etapa, permissão): não deixar arquivo órfão no Storage.
+    await supabase.storage.from(BUCKET_ANEXOS).remove([caminho]).catch(() => undefined);
+    throw error;
+  }
 }
 
 export async function abrirAnexo(caminho: string) {
@@ -643,7 +647,9 @@ export async function linkCertidaoParaCliente(pedidoId: string): Promise<string 
 }
 
 export async function removerAnexo(anexo: { id: string; caminho: string }) {
-  await supabase.storage.from(BUCKET_ANEXOS).remove([anexo.caminho]);
-  const { error } = await supabase.from("pedido_anexos").delete().eq("id", anexo.id);
+  // Primeiro o registro: se o banco recusar (ex.: operação concluída), o arquivo permanece íntegro.
+  const { data, error } = await supabase.from("pedido_anexos").delete().eq("id", anexo.id).select("id");
   if (error) throw error;
+  if (!data?.length) throw new Error("Não foi possível remover este anexo.");
+  await supabase.storage.from(BUCKET_ANEXOS).remove([anexo.caminho]);
 }
