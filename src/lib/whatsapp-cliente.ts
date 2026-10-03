@@ -121,6 +121,38 @@ export function linkWhatsappCliente(p: PedidoContato): string | null {
   return `https://wa.me/${numero}?text=${encodeURIComponent(mensagemWhatsapp(p))}`;
 }
 
+/**
+ * Mensagem de recuperação manual de pagamento (painel /admin/recuperacao).
+ * Nunca afirma que o pagamento foi recebido; inclui valor e link de pagamento.
+ */
+export function mensagemWhatsappRecuperacao(p: {
+  nome_parte: string | null;
+  protocolo: string;
+  valorFormatado: string;
+  linkPagamento: string;
+}): string {
+  const nome = p.nome_parte?.trim() || "tudo bem";
+  return (
+    `Olá, ${nome}! Tudo bem? Notamos que o pagamento do seu pedido de Certidão de Objeto e Pé ` +
+    `(protocolo ${p.protocolo}, no valor de ${p.valorFormatado}) ainda está pendente. ` +
+    `Para não perder a sua solicitação, você pode concluir o pagamento por este link: ${p.linkPagamento} ` +
+    `Se tiver qualquer dúvida, é só responder por aqui que eu te ajudo a finalizar.`
+  );
+}
+
+/** Link wa.me da recuperação manual, ou null sem número válido. Envio manual. */
+export function linkWhatsappRecuperacao(p: {
+  nome_parte: string | null;
+  protocolo: string;
+  valorFormatado: string;
+  linkPagamento: string;
+  whatsapp: string;
+}): string | null {
+  const numero = normalizarWhatsapp(p.whatsapp);
+  if (!numero) return null;
+  return `https://wa.me/${numero}?text=${encodeURIComponent(mensagemWhatsappRecuperacao(p))}`;
+}
+
 /** Mensagem de pedido voluntário de avaliação no Google (sem incentivo). */
 export function mensagemWhatsappAvaliacao(p: { nome_parte: string | null }): string {
   const nome = p.nome_parte?.trim();
