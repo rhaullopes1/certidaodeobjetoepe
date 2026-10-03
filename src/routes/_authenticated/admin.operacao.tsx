@@ -40,7 +40,7 @@ function Pagina() {
   const devolver = useServerFn(devolverOperacaoAdmin);
   const validar = useServerFn(validarOperacaoAdmin);
   const q = useQuery({ queryKey: ["admin-operacao"], queryFn: () => painel() });
-  const ops = useQuery({ queryKey: ["operadores"], queryFn: () => opsFn() });
+  const ops = useQuery({ queryKey: ["operadores", "lista"], queryFn: () => opsFn() });
   const [mostrarTodas, setMostrarTodas] = useState(false);
   const [destino, setDestino] = useState<Record<string, string>>({});
 
