@@ -36,8 +36,8 @@ export const BRANDING_COMERCIAL: Branding = {
 
 export const BRANDING_OPERACIONAL: Branding = {
   modo: "operacional",
-  nomePainelOperador: "Portal Operacional",
-  sufixoTitulo: " | Portal Operacional",
+  nomePainelOperador: "PORTAL OPERACIONAL | efficiency",
+  sufixoTitulo: " | efficiency",
   scriptsComerciais: false,
   linksComerciais: false,
 };

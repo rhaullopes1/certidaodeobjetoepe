@@ -56,7 +56,7 @@ describe("portal oficial do operador (operacao.flydox.net)", () => {
   it("subdomínio oficial ativa o modo neutro", () => {
     expect(resolverBranding(HOST_OFICIAL, HOST_OFICIAL)).toBe(BRANDING_OPERACIONAL);
     expect(resolverBranding("https://operacao.flydox.net/operacao", HOST_OFICIAL)).toBe(BRANDING_OPERACIONAL);
-    expect(resolverBranding("Operacao.FlyDox.net:443", HOST_OFICIAL).nomePainelOperador).toBe("Portal Operacional");
+    expect(resolverBranding("Operacao.FlyDox.net:443", HOST_OFICIAL).nomePainelOperador).toBe("PORTAL OPERACIONAL | efficiency");
   });
 
   it("domínio raiz flydox.net fica comercial (reservado ao futuro projeto FlyDocs)", () => {
