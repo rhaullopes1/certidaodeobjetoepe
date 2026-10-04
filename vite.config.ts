@@ -21,6 +21,9 @@ export default defineConfig({
 
   },
   vite: {
+    server: {
+      allowedHosts: ["operacao.flydox.net"],
+    },
     resolve: {
       alias: {
         "entities/lib/decode.js": path.resolve(process.cwd(), "node_modules/entities/lib/decode.js"),

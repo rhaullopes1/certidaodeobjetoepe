@@ -235,6 +235,158 @@
   background: linear-gradient(90deg, var(--gold), transparent);
 }
 
+/* Portal operacional Efficiency. Os tokens ficam estritamente neste escopo,
+   preservando o site comercial e o painel administrativo. */
+@utility theme-efficiency {
+  --background: oklch(0.105 0.008 20);
+  --foreground: oklch(0.965 0.012 85);
+  --card: oklch(0.155 0.012 25);
+  --card-foreground: oklch(0.965 0.012 85);
+  --popover: oklch(0.17 0.012 25);
+  --popover-foreground: oklch(0.965 0.012 85);
+  --primary: oklch(0.73 0.11 82);
+  --primary-foreground: oklch(0.13 0.01 25);
+  --secondary: oklch(0.205 0.013 25);
+  --secondary-foreground: oklch(0.94 0.012 85);
+  --muted: oklch(0.19 0.01 25);
+  --muted-foreground: oklch(0.7 0.022 75);
+  --accent: oklch(0.78 0.105 84);
+  --accent-foreground: oklch(0.13 0.01 25);
+  --destructive: oklch(0.63 0.18 27);
+  --destructive-foreground: oklch(0.98 0.005 25);
+  --border: oklch(0.38 0.035 72 / 55%);
+  --input: oklch(0.43 0.035 72 / 65%);
+  --ring: oklch(0.76 0.11 82);
+  --gold: oklch(0.76 0.11 82);
+  --gold-soft: oklch(0.88 0.065 85);
+  --live: oklch(0.69 0.14 150);
+  --alerta: oklch(0.8 0.13 80);
+  background: var(--background);
+  color: var(--foreground);
+  color-scheme: dark;
+}
+
+@utility efficiency-shell {
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--gold) 4%, transparent), transparent 18rem),
+    var(--background);
+
+  & h1,
+  & h2,
+  & h3 {
+    letter-spacing: 0;
+  }
+
+  & section,
+  & li[class*="bg-background"],
+  & div[class*="bg-background"] {
+    box-shadow: 0 14px 40px -34px oklch(0 0 0 / 85%);
+  }
+
+  & input,
+  & select,
+  & textarea {
+    outline: none;
+  }
+
+  & input:focus,
+  & select:focus,
+  & textarea:focus {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 16%, transparent);
+  }
+}
+
+@utility efficiency-login {
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem;
+  background:
+    linear-gradient(90deg, transparent 49.9%, color-mix(in oklab, var(--gold) 8%, transparent) 50%, transparent 50.1%),
+    linear-gradient(0deg, transparent 49.9%, color-mix(in oklab, var(--gold) 6%, transparent) 50%, transparent 50.1%),
+    var(--background);
+  background-size: 72px 72px;
+
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(125deg, oklch(0.105 0.008 20) 0 52%, oklch(0.16 0.018 60 / 45%) 100%);
+  }
+}
+
+@utility efficiency-login-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 30rem;
+}
+
+@utility efficiency-login-card {
+  padding: 2rem;
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 28px 80px -38px oklch(0 0 0 / 95%), 0 0 0 1px oklch(0.76 0.11 82 / 8%);
+  backdrop-filter: blur(18px);
+
+  @media (min-width: 40rem) {
+    padding: 2.5rem;
+  }
+}
+
+@utility efficiency-nav-link {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  border-radius: var(--radius-md);
+  padding: 0 0.65rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: color 180ms ease, background-color 180ms ease;
+
+  &:hover {
+    color: var(--foreground);
+    background: var(--secondary);
+  }
+}
+
+@utility efficiency-nav-active {
+  color: var(--primary);
+  background: color-mix(in oklab, var(--primary) 10%, transparent);
+}
+
+@utility efficiency-icon-button {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: var(--radius-md);
+  padding: 0 0.55rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: color 180ms ease, background-color 180ms ease;
+
+  &:hover {
+    color: var(--foreground);
+    background: var(--secondary);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-efficiency *,
+  .theme-efficiency *::before,
+  .theme-efficiency *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
 /* Estados visuais de operação na listagem de Entregas (sobre o card-premium).
    Cada estado sobrescreve tokens locais para que o conteúdo interno,
    badges e luzinhas permaneçam legíveis sobre o fundo forte. */

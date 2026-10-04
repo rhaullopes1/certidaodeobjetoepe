@@ -16,6 +16,10 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { PWA } from "@/components/site/pwa";
 import { resolverBranding, rotaPermitidaNoPortal } from "@/lib/branding";
 import { hostAtual } from "@/lib/host-atual";
+import efficiencyOg from "@/assets/efficiency/og.jpg.asset.json";
+
+const URL_PORTAL_OPERACIONAL = "https://operacao.flydox.net";
+const IMAGEM_PORTAL_OPERACIONAL = `${URL_PORTAL_OPERACIONAL}${efficiencyOg.url}`;
 
 function NotFoundComponent() {
   return (
@@ -81,14 +85,17 @@ const headOperacional = () => ({
   meta: [
     { charSet: "utf-8" },
     { name: "viewport", content: "width=device-width, initial-scale=1" },
-    { title: "Portal Operacional" },
-    { name: "description", content: "Área restrita de operação." },
-    { property: "og:title", content: "Portal Operacional" },
-    { property: "og:description", content: "Área restrita de operação." },
+    { title: "PORTAL OPERACIONAL | efficiency" },
+    { name: "description", content: "Acesso restrito ao portal operacional da efficiency." },
+    { property: "og:title", content: "PORTAL OPERACIONAL | efficiency" },
+    { property: "og:description", content: "Acesso restrito ao portal operacional da efficiency." },
     { property: "og:type", content: "website" },
-    { name: "twitter:card", content: "summary" },
+    { property: "og:url", content: URL_PORTAL_OPERACIONAL },
+    { property: "og:image", content: IMAGEM_PORTAL_OPERACIONAL },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: IMAGEM_PORTAL_OPERACIONAL },
     { name: "robots", content: "noindex, nofollow" },
-    { name: "theme-color", content: "#0b1b33" },
+    { name: "theme-color", content: "#0e0909" },
   ],
   links: [{ rel: "stylesheet", href: appCss }],
 });

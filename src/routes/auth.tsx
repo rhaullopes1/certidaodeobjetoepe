@@ -4,6 +4,10 @@ import { Loader2, Scale, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { destinoPosLogin, ehAdministrativo, ehOperador, meusPapeis } from "@/lib/papeis";
 import { lovable } from "@/integrations/lovable/index";
+import { EfficiencyBrand, FlyDoxCredit } from "@/components/operacao/efficiency-brand";
+import efficiencyOg from "@/assets/efficiency/og.jpg.asset.json";
+
+const IMAGEM_SOCIAL_OPERACIONAL = `https://operacao.flydox.net${efficiencyOg.url}`;
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -12,14 +16,18 @@ export const Route = createFileRoute("/auth")({
     match.context?.branding?.modo === "operacional"
       ? {
           meta: [
-            { title: "Acesso | Portal Operacional" },
-            { name: "description", content: "Acesso restrito ao portal operacional." },
-            { property: "og:title", content: "Acesso | Portal Operacional" },
-            { property: "og:description", content: "Acesso restrito ao portal operacional." },
+            { title: "PORTAL OPERACIONAL | efficiency" },
+            { name: "description", content: "Acesso restrito ao portal operacional da efficiency." },
+            { property: "og:title", content: "PORTAL OPERACIONAL | efficiency" },
+            { property: "og:description", content: "Acesso restrito ao portal operacional da efficiency." },
             { property: "og:type", content: "website" },
-            { name: "twitter:card", content: "summary" },
+            { property: "og:url", content: "https://operacao.flydox.net/auth" },
+            { property: "og:image", content: IMAGEM_SOCIAL_OPERACIONAL },
+            { name: "twitter:card", content: "summary_large_image" },
+            { name: "twitter:image", content: IMAGEM_SOCIAL_OPERACIONAL },
             { name: "robots", content: "noindex, nofollow" },
           ],
+          links: [{ rel: "canonical", href: "https://operacao.flydox.net/auth" }],
         }
       : {
           meta: [
@@ -116,8 +124,8 @@ function AuthPage() {
   }
 
   return (
-    <main className="grid min-h-dvh place-items-center bg-secondary/40 px-5 py-12">
-      <div className="w-full max-w-md">
+    <main className={portal ? "theme-efficiency efficiency-login min-h-dvh" : "grid min-h-dvh place-items-center bg-secondary/40 px-5 py-12"}>
+      <div className={portal ? "efficiency-login-panel" : "w-full max-w-md"}>
         {branding.linksComerciais && (
           <Link
             to="/"
@@ -127,14 +135,20 @@ function AuthPage() {
           </Link>
         )}
 
-        <div className="card-premium p-7 sm:p-9">
-          <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <Scale className="h-5 w-5" strokeWidth={1.8} />
-          </span>
+        <div className={portal ? "efficiency-login-card" : "card-premium p-7 sm:p-9"}>
+          {portal ? (
+            <EfficiencyBrand />
+          ) : (
+            <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
+              <Scale className="h-5 w-5" strokeWidth={1.8} />
+            </span>
+          )}
           {portal ? (
             <>
-              <h1 className="mt-5 font-display text-2xl font-bold">{branding.nomePainelOperador}</h1>
-              <p className="mt-2 text-sm text-muted-foreground">Acesso restrito. Entre com a conta de operador.</p>
+              <div className="mt-7 gold-rule" />
+              <p className="mt-5 text-[11px] font-semibold uppercase text-gold">Ambiente seguro</p>
+              <h1 className="mt-2 font-display text-2xl font-bold uppercase sm:text-3xl">Portal Operacional</h1>
+              <p className="mt-2 text-sm text-muted-foreground">Acesso restrito à efficiency</p>
             </>
           ) : (
             <>
@@ -241,6 +255,7 @@ function AuthPage() {
                 : "Já tenho conta — entrar"}
             </button>
           )}
+          {portal && <div className="mt-7 border-t border-border pt-5"><FlyDoxCredit /></div>}
         </div>
       </div>
     </main>

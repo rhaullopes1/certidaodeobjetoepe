@@ -31,8 +31,8 @@ function Campo({ rotulo, valor }: { rotulo: string; valor?: string | number | nu
 
 function Bloco({ titulo, children, className = "" }: { titulo: string; children: React.ReactNode; className?: string }) {
   return (
-    <section className={`rounded-xl border border-border bg-background p-4 ${className}`}>
-      <h2 className="font-bold">{titulo}</h2>
+    <section className={`rounded-lg border border-border bg-card p-4 sm:p-5 ${className}`}>
+      <h2 className="font-bold text-foreground">{titulo}</h2>
       <div className="mt-2">{children}</div>
     </section>
   );
@@ -138,7 +138,7 @@ function Detalhe() {
       </Link>
 
       {/* 1. Status + próxima ação */}
-      <section className="rounded-xl border-2 border-primary bg-background p-4">
+      <section className="rounded-lg border border-primary bg-card p-4 sm:p-5">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
           <p className="truncate font-mono text-lg font-bold">{p.protocolo}</p>
           <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">{rotuloEtapa(p.status_operacao)}</span>
