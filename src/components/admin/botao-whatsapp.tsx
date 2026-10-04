@@ -51,8 +51,11 @@ export function BotaoWhatsAppCliente({
     if (carregando) return;
     setCarregando(true);
     // Abre a aba antes do await: navegadores bloqueiam janelas abertas
-    // depois de uma operação assíncrona.
-    const aba = window.open("", "_blank", "noopener,noreferrer");
+    // depois de uma operação assíncrona. Sem a feature "noopener" (que faz
+    // window.open retornar null e abre uma aba vazia), e com o opener
+    // cortado em seguida por segurança — mesmo padrão de abrir-em-nova-aba.
+    const aba = window.open("about:blank", "_blank");
+    if (aba) aba.opener = null;
     let linkCertidao: string | null = null;
     try {
       linkCertidao = await linkCertidaoParaCliente(pedido.id);
@@ -71,7 +74,7 @@ export function BotaoWhatsAppCliente({
       aba?.close();
       return;
     }
-    if (aba) aba.location.href = url;
+    if (aba && !aba.closed) aba.location.href = url;
     else window.location.href = url;
   }
 
