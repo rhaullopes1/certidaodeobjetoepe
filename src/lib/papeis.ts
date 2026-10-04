@@ -193,9 +193,12 @@ export function pesoAtencao(t: ItemFila, agora: Date = new Date()) {
 export function precisaAtencao(t: ItemFila, agora: Date = new Date()) {
   return t.status_operacao !== "concluido" && (Boolean(t.pendencia_motivo) || nivelIdade(diasDesde(t.atribuido_em, agora)) !== "normal");
 }
-export function ordenarFilaOperador<T extends ItemFila>(lista: T[], agora: Date = new Date()): T[] {
+/** Mesma ordem da fila geral de Entregas, com o pedido mais recente (maior nº de fila) no topo. */
+export function ordenarFilaOperador<T extends ItemFila & { fila_numero?: number | null }>(lista: T[]): T[] {
   return [...lista].sort(
-    (a, b) => pesoAtencao(b, agora) - pesoAtencao(a, agora) || new Date(a.atribuido_em).getTime() - new Date(b.atribuido_em).getTime(),
+    (a, b) =>
+      (b.fila_numero ?? -Infinity) - (a.fila_numero ?? -Infinity) ||
+      new Date(b.atribuido_em).getTime() - new Date(a.atribuido_em).getTime(),
   );
 }
 

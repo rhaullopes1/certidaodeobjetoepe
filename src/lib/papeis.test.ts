@@ -70,16 +70,15 @@ describe("cockpit operacional sem dados financeiros", () => {
     expect(proximaAcaoOperador({ status_operacao: "em_andamento", atribuido_em: dias(0), pendencia_motivo: "outro", pdfs: 1 })).toBe("Resolver pendência");
     expect(proximaAcaoOperador({ status_operacao: "concluido", atribuido_em: dias(0) })).toBe("Aguardando validação");
   });
-  it("fila ordena pendência e idade antes, concluídas por último", () => {
+  it("fila segue o nº da fila geral, mais recente no topo", () => {
     const l = ordenarFilaOperador([
-      { id: "c", status_operacao: "concluido", atribuido_em: dias(9) },
-      { id: "n", status_operacao: "em_andamento", atribuido_em: dias(0) },
-      { id: "v", status_operacao: "em_andamento", atribuido_em: dias(5) },
-      { id: "p", status_operacao: "em_andamento", atribuido_em: dias(0), pendencia_motivo: "segredo_justica" },
-    ], agora);
-    expect(l.map((x) => x.id)).toEqual(["p", "v", "n", "c"]);
-    expect(precisaAtencao(l[0], agora)).toBe(true);
-    expect(precisaAtencao(l[2], agora)).toBe(false);
+      { id: "a", status_operacao: "concluido", atribuido_em: dias(9), fila_numero: 21 },
+      { id: "c", status_operacao: "em_andamento", atribuido_em: dias(0), fila_numero: 23 },
+      { id: "s", status_operacao: "em_andamento", atribuido_em: dias(1), fila_numero: null },
+      { id: "b", status_operacao: "em_andamento", atribuido_em: dias(5), fila_numero: 22, pendencia_motivo: "segredo_justica" },
+    ]);
+    expect(l.map((x) => x.id)).toEqual(["c", "b", "a", "s"]);
+    expect(precisaAtencao(l[1], agora)).toBe(true);
   });
   it("faixas de idade e utilitários", () => {
     expect([nivelIdade(0), nivelIdade(2), nivelIdade(4)]).toEqual(["normal", "atencao", "critica"]);

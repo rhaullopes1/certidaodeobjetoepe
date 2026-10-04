@@ -204,6 +204,13 @@
       "when": 1791050797780,
       "tag": "0028_operador_cockpit_isolamento",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1791140414502,
+      "tag": "0029_operador_fila_numero_pago_em",
+      "breakpoints": true
     }
   ]
 }

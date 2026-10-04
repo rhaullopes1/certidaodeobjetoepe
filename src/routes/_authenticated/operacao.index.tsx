@@ -8,6 +8,8 @@ import {
   MAX_PDFS_OPERADOR, diasDesde, duracao, mediana, nivelIdade, ordenarFilaOperador, precisaAtencao,
   proximaAcaoOperador, rotuloEtapa, rotuloPendencia, type NivelIdade,
 } from "@/lib/papeis";
+import { LuzesUrgencia } from "@/components/admin/luzes-urgencia";
+import { FINALIDADES } from "@/lib/pedidos.schema";
 
 export const Route = createFileRoute("/_authenticated/operacao/")({
   component: Fila,
@@ -144,6 +146,20 @@ function Fila() {
           const acao = proximaAcaoOperador(t);
           return (
             <li key={t.atribuicao_id} className={`rounded-lg border bg-card p-4 sm:p-5 ${t.pendencia_motivo && !concluida ? "border-destructive border-2" : "border-border"}`}>
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <span
+                  className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-primary/15 px-2 text-xs font-bold text-primary"
+                  title={t.fila_numero != null ? `Nº ${t.fila_numero} da fila` : "Sem número de fila"}
+                >
+                  {t.fila_numero != null ? `#${t.fila_numero}` : "—"}
+                </span>
+                <LuzesUrgencia pagoEm={t.pago_em} className="rounded-full bg-background/85 px-2 py-1 ring-1 ring-border" />
+                {t.finalidade && t.finalidade in FINALIDADES && (
+                  <span className="inline-flex rounded-full border border-primary/40 px-2 py-0.5 text-xs font-semibold text-primary">
+                    {FINALIDADES[t.finalidade as keyof typeof FINALIDADES]}
+                  </span>
+                )}
+              </div>
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
                 <div className="min-w-0">
                   <p className="truncate font-mono text-sm font-bold">{t.protocolo}</p>
