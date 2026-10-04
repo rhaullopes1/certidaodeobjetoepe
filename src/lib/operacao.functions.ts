@@ -150,6 +150,15 @@ export const meuHistoricoOperacao = createServerFn({ method: "POST" })
     return data ?? [];
   });
 
+export const meusTemposEntrega = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await exigirOperador(context);
+    const { data, error } = await context.supabase.rpc("operador_tempos_entrega");
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
 /* ---------------- ADMINISTRAÇÃO ---------------- */
 
 export const listarOperadores = createServerFn({ method: "POST" })

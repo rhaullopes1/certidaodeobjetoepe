@@ -56,6 +56,7 @@ import { Route as AuthenticatedAdminRecuperacaoRouteImport } from './routes/_aut
 import { Route as AuthenticatedOperacaoIndexRouteImport } from './routes/_authenticated/operacao.index'
 import { Route as AuthenticatedOperacaoIdRouteImport } from './routes/_authenticated/operacao.$id'
 import { Route as AuthenticatedOperacaoHistoricoRouteImport } from './routes/_authenticated/operacao.historico'
+import { Route as AuthenticatedOperacaoMetasRouteImport } from './routes/_authenticated/operacao.metas'
 import { Route as BlogCategoriaSlugRouteImport } from './routes/blog.categoria.$slug'
 import { Route as CertidaoDeObjetoEPeParaIndexRouteImport } from './routes/certidao-de-objeto-e-pe.para.index'
 import { Route as CertidaoDeObjetoEPeParaSlugRouteImport } from './routes/certidao-de-objeto-e-pe.para.$slug'
@@ -319,6 +320,12 @@ const AuthenticatedOperacaoHistoricoRoute =
     path: '/historico',
     getParentRoute: () => AuthenticatedOperacaoRoute,
   } as any)
+const AuthenticatedOperacaoMetasRoute =
+  AuthenticatedOperacaoMetasRouteImport.update({
+    id: '/metas',
+    path: '/metas',
+    getParentRoute: () => AuthenticatedOperacaoRoute,
+  } as any)
 const BlogCategoriaSlugRoute = BlogCategoriaSlugRouteImport.update({
   id: '/blog/categoria/$slug',
   path: '/blog/categoria/$slug',
@@ -442,6 +449,7 @@ export interface FileRoutesByFullPath {
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
+  '/operacao/metas': typeof AuthenticatedOperacaoMetasRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
@@ -502,6 +510,7 @@ export interface FileRoutesByTo {
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
+  '/operacao/metas': typeof AuthenticatedOperacaoMetasRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
@@ -566,6 +575,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/_authenticated/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/_authenticated/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
+  '/_authenticated/operacao/metas': typeof AuthenticatedOperacaoMetasRoute
   '/blog/categoria/$slug': typeof BlogCategoriaSlugRoute
   '/certidao-de-objeto-e-pe/para/$slug': typeof CertidaoDeObjetoEPeParaSlugRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
@@ -630,6 +640,7 @@ export interface FileRouteTypes {
     | '/admin/recuperacao'
     | '/operacao/$id'
     | '/operacao/historico'
+    | '/operacao/metas'
     | '/blog/categoria/$slug'
     | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
@@ -690,6 +701,7 @@ export interface FileRouteTypes {
     | '/admin/recuperacao'
     | '/operacao/$id'
     | '/operacao/historico'
+    | '/operacao/metas'
     | '/blog/categoria/$slug'
     | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
@@ -753,6 +765,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/recuperacao'
     | '/_authenticated/operacao/$id'
     | '/_authenticated/operacao/historico'
+    | '/_authenticated/operacao/metas'
     | '/blog/categoria/$slug'
     | '/certidao-de-objeto-e-pe/para/$slug'
     | '/lovable/email/events'
@@ -1148,6 +1161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOperacaoHistoricoRouteImport
       parentRoute: typeof AuthenticatedOperacaoRoute
     }
+    '/_authenticated/operacao/metas': {
+      id: '/_authenticated/operacao/metas'
+      path: '/metas'
+      fullPath: '/operacao/metas'
+      preLoaderRoute: typeof AuthenticatedOperacaoMetasRouteImport
+      parentRoute: typeof AuthenticatedOperacaoRoute
+    }
     '/blog/categoria/$slug': {
       id: '/blog/categoria/$slug'
       path: '/blog/categoria/$slug'
@@ -1285,12 +1305,14 @@ const AuthenticatedAdminRouteWithChildren =
 interface AuthenticatedOperacaoRouteChildren {
   AuthenticatedOperacaoIdRoute: typeof AuthenticatedOperacaoIdRoute
   AuthenticatedOperacaoHistoricoRoute: typeof AuthenticatedOperacaoHistoricoRoute
+  AuthenticatedOperacaoMetasRoute: typeof AuthenticatedOperacaoMetasRoute
   AuthenticatedOperacaoIndexRoute: typeof AuthenticatedOperacaoIndexRoute
 }
 
 const AuthenticatedOperacaoRouteChildren: AuthenticatedOperacaoRouteChildren = {
   AuthenticatedOperacaoIdRoute: AuthenticatedOperacaoIdRoute,
   AuthenticatedOperacaoHistoricoRoute: AuthenticatedOperacaoHistoricoRoute,
+  AuthenticatedOperacaoMetasRoute: AuthenticatedOperacaoMetasRoute,
   AuthenticatedOperacaoIndexRoute: AuthenticatedOperacaoIndexRoute,
 }
 
