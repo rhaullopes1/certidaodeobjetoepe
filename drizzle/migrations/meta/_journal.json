@@ -211,6 +211,13 @@
       "when": 1791140414502,
       "tag": "0029_operador_fila_numero_pago_em",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1791141878653,
+      "tag": "0030_operador_tempos_entrega",
+      "breakpoints": true
     }
   ]
 }

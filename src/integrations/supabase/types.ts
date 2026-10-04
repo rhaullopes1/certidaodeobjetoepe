@@ -1921,6 +1921,16 @@ export type Database = {
         Args: { p_atribuicao: string; p_nota: string }
         Returns: undefined
       }
+      operador_tempos_entrega: {
+        Args: never
+        Returns: {
+          atribuicao_id: string
+          atribuido_em: string
+          concluido_em: string
+          finalidade: string
+          status_operacao: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "equipe" | "operador_certidao"
