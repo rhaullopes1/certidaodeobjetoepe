@@ -83,17 +83,20 @@ function Fila() {
   ];
 
   return (
-    <div className="space-y-4">
-      <div>
-        <p className="text-sm text-muted-foreground">{saudacao()}! Estas são as suas operações.</p>
-        <h1 className="text-xl font-bold">Painel Operacional</h1>
+    <div className="space-y-5">
+      <div className="flex items-end justify-between gap-4 border-b border-border pb-5">
+        <div>
+          <p className="text-xs font-semibold uppercase text-gold">Cockpit jurídico</p>
+          <h1 className="mt-1 text-2xl font-bold sm:text-3xl">{saudacao()}, equipe Efficiency.</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Acompanhe prioridades, pendências e documentos da sua operação.</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {cards.map((c) => (
-          <div key={c.rotulo} className="min-w-0 rounded-xl border border-border bg-background p-2.5">
-            <p className="truncate text-[11px] text-muted-foreground">{c.rotulo}</p>
-            <p className="truncate text-xl font-bold">{q.isPending ? "…" : c.valor}</p>
+          <div key={c.rotulo} className="min-w-0 rounded-lg border border-border bg-card p-3">
+            <p className="truncate text-[10px] font-semibold uppercase text-muted-foreground">{c.rotulo}</p>
+            <p className="mt-1 truncate text-2xl font-bold text-foreground">{q.isPending ? "…" : c.valor}</p>
           </div>
         ))}
       </div>
@@ -105,7 +108,7 @@ function Fila() {
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
           placeholder="Buscar protocolo, processo ou parte"
-          className="w-full rounded-lg border border-input bg-background py-2.5 pl-9 pr-3 text-sm"
+        className="w-full rounded-lg border border-input bg-card py-3 pl-9 pr-3 text-sm"
         />
       </label>
 
@@ -117,7 +120,7 @@ function Fila() {
             aria-selected={filtro === f.valor}
             onClick={() => setFiltro(f.valor)}
             className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold ${
-              filtro === f.valor ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background text-foreground"
+              filtro === f.valor ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"
             }`}
           >
             {f.rotulo}
@@ -140,7 +143,7 @@ function Fila() {
           const concluida = t.status_operacao === "concluido";
           const acao = proximaAcaoOperador(t);
           return (
-            <li key={t.atribuicao_id} className={`rounded-xl border bg-background p-4 ${t.pendencia_motivo && !concluida ? "border-destructive border-2" : "border-border"}`}>
+            <li key={t.atribuicao_id} className={`rounded-lg border bg-card p-4 sm:p-5 ${t.pendencia_motivo && !concluida ? "border-destructive border-2" : "border-border"}`}>
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
                 <div className="min-w-0">
                   <p className="truncate font-mono text-sm font-bold">{t.protocolo}</p>

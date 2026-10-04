@@ -35,19 +35,23 @@ function Historico() {
   const med = mediana(horas);
   const tempo = med === null ? "—" : duracao(new Date(0).toISOString(), new Date(med * 3_600_000).toISOString());
 
-  const sel = "rounded-lg border border-input bg-background px-2 py-2 text-sm";
+  const sel = "rounded-lg border border-input bg-card px-3 py-2.5 text-sm";
   return (
-    <div className="space-y-4">
-      <h1 className="text-lg font-bold">Histórico das minhas operações</h1>
+    <div className="space-y-5">
+      <div className="border-b border-border pb-5">
+        <p className="text-xs font-semibold uppercase text-gold">Rastreabilidade</p>
+        <h1 className="mt-1 text-2xl font-bold sm:text-3xl">Histórico das operações</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Consulte entregas validadas, devoluções e tempos de execução.</p>
+      </div>
       <div className="grid grid-cols-3 gap-2">
         {[
           { r: "Validadas", v: validadas.length },
           { r: "Devolvidas", v: lista.length - validadas.length },
           { r: "Tempo mediano", v: tempo },
         ].map((c) => (
-          <div key={c.r} className="min-w-0 rounded-xl border border-border bg-background p-2.5">
-            <p className="truncate text-[11px] text-muted-foreground">{c.r}</p>
-            <p className="truncate text-xl font-bold">{q.isPending ? "…" : c.v}</p>
+          <div key={c.r} className="min-w-0 rounded-lg border border-border bg-card p-3">
+            <p className="truncate text-[10px] font-semibold uppercase text-muted-foreground">{c.r}</p>
+            <p className="mt-1 truncate text-xl font-bold">{q.isPending ? "…" : c.v}</p>
           </div>
         ))}
       </div>
@@ -77,7 +81,7 @@ function Historico() {
       )}
       <ul className="space-y-3">
         {lista.map((h) => (
-          <li key={h.atribuicao_id} className="rounded-xl border border-border bg-background p-4 text-sm">
+          <li key={h.atribuicao_id} className="rounded-lg border border-border bg-card p-4 text-sm sm:p-5">
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
               <div className="min-w-0">
                 <p className="truncate font-mono font-bold">{h.protocolo}</p>
