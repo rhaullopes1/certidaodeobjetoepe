@@ -1,15 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { luzesAcesas } from "../luzes-urgencia";
+import { CORES, luzesAcesas } from "../luzes-urgencia";
 const base = Date.parse("2026-10-01T12:00:00Z");
 const h = (x: number) => base + x * 3_600_000;
 describe("luzesAcesas", () => {
-  it.each([[0,1],[23.9,2-1],[24,2],[47.9,2],[48,3],[72,4],[96,5],[120,6],[143.9,6],[144,7],[1000,7]])("%sh → %s", (x, n) => {
+  it.each([[0,1],[23.9,1],[24,2],[48,3],[72,4],[144,7],[167.9,7],[168,8],[264,12],[1000,12]])("%sh → %s", (x, n) => {
     expect(luzesAcesas("2026-10-01T12:00:00Z", h(x))).toBe(n);
   });
 });
-import { CORES } from "../luzes-urgencia";
 describe("cores", () => {
-  it("2 verdes, 3 amarelas, 2 vermelhas", () => {
-    expect(CORES).toEqual(["verde","verde","amarela","amarela","amarela","vermelha","vermelha"]);
+  it("3 verdes, 4 amarelas, 5 vermelhas", () => {
+    expect(CORES.filter((c) => c === "verde")).toHaveLength(3);
+    expect(CORES.filter((c) => c === "amarela")).toHaveLength(4);
+    expect(CORES.filter((c) => c === "vermelha")).toHaveLength(5);
+    expect(CORES).toHaveLength(12);
   });
 });
