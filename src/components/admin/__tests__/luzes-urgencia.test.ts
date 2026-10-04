@@ -7,3 +7,9 @@ describe("luzesAcesas", () => {
     expect(luzesAcesas("2026-10-01T12:00:00Z", h(x))).toBe(n);
   });
 });
+import { CORES } from "../luzes-urgencia";
+describe("cores", () => {
+  it("2 verdes, 3 amarelas, 2 vermelhas", () => {
+    expect(CORES).toEqual(["verde","verde","amarela","amarela","amarela","vermelha","vermelha"]);
+  });
+});

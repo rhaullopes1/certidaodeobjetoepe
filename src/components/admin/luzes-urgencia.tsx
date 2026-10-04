@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 export type CorLuz = "verde" | "amarela" | "vermelha";
-const CORES: CorLuz[] = ["verde", "verde", "amarela", "amarela", "vermelha", "vermelha", "vermelha"];
+/** Luzes 1–2 verdes, 3–5 amarelas, 6–7 vermelhas. */
+export const CORES: CorLuz[] = ["verde", "verde", "amarela", "amarela", "amarela", "vermelha", "vermelha"];
 
 /** Quantas das 7 luzes estão acesas (1 a 7), a partir das horas desde pago_em. */
 export function luzesAcesas(pagoEm: string, agora: number): number {
@@ -10,9 +11,9 @@ export function luzesAcesas(pagoEm: string, agora: number): number {
 }
 
 const CLASSE: Record<CorLuz, { on: string; off: string }> = {
-  verde: { on: "bg-live shadow-[0_0_6px_var(--live)]", off: "bg-live/20" },
-  amarela: { on: "bg-alerta shadow-[0_0_6px_var(--alerta)]", off: "bg-alerta/20" },
-  vermelha: { on: "bg-destructive shadow-[0_0_6px_var(--destructive)]", off: "bg-destructive/20" },
+  verde: { on: "bg-live shadow-[0_0_10px_var(--live)] ring-1 ring-live", off: "bg-live/15" },
+  amarela: { on: "bg-alerta shadow-[0_0_10px_var(--alerta)] ring-1 ring-alerta", off: "bg-alerta/15" },
+  vermelha: { on: "bg-destructive shadow-[0_0_10px_var(--destructive)] ring-1 ring-destructive", off: "bg-destructive/15" },
 };
 
 export function LuzesUrgencia({
@@ -36,10 +37,10 @@ export function LuzesUrgencia({
       role="img"
       aria-label={rotulo}
       title={rotulo}
-      className={`inline-flex items-center gap-1${className ? ` ${className}` : ""}`}
+      className={`inline-flex items-center gap-1.5${className ? ` ${className}` : ""}`}
     >
       {CORES.map((c, i) => (
-        <span key={i} className={`h-2 w-2 rounded-full ${i < n ? CLASSE[c].on : CLASSE[c].off}`} />
+        <span key={i} className={`h-3 w-3 rounded-full ${i < n ? CLASSE[c].on : CLASSE[c].off}`} />
       ))}
     </span>
   );
