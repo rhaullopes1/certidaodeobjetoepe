@@ -56,6 +56,7 @@ function Layout() {
           </Link>
           <nav className="flex items-center gap-1 text-sm" aria-label="Navegação operacional">
           <Link to="/operacao" activeOptions={{ exact: true }} activeProps={{ className: "efficiency-nav-active" }} className="efficiency-nav-link">Operações</Link>
+          <Link to="/operacao/metas" activeProps={{ className: "efficiency-nav-active" }} className="efficiency-nav-link">Metas</Link>
           <Link to="/operacao/historico" activeProps={{ className: "efficiency-nav-active" }} className="efficiency-nav-link">Histórico</Link>
           <button onClick={sair} className="efficiency-icon-button" aria-label="Sair" title="Sair">
             <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Sair</span>
