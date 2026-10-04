@@ -1852,11 +1852,13 @@ export type Database = {
           cidade_processo: string
           comarca_processo: string
           concluido_em: string
+          fila_numero: number
           finalidade: string
           foro: string
           iniciado_em: string
           nome_parte: string
           numero_processo: string
+          pago_em: string
           pdfs: number
           pedido_id: string
           pendencia_em: string
