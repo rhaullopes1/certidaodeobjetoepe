@@ -36,6 +36,8 @@ export type PedidoResumo = {
   confirmacaoAutomatica: boolean;
   /** True quando existe link de cartão (Stripe), que confirma automaticamente. */
   confirmacaoAutomaticaCartao: boolean;
+  /** Preenchido quando o cliente reabriu um pedido cancelado/expirado. */
+  reativadoEm: string | null;
 };
 
 
@@ -118,6 +120,7 @@ function montar(row: {
     pixQrCodeUrl: row.pix_qrcode_url ?? null,
     checkoutUrl: row.checkout_url ?? null,
     pagoEm: row.pago_em ?? null,
+    reativadoEm: row.reativado_em ?? null,
     // Pix só é automático quando existe cobrança dinâmica de gateway (Mercado Pago).
     // O Pix fixo atual continua com confirmação manual por comprovante.
     confirmacaoAutomatica: Boolean(row.mercadopago_payment_id),

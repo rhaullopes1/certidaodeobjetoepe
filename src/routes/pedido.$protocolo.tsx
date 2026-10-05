@@ -350,9 +350,15 @@ function PedidoPage() {
                   Pagamento — {formatarBRL(data.valorCentavos)}
                 </h2>
                 <div className="mt-3 rounded-2xl border border-accent/40 bg-accent/10 p-4">
+                  {data.reativadoEm && (
+                    <p className="mb-2 text-sm font-bold">
+                      Sua solicitação foi reativada! Seus dados continuam salvos.
+                    </p>
+                  )}
                   <p className="text-sm font-semibold">
-                    Sua solicitação está salva — falta só o pagamento para entrar na fila de
-                    emissão.
+                    {data.reativadoEm
+                      ? "Conclua o pagamento por Pix ou em até 3x no cartão para iniciar a emissão do seu documento."
+                      : "Sua solicitação está salva — falta só o pagamento para entrar na fila de emissão."}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     Pedidos pagos entram na fila na ordem de confirmação. Pague por Pix ou cartão
