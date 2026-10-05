@@ -55,11 +55,22 @@ export const FINALIDADES = {
   caminhoneiro_motorista: "Caminhoneiro",
   motorista_app: "Motorista de app",
   transacao_imobiliaria: "Transação imobiliária",
+  advogado: "Advogado / Escritório",
+  concurso_publico: "Concurso público",
+  financiamento_bancario: "Financiamento bancário",
   outro: "Outros",
 } as const;
 export type Finalidade = keyof typeof FINALIDADES;
 export const finalidadeField = z.enum(
-  ["caminhoneiro_motorista", "motorista_app", "transacao_imobiliaria", "outro"],
+  [
+    "caminhoneiro_motorista",
+    "motorista_app",
+    "transacao_imobiliaria",
+    "advogado",
+    "concurso_publico",
+    "financiamento_bancario",
+    "outro",
+  ],
   { errorMap: () => ({ message: "Selecione a finalidade da certidão" }) },
 );
 
