@@ -410,7 +410,7 @@ async function gerarCheckoutCartaoMercadoPago(row: PedidoRow): Promise<PedidoRow
       cpf: row.cpf,
       quantidade: row.quantidade ?? 1,
       valorCentavos: row.valor_centavos,
-      sufixoIdempotencia: sufixoCobranca(row),
+      sufixoIdempotencia: row.mercadopago_payment_id ?? sufixoCobranca(row),
     });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: atualizado } = await supabaseAdmin
