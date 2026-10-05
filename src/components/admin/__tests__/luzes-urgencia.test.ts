@@ -8,10 +8,10 @@ describe("luzesAcesas", () => {
   });
 });
 describe("cores", () => {
-  it("3 verdes, 4 amarelas, 5 vermelhas", () => {
-    expect(CORES.filter((c) => c === "verde")).toHaveLength(3);
-    expect(CORES.filter((c) => c === "amarela")).toHaveLength(4);
-    expect(CORES.filter((c) => c === "vermelha")).toHaveLength(5);
+  it("2 verdes, 3 amarelas, 7 vermelhas", () => {
+    expect(CORES.filter((c) => c === "verde")).toHaveLength(2);
+    expect(CORES.filter((c) => c === "amarela")).toHaveLength(3);
+    expect(CORES.filter((c) => c === "vermelha")).toHaveLength(7);
     expect(CORES).toHaveLength(12);
   });
 });
