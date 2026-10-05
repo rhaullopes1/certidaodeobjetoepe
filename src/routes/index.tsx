@@ -115,7 +115,6 @@ function Index() {
         <Faq />
       </main>
       <Footer />
-      <FloatingWhatsApp />
     </div>
   );
 }
@@ -775,20 +774,5 @@ function Footer() {
         </p>
       </div>
     </footer>
-  );
-}
-
-function FloatingWhatsApp() {
-  return (
-    <a
-      href={WPP_MAIN}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Solicitar certidão pelo WhatsApp"
-      className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3.5 text-sm font-bold text-accent-foreground shadow-xl transition-transform hover:-translate-y-0.5 lg:hidden"
-    >
-      <MessageCircle className="h-5 w-5" />
-      Solicitar no WhatsApp
-    </a>
   );
 }

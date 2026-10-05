@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
-import { PUBLICOS_SEO, PUBLICO_POR_SLUG } from "@/lib/publicos-seo";
+import { PUBLICOS_SEO, PUBLICO_POR_SLUG, FINALIDADE_POR_SLUG } from "@/lib/publicos-seo";
+import { whatsappLink } from "@/lib/site";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
@@ -76,6 +77,8 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/para/$slug")({
 
 function PublicoPage() {
   const { publico, relacionados } = Route.useLoaderData();
+  const finalidade = FINALIDADE_POR_SLUG[publico.slug];
+  const busca = finalidade ? { finalidade } : {};
 
   return (
     <PageShell>
@@ -96,6 +99,7 @@ function PublicoPage() {
 
           <Link
             to="/solicitar"
+            search={busca}
             className="mt-7 inline-flex rounded-full bg-gold px-6 py-3 text-sm font-bold text-accent-foreground"
           >
             Solicitar certidão online
@@ -148,6 +152,33 @@ function PublicoPage() {
                 </div>
               ))}
             </dl>
+          </section>
+
+          <section className="mt-14 rounded-3xl border border-gold/40 bg-card p-6 sm:p-8">
+            <h2 className="font-display text-xl font-bold sm:text-2xl">
+              Pronto para pedir a sua certidão?
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Pedido 100% online em poucos minutos. Prazo estimado de 1 a 5 dias úteis, variando de
+              acordo com a comarca e o tribunal emissor.
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/solicitar"
+                search={busca}
+                className="inline-flex justify-center rounded-full bg-gold px-6 py-3 text-sm font-bold text-accent-foreground"
+              >
+                Solicitar certidão online
+              </Link>
+              <a
+                href={whatsappLink(`Olá! Tenho dúvidas sobre a Certidão de Objeto e Pé (${publico.rotulo}).`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex justify-center rounded-full bg-whatsapp px-6 py-3 text-sm font-bold text-whatsapp-foreground"
+              >
+                Tirar dúvidas no WhatsApp
+              </a>
+            </div>
           </section>
 
           {publico.fontes?.length ? (

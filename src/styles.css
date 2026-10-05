@@ -26,6 +26,8 @@
   --color-navy: var(--navy);
   --color-navy-deep: var(--navy-deep);
   --color-gold: var(--gold);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-foreground: var(--whatsapp-foreground);
   --color-gold-soft: var(--gold-soft);
   --color-live: var(--live);
   --color-alerta: var(--alerta);
@@ -106,6 +108,8 @@
   --navy: oklch(0.28 0.075 262);
   --navy-deep: oklch(0.19 0.062 264);
   --gold: oklch(0.78 0.115 85);
+  --whatsapp: #25d366;
+  --whatsapp-foreground: #ffffff;
   --gold-soft: oklch(0.9 0.06 88);
   --live: oklch(0.6 0.16 150);
   --alerta: oklch(0.8 0.16 85);

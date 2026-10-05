@@ -693,3 +693,16 @@ export const PUBLICOS_SEO: PublicoSeo[] = [
 ];
 
 export const PUBLICO_POR_SLUG = new Map(PUBLICOS_SEO.map((p) => [p.slug, p]));
+
+/** Finalidade do formulário pré-selecionada a partir da landing de nicho. */
+export const FINALIDADE_POR_SLUG: Record<string, string> = {
+  caminhoneiro: "caminhoneiro_motorista",
+  "motorista-de-aplicativo": "motorista_app",
+  entregador: "motorista_app",
+  "compra-e-venda-de-imovel": "transacao_imobiliaria",
+  "corretor-de-imoveis": "transacao_imobiliaria",
+  advogado: "advogado",
+  oab: "advogado",
+  "concurso-publico": "concurso_publico",
+  financiamento: "financiamento_bancario",
+};
