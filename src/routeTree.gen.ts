@@ -53,6 +53,7 @@ import { Route as AuthenticatedAdminEntregasRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
 import { Route as AuthenticatedAdminOperacaoRouteImport } from './routes/_authenticated/admin.operacao'
+import { Route as AuthenticatedAdminReativacaoRouteImport } from './routes/_authenticated/admin.reativacao'
 import { Route as AuthenticatedAdminRecuperacaoRouteImport } from './routes/_authenticated/admin.recuperacao'
 import { Route as AuthenticatedOperacaoIndexRouteImport } from './routes/_authenticated/operacao.index'
 import { Route as AuthenticatedOperacaoIdRouteImport } from './routes/_authenticated/operacao.$id'
@@ -305,6 +306,12 @@ const AuthenticatedAdminOperacaoRoute =
     path: '/operacao',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminReativacaoRoute =
+  AuthenticatedAdminReativacaoRouteImport.update({
+    id: '/reativacao',
+    path: '/reativacao',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminRecuperacaoRoute =
   AuthenticatedAdminRecuperacaoRouteImport.update({
     id: '/recuperacao',
@@ -460,6 +467,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/operacao': typeof AuthenticatedAdminOperacaoRoute
+  '/admin/reativacao': typeof AuthenticatedAdminReativacaoRoute
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
@@ -523,6 +531,7 @@ export interface FileRoutesByTo {
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/operacao': typeof AuthenticatedAdminOperacaoRoute
+  '/admin/reativacao': typeof AuthenticatedAdminReativacaoRoute
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
@@ -590,6 +599,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/_authenticated/admin/operacao': typeof AuthenticatedAdminOperacaoRoute
+  '/_authenticated/admin/reativacao': typeof AuthenticatedAdminReativacaoRoute
   '/_authenticated/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/_authenticated/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/_authenticated/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
@@ -657,6 +667,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro'
     | '/admin/historico'
     | '/admin/operacao'
+    | '/admin/reativacao'
     | '/admin/recuperacao'
     | '/operacao/$id'
     | '/operacao/historico'
@@ -720,6 +731,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro'
     | '/admin/historico'
     | '/admin/operacao'
+    | '/admin/reativacao'
     | '/admin/recuperacao'
     | '/operacao/$id'
     | '/operacao/historico'
@@ -786,6 +798,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/financeiro'
     | '/_authenticated/admin/historico'
     | '/_authenticated/admin/operacao'
+    | '/_authenticated/admin/reativacao'
     | '/_authenticated/admin/recuperacao'
     | '/_authenticated/operacao/$id'
     | '/_authenticated/operacao/historico'
@@ -1166,6 +1179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminOperacaoRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/reativacao': {
+      id: '/_authenticated/admin/reativacao'
+      path: '/reativacao'
+      fullPath: '/admin/reativacao'
+      preLoaderRoute: typeof AuthenticatedAdminReativacaoRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/recuperacao': {
       id: '/_authenticated/admin/recuperacao'
       path: '/recuperacao'
@@ -1321,6 +1341,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRoute
   AuthenticatedAdminHistoricoRoute: typeof AuthenticatedAdminHistoricoRoute
   AuthenticatedAdminOperacaoRoute: typeof AuthenticatedAdminOperacaoRoute
+  AuthenticatedAdminReativacaoRoute: typeof AuthenticatedAdminReativacaoRoute
   AuthenticatedAdminRecuperacaoRoute: typeof AuthenticatedAdminRecuperacaoRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -1337,6 +1358,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminFinanceiroRoute: AuthenticatedAdminFinanceiroRoute,
   AuthenticatedAdminHistoricoRoute: AuthenticatedAdminHistoricoRoute,
   AuthenticatedAdminOperacaoRoute: AuthenticatedAdminOperacaoRoute,
+  AuthenticatedAdminReativacaoRoute: AuthenticatedAdminReativacaoRoute,
   AuthenticatedAdminRecuperacaoRoute: AuthenticatedAdminRecuperacaoRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
