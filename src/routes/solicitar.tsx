@@ -19,6 +19,8 @@ import { trackBeginCheckout } from "@/lib/analytics";
 import { SiteHeader } from "@/components/site/site-header";
 
 export const Route = createFileRoute("/solicitar")({
+  validateSearch: (s: Record<string, unknown>): { finalidade?: string } =>
+    typeof s.finalidade === "string" ? { finalidade: s.finalidade } : {},
   component: Solicitar,
   head: () => ({
     meta: [
@@ -271,7 +273,10 @@ function Solicitar() {
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [finalidade, setFinalidade] = useState<Finalidade | "">("");
+  const { finalidade: finalidadeUrl } = Route.useSearch();
+  const [finalidade, setFinalidade] = useState<Finalidade | "">(
+    finalidadeUrl && finalidadeUrl in FINALIDADES ? (finalidadeUrl as Finalidade) : "",
+  );
   const [sessaoEmail, setSessaoEmail] = useState<string | null>(null);
 
   const [mostrarErros, setMostrarErros] = useState(false);
