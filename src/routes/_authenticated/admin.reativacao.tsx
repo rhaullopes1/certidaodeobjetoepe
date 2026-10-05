@@ -113,7 +113,8 @@ function ReativacaoPage() {
             <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
               Clientes que fizeram o pedido e não pagaram (há mais de 3 dias). Ao abrir o link, o
               mesmo pedido é reativado com Pix novo e cartão em até 3x. Pagou, entra na fila de
-              entregas automaticamente. O e-mail sai sozinho nos dias 5 e 10, às 9h30.
+              entregas automaticamente. O e-mail sai sozinho nos dias 5 e 10 de todo mês, às 9h30,
+              para quem fez o pedido nos últimos 30 dias.
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">

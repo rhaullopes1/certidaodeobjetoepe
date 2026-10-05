@@ -80,10 +80,13 @@ export async function enviarEmailsReativacao(limite = 300) {
   const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
 
   const intervalo = Date.now() - 4 * 24 * 60 * 60 * 1000;
-  const [elegiveis, optouts] = await Promise.all([
+  // E-mail automático: só pedidos criados nos últimos 30 dias.
+  const janela30d = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  const [todos, optouts] = await Promise.all([
     buscarElegiveis(2000),
     supabaseAdmin.from("email_optouts").select("email").limit(10000),
   ]);
+  const elegiveis = todos.filter((r) => new Date(r.created_at).getTime() >= janela30d);
   const bloqueados = new Set((optouts.data ?? []).map((o) => o.email.toLowerCase()));
   const jaEnviados = new Set<string>();
   const hoje = new Date().toISOString().slice(0, 10);
