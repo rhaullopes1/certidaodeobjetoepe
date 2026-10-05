@@ -6,6 +6,7 @@ import { template as recuperacaoEtapa } from './recuperacao-etapa'
 import { template as boasVindas } from './boas-vindas'
 import { template as campanhaSemanal } from './campanha-semanal'
 import { template as antecedentesPronta } from './antecedentes-pronta'
+import { template as reativacaoMensal } from './reativacao-mensal'
 
 
 
@@ -34,6 +35,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'boas-vindas': boasVindas,
   'campanha-semanal': campanhaSemanal,
   'antecedentes-pronta': antecedentesPronta,
+  'reativacao-mensal': reativacaoMensal,
 }
 
 

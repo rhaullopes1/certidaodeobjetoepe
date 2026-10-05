@@ -64,6 +64,7 @@ import { Route as CertidaoDeObjetoEPeParaSlugRouteImport } from './routes/certid
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
 import { Route as ApiPublicCronAntecedentesRouteImport } from './routes/api/public/cron/antecedentes'
 import { Route as ApiPublicCronConteudoRouteImport } from './routes/api/public/cron/conteudo'
+import { Route as ApiPublicCronReativacaoRouteImport } from './routes/api/public/cron/reativacao'
 import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
 import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cron/semanal'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
@@ -366,6 +367,11 @@ const ApiPublicCronConteudoRoute = ApiPublicCronConteudoRouteImport.update({
   path: '/api/public/cron/conteudo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronReativacaoRoute = ApiPublicCronReativacaoRouteImport.update({
+  id: '/api/public/cron/reativacao',
+  path: '/api/public/cron/reativacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronRecuperacaoRoute =
   ApiPublicCronRecuperacaoRouteImport.update({
     id: '/api/public/cron/recuperacao',
@@ -466,6 +472,7 @@ export interface FileRoutesByFullPath {
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
+  '/api/public/cron/reativacao': typeof ApiPublicCronReativacaoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -528,6 +535,7 @@ export interface FileRoutesByTo {
   '/certidao-de-objeto-e-pe/para': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
+  '/api/public/cron/reativacao': typeof ApiPublicCronReativacaoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -594,6 +602,7 @@ export interface FileRoutesById {
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
+  '/api/public/cron/reativacao': typeof ApiPublicCronReativacaoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -660,6 +669,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe/para/'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
+    | '/api/public/cron/reativacao'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -722,6 +732,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe/para'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
+    | '/api/public/cron/reativacao'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -787,6 +798,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe/para/'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
+    | '/api/public/cron/reativacao'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -833,6 +845,7 @@ export interface RootRouteChildren {
   CertidaoDeObjetoEPeParaIndexRoute: typeof CertidaoDeObjetoEPeParaIndexRoute
   ApiPublicCronAntecedentesRoute: typeof ApiPublicCronAntecedentesRoute
   ApiPublicCronConteudoRoute: typeof ApiPublicCronConteudoRoute
+  ApiPublicCronReativacaoRoute: typeof ApiPublicCronReativacaoRoute
   ApiPublicCronRecuperacaoRoute: typeof ApiPublicCronRecuperacaoRoute
   ApiPublicCronSemanalRoute: typeof ApiPublicCronSemanalRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
@@ -1230,6 +1243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronConteudoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/reativacao': {
+      id: '/api/public/cron/reativacao'
+      path: '/api/public/cron/reativacao'
+      fullPath: '/api/public/cron/reativacao'
+      preLoaderRoute: typeof ApiPublicCronReativacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/recuperacao': {
       id: '/api/public/cron/recuperacao'
       path: '/api/public/cron/recuperacao'
@@ -1394,6 +1414,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoDeObjetoEPeParaIndexRoute: CertidaoDeObjetoEPeParaIndexRoute,
   ApiPublicCronAntecedentesRoute: ApiPublicCronAntecedentesRoute,
   ApiPublicCronConteudoRoute: ApiPublicCronConteudoRoute,
+  ApiPublicCronReativacaoRoute: ApiPublicCronReativacaoRoute,
   ApiPublicCronRecuperacaoRoute: ApiPublicCronRecuperacaoRoute,
   ApiPublicCronSemanalRoute: ApiPublicCronSemanalRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
