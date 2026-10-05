@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 export type CorLuz = "verde" | "amarela" | "vermelha";
-/** 12 luzes (uma por dia desde o pagamento): 1–3 verdes, 4–7 amarelas, 8–12 vermelhas. */
+/** 12 luzes (uma por dia desde o pagamento): dias 1–2 verdes, 3–5 amarelas, 6–12 vermelhas. */
 export const CORES: CorLuz[] = [
-  "verde", "verde", "verde",
-  "amarela", "amarela", "amarela", "amarela",
-  "vermelha", "vermelha", "vermelha", "vermelha", "vermelha",
+  "verde", "verde",
+  "amarela", "amarela", "amarela",
+  "vermelha", "vermelha", "vermelha", "vermelha", "vermelha", "vermelha", "vermelha",
 ];
 export const TOTAL_LUZES = CORES.length;
 
