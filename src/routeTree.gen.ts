@@ -53,6 +53,7 @@ import { Route as AuthenticatedAdminEntregasRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminHistoricoRouteImport } from './routes/_authenticated/admin.historico'
 import { Route as AuthenticatedAdminOperacaoRouteImport } from './routes/_authenticated/admin.operacao'
+import { Route as AuthenticatedAdminReativacaoRouteImport } from './routes/_authenticated/admin.reativacao'
 import { Route as AuthenticatedAdminRecuperacaoRouteImport } from './routes/_authenticated/admin.recuperacao'
 import { Route as AuthenticatedOperacaoIndexRouteImport } from './routes/_authenticated/operacao.index'
 import { Route as AuthenticatedOperacaoIdRouteImport } from './routes/_authenticated/operacao.$id'
@@ -64,6 +65,7 @@ import { Route as CertidaoDeObjetoEPeParaSlugRouteImport } from './routes/certid
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
 import { Route as ApiPublicCronAntecedentesRouteImport } from './routes/api/public/cron/antecedentes'
 import { Route as ApiPublicCronConteudoRouteImport } from './routes/api/public/cron/conteudo'
+import { Route as ApiPublicCronReativacaoRouteImport } from './routes/api/public/cron/reativacao'
 import { Route as ApiPublicCronRecuperacaoRouteImport } from './routes/api/public/cron/recuperacao'
 import { Route as ApiPublicCronSemanalRouteImport } from './routes/api/public/cron/semanal'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
@@ -304,6 +306,12 @@ const AuthenticatedAdminOperacaoRoute =
     path: '/operacao',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminReativacaoRoute =
+  AuthenticatedAdminReativacaoRouteImport.update({
+    id: '/reativacao',
+    path: '/reativacao',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminRecuperacaoRoute =
   AuthenticatedAdminRecuperacaoRouteImport.update({
     id: '/recuperacao',
@@ -364,6 +372,11 @@ const ApiPublicCronAntecedentesRoute =
 const ApiPublicCronConteudoRoute = ApiPublicCronConteudoRouteImport.update({
   id: '/api/public/cron/conteudo',
   path: '/api/public/cron/conteudo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronReativacaoRoute = ApiPublicCronReativacaoRouteImport.update({
+  id: '/api/public/cron/reativacao',
+  path: '/api/public/cron/reativacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicCronRecuperacaoRoute =
@@ -454,6 +467,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/operacao': typeof AuthenticatedAdminOperacaoRoute
+  '/admin/reativacao': typeof AuthenticatedAdminReativacaoRoute
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
@@ -466,6 +480,7 @@ export interface FileRoutesByFullPath {
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
+  '/api/public/cron/reativacao': typeof ApiPublicCronReativacaoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -516,6 +531,7 @@ export interface FileRoutesByTo {
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/admin/operacao': typeof AuthenticatedAdminOperacaoRoute
+  '/admin/reativacao': typeof AuthenticatedAdminReativacaoRoute
   '/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
@@ -528,6 +544,7 @@ export interface FileRoutesByTo {
   '/certidao-de-objeto-e-pe/para': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
+  '/api/public/cron/reativacao': typeof ApiPublicCronReativacaoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -582,6 +599,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/_authenticated/admin/historico': typeof AuthenticatedAdminHistoricoRoute
   '/_authenticated/admin/operacao': typeof AuthenticatedAdminOperacaoRoute
+  '/_authenticated/admin/reativacao': typeof AuthenticatedAdminReativacaoRoute
   '/_authenticated/admin/recuperacao': typeof AuthenticatedAdminRecuperacaoRoute
   '/_authenticated/operacao/$id': typeof AuthenticatedOperacaoIdRoute
   '/_authenticated/operacao/historico': typeof AuthenticatedOperacaoHistoricoRoute
@@ -594,6 +612,7 @@ export interface FileRoutesById {
   '/certidao-de-objeto-e-pe/para/': typeof CertidaoDeObjetoEPeParaIndexRoute
   '/api/public/cron/antecedentes': typeof ApiPublicCronAntecedentesRoute
   '/api/public/cron/conteudo': typeof ApiPublicCronConteudoRoute
+  '/api/public/cron/reativacao': typeof ApiPublicCronReativacaoRoute
   '/api/public/cron/recuperacao': typeof ApiPublicCronRecuperacaoRoute
   '/api/public/cron/semanal': typeof ApiPublicCronSemanalRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -648,6 +667,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro'
     | '/admin/historico'
     | '/admin/operacao'
+    | '/admin/reativacao'
     | '/admin/recuperacao'
     | '/operacao/$id'
     | '/operacao/historico'
@@ -660,6 +680,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe/para/'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
+    | '/api/public/cron/reativacao'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -710,6 +731,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro'
     | '/admin/historico'
     | '/admin/operacao'
+    | '/admin/reativacao'
     | '/admin/recuperacao'
     | '/operacao/$id'
     | '/operacao/historico'
@@ -722,6 +744,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe/para'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
+    | '/api/public/cron/reativacao'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -775,6 +798,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/financeiro'
     | '/_authenticated/admin/historico'
     | '/_authenticated/admin/operacao'
+    | '/_authenticated/admin/reativacao'
     | '/_authenticated/admin/recuperacao'
     | '/_authenticated/operacao/$id'
     | '/_authenticated/operacao/historico'
@@ -787,6 +811,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe/para/'
     | '/api/public/cron/antecedentes'
     | '/api/public/cron/conteudo'
+    | '/api/public/cron/reativacao'
     | '/api/public/cron/recuperacao'
     | '/api/public/cron/semanal'
     | '/api/public/webhooks/mercadopago'
@@ -833,6 +858,7 @@ export interface RootRouteChildren {
   CertidaoDeObjetoEPeParaIndexRoute: typeof CertidaoDeObjetoEPeParaIndexRoute
   ApiPublicCronAntecedentesRoute: typeof ApiPublicCronAntecedentesRoute
   ApiPublicCronConteudoRoute: typeof ApiPublicCronConteudoRoute
+  ApiPublicCronReativacaoRoute: typeof ApiPublicCronReativacaoRoute
   ApiPublicCronRecuperacaoRoute: typeof ApiPublicCronRecuperacaoRoute
   ApiPublicCronSemanalRoute: typeof ApiPublicCronSemanalRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
@@ -1153,6 +1179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminOperacaoRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/reativacao': {
+      id: '/_authenticated/admin/reativacao'
+      path: '/reativacao'
+      fullPath: '/admin/reativacao'
+      preLoaderRoute: typeof AuthenticatedAdminReativacaoRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/recuperacao': {
       id: '/_authenticated/admin/recuperacao'
       path: '/recuperacao'
@@ -1230,6 +1263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronConteudoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/reativacao': {
+      id: '/api/public/cron/reativacao'
+      path: '/api/public/cron/reativacao'
+      fullPath: '/api/public/cron/reativacao'
+      preLoaderRoute: typeof ApiPublicCronReativacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/recuperacao': {
       id: '/api/public/cron/recuperacao'
       path: '/api/public/cron/recuperacao'
@@ -1301,6 +1341,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRoute
   AuthenticatedAdminHistoricoRoute: typeof AuthenticatedAdminHistoricoRoute
   AuthenticatedAdminOperacaoRoute: typeof AuthenticatedAdminOperacaoRoute
+  AuthenticatedAdminReativacaoRoute: typeof AuthenticatedAdminReativacaoRoute
   AuthenticatedAdminRecuperacaoRoute: typeof AuthenticatedAdminRecuperacaoRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -1317,6 +1358,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminFinanceiroRoute: AuthenticatedAdminFinanceiroRoute,
   AuthenticatedAdminHistoricoRoute: AuthenticatedAdminHistoricoRoute,
   AuthenticatedAdminOperacaoRoute: AuthenticatedAdminOperacaoRoute,
+  AuthenticatedAdminReativacaoRoute: AuthenticatedAdminReativacaoRoute,
   AuthenticatedAdminRecuperacaoRoute: AuthenticatedAdminRecuperacaoRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -1394,6 +1436,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoDeObjetoEPeParaIndexRoute: CertidaoDeObjetoEPeParaIndexRoute,
   ApiPublicCronAntecedentesRoute: ApiPublicCronAntecedentesRoute,
   ApiPublicCronConteudoRoute: ApiPublicCronConteudoRoute,
+  ApiPublicCronReativacaoRoute: ApiPublicCronReativacaoRoute,
   ApiPublicCronRecuperacaoRoute: ApiPublicCronRecuperacaoRoute,
   ApiPublicCronSemanalRoute: ApiPublicCronSemanalRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,

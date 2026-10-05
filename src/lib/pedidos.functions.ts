@@ -77,7 +77,7 @@ export const meusPedidos = createServerFn({ method: "GET" })
 
       .from("pedidos")
       .select(
-        "protocolo, numero_processo, nome_parte, quantidade, valor_centavos, status, created_at, pago_em, pix_codigo, pix_qrcode_url, pix_expira_em, checkout_url",
+        "protocolo, numero_processo, nome_parte, quantidade, valor_centavos, status, created_at, pago_em, pix_codigo, pix_qrcode_url, pix_expira_em, checkout_url, reativado_em",
       )
       .eq("user_id", context.userId)
       .order("created_at", { ascending: false })
@@ -90,7 +90,7 @@ export const meusPedidos = createServerFn({ method: "GET" })
     return (data ?? []).map((row) => {
       const vencido =
         row.status === "aguardando_pagamento" &&
-        Date.now() - new Date(row.created_at).getTime() >= limite;
+        Date.now() - new Date(row.reativado_em ?? row.created_at).getTime() >= limite;
 
       return {
         protocolo: row.protocolo,

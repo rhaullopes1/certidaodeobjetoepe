@@ -109,6 +109,7 @@ const LINKS_ADMIN = [
   { to: "/admin/historico", label: "Histórico" },
   { to: "/admin/comarcas", label: "Comarcas" },
   { to: "/admin/recuperacao", label: "Recuperação" },
+  { to: "/admin/reativacao", label: "Reativação" },
   { to: "/admin/emails", label: "E-mails" },
   { to: "/admin/documentos", label: "Documentos" },
   { to: "/admin/conteudo", label: "Conteúdo" },
