@@ -349,6 +349,27 @@ function PedidoPage() {
                 <h2 className="text-lg font-bold">
                   Pagamento — {formatarBRL(data.valorCentavos)}
                 </h2>
+                <div className="mt-3 rounded-2xl border border-accent/40 bg-accent/10 p-4">
+                  <p className="text-sm font-semibold">
+                    Sua solicitação está salva — falta só o pagamento para entrar na fila de
+                    emissão.
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Pedidos pagos entram na fila na ordem de confirmação. Pague por Pix ou cartão
+                    de crédito, como preferir.
+                  </p>
+                  <a
+                    href={whatsappLink(
+                      `Olá! Estou no pagamento do protocolo ${data.protocolo} e tenho uma dúvida.`,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-accent-foreground underline underline-offset-4"
+                  >
+                    <MessageCircle className="h-4 w-4 text-accent" />
+                    Dúvida para pagar? Fale agora pelo WhatsApp
+                  </a>
+                </div>
 
                 {data.checkoutUrl ? (
                   <>
@@ -440,7 +461,7 @@ function PedidoPage() {
                         </span>
                       </div>
                       <h3 className="mt-2 text-base font-bold">
-                        Sem saldo no Pix agora? Pague com cartão
+                        Prefere cartão de crédito? Pague em poucos cliques
                       </h3>
                       <p className="mt-1 text-sm text-muted-foreground">
                         Cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A confirmação
