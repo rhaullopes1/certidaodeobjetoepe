@@ -158,7 +158,8 @@ export async function criarCheckoutCartao(pedido: {
       expiration_date_to: expiraEm,
       payment_methods: {
         excluded_payment_types: [{ id: "ticket" }, { id: "bank_transfer" }],
-        installments: 12,
+        installments: 3,
+        default_installments: 3,
       },
       back_urls: {
         success: `${BASE_URL}/pedido/${pedido.protocolo}?pagamento=ok`,
