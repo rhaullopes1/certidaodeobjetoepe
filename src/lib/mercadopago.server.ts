@@ -61,12 +61,14 @@ export async function criarCobrancaPix(pedido: {
   cpf: string;
   whatsapp: string;
   valorCentavos: number;
+  /** Muda a cada nova cobrança do mesmo pedido (Pix vencido / reativação). */
+  sufixoIdempotencia?: string;
 }): Promise<CobrancaPix> {
   const expiracao = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
   const pagamento = await mp("/v1/payments", {
     method: "POST",
-    headers: { "X-Idempotency-Key": pedido.protocolo },
+    headers: { "X-Idempotency-Key": pedido.protocolo + (pedido.sufixoIdempotencia ? `-${pedido.sufixoIdempotencia}` : "") },
     body: JSON.stringify({
       transaction_amount: Number((pedido.valorCentavos / 100).toFixed(2)),
       description: `Certidão de Objeto e Pé - ${pedido.protocolo}`,
@@ -127,6 +129,7 @@ export async function criarCheckoutCartao(pedido: {
   cpf?: string;
   quantidade: number;
   valorCentavos: number;
+  sufixoIdempotencia?: string;
 }): Promise<CheckoutCartao> {
   const expiraEm = new Date(Date.now() + 23 * 60 * 60 * 1000).toISOString();
 
@@ -147,7 +150,7 @@ export async function criarCheckoutCartao(pedido: {
       Authorization: `Bearer ${token()}`,
       "Content-Type": "application/json",
       Accept: "application/json",
-      "X-Idempotency-Key": `pref-v3-${pedido.protocolo}`,
+      "X-Idempotency-Key": `pref-v3-${pedido.protocolo}${pedido.sufixoIdempotencia ? `-${pedido.sufixoIdempotencia}` : ""}`,
     },
     body: JSON.stringify({
       external_reference: pedido.protocolo,

@@ -91,6 +91,7 @@ function montar(row: {
   mercadopago_status?: string | null;
   mercadopago_external_reference?: string | null;
   mercadopago_pix_expira_em?: string | null;
+  reativado_em?: string | null;
 }): PedidoResumo {
   return {
     protocolo: row.protocolo,
@@ -360,6 +361,7 @@ async function gerarCobrancaMercadoPago(row: PedidoRow): Promise<PedidoRow> {
       cpf: row.cpf,
       whatsapp: row.whatsapp,
       valorCentavos: row.valor_centavos,
+      sufixoIdempotencia: sufixoCobranca(row),
     });
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -384,6 +386,16 @@ async function gerarCobrancaMercadoPago(row: PedidoRow): Promise<PedidoRow> {
   }
 }
 
+/**
+ * Sufixo da chave de idempotência: vazio na primeira cobrança (mantém o
+ * comportamento original) e único a cada renovação — sem isso o Mercado Pago
+ * devolveria a mesma cobrança vencida.
+ */
+function sufixoCobranca(row: PedidoRow & { cobranca_renovada_em?: string | null }) {
+  const marco = row.cobranca_renovada_em ?? row.reativado_em;
+  return marco ? String(new Date(marco).getTime()) : undefined;
+}
+
 /** Cria o link de pagamento com cartão no Mercado Pago (Checkout Pro). */
 async function gerarCheckoutCartaoMercadoPago(row: PedidoRow): Promise<PedidoRow> {
   const { temMercadoPago, criarCheckoutCartao } = await import("./mercadopago.server");
@@ -398,6 +410,7 @@ async function gerarCheckoutCartaoMercadoPago(row: PedidoRow): Promise<PedidoRow
       cpf: row.cpf,
       quantidade: row.quantidade ?? 1,
       valorCentavos: row.valor_centavos,
+      sufixoIdempotencia: sufixoCobranca(row),
     });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: atualizado } = await supabaseAdmin
@@ -517,7 +530,8 @@ export async function regerarCobrancaDoPedido(protocolo: string) {
  */
 export async function marcarExpiradoSeVencido(row: PedidoRow): Promise<PedidoRow> {
   if (row.status !== "aguardando_pagamento") return row;
-  const criadoEm = new Date(row.created_at).getTime();
+  // Pedido reaberto pelo cliente: os 7 dias contam a partir da reativação.
+  const criadoEm = new Date(row.reativado_em ?? row.created_at).getTime();
   if (Date.now() - criadoEm < DIAS_PARA_EXPIRAR * 24 * 60 * 60 * 1000) return row;
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -571,6 +585,99 @@ async function processarLembretesPagamento() {
   }
 }
 
+/** Status que o cliente pode reabrir sozinho pelo link do pedido. */
+const STATUS_REATIVAVEIS = ["cancelado", "expirado"];
+
+/**
+ * Reativação automática: quando o cliente abre o link de um pedido cancelado
+ * ou expirado (sem pagamento), o mesmo pedido volta para "aguardando
+ * pagamento" com cobranças novas. Ao pagar, entra na fila normalmente.
+ * Nunca reabre pedido pago, estornado, contestado ou gratuito.
+ */
+async function reativarSePossivel(row: PedidoRow & { tipo?: string | null }): Promise<PedidoRow> {
+  if (!STATUS_REATIVAVEIS.includes(row.status)) return row;
+  if (row.pago_em) return row;
+  if (row.valor_centavos <= 0) return row;
+  if (row.mercadopago_status === "refunded" || row.mercadopago_status === "charged_back") return row;
+  if (row.protocolo.startsWith("TESTE")) return row;
+
+  const agora = new Date().toISOString();
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: atualizado } = await supabaseAdmin
+    .from("pedidos")
+    .update({
+      status: "aguardando_pagamento",
+      reativado_em: agora,
+      mercadopago_payment_id: null,
+      mercadopago_status: null,
+      mercadopago_pix_expira_em: null,
+      pix_codigo: null,
+      pix_qrcode_url: null,
+      pix_expira_em: null,
+      stripe_session_id: null,
+      checkout_url: null,
+    })
+    .eq("protocolo", row.protocolo)
+    .in("status", STATUS_REATIVAVEIS)
+    .is("pago_em", null)
+    .select("*")
+    .maybeSingle();
+  if (!atualizado) return row;
+
+  try {
+    await supabaseAdmin.from("pedido_andamentos").insert({
+      pedido_id: (atualizado as { id: string }).id,
+      status: "aguardando_pagamento",
+      observacao: `Pedido reativado pelo cliente pelo link (antes: ${row.status}).`,
+    });
+    // Volta para a automação de recuperação como pendente, se existir registro.
+    await supabaseAdmin
+      .from("abandoned_orders")
+      .update({ status_automacao: "pendente", link_pagamento: null, codigo_pix: null })
+      .eq("protocolo", row.protocolo)
+      .eq("status_automacao", "cancelado");
+  } catch (e) {
+    console.error("Falha ao registrar reativação", e);
+  }
+  return atualizado as PedidoRow;
+}
+
+/**
+ * Pix do Mercado Pago vale 24h, mas o pedido vale 7 dias: se o código venceu
+ * e o pedido segue aberto, descarta o Pix e o link de cartão para gerar novos.
+ */
+async function renovarPixVencido(row: PedidoRow): Promise<PedidoRow> {
+  if (row.status !== "aguardando_pagamento") return row;
+  const expira = row.mercadopago_pix_expira_em;
+  if (!row.mercadopago_payment_id || !expira || new Date(expira).getTime() > Date.now()) return row;
+
+  // Antes de descartar, confere se o Pix antigo não foi pago.
+  const conferido = await sincronizarPagamento(row);
+  if (conferido.status !== "aguardando_pagamento") return conferido;
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const agora = new Date().toISOString();
+  const { data: atualizado } = await supabaseAdmin
+    .from("pedidos")
+    .update({
+      mercadopago_payment_id: null,
+      mercadopago_status: null,
+      mercadopago_pix_expira_em: null,
+      pix_codigo: null,
+      pix_qrcode_url: null,
+      pix_expira_em: null,
+      stripe_session_id: null,
+      checkout_url: null,
+    })
+    .eq("protocolo", row.protocolo)
+    .eq("mercadopago_payment_id", row.mercadopago_payment_id)
+    .eq("status", "aguardando_pagamento")
+    .select("*")
+    .maybeSingle();
+  if (!atualizado) return conferido;
+  return { ...(atualizado as PedidoRow), cobranca_renovada_em: agora } as PedidoRow;
+}
+
 export async function buscarPedidoPorProtocolo(protocolo: string): Promise<PedidoResumo | null> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -586,7 +693,9 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
   }
   if (!row) return null;
 
-  let atual = await marcarExpiradoSeVencido(row as PedidoRow);
+  let atual = await reativarSePossivel(row as PedidoRow);
+  atual = await marcarExpiradoSeVencido(atual);
+  atual = await renovarPixVencido(atual);
   // Lembretes de pagamento agora são enviados pela automação de recuperação
   // (tabela abandoned_orders + rotina agendada), evitando e-mails duplicados.
 
