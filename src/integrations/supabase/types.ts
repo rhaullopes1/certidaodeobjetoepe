@@ -1391,6 +1391,9 @@ export type Database = {
           processo_fonte: string | null
           protocolo: string
           quantidade: number
+          reativacao_contato_em: string | null
+          reativacao_email_em: string | null
+          reativado_em: string | null
           segmento_judiciario: string | null
           sistema_processual: string | null
           status: string
@@ -1447,6 +1450,9 @@ export type Database = {
           processo_fonte?: string | null
           protocolo: string
           quantidade?: number
+          reativacao_contato_em?: string | null
+          reativacao_email_em?: string | null
+          reativado_em?: string | null
           segmento_judiciario?: string | null
           sistema_processual?: string | null
           status?: string
@@ -1503,6 +1509,9 @@ export type Database = {
           processo_fonte?: string | null
           protocolo?: string
           quantidade?: number
+          reativacao_contato_em?: string | null
+          reativacao_email_em?: string | null
+          reativado_em?: string | null
           segmento_judiciario?: string | null
           sistema_processual?: string | null
           status?: string
