@@ -461,12 +461,15 @@ function PedidoPage() {
                         </span>
                       </div>
                       <h3 className="mt-2 text-base font-bold">
-                        Prefere cartão de crédito? Pague em poucos cliques
+                        Cartão de crédito em até 3x
                       </h3>
+                      <p className="mt-1 text-sm font-semibold text-foreground">
+                        3x de {formatarBRL(Math.ceil(data.valorCentavos / 3))} no cartão
+                      </p>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        Cartão de crédito, Apple Pay ou Google Pay em ambiente seguro. A confirmação
-                        é automática: assim que o pagamento for aprovado, esta página muda para
-                        “Pagamento confirmado”.
+                        Parcele em até 3 vezes em ambiente seguro. A confirmação é automática:
+                        assim que o pagamento for aprovado, esta página muda para “Pagamento
+                        confirmado”.
                       </p>
                       <a
                         href={data.checkoutUrl}
@@ -474,7 +477,7 @@ function PedidoPage() {
                         rel="noopener noreferrer"
                         className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
                       >
-                        Pagar com cartão com segurança
+                        Pagar em até 3x no cartão
                       </a>
                       <p className="mt-3 text-xs text-muted-foreground">
                         Você será levado ao ambiente de pagamento seguro. Em caso de dúvida, fale
