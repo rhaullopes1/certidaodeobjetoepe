@@ -133,30 +133,23 @@ const heroTrust = [
 function Hero() {
   return (
     <div id="topo" className="surface-navy relative overflow-hidden">
-      <Section className="!py-16 lg:!py-24">
+      <Section className="!py-8 sm:!py-16 lg:!py-24">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="animate-rise">
             <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-gold-soft">
               <ShieldCheck className="h-3.5 w-3.5" />
               Documentos judiciais digitais
             </span>
-            <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.08] sm:text-5xl lg:text-[3.4rem]">
+            <h1 className="mt-4 font-display text-[2rem] font-extrabold leading-[1.08] sm:mt-6 sm:text-5xl lg:text-[3.4rem]">
               Solicite sua Certidão de Objeto e Pé Online em Todo Brasil
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-primary-foreground/75 sm:text-lg">
-              Não sabe onde solicitar ou como acompanhar? Nossa equipe realiza o
-              pedido junto ao tribunal responsável e acompanha até a emissão do
-              documento.
-            </p>
-
-            <PrazoEmissao variante="escuro" className="mt-6 max-w-xl" />
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row">
               <Link
                 to="/solicitar"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-4 text-base font-bold text-accent-foreground shadow-lg transition-transform hover:-translate-y-0.5"
               >
                 <FileText className="h-4.5 w-4.5" />
-                Solicitar online
+                Solicitar certidão online
               </Link>
               <a
                 href={WPP_MAIN}
@@ -167,6 +160,13 @@ function Hero() {
                 Tirar dúvidas no WhatsApp
               </a>
             </div>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-primary-foreground/75 sm:text-lg">
+              Não sabe onde solicitar ou como acompanhar? Nossa equipe realiza o
+              pedido junto ao tribunal responsável e acompanha até a emissão do
+              documento.
+            </p>
+
+            <PrazoEmissao variante="escuro" className="mt-6 max-w-xl" />
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-primary-foreground/70">
               <a
                 href={GOOGLE_PROFILE}

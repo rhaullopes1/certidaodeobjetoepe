@@ -82,7 +82,7 @@ function PublicoPage() {
 
   return (
     <PageShell>
-      <article className="w-full px-4 py-14 sm:px-8 lg:py-20">
+      <article className="w-full px-4 py-6 sm:px-8 sm:py-14 lg:py-20">
         <div className="mx-auto w-full max-w-3xl">
           <nav aria-label="Trilha de navegação" className="text-xs text-muted-foreground">
             <Link to="/" className="hover:text-foreground">Início</Link>
@@ -95,15 +95,15 @@ function PublicoPage() {
           <h1 className="mt-4 font-display text-3xl font-bold leading-tight break-words sm:text-4xl">
             {publico.h1}
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">{publico.resumo}</p>
 
           <Link
             to="/solicitar"
             search={busca}
-            className="mt-7 inline-flex rounded-full bg-gold px-6 py-3 text-sm font-bold text-accent-foreground"
+            className="mt-5 flex w-full justify-center rounded-full bg-gold px-6 py-4 text-base font-bold text-accent-foreground shadow-lg sm:inline-flex sm:w-auto"
           >
             Solicitar certidão online
           </Link>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">{publico.resumo}</p>
           <AlternativasContato className="mt-4" />
 
           <section className="mt-12">
