@@ -15,6 +15,9 @@ const METAS_HORAS: Record<Finalidade, number> = {
   caminhoneiro_motorista: 48,
   motorista_app: 72,
   transacao_imobiliaria: 120,
+  advogado: 120,
+  concurso_publico: 72,
+  financiamento_bancario: 120,
   outro: 120,
 };
 
