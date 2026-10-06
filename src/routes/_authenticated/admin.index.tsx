@@ -13,7 +13,10 @@ import {
   type PedidoAdmin,
 } from "@/lib/admin";
 import { ESTADOS, FLUXO_STATUS, statusPedido } from "@/lib/site";
+import { useServerFn } from "@tanstack/react-start";
+import { ativarOfertaRelampagoFn } from "@/lib/reativacao.functions";
 import {
+  mensagemOfertaRelampago,
   linkWhatsappAvaliacao,
   linkWhatsappCliente,
   normalizarWhatsapp,
@@ -57,6 +60,50 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
     >
       R
     </a>
+  );
+}
+
+/** Botão D: ativa 30% OFF (só hoje) no próprio pedido e abre o WhatsApp. */
+function BotaoDesconto({ pedido }: { pedido: PedidoAdmin }) {
+  const ativar = useServerFn(ativarOfertaRelampagoFn);
+  const qc = useQueryClient();
+  const [carregando, setCarregando] = useState(false);
+  const numero = normalizarWhatsapp(pedido.whatsapp);
+  const elegivel = !pedido.pago_em && ["aguardando_pagamento", "cancelado", "expirado"].includes(pedido.status);
+  if (!numero || !elegivel) {
+    return (
+      <span className={DESABILITADO} title="Oferta disponível só para pedidos não pagos com WhatsApp" aria-label="Desconto indisponível">
+        D
+      </span>
+    );
+  }
+  const label = "Desconto: aplicar 30% OFF (só hoje) e abrir WhatsApp";
+  return (
+    <button
+      type="button"
+      disabled={carregando}
+      onClick={async () => {
+        const janela = window.open("about:blank", "_blank");
+        setCarregando(true);
+        try {
+          const r = await ativar({ data: { id: pedido.id } });
+          const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagemOfertaRelampago({ ...r, nome: r.nome ?? pedido.nome_parte }))}`;
+          if (janela) janela.location.href = url;
+          else window.location.href = url;
+          void qc.invalidateQueries();
+        } catch (e) {
+          janela?.close();
+          alert(e instanceof Error ? e.message : "Falha ao aplicar desconto.");
+        } finally {
+          setCarregando(false);
+        }
+      }}
+      className={`${BASE_ACAO} bg-destructive text-destructive-foreground ring-destructive hover:opacity-90`}
+      title={label}
+      aria-label={label}
+    >
+      {carregando ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "D"}
+    </button>
   );
 }
 
@@ -431,6 +478,7 @@ function AdminLista() {
                         <td className="px-5 py-4 text-right">
                           <div className="inline-flex items-center gap-2">
                             <BotaoWhatsApp pedido={p} />
+                            <BotaoDesconto pedido={p} />
                             <BotaoAvaliacao pedido={p} />
                           </div>
                         </td>
