@@ -68,11 +68,7 @@ export function mensagemWhatsapp(p: PedidoContato): string {
 
   switch (p.status) {
     case "aguardando_pagamento":
-      return (
-        `Olá, ${nome}! Tudo bem? Recebemos sua solicitação de Certidão de Objeto e Pé, ` +
-        `protocolo ${p.protocolo}. Verificamos que o pagamento ainda não foi concluído. ` +
-        `Posso te ajudar a finalizar seu pedido? Você pode conferir o resumo e o Pix neste link: ${p.linkPagamento || link}`
-      );
+      return mensagemRecuperacaoCurta(p.nome_parte, link);
     case "pago":
       return (
         `Olá, ${nome}! Recebemos o pagamento do seu pedido (protocolo ${p.protocolo}). ` +
@@ -131,12 +127,18 @@ export function mensagemWhatsappRecuperacao(p: {
   valorFormatado: string;
   linkPagamento: string;
 }): string {
-  const nome = p.nome_parte?.trim() || "tudo bem";
+  return mensagemRecuperacaoCurta(p.nome_parte, linkDoPedido(p.protocolo));
+}
+
+/** Texto aprovado de recuperação: curto, com o link do pedido do cliente. */
+function mensagemRecuperacaoCurta(nomeParte: string | null, link: string): string {
+  const primeiro = nomeParte?.trim().split(/\s+/)[0];
+  const saudacao = primeiro ? `Olá, ${primeiro}!` : "Olá!";
   return (
-    `Olá, ${nome}! Tudo bem? Notamos que o pagamento do seu pedido de Certidão de Objeto e Pé ` +
-    `(protocolo ${p.protocolo}, no valor de ${p.valorFormatado}) ainda está pendente. ` +
-    `Para não perder a sua solicitação, você pode concluir o pagamento por este link: ${p.linkPagamento} ` +
-    `Se tiver qualquer dúvida, é só responder por aqui que eu te ajudo a finalizar.`
+    `${saudacao} Recebemos seu pedido.\n\n` +
+    `Falta apenas a confirmação para protocolarmos sua certidão no lote de hoje. ` +
+    `Você pode pagar por Pix ou em até 3x no cartão, segue link do seu pedido abaixo:\n` +
+    link
   );
 }
 
