@@ -174,3 +174,24 @@ export function linkWhatsappAvaliacao(p: { nome_parte: string | null; whatsapp: 
   if (!numero) return null;
   return `https://wa.me/${numero}?text=${encodeURIComponent(mensagemWhatsappAvaliacao(p))}`;
 }
+
+/** Mensagem da oferta relâmpago de 30% (válida só hoje), com link do pedido. */
+export function mensagemOfertaRelampago(p: {
+  nome: string | null;
+  protocolo: string;
+  valorOriginalCentavos: number;
+  valorOfertaCentavos: number;
+}): string {
+  const nome = p.nome?.trim().split(/\s+/)[0];
+  const brl = (c: number) =>
+    (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: c % 100 ? 2 : 0 });
+  return (
+    `${nome ? `Olá, ${nome}!` : "Olá!"} Ainda precisa da Certidão de Objeto e Pé?\n\n` +
+    `⚡ OFERTA EXCLUSIVA — SÓ HOJE 30% OFF\n\n` +
+    `🔥 De ${brl(p.valorOriginalCentavos)} por ${brl(p.valorOfertaCentavos)} no Pix\n\n` +
+    `ou 3x no cartão.\n\n` +
+    `👉 Finalize aqui:\n\n` +
+    `https://certidaodeobjetoepe.org/pedido/${p.protocolo}\n\n` +
+    `⏰ Válido SOMENTE até 23h59 DE HOJE!`
+  );
+}
