@@ -186,12 +186,12 @@ export function mensagemOfertaRelampago(p: {
   const brl = (c: number) =>
     (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: c % 100 ? 2 : 0 });
   return (
-    `${nome ? `Olá, ${nome}!` : "Olá!"} Ainda precisa da Certidão de Objeto e Pé?\n\n` +
+    `${nome ? `Olá, ${nome}!` : "Olá!"} Ainda precisa da sua Certidão de Objeto e Pé?\n\n` +
     `⚡ OFERTA EXCLUSIVA — SÓ HOJE 30% OFF\n\n` +
-    `🔥 De ${brl(p.valorOriginalCentavos)} por ${brl(p.valorOfertaCentavos)} no Pix\n\n` +
-    `ou 3x no cartão.\n\n` +
-    `👉 Finalize aqui:\n\n` +
-    `https://certidaodeobjetoepe.org/pedido/${p.protocolo}\n\n` +
-    `⏰ Válido SOMENTE até 23h59 DE HOJE!`
+    `Liberamos 30% de desconto sobre o valor do seu pedido:\n` +
+    `🔥 De ${brl(p.valorOriginalCentavos)} por apenas ${brl(p.valorOfertaCentavos)} no Pix ou em até 3x no cartão.\n\n` +
+    `Para aproveitar e concluir sua solicitação agora mesmo, clique no link:\n` +
+    `👉 https://certidaodeobjetoepe.org/pedido/${p.protocolo}\n\n` +
+    `⏰ Válido SOMENTE até 23h59 de hoje!`
   );
 }
