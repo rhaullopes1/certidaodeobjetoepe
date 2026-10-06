@@ -35,3 +35,12 @@ export const dispararEmailsReativacaoFn = createServerFn({ method: "POST" })
     const { enviarEmailsReativacao } = await import("./reativacao.server");
     return enviarEmailsReativacao();
   });
+
+export const ativarOfertaRelampagoFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    await exigirEquipe(context);
+    const { ativarOfertaRelampago } = await import("./pedidos.server");
+    return ativarOfertaRelampago(data.id);
+  });

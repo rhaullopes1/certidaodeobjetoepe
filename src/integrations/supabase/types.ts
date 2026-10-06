@@ -1379,6 +1379,7 @@ export type Database = {
           nome_parte: string | null
           numero_processo: string
           observacoes: string | null
+          oferta_expira_em: string | null
           pagbank_order_id: string | null
           pago_em: string | null
           pix_codigo: string | null
@@ -1407,6 +1408,7 @@ export type Database = {
           updated_at: string
           user_id: string | null
           valor_centavos: number
+          valor_original_centavos: number | null
           vara: string | null
           whatsapp: string
         }
@@ -1438,6 +1440,7 @@ export type Database = {
           nome_parte?: string | null
           numero_processo: string
           observacoes?: string | null
+          oferta_expira_em?: string | null
           pagbank_order_id?: string | null
           pago_em?: string | null
           pix_codigo?: string | null
@@ -1466,6 +1469,7 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           valor_centavos?: number
+          valor_original_centavos?: number | null
           vara?: string | null
           whatsapp: string
         }
@@ -1497,6 +1501,7 @@ export type Database = {
           nome_parte?: string | null
           numero_processo?: string
           observacoes?: string | null
+          oferta_expira_em?: string | null
           pagbank_order_id?: string | null
           pago_em?: string | null
           pix_codigo?: string | null
@@ -1525,6 +1530,7 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           valor_centavos?: number
+          valor_original_centavos?: number | null
           vara?: string | null
           whatsapp?: string
         }

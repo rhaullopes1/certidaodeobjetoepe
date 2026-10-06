@@ -346,6 +346,18 @@ function PedidoPage() {
                 </section>
               ) : (
               <section className="card-premium p-6 sm:p-8">
+                {data.ofertaExpiraEm && data.valorOriginalCentavos && (
+                  <div className="mb-4 rounded-2xl bg-destructive p-4 text-center text-destructive-foreground">
+                    <p className="text-sm font-extrabold uppercase tracking-wide">
+                      ⚡ Oferta exclusiva — 30% OFF aplicado
+                    </p>
+                    <p className="mt-1 text-base">
+                      De <s>{formatarBRL(data.valorOriginalCentavos)}</s> por{" "}
+                      <strong className="text-xl">{formatarBRL(data.valorCentavos)}</strong>
+                    </p>
+                    <p className="mt-1 text-xs font-bold">⏰ Válido SOMENTE até 23h59 de hoje!</p>
+                  </div>
+                )}
                 <h2 className="text-lg font-bold">
                   Pagamento — {formatarBRL(data.valorCentavos)}
                 </h2>

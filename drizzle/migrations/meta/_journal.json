@@ -225,6 +225,13 @@
       "when": 1791218571295,
       "tag": "0031_pedidos_reativacao",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1791254275081,
+      "tag": "0032_oferta_relampago",
+      "breakpoints": true
     }
   ]
 }

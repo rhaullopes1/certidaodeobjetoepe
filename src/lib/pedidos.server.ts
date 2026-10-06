@@ -38,6 +38,9 @@ export type PedidoResumo = {
   confirmacaoAutomaticaCartao: boolean;
   /** Preenchido quando o cliente reabriu um pedido cancelado/expirado. */
   reativadoEm: string | null;
+  /** Oferta relâmpago ativa: valor cheio anterior e fim da validade. */
+  ofertaExpiraEm: string | null;
+  valorOriginalCentavos: number | null;
 };
 
 
@@ -94,6 +97,8 @@ function montar(row: {
   mercadopago_external_reference?: string | null;
   mercadopago_pix_expira_em?: string | null;
   reativado_em?: string | null;
+  oferta_expira_em?: string | null;
+  valor_original_centavos?: number | null;
 }): PedidoResumo {
   return {
     protocolo: row.protocolo,
@@ -121,6 +126,8 @@ function montar(row: {
     checkoutUrl: row.checkout_url ?? null,
     pagoEm: row.pago_em ?? null,
     reativadoEm: row.reativado_em ?? null,
+    ofertaExpiraEm: row.oferta_expira_em ?? null,
+    valorOriginalCentavos: row.oferta_expira_em ? (row.valor_original_centavos ?? null) : null,
     // Pix só é automático quando existe cobrança dinâmica de gateway (Mercado Pago).
     // O Pix fixo atual continua com confirmação manual por comprovante.
     confirmacaoAutomatica: Boolean(row.mercadopago_payment_id),
@@ -696,7 +703,8 @@ export async function buscarPedidoPorProtocolo(protocolo: string): Promise<Pedid
   }
   if (!row) return null;
 
-  let atual = await reativarSePossivel(row as PedidoRow);
+  let atual = await encerrarOfertaVencida(row as PedidoRow);
+  atual = await reativarSePossivel(atual);
   atual = await marcarExpiradoSeVencido(atual);
   atual = await renovarPixVencido(atual);
   // Lembretes de pagamento agora são enviados pela automação de recuperação
@@ -838,4 +846,91 @@ async function sincronizarPagamento(row: PedidoRow): Promise<PedidoRow> {
     console.error("Falha ao sincronizar pagamento", e);
     return row;
   }
+}
+
+const LIMPAR_COBRANCA = {
+  mercadopago_payment_id: null,
+  mercadopago_status: null,
+  mercadopago_pix_expira_em: null,
+  pix_codigo: null,
+  pix_qrcode_url: null,
+  pix_expira_em: null,
+  stripe_session_id: null,
+  checkout_url: null,
+};
+
+/** Fim do dia de hoje (23:59:59) no horário de Brasília (UTC-3). */
+export function fimDoDiaBrasilia(agora = new Date()): Date {
+  const br = new Date(agora.getTime() - 3 * 3600_000);
+  return new Date(Date.UTC(br.getUTCFullYear(), br.getUTCMonth(), br.getUTCDate(), 23 + 3, 59, 59));
+}
+
+/** Oferta vencida e não paga: volta ao valor cheio com cobrança nova. */
+async function encerrarOfertaVencida(row: PedidoRow): Promise<PedidoRow> {
+  if (!row.oferta_expira_em || row.pago_em) return row;
+  if (new Date(row.oferta_expira_em).getTime() > Date.now()) return row;
+  const conferido = row.status === "aguardando_pagamento" ? await sincronizarPagamento(row) : row;
+  if (conferido.pago_em) return conferido;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin
+    .from("pedidos")
+    .update({
+      valor_centavos: row.valor_original_centavos ?? row.valor_centavos,
+      valor_original_centavos: null,
+      oferta_expira_em: null,
+      ...LIMPAR_COBRANCA,
+    })
+    .eq("protocolo", row.protocolo)
+    .is("pago_em", null)
+    .select("*")
+    .maybeSingle();
+  return (data as PedidoRow) ?? row;
+}
+
+/**
+ * Ativa a oferta relâmpago de 30% (válida até 23h59 de hoje, Brasília) no
+ * próprio pedido: reabre cancelado/expirado e descarta cobranças antigas
+ * para que o link gere Pix e cartão já com desconto.
+ */
+export async function ativarOfertaRelampago(pedidoId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: p } = await supabaseAdmin.from("pedidos").select("*").eq("id", pedidoId).maybeSingle();
+  if (!p) throw new Error("Pedido não encontrado.");
+  if (p.pago_em) throw new Error("Pedido já está pago.");
+  if (p.protocolo.startsWith("TESTE")) throw new Error("Pedido de teste.");
+  if (!["aguardando_pagamento", "cancelado", "expirado"].includes(p.status))
+    throw new Error("Oferta só para pedidos não pagos.");
+  if (p.mercadopago_status === "refunded" || p.mercadopago_status === "charged_back")
+    throw new Error("Pedido estornado.");
+  const original = p.valor_original_centavos ?? p.valor_centavos;
+  if (original <= 0) throw new Error("Pedido sem valor.");
+  const oferta = Math.round(original * 0.7);
+  const expira = fimDoDiaBrasilia().toISOString();
+  const agora = new Date().toISOString();
+  const reabrir = p.status !== "aguardando_pagamento";
+  const { error } = await supabaseAdmin
+    .from("pedidos")
+    .update({
+      valor_centavos: oferta,
+      valor_original_centavos: original,
+      oferta_expira_em: expira,
+      status: "aguardando_pagamento",
+      ...(reabrir ? { reativado_em: agora } : {}),
+      ...LIMPAR_COBRANCA,
+    })
+    .eq("id", pedidoId)
+    .is("pago_em", null);
+  if (error) throw new Error("Não foi possível ativar a oferta.");
+  await supabaseAdmin.from("pedido_andamentos").insert({
+    pedido_id: pedidoId,
+    status: "aguardando_pagamento",
+    observacao: "Oferta relâmpago de 30% aplicada (válida até 23h59 de hoje).",
+  });
+  return {
+    protocolo: p.protocolo as string,
+    nome: (p.nome_parte as string | null) ?? null,
+    whatsapp: p.whatsapp as string,
+    valorOriginalCentavos: original,
+    valorOfertaCentavos: oferta,
+  };
 }

@@ -1,0 +1,1 @@
+ALTER TABLE public.pedidos ADD COLUMN IF NOT EXISTS oferta_expira_em timestamptz, ADD COLUMN IF NOT EXISTS valor_original_centavos integer;
