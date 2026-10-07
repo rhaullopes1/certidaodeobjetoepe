@@ -6,6 +6,7 @@ import { Loader2, Mail, CheckCircle2, XCircle, Send, RefreshCw } from "lucide-re
 import { AdminHeader, SemPermissao } from "./admin.index";
 import { souEquipe } from "@/lib/admin";
 import { BotaoWhatsAppRecuperacao } from "@/components/admin/botao-whatsapp-recuperacao";
+import { BotaoSmsRecuperacao } from "@/components/admin/botao-sms-recuperacao";
 import {
   painelRecuperacao,
   reenviarRecuperacao,
@@ -256,7 +257,12 @@ function RecuperacaoPage() {
                             <div className="flex flex-wrap gap-2">
                               {["pendente", "etapa_1_enviada", "etapa_2_enviada", "etapa_3_enviada"].includes(
                                 l.status,
-                              ) && <BotaoWhatsAppRecuperacao linha={l} />}
+                              ) && (
+                                <>
+                                  <BotaoWhatsAppRecuperacao linha={l} />
+                                  <BotaoSmsRecuperacao linha={l} />
+                                </>
+                              )}
                               <button
                                 disabled={acao.isPending}
                                 onClick={() => acao.mutate({ tipo: "reenviar", id: l.id })}
