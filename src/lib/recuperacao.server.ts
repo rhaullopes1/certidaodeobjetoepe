@@ -261,7 +261,11 @@ export async function enviarEtapa(row: AbandonedOrderRow, etapa: Etapa, marcar =
     nome_cliente: row.cliente_nome?.split(" ")[0] || "cliente",
     numero_pedido: row.protocolo,
     link_pagamento: linkPedido,
-    codigo_pix: row.codigo_pix ?? "",
+    // Pix guardado na fila tem o valor original; se o valor mudou (ex.: oferta), manda gerar pelo link.
+    codigo_pix:
+      pedido && pedido.valor_centavos !== row.valor_total_centavos
+        ? "Gere o Pix com o valor atualizado pelo link do pedido acima."
+        : (row.codigo_pix ?? ""),
     valor_pedido: formatarBRL(pedido?.valor_centavos ?? row.valor_total_centavos),
     link_whatsapp: linkWhatsappSuporte(row.protocolo),
     bloco_oferta: etapa === 3 ? blocoOferta(pedido) : "",
