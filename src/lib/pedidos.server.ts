@@ -403,7 +403,14 @@ async function gerarCobrancaMercadoPago(row: PedidoRow): Promise<PedidoRow> {
  */
 function sufixoCobranca(row: PedidoRow & { cobranca_renovada_em?: string | null }) {
   const marco = row.cobranca_renovada_em ?? row.reativado_em;
-  return marco ? String(new Date(marco).getTime()) : undefined;
+  const partes: string[] = [];
+  if (marco) partes.push(String(new Date(marco).getTime()));
+  // Oferta/desconto: valor diferente exige cobrança nova, nunca reaproveitar a antiga.
+  if (row.oferta_expira_em || (row.valor_original_centavos && row.valor_original_centavos !== row.valor_centavos)) {
+    partes.push(`v${row.valor_centavos}`);
+    if (row.oferta_expira_em) partes.push(String(new Date(row.oferta_expira_em).getTime()));
+  }
+  return partes.length ? partes.join("-") : undefined;
 }
 
 /** Cria o link de pagamento com cartão no Mercado Pago (Checkout Pro). */
@@ -915,7 +922,7 @@ export async function ativarOfertaRelampago(pedidoId: string) {
       valor_original_centavos: original,
       oferta_expira_em: expira,
       status: "aguardando_pagamento",
-      ...(reabrir ? { reativado_em: agora } : {}),
+      ...(reabrir ? { reativado_em: agora } : { cobranca_renovada_em: agora }),
       ...LIMPAR_COBRANCA,
     })
     .eq("id", pedidoId)
