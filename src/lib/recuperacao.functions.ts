@@ -91,3 +91,39 @@ export const enviarEmailTeste = createServerFn({ method: "POST" })
     const { enviarTeste } = await import("./recuperacao.server");
     return enviarTeste(data.etapa, emailDaConta);
   });
+
+export const enviarSmsRecuperacao = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        etapa: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    await exigirEquipe(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: ab } = await supabaseAdmin
+      .from("abandoned_orders")
+      .select("pedido_id, protocolo, cliente_nome, status_automacao")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!ab) throw new Error("Pedido não encontrado na recuperação.");
+    if (["recuperado", "cancelado"].includes(ab.status_automacao)) {
+      throw new Error("Este pedido não está mais pendente.");
+    }
+    const { data: pedido } = await supabaseAdmin
+      .from("pedidos")
+      .select("whatsapp")
+      .eq("id", ab.pedido_id)
+      .maybeSingle();
+    const { montarSms, telefoneE164 } = await import("./sms");
+    const para = telefoneE164(pedido?.whatsapp);
+    if (!para) throw new Error("Pedido sem celular válido para SMS.");
+    const texto = montarSms(data.etapa, { nome: ab.cliente_nome, protocolo: ab.protocolo });
+    const { enviarSms } = await import("./sms.server");
+    await enviarSms(para, texto);
+    return { ok: true, para, texto };
+  });
