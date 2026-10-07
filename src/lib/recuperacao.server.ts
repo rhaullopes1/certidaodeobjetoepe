@@ -1,14 +1,15 @@
-import { PIX, formatarBRL, DIAS_PARA_EXPIRAR } from "./site";
+import { PIX, formatarBRL, DIAS_PARA_EXPIRAR, WHATSAPP_NUMBER } from "./site";
+import { etapaDevida, pedidoEncerrado, STATUS_ANTERIOR, ESPERA_MS } from "./recuperacao-regras";
 import { gerarPixCopiaECola } from "./pix";
 
 export const ETAPAS = [1, 2, 3] as const;
 export type Etapa = (typeof ETAPAS)[number];
 
-/** Minutos após a criação do pedido para disparar cada etapa. */
+/** Espera de cada etapa (etapa 1 após a criação; demais após a etapa anterior). */
 export const ATRASO_MINUTOS: Record<Etapa, number> = {
-  1: 30,
-  2: 12 * 60,
-  3: 48 * 60,
+  1: ESPERA_MS[1] / 60000,
+  2: ESPERA_MS[2] / 60000,
+  3: ESPERA_MS[3] / 60000,
 };
 
 const LOTE = 20;
@@ -69,6 +70,8 @@ export function aplicarVariaveis(
     link_pagamento: string;
     codigo_pix: string;
     valor_pedido: string;
+    link_whatsapp?: string;
+    bloco_oferta?: string;
   },
 ) {
   return texto
@@ -76,7 +79,10 @@ export function aplicarVariaveis(
     .replace(/\{\{\s*numero_pedido\s*\}\}/g, vars.numero_pedido)
     .replace(/\{\{\s*link_pagamento\s*\}\}/g, vars.link_pagamento)
     .replace(/\{\{\s*codigo_pix\s*\}\}/g, vars.codigo_pix)
-    .replace(/\{\{\s*valor_pedido\s*\}\}/g, vars.valor_pedido);
+    .replace(/\{\{\s*valor_pedido\s*\}\}/g, vars.valor_pedido)
+    .replace(/\{\{\s*link_whatsapp\s*\}\}/g, vars.link_whatsapp ?? "")
+    .replace(/\{\{\s*bloco_oferta\s*\}\}/g, vars.bloco_oferta ?? "")
+    .replace(/\n{3,}/g, "\n\n");
 }
 
 /** Trava de execução: evita duas rodadas simultâneas da rotina. */
@@ -206,18 +212,59 @@ async function configEtapa(etapa: Etapa) {
   return data;
 }
 
-/** Envia o e-mail de uma etapa e marca o registro. */
+/** Link INBOUND: abre conversa do cliente com nossa central, já com o protocolo. */
+export function linkWhatsappSuporte(protocolo: string) {
+  const msg = `Olá! Preciso de ajuda para concluir o pagamento do meu pedido ${protocolo}.`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
+
+function blocoOferta(p: { oferta_expira_em: string | null; valor_original_centavos: number | null; valor_centavos: number } | null) {
+  if (!p?.oferta_expira_em || new Date(p.oferta_expira_em).getTime() <= Date.now()) return "";
+  if (!p.valor_original_centavos || p.valor_original_centavos <= p.valor_centavos) return "";
+  const ate = new Date(p.oferta_expira_em).toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit",
+  });
+  return `CONDIÇÃO ESPECIAL ATIVA NO SEU PEDIDO: de ${formatarBRL(p.valor_original_centavos)} por ${formatarBRL(p.valor_centavos)}, válida até ${ate} (horário de Brasília). O desconto já está aplicado no link abaixo.`;
+}
+
+/**
+ * Envia o e-mail de uma etapa e marca o registro.
+ * Com `marcar`, confere o pedido na hora (pago/cancelado/expirado não recebe) e
+ * só avança o status se ele ainda estiver na etapa anterior (sem duplicidade).
+ */
 export async function enviarEtapa(row: AbandonedOrderRow, etapa: Etapa, marcar = true) {
   const db = await admin();
   const config = await configEtapa(etapa);
   if (!config || !config.ativo) return { enviado: false, motivo: "etapa_inativa" as const };
 
+  let pedido: { status: string; pago_em: string | null; valor_centavos: number; oferta_expira_em: string | null; valor_original_centavos: number | null } | null = null;
+  if (row.pedido_id !== "teste") {
+    const { data } = await db
+      .from("pedidos")
+      .select("status, pago_em, valor_centavos, oferta_expira_em, valor_original_centavos")
+      .eq("id", row.pedido_id)
+      .maybeSingle();
+    pedido = data;
+    if (!pedido || pedidoEncerrado(pedido)) {
+      if (marcar) {
+        await db
+          .from("abandoned_orders")
+          .update({ status_automacao: pedido?.pago_em || pedido?.status === "pago" ? "recuperado" : "cancelado" })
+          .eq("id", row.id);
+      }
+      return { enviado: false, motivo: "pedido_encerrado" as const };
+    }
+  }
+
+  const linkPedido = `${SITE_URL}/pedido/${row.protocolo}`;
   const vars = {
     nome_cliente: row.cliente_nome?.split(" ")[0] || "cliente",
     numero_pedido: row.protocolo,
-    link_pagamento: row.link_pagamento ?? `${SITE_URL}/pedido/${row.protocolo}`,
+    link_pagamento: linkPedido,
     codigo_pix: row.codigo_pix ?? "",
-    valor_pedido: formatarBRL(row.valor_total_centavos),
+    valor_pedido: formatarBRL(pedido?.valor_centavos ?? row.valor_total_centavos),
+    link_whatsapp: linkWhatsappSuporte(row.protocolo),
+    bloco_oferta: etapa === 3 ? blocoOferta(pedido) : "",
   };
 
   const assunto = aplicarVariaveis(config.assunto, vars);
@@ -226,7 +273,14 @@ export async function enviarEtapa(row: AbandonedOrderRow, etapa: Etapa, marcar =
   const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
   const resultado = await sendTemplateEmail("recuperacao-etapa", row.cliente_email, {
     idempotencyKey: marcar ? `recuperacao-${row.protocolo}-etapa-${etapa}` : undefined,
-    templateData: { assunto, corpo, titulo: assunto },
+    templateData: {
+      assunto,
+      corpo,
+      titulo: assunto,
+      ctaUrl: linkPedido,
+      ctaLabel: etapa === 1 ? "Concluir pagamento" : etapa === 2 ? "Concluir agora" : "Garantir meu pedido agora",
+      whatsappUrl: etapa >= 2 ? vars.link_whatsapp : undefined,
+    },
   });
 
   if (marcar) {
@@ -238,7 +292,8 @@ export async function enviarEtapa(row: AbandonedOrderRow, etapa: Etapa, marcar =
         ultimo_erro: null,
         ...(etapa === 1 ? { etapa_1_em: agora } : etapa === 2 ? { etapa_2_em: agora } : { etapa_3_em: agora }),
       })
-      .eq("id", row.id);
+      .eq("id", row.id)
+      .eq("status_automacao", STATUS_ANTERIOR[etapa]);
   }
 
   return { enviado: resultado.sent, motivo: resultado.sent ? null : resultado.reason };
@@ -273,9 +328,8 @@ export async function processarRecuperacao() {
         continue;
       }
 
-      const proxima = (etapaAtual(row) + 1) as Etapa;
-      if (proxima > 3) continue;
-      if (idade < ATRASO_MINUTOS[proxima] * 60 * 1000) continue;
+      const proxima = etapaDevida(row);
+      if (!proxima) continue;
 
       try {
         const r = await enviarEtapa(row, proxima);
@@ -304,6 +358,7 @@ export type MetricasRecuperacao = {
   valorRecuperadoFormatado: string;
   valorParaRecuperar: number;
   valorParaRecuperarFormatado: string;
+  porEtapa: { aguardando: number; etapa1: number; etapa2: number; etapa3: number };
 };
 
 export async function listarRecuperacao() {
@@ -369,6 +424,12 @@ export async function listarRecuperacao() {
     valorRecuperadoFormatado: formatarBRL(valorRecuperado),
     valorParaRecuperar,
     valorParaRecuperarFormatado: formatarBRL(valorParaRecuperar),
+    porEtapa: {
+      aguardando: emAndamento.filter((l) => l.etapa === 0).length,
+      etapa1: emAndamento.filter((l) => l.etapa === 1).length,
+      etapa2: emAndamento.filter((l) => l.etapa === 2).length,
+      etapa3: emAndamento.filter((l) => l.etapa === 3).length,
+    },
   };
 
   return { linhas, metricas };
