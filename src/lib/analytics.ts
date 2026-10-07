@@ -1,3 +1,12 @@
+/**
+ * Eventos do funil (em ordem):
+ *  1. begin_checkout   — abriu o formulário de solicitação (trackBeginCheckout)
+ *  2. generate_lead    — pedido criado; página do protocolo aberta (trackGenerateLead)
+ *  3. add_payment_info — cliente iniciou pagamento: copiou o Pix ou abriu o cartão (trackPaymentStart)
+ *  4. conversion       — PAGAMENTO CONFIRMADO. Este é o ÚNICO evento de conversão final
+ *                        ("Pedido Pago - Site"), disparado só com status "pago" (sendGoogleAdsConversion).
+ * Os eventos 1–3 são sinais intermediários e não devem ser marcados como conversão principal.
+ */
 // Ação de conversão "Pedido Pago - Site" (categoria Compra) no Google Ads.
 const CONVERSION_ID = "AW-18411209847/KbQeCJ2cn4MdEPeIk8tE";
 const ADS_ACCOUNT = "AW-18411209847";
@@ -62,6 +71,20 @@ export function trackGenerateLead(protocolo: string, valorCentavos?: number): vo
   });
 }
 
+/** Pagamento iniciado (Pix copiado ou cartão aberto). Sinal intermediário, NÃO é conversão final. */
+export function trackPaymentStart(protocolo: string, metodo: "pix" | "cartao", valorCentavos?: number): void {
+  once(`ga_payment_start_${metodo}_${protocolo}`, () => {
+    withGtag((gtag) =>
+      gtag("event", "add_payment_info", {
+        send_to: ADS_ACCOUNT,
+        currency: "BRL",
+        payment_type: metodo,
+        value: typeof valorCentavos === "number" && valorCentavos > 0 ? valorCentavos / 100 : undefined,
+        transaction_id: protocolo,
+      }),
+    );
+  });
+}
 
 /**
  * Envia o evento de conversão do Google Ads para um pedido pago.

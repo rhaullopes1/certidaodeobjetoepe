@@ -64,7 +64,7 @@ function BotaoWhatsApp({ pedido }: { pedido: PedidoAdmin }) {
 }
 
 /** Botão D: ativa 30% OFF (só hoje) no próprio pedido e abre o WhatsApp. */
-function BotaoDesconto({ pedido }: { pedido: PedidoAdmin }) {
+export function BotaoDesconto({ pedido }: { pedido: PedidoAdmin }) {
   const ativar = useServerFn(ativarOfertaRelampagoFn);
   const qc = useQueryClient();
   const [carregando, setCarregando] = useState(false);
@@ -149,6 +149,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 
 const LINKS_ADMIN = [
   { to: "/admin", label: "Pedidos", exact: true },
+  { to: "/admin/comercial", label: "Comercial" },
   { to: "/admin/financeiro", label: "Financeiro" },
   { to: "/admin/entregas", label: "Entregas", contador: true },
   { to: "/admin/operacao", label: "Operação" },
