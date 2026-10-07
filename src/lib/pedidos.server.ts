@@ -914,7 +914,8 @@ export async function ativarOfertaRelampago(pedidoId: string) {
   const oferta = Math.round(original * 0.7);
   const expira = fimDoDiaBrasilia().toISOString();
   const agora = new Date().toISOString();
-  const reabrir = p.status !== "aguardando_pagamento";
+  // `reativado_em` é coluna real e renova o sufixo de idempotência (sufixoCobranca).
+  // A coluna "cobranca_renovada_em" não existe no banco — gravá-la falhava no PostgREST.
   const { error } = await supabaseAdmin
     .from("pedidos")
     .update({
@@ -922,7 +923,7 @@ export async function ativarOfertaRelampago(pedidoId: string) {
       valor_original_centavos: original,
       oferta_expira_em: expira,
       status: "aguardando_pagamento",
-      ...(reabrir ? { reativado_em: agora } : { cobranca_renovada_em: agora }),
+      reativado_em: agora,
       ...LIMPAR_COBRANCA,
     })
     .eq("id", pedidoId)
