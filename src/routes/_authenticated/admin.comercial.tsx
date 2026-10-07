@@ -117,12 +117,12 @@ function Comercial() {
             <section className="card-premium p-3 sm:p-5">
               <h2 className="font-semibold">Funil diário</h2>
               <p className="text-xs text-muted-foreground">
-                Pedido criado → pagamento iniciado (Pix gerado ou cartão tentado) → pago. Cliques ficam no Google Ads e não estão no banco.
+                Pedido criado → cobrança gerada (Pix/cartão) → pago. Hoje o Pix é gerado automaticamente ao abrir o pedido, então essa coluna quase igual a "Pedidos" é normal. Cópias do Pix e cliques no cartão agora são medidos no Google (add_payment_info). Cliques em anúncios ficam no Google Ads.
               </p>
               <div className="mt-3 overflow-x-auto">
                 <table className="w-full min-w-[420px] text-sm">
                   <thead className="text-left text-xs uppercase text-muted-foreground">
-                    <tr><th className="py-2">Dia</th><th>Pedidos</th><th>Pgto iniciado</th><th>Pagos</th><th>Receita</th></tr>
+                    <tr><th className="py-2">Dia</th><th>Pedidos</th><th>Pix/cartão gerado</th><th>Pagos</th><th>Receita</th></tr>
                   </thead>
                   <tbody className="divide-y divide-border/60">
                     {[...d.funil].reverse().map((x) => (

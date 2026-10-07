@@ -10,7 +10,7 @@ describe("scoreIntencao", () => {
   const base = { quantidade: 1, finalidade: null, whatsappValido: true, reativado_em: null, mercadopago_status: null, oferta_expira_em: null };
   it("pedido recente com Pix gerado e finalidade urgente é quente", () => {
     const r = scoreIntencao({ ...base, created_at: iso(agora - H), mercadopago_status: "pending", finalidade: "caminhoneiro_motorista" }, agora);
-    expect(r.score).toBe(65);
+    expect(r.score).toBe(55);
     expect(r.faixa).toBe("quente");
   });
   it("pedido antigo sem sinais é frio", () => {

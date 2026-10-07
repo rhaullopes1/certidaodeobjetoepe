@@ -30,7 +30,7 @@ export function scoreIntencao(p: SinaisPedido, agora = Date.now()) {
   else if (idadeH < 72) { s += 10; motivos.push("pedido com até 3 dias"); }
 
   if (p.mercadopago_status === "rejected") { s += 20; motivos.push("tentou pagar no cartão (recusado)"); }
-  else if (p.mercadopago_status === "pending") { s += 15; motivos.push("gerou o Pix"); }
+  else if (p.mercadopago_status === "pending") { s += 5; motivos.push("Pix gerado"); }
 
   if (p.reativado_em) { s += 20; motivos.push("reabriu o link do pedido"); }
   if (p.finalidade && URGENTES.has(p.finalidade)) { s += 15; motivos.push("finalidade urgente"); }
