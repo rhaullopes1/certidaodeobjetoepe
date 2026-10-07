@@ -1,14 +1,17 @@
 import React from 'react'
-import { Body, Container, Head, Heading, Html, Preview, Text } from '@react-email/components'
+import { Body, Button, Container, Head, Heading, Html, Link, Preview, Text } from '@react-email/components'
 import type { TemplateEntry } from './registry'
 
 interface Props {
   assunto?: string
   corpo?: string
   titulo?: string
+  ctaUrl?: string
+  ctaLabel?: string
+  whatsappUrl?: string
 }
 
-const Email = ({ assunto, corpo, titulo }: Props) => {
+const Email = ({ assunto, corpo, titulo, ctaUrl, ctaLabel, whatsappUrl }: Props) => {
   const linhas = (corpo ?? '').split('\n')
   return (
     <Html lang="pt-BR" dir="ltr">
@@ -29,6 +32,19 @@ const Email = ({ assunto, corpo, titulo }: Props) => {
               </Text>
             ),
           )}
+          {ctaUrl ? (
+            <Button href={ctaUrl} style={botao}>
+              {ctaLabel ?? 'Concluir pagamento'}
+            </Button>
+          ) : null}
+          {whatsappUrl ? (
+            <Text style={text}>
+              Ficou com alguma dúvida?{' '}
+              <Link href={whatsappUrl} style={linkWa}>
+                Fale com nossa equipe no WhatsApp
+              </Link>
+            </Text>
+          ) : null}
           <Text style={footer}>
             Se você já pagou, desconsidere este aviso. Pedidos sem pagamento expiram após 7 dias.
           </Text>
@@ -62,3 +78,15 @@ const h1 = { fontSize: '22px', color: '#0B1F3A', margin: '0 0 16px' }
 const text = { fontSize: '15px', lineHeight: '24px', color: '#233047', margin: '0 0 6px' }
 const espaco = { margin: '0 0 10px', fontSize: '6px', lineHeight: '6px' }
 const footer = { fontSize: '12px', color: '#6b7280', marginTop: '24px' }
+const botao = {
+  backgroundColor: '#0B1F3A',
+  color: '#ffffff',
+  borderRadius: '8px',
+  padding: '14px 22px',
+  fontSize: '16px',
+  fontWeight: 'bold' as const,
+  textDecoration: 'none',
+  display: 'inline-block',
+  margin: '18px 0 14px',
+}
+const linkWa = { color: '#128C4A', fontWeight: 'bold' as const }

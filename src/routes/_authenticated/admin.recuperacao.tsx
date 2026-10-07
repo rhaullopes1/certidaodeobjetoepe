@@ -49,6 +49,8 @@ const VARIAVEIS = [
   "{{valor_pedido}}",
   "{{link_pagamento}}",
   "{{codigo_pix}}",
+  "{{link_whatsapp}}",
+  "{{bloco_oferta}}",
 ];
 
 function dataBr(valor: string | null) {
@@ -184,22 +186,52 @@ function RecuperacaoPage() {
 
             {painel.data && aba === "painel" && (
               <>
-                <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
                   <Metrica
                     titulo="Pedidos pendentes"
                     valor={String(painel.data.metricas.pendentes)}
-                    detalhe={`${painel.data.metricas.emRecuperacao} já receberam e-mail`}
+                    detalhe="aguardando pagamento"
+                  />
+                  <Metrica
+                    titulo="Já receberam etapa"
+                    valor={String(painel.data.metricas.emRecuperacao)}
+                    detalhe="ao menos 1 e-mail enviado"
+                  />
+                  <Metrica
+                    titulo="Recuperados"
+                    valor={String(painel.data.metricas.recuperados)}
+                    detalhe={`taxa ${painel.data.metricas.taxaRecuperacao}%`}
                   />
                   <Metrica
                     titulo="Taxa de recuperação"
                     valor={`${painel.data.metricas.taxaRecuperacao}%`}
-                    detalhe={`${painel.data.metricas.recuperados} pedidos recuperados`}
+                    detalhe="recuperados ÷ (pendentes + recuperados)"
                   />
                   <Metrica
-                    titulo="Valor para recuperação"
-                    valor={painel.data.metricas.valorParaRecuperarFormatado}
-                    detalhe={`${painel.data.metricas.pendentes} pedidos ainda não recuperados`}
+                    titulo="Valor recuperado"
+                    valor={painel.data.metricas.valorRecuperadoFormatado}
                   />
+                  <Metrica
+                    titulo="Valor em recuperação"
+                    valor={painel.data.metricas.valorParaRecuperarFormatado}
+                    detalhe={`${painel.data.metricas.pendentes} pedidos`}
+                  />
+                </div>
+                <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-xs uppercase tracking-wide text-white/50">Distribuição por etapa (pendentes)</p>
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
+                    {[
+                      ["Aguardando etapa 1", painel.data.metricas.porEtapa.aguardando],
+                      ["Etapa 1 (30 min)", painel.data.metricas.porEtapa.etapa1],
+                      ["Etapa 2 (+12h)", painel.data.metricas.porEtapa.etapa2],
+                      ["Etapa 3 (+24h)", painel.data.metricas.porEtapa.etapa3],
+                    ].map(([rotulo, n]) => (
+                      <div key={String(rotulo)} className="rounded-xl bg-white/5 px-3 py-2">
+                        <p className="text-white/60">{rotulo}</p>
+                        <p className="font-display text-xl font-bold text-white">{n}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-3">
