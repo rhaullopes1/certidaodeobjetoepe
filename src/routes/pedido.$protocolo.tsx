@@ -22,7 +22,7 @@ import {
   EMAIL_CONTATO,
 } from "@/lib/site";
 import { PrazoEmissao } from "@/components/site/prazo-emissao";
-import { sendGoogleAdsConversion, trackGenerateLead } from "@/lib/analytics";
+import { sendGoogleAdsConversion, trackGenerateLead, trackPaymentStart } from "@/lib/analytics";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { PassosPix, SelosPagamento } from "@/components/site/reforco-pagamento";
 import { PixLive } from "@/components/site/pix-live";
@@ -128,6 +128,7 @@ function PedidoPage() {
     if (!data) return;
     try {
       await navigator.clipboard.writeText(data.pixCopiaECola);
+      trackPaymentStart(data.protocolo, "pix", data.valorCentavos);
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2500);
     } catch {
@@ -493,6 +494,7 @@ function PedidoPage() {
                         href={data.checkoutUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackPaymentStart(data.protocolo, "cartao", data.valorCentavos)}
                         className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
                       >
                         Pagar em até 3x no cartão
