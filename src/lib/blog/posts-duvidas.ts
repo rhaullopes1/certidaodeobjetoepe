@@ -6,10 +6,10 @@ export const POSTS_DUVIDAS: Post[] = [
   {
     slug: "quanto-tempo-demora-certidao-de-objeto-e-pe",
     categoria: "duvidas",
-    titulo: "Quanto Tempo Demora a Certidão de Objeto e Pé? Prazos",
+    titulo: "Quanto Tempo Demora a Certidão de Objeto e Pé? Veja os Prazos",
     h1: "Quanto tempo demora para sair a Certidão de Objeto e Pé",
     descricao:
-      "O prazo usual da Certidão de Objeto e Pé é de 1 a 5 dias úteis, conforme a comarca e o tribunal. Veja o que atrasa (processo físico, arquivado) e como pedir.",
+      "Saiba quanto tempo pode levar para obter a certidão de objeto e pé, o que influencia o prazo e como solicitar assessoria para conseguir o documento.",
     resumo: "O prazo de emissão é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
     atualizado: "2026-08-26",
     leitura: 4,
@@ -39,10 +39,10 @@ export const POSTS_DUVIDAS: Post[] = [
   {
     slug: "certidao-de-objeto-e-pe-e-gratuita",
     categoria: "duvidas",
-    titulo: "Certidão de Objeto e Pé é gratuita? Quanto custa",
+    titulo: "Certidão de Objeto e Pé é Gratuita? Entenda Custas e Como Pedir",
     h1: "Quanto custa a Certidão de Objeto e Pé",
     descricao:
-      "Custas de tribunal, gratuidade de justiça e valor do serviço de assessoria: entenda cada componente do custo.",
+      "Entenda quando a certidão de objeto e pé pode ser gratuita, como solicitar o documento e quais informações são necessárias para iniciar o pedido.",
     resumo: "O que é taxa do tribunal, o que é serviço, e quando há isenção.",
     atualizado: "2026-08-26",
     leitura: 4,

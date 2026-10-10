@@ -7,9 +7,9 @@ import { UserMenu } from "@/components/user-menu";
 const SITE = "https://certidaodeobjetoepe.org";
 export const TJRJ_URL = `${SITE}/certidao-de-objeto-e-pe/rj`;
 const URL = TJRJ_URL;
-const TITLE = "Certidão de Objeto e Pé RJ (TJRJ): Como Solicitar Online";
+const TITLE = "Certidão de Objeto e Pé TJRJ (Rio de Janeiro): Pedido Online";
 const DESC =
-  "Como solicitar a Certidão de Objeto e Pé de processos do TJRJ, no Rio de Janeiro: quem emite, dados necessários, PJe e eproc, 2º grau, processos arquivados e acompanhamento.";
+  "Solicite sua Certidão de Objeto e Pé do TJRJ online. Atendimento para a capital e comarcas do interior do Rio de Janeiro, com acompanhamento até a expedição.";
 
 const COMARCAS = [
   "Rio de Janeiro (Capital)",

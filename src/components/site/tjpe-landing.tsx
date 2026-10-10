@@ -17,9 +17,9 @@ const SITE = "https://certidaodeobjetoepe.org";
 export const TJPE_URL = `${SITE}/certidao-de-objeto-e-pe/pe`;
 const URL = TJPE_URL;
 const OG_IMAGE = `${SITE}/og-certidao.jpg`;
-const TITLE = "Certidão de Objeto e Pé TJPE: Como Solicitar Online";
+const TITLE = "Certidão de Objeto e Pé TJPE: Solicitação Online em Pernambuco";
 const DESC =
-  "Como pedir a Certidão de Objeto e Pé de processos do TJPE, em qualquer comarca de Pernambuco: dados necessários, PJe, processos físicos e acompanhamento do pedido.";
+  "Peça sua Certidão de Objeto e Pé do TJPE de forma online. Consulte as condições do serviço para localização do processo, solicitação e entrega do documento.";
 
 const COMARCAS = [
   "Recife",

@@ -7,9 +7,9 @@ import { UserMenu } from "@/components/user-menu";
 const SITE = "https://certidaodeobjetoepe.org";
 export const TJMT_URL = `${SITE}/certidao-de-objeto-e-pe/mt`;
 const URL = TJMT_URL;
-const TITLE = "Certidão de Objeto e Pé TJMT: Como Solicitar";
+const TITLE = "Certidão de Objeto e Pé TJMT: Pedido Online em Mato Grosso";
 const DESC =
-  "Como solicitar a Certidão de Objeto e Pé de processos do TJMT (Mato Grosso): quem emite, dados necessários, PJe, segredo de justiça e acompanhamento do pedido.";
+  "Solicite a Certidão de Objeto e Pé do TJMT online para Cuiabá e comarcas de MT. Consulte as condições do serviço e o acompanhamento disponível.";
 
 const COMARCAS = [
   "Cuiabá",
