@@ -68,8 +68,13 @@ export const Route = createFileRoute("/tribunais/$sigla")({
       return { meta: [{ title: "Tribunal não encontrado" }, { name: "robots", content: "noindex" }] };
     }
     const t = loaderData.tribunal;
-    const title = `Certidão de Objeto e Pé ${t.sigla} — ${t.nome}`;
-    const desc = `Solicite a Certidão de Objeto e Pé de processos do ${t.sigla} (${t.nome}). Sistema ${t.sistema}, prazo médio de ${t.prazo}, atendimento online em ${t.abrangencia}.`;
+    const estadual = t.tipo === "estadual";
+    const title = estadual
+      ? `Certidão de Objeto e Pé ${t.sigla}: Pedido Online | ${t.sede}`
+      : `Certidão de Objeto e Pé ${t.sigla} — ${t.nome}`;
+    const desc = estadual
+      ? `Solicite a Certidão de Objeto e Pé do ${t.sigla} online para processos no ${t.abrangencia}. Acompanhamento do pedido até a expedição.`
+      : `Solicite a Certidão de Objeto e Pé de processos do ${t.sigla} (${t.nome}). Sistema ${t.sistema}, prazo médio de ${t.prazo}, atendimento online em ${t.abrangencia}.`;
     return {
       meta: [
         { title },

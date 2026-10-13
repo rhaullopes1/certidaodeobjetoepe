@@ -16,9 +16,9 @@ import { UserMenu } from "@/components/user-menu";
 const SITE = "https://certidaodeobjetoepe.org";
 export const TJSP_URL = `${SITE}/certidao-de-objeto-e-pe/sp`;
 const URL = TJSP_URL;
-const TITLE = "Certidão de Objeto e Pé TJSP (SP): Como Solicitar Online";
+const TITLE = "Certidão de Objeto e Pé TJSP: Pedido Online em São Paulo";
 const DESC =
-  "Como pedir a Certidão de Objeto e Pé de processos do TJSP, em qualquer comarca de São Paulo: dados necessários, e-SAJ, processos físicos e acompanhamento do pedido.";
+  "Solicite a Certidão de Objeto e Pé do TJSP online para a capital e comarcas de SP. Consulte as condições do serviço e o acompanhamento disponível.";
 
 const FAQ_TJSP: { q: string; a: string }[] = [
   {
