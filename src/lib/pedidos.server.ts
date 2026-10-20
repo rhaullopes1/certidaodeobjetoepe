@@ -1,4 +1,4 @@
-import { PIX, precoCentavos, formatarBRL, DIAS_PARA_EXPIRAR, EMAIL_CONTATO } from "./site";
+import { PIX, precoCentavos, formatarBRL, DIAS_PARA_EXPIRAR, EMAIL_CONTATO, whatsappLink } from "./site";
 
 import { gerarPixCopiaECola } from "./pix";
 import {
@@ -275,6 +275,30 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
 
   if (error || !row) {
     console.error("Falha ao criar pedido", error);
+    // Contingência: banco indisponível — envia os dados completos à equipe por e-mail.
+    try {
+      const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+      await sendTemplateEmail("novo-pedido-admin", EMAIL_CONTATO, {
+        idempotencyKey: `contingencia-${registro.protocolo}`,
+        templateData: {
+          protocolo: `${registro.protocolo} (CONTINGÊNCIA — NÃO GRAVADO NO BANCO)`,
+          quantidade: certidoes.length,
+          valor: formatarBRL(valorCentavos),
+          email,
+          whatsapp: formatarWhatsapp(registro.whatsapp),
+          certidoes: certidoes.map((c) => ({
+            ...c,
+            observacoes: [c.observacoes, `Finalidade: ${data.finalidade ?? "—"}`]
+              .filter(Boolean)
+              .join(" · "),
+          })),
+          url: whatsappLink(`Pedido ${registro.protocolo}`),
+        },
+      });
+      return { contingencia: true, protocolo: registro.protocolo } as unknown as PedidoResumo;
+    } catch (e) {
+      console.error("Falha ao enviar pedido de contingência por e-mail", e);
+    }
     throw new Error("Não foi possível registrar seu pedido. Tente novamente.");
   }
 

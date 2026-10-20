@@ -381,6 +381,14 @@ function Solicitar() {
     try {
       const pedido = await enviarPedido({ data: parsed.data });
 
+      const conting = pedido as unknown as { contingencia?: boolean; protocolo: string };
+      if (conting.contingencia) {
+        setContingencia(conting.protocolo);
+        setEnviando(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
       // Conta criada em segundo plano, sem senha: o cliente recebe um link de acesso.
       if (!sessaoEmail) {
         try {
