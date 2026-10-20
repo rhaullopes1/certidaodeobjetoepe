@@ -283,6 +283,7 @@ function Solicitar() {
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+  const [contingencia, setContingencia] = useState<string | null>(null);
   // Antes da hidratação um clique dispara o envio nativo do formulário e recarrega a página.
   const [pronto, setPronto] = useState(false);
 
@@ -381,6 +382,14 @@ function Solicitar() {
     try {
       const pedido = await enviarPedido({ data: parsed.data });
 
+      const conting = pedido as unknown as { contingencia?: boolean; protocolo: string };
+      if (conting.contingencia) {
+        setContingencia(conting.protocolo);
+        setEnviando(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
       // Conta criada em segundo plano, sem senha: o cliente recebe um link de acesso.
       if (!sessaoEmail) {
         try {
@@ -410,6 +419,31 @@ function Solicitar() {
   return (
     <div className="min-h-dvh bg-secondary/40">
       <SiteHeader />
+      {contingencia ? (
+        <div className="mx-auto mt-8 w-full max-w-3xl px-5 sm:px-8">
+          <div role="status" className="rounded-2xl border border-accent bg-card p-6">
+            <h2 className="font-display text-xl font-bold">Recebemos seus dados</h2>
+            <p className="mt-2 text-muted-foreground">
+              Nosso sistema está instável, mas sua solicitação (protocolo{" "}
+              <strong className="text-foreground">{contingencia}</strong>) foi enviada à nossa
+              equipe. Para concluir a compra agora, fale conosco:
+            </p>
+            <a
+              href={whatsappLink(
+                `Olá! Quero concluir meu pedido de certidão. Protocolo: ${contingencia}`,
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground"
+            >
+              Concluir pelo WhatsApp
+            </a>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Ou pelo e-mail contato@certidaodeobjetoepe.org · telefone 0800 000 4604
+            </p>
+          </div>
+        </div>
+      ) : null}
 
       <main className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
