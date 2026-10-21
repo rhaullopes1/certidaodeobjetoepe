@@ -1,4 +1,4 @@
-import { PIX, precoCentavos, formatarBRL, DIAS_PARA_EXPIRAR, EMAIL_CONTATO, whatsappLink } from "./site";
+import { PIX, precoCentavos, formatarBRL, DIAS_PARA_EXPIRAR, EMAIL_CONTATO } from "./site";
 
 import { gerarPixCopiaECola } from "./pix";
 import {
@@ -292,7 +292,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
               .filter(Boolean)
               .join(" · "),
           })),
-          url: whatsappLink(`Pedido ${registro.protocolo}`),
+          url: `https://certidaodeobjetoepe.org/admin/${registro.protocolo}`,
         },
       });
       return { contingencia: true, protocolo: registro.protocolo } as unknown as PedidoResumo;
