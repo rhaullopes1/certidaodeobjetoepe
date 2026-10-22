@@ -292,7 +292,8 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
               .filter(Boolean)
               .join(" · "),
           })),
-          url: `https://certidaodeobjetoepe.org/admin/${registro.protocolo}`,
+          // O protocolo de contingência não tem registro: abrir a lista de atendimento.
+          url: "https://certidaodeobjetoepe.org/admin",
         },
       });
       return { contingencia: true, protocolo: registro.protocolo } as unknown as PedidoResumo;
