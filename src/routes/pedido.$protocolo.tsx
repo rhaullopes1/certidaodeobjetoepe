@@ -64,7 +64,21 @@ function PedidoPage() {
   const buscar = useServerFn(consultarPedido);
   const { data, isPending, isError, isRefetchError, refetch } = useQuery({
     queryKey: ["pedido", protocolo],
-    queryFn: () => buscar({ data: { protocolo } }),
+    queryFn: async () => {
+      // Pedido de contingência (sistema instável): usa o resumo salvo no navegador.
+      const salvo =
+        typeof window !== "undefined"
+          ? sessionStorage.getItem(`pedido-contingencia-${protocolo}`)
+          : null;
+      try {
+        const r = await buscar({ data: { protocolo } });
+        if (r) return r;
+      } catch (e) {
+        if (!salvo) throw e;
+      }
+      if (salvo) return JSON.parse(salvo) as Awaited<ReturnType<typeof buscar>>;
+      return null;
+    },
     refetchInterval: (query) =>
       query.state.data?.status === "aguardando_pagamento" &&
       typeof document !== "undefined" &&
