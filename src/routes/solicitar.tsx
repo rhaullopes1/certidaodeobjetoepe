@@ -384,10 +384,17 @@ function Solicitar() {
 
       const conting = pedido as unknown as { contingencia?: boolean; protocolo: string };
       if (conting.contingencia) {
-        setContingencia(conting.protocolo);
-        setEnviando(false);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        return;
+        // Sistema instável: guarda o resumo para a tela de pagamento abrir sem o banco.
+        try {
+          sessionStorage.setItem(`pedido-contingencia-${pedido.protocolo}`, JSON.stringify(pedido));
+          navigate({ to: "/pedido/$protocolo", params: { protocolo: pedido.protocolo } });
+          return;
+        } catch {
+          setContingencia(conting.protocolo);
+          setEnviando(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
       }
 
       // Conta criada em segundo plano, sem senha: o cliente recebe um link de acesso.

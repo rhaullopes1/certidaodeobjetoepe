@@ -296,7 +296,14 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
           url: "https://certidaodeobjetoepe.org/admin",
         },
       });
-      return { contingencia: true, protocolo: registro.protocolo } as unknown as PedidoResumo;
+      // Encaminha o cliente ao pagamento com o Pix fixo (confirmação manual pela equipe).
+      const resumoContingencia = montar({
+        ...registro,
+        status: "aguardando_pagamento",
+        created_at: new Date().toISOString(),
+      } as unknown as Parameters<typeof montar>[0]);
+      await enviarConfirmacaoPorEmail(resumoContingencia, certidoes);
+      return { ...resumoContingencia, contingencia: true } as PedidoResumo;
     } catch (e) {
       console.error("Falha ao enviar pedido de contingência por e-mail", e);
     }
