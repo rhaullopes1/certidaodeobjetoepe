@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "sdk_version": "3.3.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://orxqxrgaucnhigiquqrn.supabase.co/auth/v1",
+    "require_oauth_client_claim": true,
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "certid-o-de-objeto-e-p",
+      "version": "0.1.0",
+      "title": "Certidão de objeto e pé"
+    },
+    "tools": [
+      {
+        "name": "listar_pedidos",
+        "title": "Consultar pedidos de certidão",
+        "description": "Consulta até 50 pedidos: clientes veem somente seus pedidos; admin e equipe consultam o atendimento. Não disponível para operadores.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "protocolo": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Protocolo exato do pedido, se conhecido."
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "aguardando_pagamento",
+                "pago",
+                "em_analise",
+                "protocolado",
+                "emitida",
+                "cancelado",
+                "expirado"
+              ],
+              "description": "Situação do pedido para filtrar."
+            },
+            "limite": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "description": "Máximo de pedidos retornados, de 1 a 50."
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000,
+              "default": 0,
+              "description": "Número de pedidos a pular para consultar a próxima página."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

@@ -6,11 +6,13 @@ import { destinoPosLogin, ehAdministrativo, ehOperador, meusPapeis } from "@/lib
 import { lovable } from "@/integrations/lovable/index";
 import { EfficiencyBrand, FlyDoxCredit } from "@/components/operacao/efficiency-brand";
 import efficiencyOg from "@/assets/efficiency/og.jpg.asset.json";
+import { oauthReturnPath } from "@/lib/oauth-return-path";
 
 const IMAGEM_SOCIAL_OPERACIONAL = `https://operacao.flydox.net${efficiencyOg.url}`;
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  validateSearch: (s: Record<string, unknown>): { next?: string } => ({ next: oauthReturnPath(s.next) }),
   component: AuthPage,
   head: ({ match }) =>
     match.context?.branding?.modo === "operacional"
@@ -49,6 +51,8 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const { branding } = Route.useRouteContext();
+  const search = Route.useSearch();
+  const next = search.next ?? "/";
   const portal = branding.modo === "operacional";
   const [modo, setModo] = useState<"entrar" | "criar">("entrar");
   const [email, setEmail] = useState("");
@@ -59,6 +63,7 @@ function AuthPage() {
   const [carregandoGoogle, setCarregandoGoogle] = useState(false);
   const irParaDestino = () =>
     meusPapeis().then(async (p) => {
+      if (!portal && next !== "/") return navigate({ href: next, replace: true });
       if (!portal) return navigate({ to: destinoPosLogin(p), replace: true });
       if (ehOperador(p) && !ehAdministrativo(p)) return navigate({ to: "/operacao", replace: true });
       await supabase.auth.signOut();
@@ -69,7 +74,7 @@ function AuthPage() {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) irParaDestino();
     });
-  }, [navigate]);
+  }, [navigate, next]);
 
   async function entrarComGoogle() {
     setErro(null);
@@ -77,7 +82,7 @@ function AuthPage() {
     setCarregandoGoogle(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: new URL(`/auth?next=${encodeURIComponent(next)}`, window.location.origin).href,
       });
       if (result.error) {
         setErro(
@@ -110,7 +115,7 @@ function AuthPage() {
         const { data, error } = await supabase.auth.signUp({
           email,
           password: senha,
-          options: { emailRedirectTo: window.location.origin + "/minha-conta" },
+          options: { emailRedirectTo: new URL(next !== "/" ? next : "/minha-conta", window.location.origin).href },
         });
         if (error) throw error;
         if (data.session) irParaDestino();

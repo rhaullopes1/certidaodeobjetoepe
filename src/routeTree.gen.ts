@@ -23,12 +23,14 @@ import { Route as CertidaoObjetoEPeTrf4RouteImport } from './routes/certidao-obj
 import { Route as CertidaoObjetoEPeTrf5RouteImport } from './routes/certidao-objeto-e-pe-trf5'
 import { Route as CertidaoObjetoEPeTrf6RouteImport } from './routes/certidao-objeto-e-pe-trf6'
 import { Route as GarantiaRouteImport } from './routes/garantia'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SolicitarRouteImport } from './routes/solicitar'
 import { Route as SolicitarAntecedentesRouteImport } from './routes/solicitar-antecedentes'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
 import { Route as AuthenticatedOperacaoRouteImport } from './routes/_authenticated/operacao'
@@ -41,6 +43,7 @@ import { Route as GuiasSlugRouteImport } from './routes/guias.$slug'
 import { Route as PedidoProtocoloRouteImport } from './routes/pedido.$protocolo'
 import { Route as TribunaisIndexRouteImport } from './routes/tribunais.index'
 import { Route as TribunaisSiglaRouteImport } from './routes/tribunais.$sigla'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProtocoloRouteImport } from './routes/_authenticated/admin.$protocolo'
 import { Route as AuthenticatedAdminAntecedentesRouteImport } from './routes/_authenticated/admin.antecedentes'
@@ -146,6 +149,11 @@ const GarantiaRoute = GarantiaRouteImport.update({
   path: '/garantia',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
   id: '/politica-de-privacidade',
   path: '/politica-de-privacidade',
@@ -176,6 +184,12 @@ const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
   path: '/termos-de-uso',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -235,6 +249,11 @@ const TribunaisIndexRoute = TribunaisIndexRouteImport.update({
 const TribunaisSiglaRoute = TribunaisSiglaRouteImport.update({
   id: '/tribunais/$sigla',
   path: '/tribunais/$sigla',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -445,12 +464,14 @@ export interface FileRoutesByFullPath {
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/garantia': typeof GarantiaRoute
+  '/mcp': typeof McpRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/operacao': typeof AuthenticatedOperacaoRouteWithChildren
@@ -463,6 +484,7 @@ export interface FileRoutesByFullPath {
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
   '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
@@ -512,12 +534,14 @@ export interface FileRoutesByTo {
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/garantia': typeof GarantiaRoute
+  '/mcp': typeof McpRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/certidao-de-objeto-e-pe/$uf': typeof CertidaoDeObjetoEPeUfRoute
@@ -528,6 +552,7 @@ export interface FileRoutesByTo {
   '/certidao-de-objeto-e-pe': typeof CertidaoDeObjetoEPeIndexRoute
   '/guias': typeof GuiasIndexRoute
   '/tribunais': typeof TribunaisIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
@@ -579,12 +604,14 @@ export interface FileRoutesById {
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
   '/garantia': typeof GarantiaRoute
+  '/mcp': typeof McpRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar': typeof SolicitarRoute
   '/solicitar-antecedentes': typeof SolicitarAntecedentesRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/_authenticated/operacao': typeof AuthenticatedOperacaoRouteWithChildren
@@ -597,6 +624,7 @@ export interface FileRoutesById {
   '/certidao-de-objeto-e-pe/': typeof CertidaoDeObjetoEPeIndexRoute
   '/guias/': typeof GuiasIndexRoute
   '/tribunais/': typeof TribunaisIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin/$protocolo': typeof AuthenticatedAdminProtocoloRoute
   '/_authenticated/admin/antecedentes': typeof AuthenticatedAdminAntecedentesRoute
   '/_authenticated/admin/comarcas': typeof AuthenticatedAdminComarcasRoute
@@ -648,12 +676,14 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
     | '/garantia'
+    | '/mcp'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
     | '/solicitar-antecedentes'
     | '/termos-de-uso'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/minha-conta'
     | '/operacao'
@@ -666,6 +696,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe/'
     | '/guias/'
     | '/tribunais/'
+    | '/.lovable/oauth/consent'
     | '/admin/$protocolo'
     | '/admin/antecedentes'
     | '/admin/comarcas'
@@ -715,12 +746,14 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
     | '/garantia'
+    | '/mcp'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
     | '/solicitar-antecedentes'
     | '/termos-de-uso'
+    | '/.well-known/oauth-protected-resource'
     | '/minha-conta'
     | '/blog/$slug'
     | '/certidao-de-objeto-e-pe/$uf'
@@ -731,6 +764,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe'
     | '/guias'
     | '/tribunais'
+    | '/.lovable/oauth/consent'
     | '/admin/$protocolo'
     | '/admin/antecedentes'
     | '/admin/comarcas'
@@ -781,12 +815,14 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
     | '/garantia'
+    | '/mcp'
     | '/politica-de-privacidade'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar'
     | '/solicitar-antecedentes'
     | '/termos-de-uso'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/minha-conta'
     | '/_authenticated/operacao'
@@ -799,6 +835,7 @@ export interface FileRouteTypes {
     | '/certidao-de-objeto-e-pe/'
     | '/guias/'
     | '/tribunais/'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/admin/$protocolo'
     | '/_authenticated/admin/antecedentes'
     | '/_authenticated/admin/comarcas'
@@ -850,12 +887,14 @@ export interface RootRouteChildren {
   CertidaoObjetoEPeTrf5Route: typeof CertidaoObjetoEPeTrf5Route
   CertidaoObjetoEPeTrf6Route: typeof CertidaoObjetoEPeTrf6Route
   GarantiaRoute: typeof GarantiaRoute
+  McpRoute: typeof McpRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   SolicitarRoute: typeof SolicitarRoute
   SolicitarAntecedentesRoute: typeof SolicitarAntecedentesRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CertidaoDeObjetoEPeUfRoute: typeof CertidaoDeObjetoEPeUfRoute
   GuiasSlugRoute: typeof GuiasSlugRoute
@@ -865,6 +904,7 @@ export interface RootRouteChildren {
   CertidaoDeObjetoEPeIndexRoute: typeof CertidaoDeObjetoEPeIndexRoute
   GuiasIndexRoute: typeof GuiasIndexRoute
   TribunaisIndexRoute: typeof TribunaisIndexRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   BlogCategoriaSlugRoute: typeof BlogCategoriaSlugRoute
   CertidaoDeObjetoEPeParaSlugRoute: typeof CertidaoDeObjetoEPeParaSlugRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
@@ -982,6 +1022,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GarantiaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/politica-de-privacidade': {
       id: '/politica-de-privacidade'
       path: '/politica-de-privacidade'
@@ -1022,6 +1069,13 @@ declare module '@tanstack/react-router' {
       path: '/termos-de-uso'
       fullPath: '/termos-de-uso'
       preLoaderRoute: typeof TermosDeUsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -1106,6 +1160,13 @@ declare module '@tanstack/react-router' {
       path: '/tribunais/$sigla'
       fullPath: '/tribunais/$sigla'
       preLoaderRoute: typeof TribunaisSiglaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1437,12 +1498,15 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoObjetoEPeTrf5Route: CertidaoObjetoEPeTrf5Route,
   CertidaoObjetoEPeTrf6Route: CertidaoObjetoEPeTrf6Route,
   GarantiaRoute: GarantiaRoute,
+  McpRoute: McpRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   SolicitarRoute: SolicitarRoute,
   SolicitarAntecedentesRoute: SolicitarAntecedentesRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   BlogSlugRoute: BlogSlugRoute,
   CertidaoDeObjetoEPeUfRoute: CertidaoDeObjetoEPeUfRoute,
   GuiasSlugRoute: GuiasSlugRoute,
@@ -1452,6 +1516,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoDeObjetoEPeIndexRoute: CertidaoDeObjetoEPeIndexRoute,
   GuiasIndexRoute: GuiasIndexRoute,
   TribunaisIndexRoute: TribunaisIndexRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   BlogCategoriaSlugRoute: BlogCategoriaSlugRoute,
   CertidaoDeObjetoEPeParaSlugRoute: CertidaoDeObjetoEPeParaSlugRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
