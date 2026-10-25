@@ -10,6 +10,8 @@
 <!-- LOVABLE:END -->
 
 ## Rules
+- MCP uses Supabase OAuth with the OAuth client claim required and caller-scoped RLS clients in src/lib/mcp; customer order reads add user_id filtering and operator-only accounts are refused, preserving isolated operator RPC access.
+- OAuth consent preserves a validated same-origin next path through password, signup and Google broker sign-in; browser WebMCP read tools live only in the screen owning the visible data and use shared fail-open telemetry.
 - Process location is deterministic only (CNJ parser → cnj_* tables → DataJud adapter → team-registered units in comarcas_contatos); never use AI or infer the vara from the OOOO code — accuracy and traceable sources matter more than completeness.
 - CPN (/admin/cpn) routes certificates from data in cpn_certificate_routes (linked to cnj_tribunais; one row per tribunal × system × grau × requester profile, with tipo_rota, steps, channels and an official source excerpt); displayed status stays VERIFICAR until an admin verifies it — never hardcode routes in UI or infer automatic issuance from the system name, because the catalog must only grow from verifiable official evidence.
 

@@ -7,6 +7,7 @@
 import path from "node:path";
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { loadEnv } from "vite";
+import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 
 const serverEnv = loadEnv(process.env["NODE_ENV"] ?? "development", process.cwd(), "");
 Object.assign(process.env, serverEnv);
@@ -21,6 +22,7 @@ export default defineConfig({
 
   },
   vite: {
+    plugins: [mcpPlugin()],
     server: {
       allowedHosts: ["operacao.flydox.net"],
     },

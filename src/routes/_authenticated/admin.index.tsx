@@ -3,6 +3,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { FINALIDADES } from "@/lib/pedidos.schema";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useWebMCP } from "use-webmcp-tool";
+import { runWebMCPTool } from "@/lib/webmcp-telemetry";
 import { Loader2, Search, LogOut, Scale, ShieldAlert, Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -308,6 +310,18 @@ function AdminLista() {
   const lista = (pedidos.data ?? []).filter((p) => (somenteNovos ? p.novo : true));
   const totalNovos = (pedidos.data ?? []).filter((p) => p.novo).length;
   const totalDuplicados = (pedidos.data ?? []).filter((p) => p.duplicado).length;
+
+  useWebMCP({
+    name: "ler_pedidos_visiveis",
+    description: "Lê os pedidos exibidos na lista administrativa, respeitando os filtros atuais; não altera dados.",
+    enabled: permissao.data === true,
+    annotations: { readOnlyHint: true, untrustedContentHint: true },
+    execute: () => runWebMCPTool("ler_pedidos_visiveis", () => {
+      if (pedidos.isPending || pedidos.isFetching) return "Pedidos carregando. Tente novamente em instantes.";
+      if (pedidos.isError) throw new Error("Não foi possível carregar os pedidos.");
+      return lista.length ? lista.map((p) => `${p.protocolo} | ${p.numero_processo} | ${p.nome_parte ?? "—"} | CPF ${p.cpf} | ${p.status}`).join("\n") : "Nenhum pedido exibido.";
+    }),
+  });
 
   const campo =
     "w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-ring";
