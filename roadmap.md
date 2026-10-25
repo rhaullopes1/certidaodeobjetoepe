@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Configurar MCP com OAuth e consultas de pedidos respeitando permissões
+- [ ] Preservar retorno de login e implementar consentimento
+- [ ] Adicionar consultas WebMCP no painel e validar integração
+
 - [x] Aplicar a identidade Efficiency somente em operacao.flydox.net
 - [x] Atualizar login, navegação, cockpit, detalhe e histórico do operador
 - [x] Configurar metadados e imagem social próprios do Portal Operacional
