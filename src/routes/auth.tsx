@@ -12,7 +12,7 @@ const IMAGEM_SOCIAL_OPERACIONAL = `https://operacao.flydox.net${efficiencyOg.url
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
-  validateSearch: (s: Record<string, unknown>) => ({ next: oauthReturnPath(s.next) }),
+  validateSearch: (s: Record<string, unknown>): { next?: string } => ({ next: oauthReturnPath(s.next) }),
   component: AuthPage,
   head: ({ match }) =>
     match.context?.branding?.modo === "operacional"
@@ -51,7 +51,8 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const { branding } = Route.useRouteContext();
-  const { next } = Route.useSearch();
+  const search = Route.useSearch();
+  const next = search.next ?? "/";
   const portal = branding.modo === "operacional";
   const [modo, setModo] = useState<"entrar" | "criar">("entrar");
   const [email, setEmail] = useState("");

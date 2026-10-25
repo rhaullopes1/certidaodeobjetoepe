@@ -30,7 +30,7 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
     return { details: data, email: session.data.session?.user.email };
   },
   pendingComponent: () => <main className="mx-auto max-w-lg px-5 py-16">Carregando conexão…</main>,
-  errorComponent: ({ error }) => <main className="mx-auto max-w-lg px-5 py-16"><h1 className="text-xl font-bold">Conexão não disponível</h1><p role="alert" className="mt-4 text-muted-foreground">{error.message}</p></main>,
+  errorComponent: ({ error }) => <main className="mx-auto max-w-lg px-5 py-16"><h1 className="text-xl font-bold">Conexão não disponível</h1><p role="alert" className="mt-4 text-muted-foreground">{error instanceof Error ? error.message : "Não foi possível carregar a conexão."}</p></main>,
   component: Consent,
 });
 
@@ -59,7 +59,7 @@ function Consent() {
     <p className="mt-4 text-sm text-muted-foreground">Conta: {email}</p>
     <p className="mt-4">{name} poderá consultar os pedidos permitidos para sua conta.</p>
     <p className="mt-3 break-all text-sm text-muted-foreground">Destino do agente: {details.redirect_uri}</p>
-    <ul className="mt-5 space-y-2 text-sm">{details.scopes.split(" ").filter(Boolean).map((scope) => <li key={scope}>{({ openid: "Identificar sua conta", email: "Compartilhar seu e-mail", profile: "Compartilhar seu perfil básico" } as Record<string, string>)[scope] ?? `Permissão adicional solicitada: ${scope}`}</li>)}</ul>
+    <ul className="mt-5 space-y-2 text-sm">{details.scope.split(" ").filter(Boolean).map((scope) => <li key={scope}>{({ openid: "Identificar sua conta", email: "Compartilhar seu e-mail", profile: "Compartilhar seu perfil básico" } as Record<string, string>)[scope] ?? `Permissão adicional solicitada: ${scope}`}</li>)}</ul>
     <p className="mt-5 text-sm text-muted-foreground">Não permite alterar pedidos ou pagamentos. As permissões da sua conta continuam valendo.</p>
     {error && <p role="alert" className="mt-4 text-destructive">{error}</p>}
     <div className="mt-7 flex flex-wrap gap-3"><Button disabled={busy} onClick={() => decide(true)}>Permitir conexão</Button><Button disabled={busy} variant="outline" onClick={() => decide(false)}>Cancelar conexão</Button></div>
