@@ -9,7 +9,7 @@ export default defineTool({
   description: "Consulta até 50 pedidos: clientes veem somente seus pedidos; admin e equipe consultam o atendimento. Não disponível para operadores.",
   inputSchema: {
     protocolo: z.string().trim().min(1).max(80).optional().describe("Protocolo exato do pedido, se conhecido."),
-    status: z.enum(["aguardando_pagamento", "pago", "em_analise", "protocolado", "emitida", "cancelado", "expirado"]).optional().describe("Situação do pedido para filtrar."),
+    status: z.enum(["aguardando_pagamento", "pago", "em_analise", "protocolado", "emitida", "emitido", "gratuito", "cancelado", "expirado"]).optional().describe("Situação do pedido para filtrar."),
     limite: z.number().int().min(1).max(50).default(20).describe("Máximo de pedidos retornados, de 1 a 50."),
     offset: z.number().int().min(0).max(10000).default(0).describe("Número de pedidos a pular para consultar a próxima página."),
   },
