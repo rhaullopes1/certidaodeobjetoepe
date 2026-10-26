@@ -24,8 +24,9 @@ vi.mock("../supabase", () => ({
 import tool from "./list-orders";
 
 const ctx = { getUserId: () => "user-1" } as never;
-const run = () => (tool as unknown as { handler: (a: unknown, c: unknown) => Promise<{ structuredContent: { pedidos: Record<string, unknown>[] } }> })
-  .handler({ limite: 20, offset: 0 }, ctx);
+type T = { inputSchema: { status: { safeParse: (v: unknown) => { success: boolean } } }; handler: (a: unknown, c: unknown) => Promise<{ structuredContent: { pedidos: Record<string, unknown>[] } }> };
+const t = tool as unknown as T;
+const run = (extra: Record<string, unknown> = {}) => t.handler({ limite: 20, offset: 0, ...extra }, ctx);
 
 describe("listar_pedidos", () => {
   beforeEach(() => { calls.eq = []; });
@@ -45,5 +46,26 @@ describe("listar_pedidos", () => {
     roles = [];
     const r = await run();
     expect(Object.keys(r.structuredContent.pedidos[0]).sort()).toEqual(["criado_em", "protocolo", "quantidade", "status", "uf"]);
+  });
+
+  it("equipe e admin não recebem filtro por user_id", async () => {
+    for (const r of ["equipe", "admin"]) {
+      calls.eq = []; roles = [r];
+      await run();
+      expect(calls.eq.find(([c]) => c === "user_id")).toBeUndefined();
+    }
+  });
+
+  it("aceita os estados reais emitido e gratuito e mantém os antigos", () => {
+    for (const s of ["emitido", "gratuito", "emitida", "aguardando_pagamento", "pago", "cancelado", "expirado", "em_analise", "protocolado"]) {
+      expect(t.inputSchema.status.safeParse(s).success).toBe(true);
+    }
+    expect(t.inputSchema.status.safeParse("inventado").success).toBe(false);
+  });
+
+  it("filtro de status chega à consulta", async () => {
+    roles = [];
+    await run({ status: "gratuito" });
+    expect(calls.eq).toContainEqual(["status", "gratuito"]);
   });
 });
