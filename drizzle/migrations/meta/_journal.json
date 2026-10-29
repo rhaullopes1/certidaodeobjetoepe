@@ -232,6 +232,13 @@
       "when": 1791254275081,
       "tag": "0032_oferta_relampago",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1793280629008,
+      "tag": "0033_pedidos_finalidade_novas_opcoes",
+      "breakpoints": true
     }
   ]
 }

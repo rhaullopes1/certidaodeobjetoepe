@@ -1,0 +1,2 @@
+ALTER TABLE public.pedidos DROP CONSTRAINT pedidos_finalidade_check;
+ALTER TABLE public.pedidos ADD CONSTRAINT pedidos_finalidade_check CHECK (finalidade IS NULL OR finalidade IN ('caminhoneiro_motorista','motorista_app','transacao_imobiliaria','advogado','concurso_publico','financiamento_bancario','outro'));
