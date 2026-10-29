@@ -6,10 +6,11 @@ export const POSTS_DUVIDAS: Post[] = [
   {
     slug: "quanto-tempo-demora-certidao-de-objeto-e-pe",
     categoria: "duvidas",
-    titulo: "Quanto Tempo Demora a Certidão de Objeto e Pé? Veja os Prazos",
+    // SEO 29/10/2026 — anterior: titulo "Quanto Tempo Demora a Certidão de Objeto e Pé? Veja os Prazos"; descricao "Saiba quanto tempo pode levar para obter a certidão de objeto e pé, o que influencia o prazo e como solicitar assessoria para conseguir o documento."
+    titulo: "Quanto Tempo Demora a Certidão de Objeto e Pé? Veja Prazos",
     h1: "Quanto tempo demora para sair a Certidão de Objeto e Pé",
     descricao:
-      "Saiba quanto tempo pode levar para obter a certidão de objeto e pé, o que influencia o prazo e como solicitar assessoria para conseguir o documento.",
+      "O prazo varia de 1 a 5 dias úteis conforme o tribunal e a comarca. Veja o que agiliza a emissão, o que trava o documento e como pedir online sem burocracia.",
     resumo: "O prazo de emissão é de 1 a 5 dias úteis, conforme a comarca e o tribunal emissor.",
     atualizado: "2026-08-26",
     leitura: 4,
@@ -39,10 +40,11 @@ export const POSTS_DUVIDAS: Post[] = [
   {
     slug: "certidao-de-objeto-e-pe-e-gratuita",
     categoria: "duvidas",
-    titulo: "Certidão de Objeto e Pé é Gratuita? Entenda Custas e Como Pedir",
+    // SEO 29/10/2026 — anterior: titulo "Certidão de Objeto e Pé é Gratuita? Entenda Custas e Como Pedir"; descricao "Entenda quando a certidão de objeto e pé pode ser gratuita, como solicitar o documento e quais informações são necessárias para iniciar o pedido."
+    titulo: "Certidão de Objeto e Pé é Gratuita? Entenda Taxas do TJ e Isenção",
     h1: "Quanto custa a Certidão de Objeto e Pé",
     descricao:
-      "Entenda quando a certidão de objeto e pé pode ser gratuita, como solicitar o documento e quais informações são necessárias para iniciar o pedido.",
+      "Descubra quando a certidão de objeto e pé é gratuita, quais tribunais cobram custas, quem tem direito à isenção por justiça gratuita e como solicitar.",
     resumo: "O que é taxa do tribunal, o que é serviço, e quando há isenção.",
     atualizado: "2026-08-26",
     leitura: 4,
