@@ -1139,6 +1139,21 @@ export type Database = {
         }
         Relationships: []
       }
+      keepalive_heartbeat: {
+        Row: {
+          batido_em: string
+          id: number
+        }
+        Insert: {
+          batido_em?: string
+          id?: number
+        }
+        Update: {
+          batido_em?: string
+          id?: number
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           atendido: boolean
@@ -1810,6 +1825,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      avisar_fila_operacao: { Args: { p_operador: string }; Returns: undefined }
       listar_operadores_certidao: {
         Args: never
         Returns: {

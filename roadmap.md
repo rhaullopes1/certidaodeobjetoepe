@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Criar acesso do operador thiago@certidaodeobjetoepe.org com papel de operação, fila de entrega em tempo real e ferramentas de operação
+- [x] Manter o banco acessível 24h (rotina interna de manutenção + heartbeat verificado)
 - [x] Adicionar página de conexão de agentes, link visível e validar instruções e cópia em computador/celular
 
 - [x] Configurar MCP com OAuth e consultas de pedidos respeitando permissões

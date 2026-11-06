@@ -1,5 +1,7 @@
 import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 import { LogOut, Scale } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { meusPapeis, ehAdministrativo, ehOperador } from "@/lib/papeis";
@@ -41,6 +43,27 @@ export const Route = createFileRoute("/_authenticated/operacao")({
 function Layout() {
   const qc = useQueryClient();
   const { branding } = Route.useRouteContext();
+
+  // Fila em tempo real: quando a administração envia, recolhe ou valida uma operação,
+  // o banco emite um aviso no canal privado do operador e a tela recarrega sozinha.
+  useEffect(() => {
+    let ativo = true;
+    let canal: RealtimeChannel | undefined;
+    supabase.auth.getUser().then(({ data }) => {
+      if (!ativo || !data.user) return;
+      canal = supabase
+        .channel(`operacao-${data.user.id}`, { config: { private: true } })
+        .on("broadcast", { event: "fila" }, () => {
+          qc.invalidateQueries({ queryKey: ["operacao"] });
+        })
+        .subscribe();
+    });
+    return () => {
+      ativo = false;
+      if (canal) supabase.removeChannel(canal);
+    };
+  }, [qc]);
+
   async function sair() {
     await qc.cancelQueries();
     qc.clear();
