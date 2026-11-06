@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Adicionar página de conexão de agentes, link visível e validar instruções e cópia em computador/celular
+
 - [x] Configurar MCP com OAuth e consultas de pedidos respeitando permissões
 - [x] Preservar retorno de login e implementar consentimento
 - [x] Adicionar consultas WebMCP no painel e validar testes e acesso autenticado

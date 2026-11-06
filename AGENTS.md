@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Rules
+- Connection instructions live at /connect and derive the /mcp URL from the browser origin; keep them separate from MCP server implementation so deployment domains stay correct without changing authorization.
 - MCP uses Supabase OAuth with the OAuth client claim required and caller-scoped RLS clients in src/lib/mcp; customer order reads add user_id filtering and operator-only accounts are refused, preserving isolated operator RPC access.
 - OAuth consent preserves a validated same-origin next path through password, signup and Google broker sign-in; browser WebMCP read tools live only in the screen owning the visible data and use shared fail-open telemetry.
 - Process location is deterministic only (CNJ parser → cnj_* tables → DataJud adapter → team-registered units in comarcas_contatos); never use AI or infer the vara from the OOOO code — accuracy and traceable sources matter more than completeness.

@@ -22,6 +22,7 @@ import { Route as CertidaoObjetoEPeTrf3RouteImport } from './routes/certidao-obj
 import { Route as CertidaoObjetoEPeTrf4RouteImport } from './routes/certidao-objeto-e-pe-trf4'
 import { Route as CertidaoObjetoEPeTrf5RouteImport } from './routes/certidao-objeto-e-pe-trf5'
 import { Route as CertidaoObjetoEPeTrf6RouteImport } from './routes/certidao-objeto-e-pe-trf6'
+import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as GarantiaRouteImport } from './routes/garantia'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
@@ -142,6 +143,11 @@ const CertidaoObjetoEPeTrf5Route = CertidaoObjetoEPeTrf5RouteImport.update({
 const CertidaoObjetoEPeTrf6Route = CertidaoObjetoEPeTrf6RouteImport.update({
   id: '/certidao-objeto-e-pe-trf6',
   path: '/certidao-objeto-e-pe-trf6',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnectRoute = ConnectRouteImport.update({
+  id: '/connect',
+  path: '/connect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GarantiaRoute = GarantiaRouteImport.update({
@@ -463,6 +469,7 @@ export interface FileRoutesByFullPath {
   '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
+  '/connect': typeof ConnectRoute
   '/garantia': typeof GarantiaRoute
   '/mcp': typeof McpRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -533,6 +540,7 @@ export interface FileRoutesByTo {
   '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
+  '/connect': typeof ConnectRoute
   '/garantia': typeof GarantiaRoute
   '/mcp': typeof McpRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -603,6 +611,7 @@ export interface FileRoutesById {
   '/certidao-objeto-e-pe-trf4': typeof CertidaoObjetoEPeTrf4Route
   '/certidao-objeto-e-pe-trf5': typeof CertidaoObjetoEPeTrf5Route
   '/certidao-objeto-e-pe-trf6': typeof CertidaoObjetoEPeTrf6Route
+  '/connect': typeof ConnectRoute
   '/garantia': typeof GarantiaRoute
   '/mcp': typeof McpRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -675,6 +684,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf4'
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
+    | '/connect'
     | '/garantia'
     | '/mcp'
     | '/politica-de-privacidade'
@@ -745,6 +755,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf4'
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
+    | '/connect'
     | '/garantia'
     | '/mcp'
     | '/politica-de-privacidade'
@@ -814,6 +825,7 @@ export interface FileRouteTypes {
     | '/certidao-objeto-e-pe-trf4'
     | '/certidao-objeto-e-pe-trf5'
     | '/certidao-objeto-e-pe-trf6'
+    | '/connect'
     | '/garantia'
     | '/mcp'
     | '/politica-de-privacidade'
@@ -886,6 +898,7 @@ export interface RootRouteChildren {
   CertidaoObjetoEPeTrf4Route: typeof CertidaoObjetoEPeTrf4Route
   CertidaoObjetoEPeTrf5Route: typeof CertidaoObjetoEPeTrf5Route
   CertidaoObjetoEPeTrf6Route: typeof CertidaoObjetoEPeTrf6Route
+  ConnectRoute: typeof ConnectRoute
   GarantiaRoute: typeof GarantiaRoute
   McpRoute: typeof McpRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
@@ -1013,6 +1026,13 @@ declare module '@tanstack/react-router' {
       path: '/certidao-objeto-e-pe-trf6'
       fullPath: '/certidao-objeto-e-pe-trf6'
       preLoaderRoute: typeof CertidaoObjetoEPeTrf6RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connect': {
+      id: '/connect'
+      path: '/connect'
+      fullPath: '/connect'
+      preLoaderRoute: typeof ConnectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/garantia': {
@@ -1497,6 +1517,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertidaoObjetoEPeTrf4Route: CertidaoObjetoEPeTrf4Route,
   CertidaoObjetoEPeTrf5Route: CertidaoObjetoEPeTrf5Route,
   CertidaoObjetoEPeTrf6Route: CertidaoObjetoEPeTrf6Route,
+  ConnectRoute: ConnectRoute,
   GarantiaRoute: GarantiaRoute,
   McpRoute: McpRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
