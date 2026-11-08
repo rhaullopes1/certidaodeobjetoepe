@@ -23,6 +23,7 @@ const ESTADOS = [
   { uf: "ba", label: "Bahia (TJBA)" },
   { uf: "go", label: "Goiás (TJGO)" },
   { uf: "df", label: "Distrito Federal (TJDFT)" },
+  { uf: "mt", label: "Mato Grosso (TJMT)" },
 ] as const;
 
 const TRFS = [

@@ -2,14 +2,15 @@ import { Link } from "@tanstack/react-router";
 import { Scale, MessageCircle, Phone, MapPin, Landmark, FileText, Truck, Info } from "lucide-react";
 import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
+import { LinksRelacionados } from "@/components/site/links-relacionados";
 import { UserMenu } from "@/components/user-menu";
 
 const SITE = "https://certidaodeobjetoepe.org";
 export const TJMT_URL = `${SITE}/certidao-de-objeto-e-pe/mt`;
 const URL = TJMT_URL;
-const TITLE = "Certidão de Objeto e Pé TJMT: Pedido Online em Mato Grosso";
+const TITLE = "Certidão de Objeto e Pé TJMT Online | Mato Grosso (PJe)";
 const DESC =
-  "Solicite a Certidão de Objeto e Pé do TJMT online para Cuiabá e comarcas de MT. Consulte as condições do serviço e o acompanhamento disponível.";
+  "Peça a Certidão de Objeto e Pé do TJMT online, sem ir ao fórum. Atendemos Cuiabá, Sinop, Rondonópolis e todas as comarcas de MT, com acompanhamento do pedido.";
 
 const COMARCAS = [
   "Cuiabá",
@@ -354,6 +355,10 @@ export function TjmtLanding() {
             </ul>
           </div>
         </section>
+
+        <div className="px-5 py-12 sm:px-8">
+          <LinksRelacionados className="mx-auto w-full max-w-6xl" />
+        </div>
       </main>
 
       <footer className="surface-navy px-5 py-12 sm:px-8">
