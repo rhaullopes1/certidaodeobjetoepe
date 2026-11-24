@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { LinksRelacionados } from "@/components/site/links-relacionados";
 import { Scale, MessageCircle, Phone, MapPin, Landmark, FileText, Info } from "lucide-react";
 import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
@@ -336,6 +337,9 @@ export function TjrjLanding() {
               <li><Link to="/tribunais" className={btn}>Todos os tribunais atendidos</Link></li>
             </ul>
           </div>
+        </section>
+        <section className="px-5 py-14 sm:px-8">
+          <LinksRelacionados className="mx-auto w-full max-w-6xl" />
         </section>
       </main>
 

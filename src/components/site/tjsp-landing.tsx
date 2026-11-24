@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { LinksRelacionados } from "@/components/site/links-relacionados";
 import {
   Scale,
   MessageCircle,
@@ -307,6 +308,9 @@ export function TjspLanding() {
               </li>
             </ul>
           </div>
+        </section>
+        <section className="px-5 py-14 sm:px-8">
+          <LinksRelacionados className="mx-auto w-full max-w-6xl" />
         </section>
       </main>
 
