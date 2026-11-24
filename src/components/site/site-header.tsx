@@ -17,6 +17,7 @@ const links = [
   { label: "Antecedentes criminais", to: "/certidao-de-antecedentes-criminais" as const },
   { label: "Guias", to: "/guias" as const },
   { label: "Blog", to: "/blog" as const },
+  { label: "Inovação documental — PNID 001", to: "/pnid-001" as const },
   { label: "Acompanhar pedido", to: "/acompanhar" as const },
 ];
 
@@ -79,6 +80,7 @@ export function SiteHeader() {
             >
               Antecedentes
             </Link>
+            <Link to="/pnid-001" className="transition-colors hover:text-foreground">Inovação</Link>
             <Link to="/acompanhar" className="transition-colors hover:text-foreground">
               Acompanhar
             </Link>
