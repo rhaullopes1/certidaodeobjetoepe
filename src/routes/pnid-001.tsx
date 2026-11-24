@@ -86,7 +86,7 @@ function PnidPage() {
             <p className="mt-4 max-w-2xl leading-relaxed text-slate-200">Estamos à disposição de órgãos públicos, pesquisadores, jornalistas e parceiros tecnológicos para entrevistas, avaliação da proposta e reuniões técnicas.</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a className="rounded-md bg-[#e3c58c] px-5 py-3 font-semibold text-[#0b1b33]" href={"mailto:" + EMAIL_CONTATO + "?subject=PNID%20001%20-%20Contato%20institucional"}>Solicitar contato institucional</a>
-              <a className="rounded-md border border-white/40 px-5 py-3 font-semibold" href={"tel:" + PHONE_TEL}>{PHONE_DISPLAY}</a>
+              <a className="rounded-md border border-white/40 px-5 py-3 font-semibold" href={PHONE_TEL}>{PHONE_DISPLAY}</a>
             </div>
           </section>
         </article>
