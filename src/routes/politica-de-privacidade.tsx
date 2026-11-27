@@ -44,7 +44,7 @@ function Page() {
           </p>
           <p>
             Você pode solicitar a qualquer momento a correção ou exclusão dos
-            seus dados pelo nosso canal de WhatsApp, conforme a Lei Geral de
+            seus dados pelo nosso e-mail contato@certidaodeobjetoepe.org, conforme a Lei Geral de
             Proteção de Dados (Lei nº 13.709/2018).
           </p>
         </div>

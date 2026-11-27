@@ -12,7 +12,7 @@ import {
   Search,
 } from "lucide-react";
 import { consultarPedido, reenviarEmailPedido } from "@/lib/pedidos.functions";
-import { statusPedido, formatarBRL, whatsappLink, FLUXO_STATUS } from "@/lib/site";
+import { statusPedido, formatarBRL, EMAIL_CONTATO, FLUXO_STATUS } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { PrazoEmissao } from "@/components/site/prazo-emissao";
 
@@ -296,15 +296,13 @@ function AcompanharPage() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <a
-                  href={whatsappLink(
-                    `Olá! Gostaria de acompanhar o pedido ${pedido.protocolo}.`,
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={`mailto:${EMAIL_CONTATO}`}
+                  
+                  
                   className="inline-flex items-center gap-2 rounded-full border border-input bg-card px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
                 >
                   <MessageCircle className="h-4 w-4 text-accent" />
-                  Falar no WhatsApp
+                  Falar por e-mail
                 </a>
                 <button
                   type="button"

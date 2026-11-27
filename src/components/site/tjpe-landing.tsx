@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { LinksRelacionados } from "@/components/site/links-relacionados";
 import {
   Scale,
-  MessageCircle,
   Phone,
   MapPin,
   CheckCircle2,
@@ -10,7 +9,7 @@ import {
   Landmark,
   FileText,
 } from "lucide-react";
-import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
+import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 
@@ -134,9 +133,6 @@ export function tjpeHead() {
 }
 
 export function TjpeLanding() {
-  const wpp = whatsappLink(
-    "Olá! Preciso de uma Certidão de Objeto e Pé de um processo do TJPE (Pernambuco).",
-  );
 
   return (
     <div className="min-h-dvh bg-background">
@@ -184,15 +180,7 @@ export function TjpeLanding() {
                 <FileText className="h-5 w-5" />
                 Solicitar certidão do TJPE
               </Link>
-              <a
-                href={wpp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-0.5"
-              >
-                <MessageCircle className="h-5 w-5" />
-                Falar no WhatsApp
-              </a>
+              
               <a
                 href={PHONE_TEL}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold hover:bg-secondary"
@@ -340,16 +328,7 @@ export function TjpeLanding() {
         </div>
       </footer>
 
-      <a
-        href={wpp}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Solicitar certidão do TJPE pelo WhatsApp"
-        className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3.5 text-sm font-bold text-accent-foreground shadow-xl lg:hidden"
-      >
-        <MessageCircle className="h-5 w-5" />
-        WhatsApp
-      </a>
+      
     </div>
   );
 }

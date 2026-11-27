@@ -14,7 +14,6 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { PWA } from "@/components/site/pwa";
-import { WhatsAppFlutuante } from "@/components/site/whatsapp-flutuante";
 import { resolverBranding, rotaPermitidaNoPortal } from "@/lib/branding";
 import { hostAtual } from "@/lib/host-atual";
 import efficiencyOg from "@/assets/efficiency/og.jpg.asset.json";
@@ -247,7 +246,6 @@ function RootComponent() {
       <Outlet />
       {branding.scriptsComerciais && <Analytics />}
       {branding.scriptsComerciais && <PWA />}
-      {branding.scriptsComerciais && <WhatsAppFlutuante />}
     </QueryClientProvider>
   );
 }

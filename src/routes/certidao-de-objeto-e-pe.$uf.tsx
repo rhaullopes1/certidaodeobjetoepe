@@ -2,7 +2,6 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { LinksRelacionados } from "@/components/site/links-relacionados";
 import {
   Scale,
-  MessageCircle,
   Phone,
   MapPin,
   CheckCircle2,
@@ -11,7 +10,6 @@ import {
   FileText,
 } from "lucide-react";
 import {
-  whatsappLink,
   PHONE_DISPLAY,
   PHONE_TEL,
 } from "@/lib/site";
@@ -152,9 +150,6 @@ function EstadoPageGenerica() {
   const { estado: e } = Route.useLoaderData();
   const detalhe = detalheEstado(e.slug);
   const sistema = sistemaDoEstado(e);
-  const wpp = whatsappLink(
-    `Olá! Preciso de uma Certidão de Objeto e Pé de um processo em ${e.nome} (${e.tribunal}).`,
-  );
 
   return (
     <div className="min-h-dvh bg-background">
@@ -189,15 +184,7 @@ function EstadoPageGenerica() {
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">{e.intro}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={wpp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-0.5"
-              >
-                <MessageCircle className="h-5 w-5" />
-                Falar no WhatsApp
-              </a>
+              
               <Link
                 to="/solicitar"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
@@ -315,15 +302,7 @@ function EstadoPageGenerica() {
                   </li>
                 ))}
               </ul>
-              <a
-                href={wpp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-5 py-3 text-sm font-bold text-accent-foreground"
-              >
-                <MessageCircle className="h-4 w-4" />
-                Pedir orçamento no WhatsApp
-              </a>
+              
             </aside>
           </div>
         </section>
@@ -430,16 +409,7 @@ function EstadoPageGenerica() {
         </div>
       </footer>
 
-      <a
-        href={wpp}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Solicitar certidão em ${e.nome} pelo WhatsApp`}
-        className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3.5 text-sm font-bold text-accent-foreground shadow-xl lg:hidden"
-      >
-        <MessageCircle className="h-5 w-5" />
-        WhatsApp
-      </a>
+      
     </div>
   );
 }

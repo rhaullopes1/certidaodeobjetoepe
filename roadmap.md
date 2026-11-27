@@ -17,3 +17,5 @@
 - [x] Padronizar prazo e remover promessa de reembolso sem alterar preços
 - [ ] Corrigir a política de acesso indevido aos contatos — pendência anterior fora do escopo; aguarda autorização específica
 - [x] Verificar buscas finais, typecheck e build
+
+- [ ] Remover contatos públicos de WhatsApp e verificar páginas e alternativa para comprovantes

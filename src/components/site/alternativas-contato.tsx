@@ -1,8 +1,7 @@
 import { PHONE_DISPLAY, PHONE_TEL, EMAIL_CONTATO } from "@/lib/site";
 
 /**
- * Alternativas visíveis ao CTA de WhatsApp: o número é um 0800 e links wa.me
- * podem não abrir conversa — sempre oferecemos ligação e e-mail ao lado.
+ * Canais públicos de atendimento: telefone e e-mail.
  */
 export function AlternativasContato({
   tom = "claro",
@@ -18,7 +17,7 @@ export function AlternativasContato({
       : "font-semibold text-foreground underline decoration-accent/50 underline-offset-4 hover:decoration-accent";
   return (
     <p className={`text-xs leading-relaxed ${cor} ${className}`}>
-      Não abriu o WhatsApp? Ligue{" "}
+      Ligue{" "}
       <a href={PHONE_TEL} className={link}>
         {PHONE_DISPLAY}
       </a>{" "}

@@ -2,7 +2,6 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { PUBLICOS_SEO, PUBLICO_POR_SLUG, FINALIDADE_POR_SLUG } from "@/lib/publicos-seo";
-import { whatsappLink } from "@/lib/site";
 
 const SITE = "https://certidaodeobjetoepe.org";
 
@@ -170,14 +169,7 @@ function PublicoPage() {
               >
                 Solicitar certidão online
               </Link>
-              <a
-                href={whatsappLink(`Olá! Tenho dúvidas sobre a Certidão de Objeto e Pé (${publico.rotulo}).`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex justify-center rounded-full bg-whatsapp px-6 py-3 text-sm font-bold text-whatsapp-foreground"
-              >
-                Tirar dúvidas no WhatsApp
-              </a>
+              
             </div>
           </section>
 

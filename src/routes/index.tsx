@@ -13,14 +13,14 @@ import {
   Building2,
   Scale,
   User,
-  Send,
+  Mail,
   ChevronDown,
   Phone,
   Star,
 } from "lucide-react";
 import heroImage from "@/assets/hero-certidao.jpg";
 import logoAsset from "@/assets/logo-certidao.png.asset.json";
-import { whatsappLink, ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, EMAIL_CONTATO, EMPRESA, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE, GOOGLE_PROFILE, TIKTOK_PROFILE } from "@/lib/site";
+import { ESTADOS, FAQ, PHONE_DISPLAY, PHONE_TEL, EMAIL_CONTATO, EMPRESA, YOUTUBE_CHANNEL, INSTAGRAM_PROFILE, FACEBOOK_PAGE, GOOGLE_PROFILE, TIKTOK_PROFILE } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { SiteHeader } from "@/components/site/site-header";
 import { registrarLead } from "@/lib/leads.functions";
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Emita sua certidão judicial sem burocracia. Atendimento nacional, suporte por WhatsApp e acompanhamento até a conclusão.",
+          "Emita sua certidão judicial sem burocracia. Atendimento nacional, suporte por e-mail e acompanhamento até a conclusão.",
       },
       { property: "og:url", content: "https://certidaodeobjetoepe.org/" },
       { property: "og:type", content: "website" },
@@ -69,10 +69,6 @@ export const Route = createFileRoute("/")({
     ],
   }),
 });
-
-const WPP_MAIN = whatsappLink(
-  "Olá! Gostaria de solicitar uma Certidão de Objeto e Pé.",
-);
 function Section({
   id,
   children,
@@ -151,14 +147,7 @@ function Hero() {
                 <FileText className="h-4.5 w-4.5" />
                 Solicitar certidão online
               </Link>
-              <a
-                href={WPP_MAIN}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-primary-foreground/25 px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
-              >
-                Tirar dúvidas no WhatsApp
-              </a>
+              
             </div>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-primary-foreground/75 sm:text-lg">
               Não sabe onde solicitar ou como acompanhar? Nossa equipe realiza o
@@ -183,7 +172,7 @@ function Hero() {
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <MessageCircle className="h-3.5 w-3.5 text-gold" />
-                Acompanhamento por WhatsApp
+                Acompanhamento pelo site
               </span>
             </div>
             <AlternativasContato tom="escuro" className="mt-4 max-w-md" />
@@ -307,7 +296,7 @@ function ParaQuem() {
 const etapas = [
   {
     title: "Envie os dados do processo",
-    text: "Pelo WhatsApp ou formulário, com o número do processo ou os dados da parte.",
+    text: "Pelo formulário, com o número do processo ou os dados da parte.",
   },
   {
     title: "Identificamos o tribunal responsável",
@@ -349,7 +338,7 @@ function ComoFunciona() {
 
 const diferenciais = [
   { icon: MapPin, title: "Atendimento em todo Brasil", text: "Tribunais estaduais, federais e trabalhistas de qualquer estado." },
-  { icon: MessageCircle, title: "Suporte via WhatsApp", text: "Fale com uma pessoa real durante todo o processo, sem robôs." },
+  { icon: MessageCircle, title: "Suporte por e-mail", text: "Fale com uma pessoa real durante todo o processo, sem robôs." },
   { icon: CheckCircle2, title: "Processo simplificado", text: "Você envia os dados uma única vez e nós cuidamos da burocracia." },
   { icon: ShieldCheck, title: "Acompanhamento até a conclusão", text: "Monitoramos o pedido no tribunal até a certidão ser emitida." },
   { icon: Clock, title: "Economia de tempo", text: "Sem filas, sem deslocamento e sem tentar descobrir qual vara procurar." },
@@ -434,8 +423,7 @@ function Formulario() {
       .filter(Boolean)
       .join("\n");
 
-    // Guarda o contato antes de abrir o WhatsApp: se a janela for bloqueada
-    // ou fechada, o lead não se perde.
+    // Guarda o contato antes de abrir o aplicativo de e-mail.
     void registrarLead({
       data: {
         nome,
@@ -449,7 +437,7 @@ function Formulario() {
     }).catch(() => undefined);
     trackContactLead();
 
-    window.open(whatsappLink(msg), "_blank", "noopener,noreferrer");
+    window.location.href = `mailto:${EMAIL_CONTATO}?subject=${encodeURIComponent("Solicitação de Certidão de Objeto e Pé")}&body=${encodeURIComponent(msg)}`;
   }
 
   return (
@@ -464,7 +452,7 @@ function Formulario() {
             Faça todo o pedido pelo site: informe o processo, gere o número de
             protocolo e o valor da certidão, e pague via Pix (QR Code ou copia e
             cola). Prefere falar antes? Use o formulário ao lado e nossa
-            equipe te atende pelo WhatsApp.
+            equipe te atende por e-mail.
           </p>
           <Link
             to="/solicitar"
@@ -496,20 +484,12 @@ function Formulario() {
           {sent ? (
             <div className="py-10 text-center">
               <CheckCircle2 className="mx-auto h-12 w-12 text-accent" strokeWidth={1.6} />
-              <h3 className="mt-5 text-xl font-bold">Solicitação enviada!</h3>
+              <h3 className="mt-5 text-xl font-bold">Continue por e-mail</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Estamos te direcionando para o WhatsApp para concluir o
-                atendimento. Se a janela não abrir, use o botão abaixo.
+                Conclua o envio no seu aplicativo de e-mail ou escreva para{" "}
+                <a href={`mailto:${EMAIL_CONTATO}`} className="font-semibold underline">{EMAIL_CONTATO}</a>.
               </p>
-              <a
-                href={WPP_MAIN}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
-              >
-                <MessageCircle className="h-4 w-4" />
-                Abrir WhatsApp
-              </a>
+              
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate>
@@ -551,8 +531,8 @@ function Formulario() {
                 type="submit"
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
               >
-                <Send className="h-4 w-4" />
-                Enviar solicitação
+                <Mail className="h-4 w-4" />
+                Continuar por e-mail
               </button>
             </form>
           )}
@@ -649,15 +629,7 @@ function Footer() {
             <Phone className="h-4 w-4 text-gold" />
             {PHONE_DISPLAY}
           </a>
-          <a
-            href={WPP_MAIN}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-primary-foreground/10"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Falar no WhatsApp
-          </a>
+          
           <AlternativasContato tom="escuro" className="mt-3" />
           <a
             href={YOUTUBE_CHANNEL}

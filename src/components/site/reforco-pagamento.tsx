@@ -17,7 +17,7 @@ export function PassosPix({
     "Cole o código e confirme o pagamento.",
     confirmacaoAutomatica
       ? "Pronto: esta página muda sozinha para “Pagamento confirmado” em poucos segundos."
-      : "Envie o comprovante pelo WhatsApp para a equipe confirmar seu pedido.",
+      : "Envie o comprovante por e-mail para a equipe confirmar seu pedido.",
   ];
 
   return (

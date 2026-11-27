@@ -1,7 +1,6 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/page-shell";
 import { TRIBUNAIS, tribunalPorSlug, tribunaisPorTipo, type Tribunal } from "@/lib/tribunais";
-import { whatsappLink } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { LinksRelacionados } from "@/components/site/links-relacionados";
 
@@ -143,9 +142,6 @@ export const Route = createFileRoute("/tribunais/$sigla")({
 
 function TribunalPage() {
   const { tribunal: t, relacionados } = Route.useLoaderData();
-  const wpp = whatsappLink(
-    `Olá! Preciso de uma Certidão de Objeto e Pé de processo do ${t.sigla}.`,
-  );
   const faq = faqTribunal(t);
 
   return (
@@ -169,14 +165,7 @@ function TribunalPage() {
           >
             Solicitar certidão do {t.sigla}
           </Link>
-          <a
-            href={wpp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center rounded-full border border-border px-6 py-3.5 text-sm font-semibold hover:bg-secondary"
-          >
-            Falar no WhatsApp
-          </a>
+          
         </div>
         <AlternativasContato className="mt-4" />
 

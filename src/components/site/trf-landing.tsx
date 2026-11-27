@@ -1,14 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import {
   Scale,
-  MessageCircle,
   Phone,
   Landmark,
   CheckCircle2,
   Clock,
   FileText,
 } from "lucide-react";
-import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
+import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 import { faqTrf, type TrfSeo } from "@/lib/trf-seo";
@@ -82,9 +81,6 @@ export function trfHead(t: TrfSeo) {
 }
 
 export function TrfLanding({ trf: t }: { trf: TrfSeo }) {
-  const wpp = whatsappLink(
-    `Olá! Preciso de uma Certidão de Objeto e Pé de um processo da Justiça Federal no ${t.sigla}.`,
-  );
   const faq = faqTrf(t);
   const estadosLinks = t.ufsSlugs.map((slug) => estadoPorSlug(slug)).filter((e) => !!e);
 
@@ -128,15 +124,7 @@ export function TrfLanding({ trf: t }: { trf: TrfSeo }) {
                 <FileText className="h-5 w-5" />
                 Solicitar certidão do {t.sigla}
               </Link>
-              <a
-                href={wpp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-0.5"
-              >
-                <MessageCircle className="h-5 w-5" />
-                Falar no WhatsApp
-              </a>
+              
               <a
                 href={PHONE_TEL}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold hover:bg-secondary"
@@ -309,16 +297,7 @@ export function TrfLanding({ trf: t }: { trf: TrfSeo }) {
         </div>
       </footer>
 
-      <a
-        href={wpp}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Solicitar certidão do ${t.sigla} pelo WhatsApp`}
-        className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3.5 text-sm font-bold text-accent-foreground shadow-xl lg:hidden"
-      >
-        <MessageCircle className="h-5 w-5" />
-        WhatsApp
-      </a>
+      
     </div>
   );
 }

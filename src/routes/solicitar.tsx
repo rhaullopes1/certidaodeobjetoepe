@@ -10,7 +10,7 @@ import {
   Send,
   MessageCircle,
 } from "lucide-react";
-import { QUANTIDADE_MAXIMA, precoCentavos, whatsappLink } from "@/lib/site";
+import { QUANTIDADE_MAXIMA, precoCentavos, EMAIL_CONTATO } from "@/lib/site";
 
 import { cpfValido, soDigitos, pedidoSchema, FINALIDADES, type Finalidade } from "@/lib/pedidos.schema";
 import { criarPedido } from "@/lib/pedidos.functions";
@@ -436,14 +436,12 @@ function Solicitar() {
               equipe. Para concluir a compra agora, fale conosco:
             </p>
             <a
-              href={whatsappLink(
-                `Olá! Quero concluir meu pedido de certidão. Protocolo: ${contingencia}`,
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`mailto:${EMAIL_CONTATO}`}
+              
+              
               className="mt-4 inline-flex rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground"
             >
-              Concluir pelo WhatsApp
+              Concluir pelo e-mail
             </a>
             <p className="mt-3 text-sm text-muted-foreground">
               Ou pelo e-mail contato@certidaodeobjetoepe.org · telefone 0800 000 4604
@@ -466,17 +464,15 @@ function Solicitar() {
         </p>
 
         <a
-          href={whatsappLink(
-            "Olá! Não sei o número completo do processo. Podem me ajudar a identificar?",
-          )}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={`mailto:${EMAIL_CONTATO}`}
+          
+          
           className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-input bg-card px-4 py-3 text-sm transition-colors hover:bg-secondary/60"
         >
           <MessageCircle className="h-5 w-5 shrink-0 text-accent" aria-hidden />
           <p className="min-w-0 font-semibold">
             Não sabe o número completo do processo? Fale com a nossa equipe no
-            WhatsApp que ajudamos você a identificar agora mesmo.
+            e-mail que ajudamos você a identificar agora mesmo.
             <span className="ml-1 font-bold text-primary underline underline-offset-4">
               Falar com Especialista
             </span>
@@ -516,11 +512,9 @@ function Solicitar() {
             <p className="rounded-2xl border border-input bg-card px-5 py-4 text-sm text-muted-foreground">
               Você chegou ao limite de {QUANTIDADE_MAXIMA} processos por pedido.{" "}
               <a
-                href={whatsappLink(
-                  "Olá! Preciso solicitar certidões para mais processos no mesmo pedido.",
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`mailto:${EMAIL_CONTATO}`}
+                
+                
                 className="font-semibold text-primary underline underline-offset-4"
               >
                 Fale com a equipe
@@ -659,9 +653,9 @@ function Solicitar() {
           <p className="text-center text-xs text-muted-foreground">
             Ficou com dúvida em algum campo?{" "}
             <a
-              href={whatsappLink("Olá! Preciso de ajuda para preencher o pedido da certidão.")}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`mailto:${EMAIL_CONTATO}`}
+              
+              
               className="font-semibold text-primary underline underline-offset-4"
             >
               fale com uma pessoa da equipe

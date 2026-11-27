@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Scale, MapPin, MessageCircle } from "lucide-react";
-import { whatsappLink } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { ESTADOS_SEO } from "@/lib/estados-seo";
 import { UserMenu } from "@/components/user-menu";
@@ -71,7 +70,6 @@ export const Route = createFileRoute("/certidao-de-objeto-e-pe/")({
 });
 
 function EstadosHub() {
-  const wpp = whatsappLink("Olá! Gostaria de solicitar uma Certidão de Objeto e Pé.");
   return (
     <div className="min-h-dvh bg-background">
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
@@ -106,15 +104,7 @@ function EstadosHub() {
             >
               Solicitar minha certidão
             </Link>
-            <a
-              href={wpp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-bold"
-            >
-              <MessageCircle className="h-5 w-5" />
-              Falar no WhatsApp
-            </a>
+            
           </div>
           <AlternativasContato className="mt-4 max-w-xl" />
 

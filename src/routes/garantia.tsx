@@ -5,7 +5,6 @@ import {
   EMAIL_CONTATO,
   PHONE_DISPLAY,
   PHONE_TEL,
-  whatsappLink,
 } from "@/lib/site";
 
 export const Route = createFileRoute("/garantia")({
@@ -121,18 +120,11 @@ function Garantia() {
         <section className="mt-10 rounded-2xl bg-secondary p-6">
           <h2 className="font-display text-xl font-bold">Dúvidas sobre o seu pedido</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Fale com a gente pelo WhatsApp, pelo telefone {PHONE_DISPLAY} ou pelo e-mail{" "}
+            Fale com a gente pelo telefone {PHONE_DISPLAY} ou pelo e-mail{" "}
             {EMAIL_CONTATO}, informando o seu número de acompanhamento.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <a
-              href={whatsappLink("Olá! Quero falar sobre a garantia de prazo do meu pedido.")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              Falar no WhatsApp
-            </a>
+            
             <a
               href={PHONE_TEL}
               className="inline-flex items-center justify-center rounded-full border border-input bg-card px-5 py-3 text-sm font-bold transition-colors hover:bg-secondary"

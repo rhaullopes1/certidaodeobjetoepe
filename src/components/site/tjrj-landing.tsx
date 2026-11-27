@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { LinksRelacionados } from "@/components/site/links-relacionados";
-import { Scale, MessageCircle, Phone, MapPin, Landmark, FileText, Info } from "lucide-react";
-import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
+import { Scale, Phone, MapPin, Landmark, FileText, Info } from "lucide-react";
+import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { AlternativasContato } from "@/components/site/alternativas-contato";
 import { UserMenu } from "@/components/user-menu";
 
@@ -121,9 +121,6 @@ export function tjrjHead() {
 }
 
 export function TjrjLanding() {
-  const wpp = whatsappLink(
-    "Olá! Preciso de uma Certidão de Objeto e Pé de um processo do TJRJ (Rio de Janeiro).",
-  );
   const btn =
     "inline-block rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-secondary";
 
@@ -172,15 +169,7 @@ export function TjrjLanding() {
                 <FileText className="h-5 w-5" />
                 Solicitar Certidão do TJRJ
               </Link>
-              <a
-                href={wpp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-0.5"
-              >
-                <MessageCircle className="h-5 w-5" />
-                Falar no WhatsApp
-              </a>
+              
               <a
                 href={PHONE_TEL}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold hover:bg-secondary"
@@ -353,16 +342,7 @@ export function TjrjLanding() {
         </div>
       </footer>
 
-      <a
-        href={wpp}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Falar sobre certidão do TJRJ pelo WhatsApp"
-        className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3.5 text-sm font-bold text-accent-foreground shadow-xl lg:hidden"
-      >
-        <MessageCircle className="h-5 w-5" />
-        WhatsApp
-      </a>
+      
     </div>
   );
 }

@@ -3,11 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { FileText, HelpCircle, Menu, MessageCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
-import { whatsappLink } from "@/lib/site";
-
-const ajudaWhatsApp = whatsappLink(
-  "Olá! Tenho uma dúvida sobre a Certidão de Objeto e Pé. Podem me ajudar?",
-);
+import { EMAIL_CONTATO } from "@/lib/site";
 
 const links = [
   { label: "Início", to: "/" as const },
@@ -126,9 +122,7 @@ export function SiteHeader() {
             ))}
             <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-4">
               <a
-                href={ajudaWhatsApp}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`mailto:${EMAIL_CONTATO}`}
                 className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-input px-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
                 onClick={() => setAberto(false)}
               >
