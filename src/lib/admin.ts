@@ -619,7 +619,7 @@ export async function enviarAnexo(input: {
 export async function abrirAnexo(caminho: string) {
   const { data, error } = await supabase.storage
     .from(BUCKET_ANEXOS)
-    .createSignedUrl(caminho, 60 * 10);
+    .createSignedUrl(caminho, 60);
   if (error || !data) throw error ?? new Error("Não foi possível abrir o arquivo.");
   return data.signedUrl;
 }

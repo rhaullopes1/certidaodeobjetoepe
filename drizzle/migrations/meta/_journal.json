@@ -260,6 +260,13 @@
       "when": 1793969248546,
       "tag": "0036_avisar_fila_operacao_tempo_real",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1795799205011,
+      "tag": "0037_endurecer_vinculo_e_primeiro_admin",
+      "breakpoints": true
     }
   ]
 }

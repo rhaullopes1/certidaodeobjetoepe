@@ -104,9 +104,9 @@ export const Route = createFileRoute("/api/public/webhooks/mercadopago")({
             ts,
             candidatosTestados: candidatos.length,
           });
-          // Seguimos mesmo assim: o corpo nunca é confiado — o status é lido
-          // direto da API do Mercado Pago com o nosso token, então um aviso
-          // forjado não consegue marcar pedido como pago.
+          // Aviso sem assinatura válida é recusado; a página do pedido ainda
+          // sincroniza o status direto com o Mercado Pago.
+          return new Response("assinatura inválida", { status: 401 });
         }
 
         const { consultarCobranca } = await import("@/lib/mercadopago.server");

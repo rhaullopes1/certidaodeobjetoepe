@@ -59,8 +59,13 @@ export const meusPedidos = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<PedidoDoCliente[]> => {
     // Pedidos feitos sem login (conta já existente) ficam com user_id nulo.
     // Ao abrir "Minha conta", vinculamos pelo e-mail confirmado do usuário.
-    const emailClaim = (context.claims as { email?: string } | undefined)?.email;
-    if (emailClaim) {
+    const claims = context.claims as
+      | { email?: string; app_metadata?: { provider?: string } }
+      | undefined;
+    const emailClaim = claims?.email;
+    // Só provedores que comprovam o e-mail (ex.: Google); cadastro por e-mail não prova posse.
+    const provedor = claims?.app_metadata?.provider ?? "email";
+    if (emailClaim && provedor !== "email") {
       try {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         await supabaseAdmin

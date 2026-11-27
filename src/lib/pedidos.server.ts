@@ -235,12 +235,14 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     .eq("cpf", principal.cpf)
     .eq("email", email)
     .eq("status", "aguardando_pagamento")
+    .eq("whatsapp", soDigitosLocal(data.whatsapp))
     .gte("created_at", desde)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
-  if (existente) {
+  const usuarioAtual = await usuarioOpcionalDaRequisicao();
+  if (existente && (existente as { user_id: string | null }).user_id === usuarioAtual) {
     return montar(await gerarCobranca(existente as PedidoRow));
   }
 
@@ -973,4 +975,8 @@ export async function ativarOfertaRelampago(pedidoId: string) {
     valorOriginalCentavos: original,
     valorOfertaCentavos: oferta,
   };
+}
+
+function soDigitosLocal(v: string) {
+  return String(v ?? "").replace(/\D/g, "");
 }

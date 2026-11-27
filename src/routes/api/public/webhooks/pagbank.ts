@@ -6,6 +6,12 @@ export const Route = createFileRoute("/api/public/webhooks/pagbank")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        // Exige token secreto na URL do webhook configurada no PagBank.
+        const esperado = process.env["PAGBANK_WEBHOOK_TOKEN"];
+        const recebido = new URL(request.url).searchParams.get("token") ?? "";
+        if (!esperado || recebido.length !== esperado.length || recebido !== esperado) {
+          return new Response("não autorizado", { status: 401 });
+        }
         let payload: { id?: string; reference_id?: string };
         try {
           payload = (await request.json()) as { id?: string; reference_id?: string };

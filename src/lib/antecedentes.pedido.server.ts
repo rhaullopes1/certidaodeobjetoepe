@@ -51,7 +51,29 @@ export async function criarPedidoAntecedentesNoBanco(
     .limit(1)
     .maybeSingle();
 
-  if (existente) return montar(existente as never);
+  // Não devolvemos dados de pedido existente a quem só informou CPF e e-mail.
+  if (existente) {
+    throw new Error("Já recebemos uma solicitação recente para este CPF. Confira seu e-mail.");
+  }
+
+  // Limites contra abuso da consulta gratuita (custo por consulta no provedor).
+  const umDia = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const contar = async (col: "cpf" | "email" | "whatsapp" | null, valor?: string) => {
+    let q = supabaseAdmin
+      .from("pedidos")
+      .select("id", { count: "exact", head: true })
+      .eq("tipo", TIPO_ANTECEDENTES)
+      .gte("created_at", umDia);
+    if (col && valor) q = q.eq(col, valor);
+    const { count } = await q;
+    return count ?? 0;
+  };
+  if ((await contar("cpf", cpf)) >= 1 || (await contar("email", email)) >= 2 || (await contar("whatsapp", whatsapp)) >= 2) {
+    throw new Error("Limite diário de consultas gratuitas atingido. Tente novamente amanhã.");
+  }
+  if ((await contar(null)) >= 60) {
+    throw new Error("Consultas gratuitas temporariamente indisponíveis. Tente novamente mais tarde.");
+  }
 
   const registro = {
     protocolo: novoProtocolo(),

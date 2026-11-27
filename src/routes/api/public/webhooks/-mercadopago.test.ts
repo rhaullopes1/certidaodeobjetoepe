@@ -96,11 +96,11 @@ describe("webhook Mercado Pago", () => {
     expect(estado.emissao).toHaveBeenCalledWith("p1");
   });
 
-  it("assinatura inválida: comportamento atual segue, mas o status vem só da API", async () => {
+  it("assinatura inválida é recusada sem consultar a API", async () => {
     estado.consulta.mockResolvedValue({ status: "pending", pago: false, referenceId: "COP-TESTE" });
     const res = await POST({ request: requisicao("123", false) });
-    expect(res.status).toBe(200);
-    expect(estado.consulta).toHaveBeenCalledWith("123");
+    expect(res.status).toBe(401);
+    expect(estado.consulta).not.toHaveBeenCalled();
     expect(estado.updates.some((u) => u.patch.status === "pago")).toBe(false);
     expect(console.error).toHaveBeenCalledWith("Assinatura inválida no webhook do Mercado Pago", expect.anything());
   });
