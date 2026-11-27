@@ -482,7 +482,7 @@ export const linkDocumentoOficial = createServerFn({ method: "POST" })
     await exigirEquipe(supabase, userId);
     const { data: op } = await supabase.from("cpn_operacoes").select("documento_caminho").eq("id", data.operacaoId).maybeSingle();
     if (!op?.documento_caminho) throw new Error("Sem documento.");
-    const { data: s } = await supabase.storage.from("cpn-documentos").createSignedUrl(op.documento_caminho, 300);
+    const { data: s } = await supabase.storage.from("cpn-documentos").createSignedUrl(op.documento_caminho, 60);
     if (!s?.signedUrl) throw new Error("Não foi possível abrir o documento.");
     return { url: s.signedUrl };
   });
