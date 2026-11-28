@@ -228,27 +228,34 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
 
   // Anti-duplicidade: reenvio do formulário em poucos minutos reaproveita o pedido.
   const desde = new Date(Date.now() - 30 * 60 * 1000).toISOString();
-  const { data: existente } = await supabaseAdmin
-    .from("pedidos")
-    .select("*")
-    .eq("numero_processo", principal.numeroProcesso)
-    .eq("cpf", principal.cpf)
-    .eq("email", email)
-    .eq("status", "aguardando_pagamento")
-    .eq("whatsapp", soDigitosLocal(data.whatsapp))
-    .gte("created_at", desde)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  // Banco indisponível não pode bloquear a venda: falhas aqui seguem para a contingência.
+  let existente: unknown = null;
+  try {
+    const r = await supabaseAdmin
+      .from("pedidos")
+      .select("*")
+      .eq("numero_processo", principal.numeroProcesso)
+      .eq("cpf", principal.cpf)
+      .eq("email", email)
+      .eq("status", "aguardando_pagamento")
+      .eq("whatsapp", soDigitosLocal(data.whatsapp))
+      .gte("created_at", desde)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    existente = r.data;
+  } catch (e) {
+    console.error("Anti-duplicidade indisponível", e);
+  }
 
-  const usuarioAtual = await usuarioOpcionalDaRequisicao();
+  const usuarioAtual = await usuarioOpcionalDaRequisicao().catch(() => null);
   if (existente && usuarioAtual && (existente as { user_id: string | null }).user_id === usuarioAtual) {
     return montar(await gerarCobranca(existente as PedidoRow));
   }
 
   // Reconhecimento automático do número único: preenche tribunal/estado/cidade.
   const partes = analisarNup(principal.numeroProcesso);
-  const decodificado = partes ? await decodificarPartes(partes) : null;
+  const decodificado = partes ? await decodificarPartes(partes).catch(() => null) : null;
 
   const registro = {
     protocolo: novoProtocolo(),
@@ -265,22 +272,25 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     uf: decodificado?.uf ?? null,
     cidade: decodificado?.cidade ?? null,
     ...colunasLocalizacao(partes ? decodificado : null),
-    user_id: await usuarioOpcionalDaRequisicao(),
+    user_id: usuarioAtual,
   };
 
-
-  const { data: row, error } = await supabaseAdmin
-    .from("pedidos")
-    .insert(registro)
-    .select("*")
-    .single();
+  let row: PedidoRow | null = null;
+  let error: unknown = null;
+  try {
+    const r = await supabaseAdmin.from("pedidos").insert(registro).select("*").single();
+    row = r.data as PedidoRow | null;
+    error = r.error;
+  } catch (e) {
+    error = e;
+  }
 
   if (error || !row) {
     console.error("Falha ao criar pedido", error);
     // Contingência: banco indisponível — envia os dados completos à equipe por e-mail.
     try {
       const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
-      await sendTemplateEmail("novo-pedido-admin", EMAIL_CONTATO, {
+      const enviarEquipe = () => sendTemplateEmail("novo-pedido-admin", EMAIL_CONTATO, {
         idempotencyKey: `contingencia-${registro.protocolo}`,
         templateData: {
           protocolo: `${registro.protocolo} (CONTINGÊNCIA — NÃO GRAVADO NO BANCO)`,
@@ -298,6 +308,8 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
           url: "https://certidaodeobjetoepe.org/admin",
         },
       });
+      // Uma nova tentativa antes de desistir: este e-mail é o único registro do pedido.
+      await enviarEquipe().catch(() => enviarEquipe());
       // Encaminha o cliente ao pagamento com o Pix fixo (confirmação manual pela equipe).
       const resumoContingencia = montar({
         ...registro,

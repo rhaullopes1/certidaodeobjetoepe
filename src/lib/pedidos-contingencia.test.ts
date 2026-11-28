@@ -15,7 +15,9 @@ vi.mock("@/integrations/supabase/client.server", () => ({
         gte: () => query,
         order: () => query,
         limit: () => query,
-        maybeSingle: async () => ({ data: null }),
+        maybeSingle: async () => {
+          throw new Error("fetch failed");
+        },
         insert: () => query,
         single,
       };
