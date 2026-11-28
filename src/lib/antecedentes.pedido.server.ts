@@ -53,7 +53,7 @@ export async function criarPedidoAntecedentesNoBanco(
 
   // Não devolvemos dados de pedido existente a quem só informou CPF e e-mail.
   if (existente) {
-    throw new Error("Já recebemos uma solicitação recente para este CPF. Confira seu e-mail.");
+    throw new Error("Limite diário de consultas gratuitas atingido. Tente novamente amanhã.");
   }
 
   // Limites contra abuso da consulta gratuita (custo por consulta no provedor).

@@ -242,7 +242,7 @@ export async function criarPedidoNoBanco(data: PedidoInput): Promise<PedidoResum
     .maybeSingle();
 
   const usuarioAtual = await usuarioOpcionalDaRequisicao();
-  if (existente && (existente as { user_id: string | null }).user_id === usuarioAtual) {
+  if (existente && usuarioAtual && (existente as { user_id: string | null }).user_id === usuarioAtual) {
     return montar(await gerarCobranca(existente as PedidoRow));
   }
 

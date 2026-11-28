@@ -65,7 +65,7 @@ export const meusPedidos = createServerFn({ method: "GET" })
     const emailClaim = claims?.email;
     // Só provedores que comprovam o e-mail (ex.: Google); cadastro por e-mail não prova posse.
     const provedor = claims?.app_metadata?.provider ?? "email";
-    if (emailClaim && provedor !== "email") {
+    if (emailClaim && provedor === "google") {
       try {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         await supabaseAdmin
